@@ -188,15 +188,18 @@
             color: var(--primary-light);
         }
 
-        /* 内容显示区域 */
+        /* 内容显示区域 - 全屏预览 */
         .content-display {
-            width: 100%;
+            width: 100vw;
             height: 100vh;
             display: none;
-            position: relative;
-            background: var(--dark-surface);
-            padding: 80px 40px 100px 40px;
-            overflow-y: auto;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background: var(--dark);
+            padding: 0;
+            overflow: hidden;
+            z-index: 1000;
         }
 
         .content-display.active {
@@ -207,7 +210,6 @@
             width: 100%;
             height: 100%;
             border: none;
-            border-radius: 10px;
             background: var(--dark);
         }
         
@@ -534,6 +536,19 @@
             height: 22px;
         }
 
+        .nav-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .nav-btn:disabled:hover {
+            transform: none !important;
+            box-shadow: var(--shadow);
+            border-color: var(--border);
+            color: var(--text-muted);
+        }
+
         /* 章节面板进入动画 */
         @keyframes panelSlideIn {
             0% {
@@ -576,6 +591,13 @@
                 opacity: 1;
                 transform: translateY(0);
             }
+        }
+
+        @keyframes fadeInOut {
+            0% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+            20% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+            80% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+            100% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
         }
 
         /* 移动端优化 */
@@ -729,7 +751,7 @@
             </div>
         </div>
 
-    <!-- 内容显示区域 -->
+    <!-- 内容显示区域 - 全屏预览 -->
     <div class="content-display" id="contentDisplay">
         <iframe class="content-iframe" id="contentFrame"></iframe>
     </div>
@@ -881,23 +903,61 @@ function loadContent(url, title) {
     const topbar = document.getElementById('topbar');
     const keyboardHint = document.getElementById('keyboardHint');
 
-    frame.src = url;
+    if (!frame || !welcome || !contentDisplay || !topbar || !keyboardHint) {
+        return;
+    }
+
+    // 先显示内容区域（全屏预览）
     contentDisplay.classList.add('active');
     welcome.style.display = 'none';
-    keyboardHint.classList.remove('hidden');
+    keyboardHint.classList.add('hidden'); // 全屏时隐藏键盘提示
+    
+    // 然后加载iframe内容
+    frame.src = url;
 
     currentUrl = url;
     const displayTitle = title || getChineseTitle(url);
     topbar.textContent = displayTitle;
 
-    currentIndex = Object.values(chapters).findIndex(ch => ch.url === url);
+    // 如果currentIndex还没有设置，通过URL查找
+    if (currentIndex === -1) {
+        currentIndex = Object.values(chapters).findIndex(ch => ch.url === url);
+    }
     
-    // 更新侧边栏按钮状态
-    document.querySelectorAll('.nav-icon-btn').forEach(btn => btn.classList.remove('active'));
-    const activeBtn = document.querySelector(`[data-category="${currentIndex}"]`);
-    if (activeBtn) activeBtn.classList.add('active');
+    // 更新导航按钮状态
+    updateNavigationButtons();
     
     closeAllPanels();
+}
+
+function exitFullscreen() {
+    const contentDisplay = document.getElementById('contentDisplay');
+    const welcome = document.getElementById('welcomePage');
+    const keyboardHint = document.getElementById('keyboardHint');
+    
+    contentDisplay.classList.remove('active');
+    welcome.style.display = 'flex';
+    keyboardHint.classList.remove('hidden');
+    
+    currentUrl = '';
+    currentIndex = -1;
+    
+    // 重置导航按钮状态
+    updateNavigationButtons();
+    
+    closeAllPanels();
+}
+
+function updateNavigationButtons() {
+    const prevBtn = document.querySelector('.nav-btn[onclick="goPrev()"]');
+    const nextBtn = document.querySelector('.nav-btn[onclick="goNext()"]');
+    
+    if (prevBtn) {
+        prevBtn.disabled = (currentIndex <= 0);
+    }
+    if (nextBtn) {
+        nextBtn.disabled = (currentIndex >= Object.keys(chapters).length - 1);
+    }
 }
 
 function getChineseTitle(url) {
@@ -913,8 +973,8 @@ function showChapter(categoryId) {
     const chapter = chapters[categoryId];
     if (!chapter) return;
 
-    // 加载内容到iframe
-    loadContent(chapter.url, chapter.title);
+    // 目录点击：整页跳转
+    window.location.href = chapter.url;
 }
 
 function showChapterList() {
@@ -938,8 +998,8 @@ function showChapterList() {
             <span class="chapter-text">${chapter.title}</span>
         `;
         div.onclick = () => {
-            loadContent(chapter.url, chapter.title);
-            panel.classList.remove('active');
+            // 直接跳转到章节文件
+            window.location.href = chapter.url;
         };
         list.appendChild(div);
     });
@@ -964,6 +1024,8 @@ function goPrev() {
         currentIndex--;
         const chapter = Object.values(chapters)[currentIndex];
         loadContent(chapter.url, chapter.title);
+    } else {
+        showNavigationHint('已经是第一章了');
     }
 }
 
@@ -972,17 +1034,41 @@ function goNext() {
         currentIndex++;
         const chapter = Object.values(chapters)[currentIndex];
         loadContent(chapter.url, chapter.title);
+    } else {
+        showNavigationHint('已经是最后一章了');
     }
 }
 
+function showNavigationHint(message) {
+    // 创建临时提示
+    const hint = document.createElement('div');
+    hint.style.cssText = `
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: rgba(0, 0, 0, 0.8);
+        color: var(--primary-light);
+        padding: 15px 25px;
+        border-radius: 10px;
+        border: 1px solid var(--primary);
+        z-index: 1002;
+        font-size: 14px;
+        animation: fadeInOut 2s ease forwards;
+    `;
+    hint.textContent = message;
+    document.body.appendChild(hint);
+    
+    setTimeout(() => {
+        if (hint.parentNode) {
+            hint.parentNode.removeChild(hint);
+        }
+    }, 2000);
+}
+
 function goHome() {
-    document.getElementById('contentDisplay').classList.remove('active');
-    document.getElementById('welcomePage').style.display = 'flex';
+    exitFullscreen();
     document.getElementById('topbar').textContent = '高等应用数学课件';
-    document.getElementById('keyboardHint').classList.add('hidden');
-    currentUrl = '';
-    currentIndex = -1;
-    closeAllPanels();
 }
 
 function goMainSite() {
@@ -1014,28 +1100,41 @@ function initKeyboardNavigation() {
         const activeElement = document.activeElement;
         if (activeElement && (activeElement.tagName === 'INPUT' || activeElement.tagName === 'TEXTAREA' || activeElement.isContentEditable)) return;
         
-        const contentDisplayVisible = document.getElementById('contentDisplay').classList.contains('active');
-        if (!contentDisplayVisible) return;
-
         switch(event.key) {
         case 'ArrowLeft':
             event.preventDefault();
+            if (currentIndex === -1) {
+                // 在主页时，从最后一章开始预览
+                currentIndex = Object.keys(chapters).length - 1;
+            }
             goPrev();
             break;
         case 'ArrowRight':
             event.preventDefault();
+            if (currentIndex === -1) {
+                // 在主页时，从第一章开始预览
+                currentIndex = -1;
+            }
             goNext();
             break;
         case 'Home':
-        case 'Escape':
             event.preventDefault();
             goHome();
+            break;
+        case 'Escape':
+            event.preventDefault();
+            // ESC键退出全屏预览
+            if (document.getElementById('contentDisplay').classList.contains('active')) {
+                exitFullscreen();
+            } else {
+                goHome();
+            }
             break;
         case 'End':
             event.preventDefault();
             goMainSite();
             break;
-    }
+        }
     });
 }
 
