@@ -1,0 +1,932 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>洛必达法则实验室</title>
+
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true,
+                processEnvironments: true
+            },
+            options: {
+                skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+            },
+            startup: {
+                pageReady: () => {
+                    return MathJax.startup.defaultPageReady().then(() => {
+                        console.log('MathJax加载完成');
+                    });
+                }
+            }
+        };
+    </script>
+    <script defer src="../common-assets/js/mathjax-3.2.2-tex-svg.min.js"></script>
+
+    <style>
+    :root {
+        --primary: #4f46e5;
+        --primary-dark: #3730a3;
+        --primary-light: #6366f1;
+        --success: #10b981;
+        --warning: #f59e0b;
+        --danger: #ef4444;
+        --gray-50: #f9fafb;
+        --gray-100: #f3f4f6;
+        --gray-200: #e5e7eb;
+        --gray-300: #d1d5db;
+        --gray-500: #6b7280;
+        --gray-600: #4b5563;
+        --gray-700: #1f2937;
+        --white: #ffffff;
+        --light: #ffffff;
+        --border: #e5e7eb;
+        --h1-size: 22px;
+        --h3-size: 18px;
+        --text-size: 16px;
+        --formula-size: 20px;
+    }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        *::-webkit-scrollbar { width: 0; background: transparent; }
+        * { scrollbar-width: none; -ms-overflow-style: none; }
+
+            body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
+        font-size: var(--text-size);
+        line-height: 1.5;
+        background: var(--gray-50);
+        color: var(--gray-700);
+    }
+
+            .container {
+        width: 100%;
+        max-width: 1400px;
+        height: min(100vh, 700px);
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        background: var(--white);
+    }
+
+            .header {
+        height: 40px;
+        background: var(--primary);
+        color: var(--white);
+        display: flex;
+        align-items: center;
+        padding: 0 20px;
+    }
+
+            .header h1 { font-size: var(--h1-size); margin: 0; }
+
+            .main { flex: 1; display: flex; overflow: hidden; }
+
+            .sidebar {
+        width: 120px;
+        background: var(--gray-50);
+        border-right: 1px solid var(--border);
+        padding: 10px 8px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+            .nav-btn {
+        width: 100%;
+        padding: 8px;
+        background: transparent;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: var(--text-size);
+        color: var(--gray-600);
+        text-align: left;
+        transition: background 0.2s ease, color 0.2s ease;
+    }
+
+            .nav-btn.active { background: var(--primary); color: var(--white); }
+
+            .nav-btn:hover { background: var(--gray-100); }
+
+            .content {
+        flex: 1;
+        position: relative;
+        overflow: hidden;
+        padding: 0;
+    }
+            .page-content {
+        display: none;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 18px;
+        height: 100%;
+        padding: 16px;
+    }
+
+    .page-content.active {
+        display: grid;
+    }
+
+            .column { display: flex; flex-direction: column; gap: 16px; overflow-y: auto; padding-right: 4px; }
+
+            .card { background: var(--white); border: 1px solid var(--border); border-radius: 12px; padding: 12px; display: flex; flex-direction: column; gap: 10px; }
+
+        .card h3 { font-size: var(--h3-size); color: var(--primary-dark); }
+        .card p { line-height: 1.5; }
+        .card-scroll { overflow-y: auto; }
+
+        .tag-list { display: flex; gap: 8px; flex-wrap: wrap; }
+        .tag { font-size: 13px; padding: 4px 10px; border-radius: 999px; background: var(--gray-100); color: var(--gray-500); }
+
+        table { width: 100%; border-collapse: collapse; font-size: 15px; }
+        th, td { border: 1px solid var(--gray-200); padding: 8px; text-align: center; }
+        thead { background: var(--gray-100); }
+
+        .info-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 12px; }
+        .info-item { background: var(--gray-50); border: 1px solid var(--gray-200); border-radius: 10px; padding: 10px; font-size: 15px; }
+        .info-item strong { display: block; margin-bottom: 6px; color: var(--primary-dark); }
+
+        .controls { display: flex; flex-direction: column; gap: 10px; background: var(--gray-50); border: 1px solid var(--gray-200); border-radius: 10px; padding: 10px; }
+        .control-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+        .control-row label { font-weight: 600; }
+        .control-row span { color: var(--primary-dark); font-weight: 600; }
+        select { flex: 1; padding: 6px 8px; border-radius: 8px; border: 1px solid var(--gray-300); font-size: 15px; }
+        input[type="range"] { flex: 1; }
+
+        .btn-group { display: flex; gap: 10px; }
+        button.action {
+            flex: 1;
+            background: var(--primary);
+            color: var(--white);
+            border: none;
+            border-radius: 8px;
+            padding: 10px 12px;
+            font-size: var(--text-size);
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            position: relative;
+            z-index: 10;
+            pointer-events: auto;
+        }
+
+        button.action.secondary {
+            background: var(--white);
+            color: var(--primary);
+            border: 1px solid var(--primary);
+        }
+
+        button.action.danger { background: var(--danger); }
+        button.action:hover { transform: translateY(-2px); }
+
+        .flow-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            overflow-y: auto;
+            padding-right: 4px;
+        }
+
+        .flow-step {
+            position: relative;
+            border: 1px solid var(--gray-200);
+            border-radius: 10px;
+            padding: 10px 12px;
+            background: var(--gray-50);
+            transition: border 0.2s ease, background 0.2s ease, transform 0.2s ease;
+        }
+
+        .flow-step::before {
+            content: '';
+            position: absolute;
+            left: 18px;
+            top: -12px;
+            width: 2px;
+            height: 12px;
+            background: var(--gray-200);
+        }
+
+        .flow-step:first-child::before { display: none; }
+
+        .flow-step.active {
+            border-color: var(--primary);
+            background: #eef2ff;
+            transform: translateX(4px);
+        }
+
+        .flow-step.success { border-color: var(--success); }
+        .flow-step.error { border-color: var(--danger); background: #fee2e2; }
+
+        .flow-step h4 { font-size: 15px; margin-bottom: 4px; color: var(--primary-dark); }
+        .flow-step p { font-size: 14px; color: var(--gray-600); line-height: 1.4; }
+
+        .canvas-wrapper {
+            border: 1px solid var(--gray-200);
+            border-radius: 12px;
+            background: var(--gray-50);
+            padding: 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            flex: 1;
+        }
+
+        .canvas-wrapper canvas {
+            width: 100%;
+            height: 260px;
+            border-radius: 8px;
+            background: var(--white);
+        }
+
+        .legend { display: flex; gap: 12px; flex-wrap: wrap; font-size: 14px; color: var(--gray-600); }
+        .legend span { display: flex; align-items: center; gap: 6px; }
+        .legend i { width: 14px; height: 14px; border-radius: 4px; display: inline-block; }
+
+        .status-box {
+            border-radius: 10px;
+            padding: 10px;
+            font-size: 14px;
+            background: #eef2ff;
+            color: var(--primary-dark);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>洛必达法则实验室</h1>
+            <div>把极限推导过程拆成可视化步骤</div>
+        </header>
+        <div class="main">
+            <nav class="sidebar">
+                <button class="nav-btn active" data-section="zero">0/0 型</button>
+                <button class="nav-btn" data-section="infty">∞/∞ 型</button>
+                <button class="nav-btn" data-section="other">其他类型转化</button>
+            </nav>
+            <section class="content">
+                <!-- 0/0 型页面 -->
+                <div class="page-content active" id="zero">
+                    <div class="column">
+                        <div class="card card-scroll">
+                            <h3>学习指引</h3>
+                            <p>洛必达法则的关键是将极限化成 $\dfrac{0}{0}$ 或 $\dfrac{\infty}{\infty}$ 型，然后同步对分子、分母求导。实验区将每一步拆解为可视化节点，你可以分步推进或自动播放以观察公式的演变。</p>
+                            <div class="tag-list">
+                                <span class="tag">极限判断</span>
+                                <span class="tag">分步求导</span>
+                                <span class="tag">异常检测</span>
+                                <span class="tag">案例切换</span>
+                            </div>
+                            <div class="status-box" id="caseDescription">当前案例：$\displaystyle \lim_{x \to 0} \dfrac{\sin x}{x}$，原式直接代入得到 $\dfrac{0}{0}$ 型，可应用洛必达法则。</div>
+                        </div>
+
+                        <div class="card card-scroll">
+                            <h3>典型不定式类型速查</h3>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>类型</th>
+                                        <th>转化思路</th>
+                                        <th>示例</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="typeTable"></tbody>
+                            </table>
+                        </div>
+
+                        <div class="card">
+                            <h3>结论速记</h3>
+                            <div class="info-grid">
+                                <div class="info-item">
+                                    <strong>适用条件</strong>
+                                    分子、分母在点附近可导，且 $\dfrac{f'(x)}{g'(x)}$ 的极限存在或为 $\pm\infty$。
+                                </div>
+                                <div class="info-item">
+                                    <strong>重复使用</strong>
+                                    求导一次后仍是不定式时，可继续求导，注意保留条件检查。
+                                </div>
+                                <div class="info-item">
+                                    <strong>类型转化</strong>
+                                    $0 \cdot \infty, \infty - \infty, 1^{\infty}$ 等可以通过代数变形或取对数转化。
+                                </div>
+                                <div class="info-item">
+                                    <strong>工程意义</strong>
+                                    在传感、材料响应等领域，洛必达法则可快速估计极端状态的变化率。
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="column">
+                        <div class="card">
+                            <h3>分步推导流程</h3>
+                            <div class="controls">
+                                <div class="control-row">
+                                    <label>选择不定式类型</label>
+                                    <select id="caseSelector"></select>
+                                </div>
+                                <div class="control-row">
+                                    <label>推进控制</label>
+                                    <div class="btn-group">
+                                        <button class="action" id="startFlow">开始演示</button>
+                                        <button class="action secondary" id="nextStep">下一步</button>
+                                        <button class="action secondary" id="resetFlow">重置</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="flow-container" id="flowContainer"></div>
+                        </div>
+
+                        <div class="card">
+                            <h3>函数行为与数值对比</h3>
+                            <div class="canvas-wrapper">
+                                <canvas id="lhopitalCanvas"></canvas>
+                                <div class="legend">
+                                    <span><i style="background:#2563eb"></i> $y=f(x)$</span>
+                                    <span><i style="background:#ef4444"></i> $y=g(x)$</span>
+                                    <span><i style="background:#10b981"></i> $y=\dfrac{f(x)}{g(x)}$</span>
+                                </div>
+                                <div class="controls">
+                                    <div class="control-row">
+                                        <label>接近点</label>
+                                        <input type="range" id="approachSlider" min="0.0001" max="0.5" step="0.0001" value="0.1">
+                                        <span id="approachValue">0.10</span>
+                                    </div>
+                                    <div class="control-row">
+                                        <label>方向</label>
+                                        <select id="directionSelector">
+                                            <option value="right">右侧接近</option>
+                                            <option value="left">左侧接近</option>
+                                            <option value="both">两侧对比</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="info-grid">
+                                    <div class="info-item">
+                                        <strong>函数值</strong>
+                                        <span id="valueInfo">$f(x)=0.0000$, $g(x)=0.0000$</span>
+                                    </div>
+                                    <div class="info-item">
+                                        <strong>比值变化</strong>
+                                        <span id="ratioInfo">$\dfrac{f(x)}{g(x)} = 1.0000$</span>
+                                    </div>
+                                    <div class="info-item">
+                                        <strong>导数比值</strong>
+                                        <span id="derivativeInfo">$\dfrac{f'(x)}{g'(x)} = 1.0000$</span>
+                                    </div>
+                                    <div class="info-item">
+                                        <strong>结论提示</strong>
+                                        <span id="hintInfo">导数比值极限存在，原极限等于 1。</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <h3>实际应用案例</h3>
+                            <div class="info-grid">
+                                <div class="info-item">
+                                    <strong>物理应用</strong>
+                                    瞬时速度计算：$\lim_{t \to 0} \dfrac{s(t)-s(0)}{t}$
+                                </div>
+                                <div class="info-item">
+                                    <strong>经济学应用</strong>
+                                    边际成本分析：$\lim_{\Delta x \to 0} \dfrac{C(x+\Delta x)-C(x)}{\Delta x}$
+                                </div>
+                                <div class="info-item">
+                                    <strong>工程应用</strong>
+                                    材料应力分析：$\lim_{\varepsilon \to 0} \dfrac{\sigma(\varepsilon)}{\varepsilon}$
+                                </div>
+                                <div class="info-item">
+                                    <strong>生物医学</strong>
+                                    药物浓度变化：$\lim_{t \to 0} \dfrac{C(t)-C(0)}{t}$
+                                </div>
+                            </div>
+                            <div class="status-box">
+                                💡 提示：洛必达法则在解决实际工程问题时非常有用，特别是在需要分析系统在临界点附近的行为时。
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ∞/∞ 型页面 -->
+                <div class="page-content" id="infty">
+                    <div class="column">
+                        <div class="card card-scroll">
+                            <h3>∞/∞ 型不定式</h3>
+                            <p>当分子和分母都趋于无穷大时，洛必达法则同样适用。这类问题常见于多项式、指数函数等比值形式。</p>
+                            <div class="tag-list">
+                                <span class="tag">多项式比值</span>
+                                <span class="tag">指数函数</span>
+                                <span class="tag">对数函数</span>
+                                <span class="tag">复合函数</span>
+                            </div>
+                            <div class="status-box">当前案例：$\displaystyle \lim_{x \to \infty} \dfrac{2x^2 - 3x}{x^2 + 1}$，原式为 $\dfrac{\infty}{\infty}$ 型。</div>
+                        </div>
+                        <div class="card">
+                            <h3>∞/∞ 型特点</h3>
+                            <div class="info-grid">
+                                <div class="info-item">
+                                    <strong>识别特征</strong>
+                                    分子分母同时趋于 $\pm\infty$，需要检查极限方向。
+                                </div>
+                                <div class="info-item">
+                                    <strong>处理方法</strong>
+                                    直接对分子分母求导，然后计算新极限。
+                                </div>
+                                <div class="info-item">
+                                    <strong>常见陷阱</strong>
+                                    注意 $x \to +\infty$ 和 $x \to -\infty$ 的区别。
+                                </div>
+                                <div class="info-item">
+                                    <strong>应用场景</strong>
+                                    经济学中的边际分析、工程中的渐近行为。
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="column">
+                        <div class="card">
+                            <h3>∞/∞ 型推导演示</h3>
+                            <div class="canvas-wrapper">
+                                <canvas id="inftyCanvas"></canvas>
+                                <div class="legend">
+                                    <span><i style="background:#2563eb"></i> $y=f(x)$</span>
+                                    <span><i style="background:#ef4444"></i> $y=g(x)$</span>
+                                    <span><i style="background:#10b981"></i> $y=\dfrac{f(x)}{g(x)}$</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 其他类型转化页面 -->
+                <div class="page-content" id="other">
+                    <div class="column">
+                        <div class="card card-scroll">
+                            <h3>其他类型转化</h3>
+                            <p>对于 $0 \cdot \infty$、$\infty - \infty$、$1^{\infty}$ 等类型，需要通过代数变形或取对数转化为 $\dfrac{0}{0}$ 或 $\dfrac{\infty}{\infty}$ 型。</p>
+                            <div class="tag-list">
+                                <span class="tag">0·∞ 型</span>
+                                <span class="tag">∞-∞ 型</span>
+                                <span class="tag">1^∞ 型</span>
+                                <span class="tag">取对数法</span>
+                            </div>
+                            <div class="status-box">当前案例：$\displaystyle \lim_{x \to 0^+} x^x$，原式为 $1^{\infty}$ 型，需要取对数转化。</div>
+                        </div>
+                        <div class="card">
+                            <h3>转化方法</h3>
+                            <div class="info-grid">
+                                <div class="info-item">
+                                    <strong>0·∞ 型</strong>
+                                    改写为 $\dfrac{0}{1/\infty}$ 或 $\dfrac{\infty}{1/0}$。
+                                </div>
+                                <div class="info-item">
+                                    <strong>∞-∞ 型</strong>
+                                    通分或乘以共轭，然后化简。
+                                </div>
+                                <div class="info-item">
+                                    <strong>1^∞ 型</strong>
+                                    取对数：$\ln y = \infty \cdot \ln 1 = \infty \cdot 0$。
+                                </div>
+                                <div class="info-item">
+                                    <strong>0^0 型</strong>
+                                    取对数：$\ln y = 0 \cdot \ln 0 = 0 \cdot (-\infty)$。
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="column">
+                        <div class="card">
+                            <h3>转化演示</h3>
+                            <div class="canvas-wrapper">
+                                <canvas id="otherCanvas"></canvas>
+                                <div class="legend">
+                                    <span><i style="background:#f59e0b"></i> 原函数</span>
+                                    <span><i style="background:#10b981"></i> 转化后</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <script>
+        function renderMath() {
+            if (window.MathJax && MathJax.typesetPromise) {
+                MathJax.typesetPromise().catch(err => console.log('渲染错误:', err));
+            }
+        }
+
+        // 确保页面加载完成后渲染数学公式
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(renderMath, 100);
+        });
+
+        function setupCanvas(canvas) {
+            const ctx = canvas.getContext('2d');
+            const rect = canvas.getBoundingClientRect();
+            const dpr = window.devicePixelRatio || 1;
+            canvas.width = rect.width * dpr;
+            canvas.height = rect.height * dpr;
+            canvas.style.width = rect.width + 'px';
+            canvas.style.height = rect.height + 'px';
+            ctx.scale(dpr, dpr);
+            return { ctx, width: rect.width, height: rect.height };
+        }
+
+        function drawAxes(ctx, width, height) {
+            const padding = 40;
+            ctx.save();
+            ctx.strokeStyle = '#e2e8f0';
+            ctx.lineWidth = 1;
+            for (let i = 0; i <= 8; i++) {
+                const x = padding + i * (width - 2 * padding) / 8;
+                ctx.beginPath();
+                ctx.moveTo(x, padding);
+                ctx.lineTo(x, height - padding);
+                ctx.stroke();
+
+                const y = padding + i * (height - 2 * padding) / 8;
+                ctx.beginPath();
+                ctx.moveTo(padding, y);
+                ctx.lineTo(width - padding, y);
+                ctx.stroke();
+            }
+
+            ctx.strokeStyle = '#1f2937';
+            ctx.lineWidth = 1.5;
+            ctx.beginPath();
+            ctx.moveTo(padding, height / 2);
+            ctx.lineTo(width - padding, height / 2);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(width / 2, padding);
+            ctx.lineTo(width / 2, height - padding);
+            ctx.stroke();
+            ctx.restore();
+        }
+
+        function mathToCanvas(x, y, width, height, xRange, yRange, padding = 40) {
+            const plotWidth = width - 2 * padding;
+            const plotHeight = height - 2 * padding;
+            const cx = padding + (x - xRange[0]) / (xRange[1] - xRange[0]) * plotWidth;
+            const cy = height - padding - (y - yRange[0]) / (yRange[1] - yRange[0]) * plotHeight;
+            return { x: cx, y: cy };
+        }
+
+        const cases = {
+            zero_zero: {
+                type: '0/0 型',
+                description: '当前案例：$\\displaystyle \\lim_{x \\to 0} \\dfrac{\\sin x}{x}$，原式代入得到 $\\dfrac{0}{0}$ 型，可直接应用洛必达法则。',
+                numerator: x => Math.sin(x),
+                denominator: x => x,
+                numeratorPrime: x => Math.cos(x),
+                denominatorPrime: () => 1,
+                limitPoint: 0,
+                displayInterval: [-4, 4],
+                ratioConclusion: '导数比值极限存在，原极限等于 1。',
+                steps: [
+                    { title: '检测不定式', detail: '代入 $x=0$ 得到 $\\dfrac{0}{0}$ 型，满足洛必达法则的形式。' },
+                    { title: '同步求导', detail: '计算 $f\\'(x)=\\cos x$, $g\\'(x)=1$。' },
+                    { title: '代入极限点', detail: '代入 $x=0$，有 $\\dfrac{f\\'(0)}{g\\'(0)} = 1$。' },
+                    { title: '给出结论', detail: '原极限 $=1$，与导数比值一致。' }
+                ]
+            },
+            infinity_infinity: {
+                type: '∞/∞ 型',
+                description: '当前案例：$\\displaystyle \\lim_{x \\to \\infty} \\dfrac{2x^2 - 3x}{x^2 + 1}$，原式为 $\\dfrac{\\infty}{\\infty}$ 型，可对分子分母求导。',
+                numerator: x => 2 * x * x - 3 * x,
+                denominator: x => x * x + 1,
+                numeratorPrime: x => 4 * x - 3,
+                denominatorPrime: x => 2 * x,
+                limitPoint: Infinity,
+                displayInterval: [-2, 4],
+                ratioConclusion: '导数比值极限为 2，与原函数的水平渐近线一致。',
+                steps: [
+                    { title: '检测不定式', detail: '令 $x\\to\\infty$，分子分母同趋于 $\\infty$，为 $\\dfrac{\\infty}{\\infty}$ 型。' },
+                    { title: '同步求导', detail: '计算 $f\\'(x)=4x-3$, $g\\'(x)=2x$。' },
+                    { title: '化简比值', detail: '得到 $\\dfrac{4x-3}{2x}$，进一步化简为 $2-\\dfrac{3}{2x}$。' },
+                    { title: '取极限', detail: '令 $x\\to\\infty$，$\\dfrac{3}{2x}\\to 0$，原极限为 2。' }
+                ]
+            },
+            other: {
+                type: '其他类型转化',
+                description: '当前案例：$\\displaystyle \\lim_{x \\to 0^+} x^x$，原式为 $1^{\\infty}$ 型，先取对数转化为 $\\dfrac{0}{0}$ 型。',
+                numerator: x => Math.log(x),
+                denominator: x => 1 / x,
+                numeratorPrime: x => 1 / x,
+                denominatorPrime: x => -1 / (x * x),
+                limitPoint: 0,
+                displayInterval: [0.05, 3],
+                ratioConclusion: '对数处理后极限为 0，原式极限为 1。',
+                steps: [
+                    { title: '识别类型', detail: '原式是 $1^{\\infty}$ 型，直接使用洛必达不便处理。' },
+                    { title: '取对数', detail: '令 $y = x^x$，两边取对数得 $\\ln y = x\\ln x$。' },
+                    { title: '转化形式', detail: '将 $x\\ln x$ 写成 $\\dfrac{\\ln x}{1/x}$，变为 $\\dfrac{0}{\\infty}$ 型。' },
+                    { title: '应用法则', detail: '对分子与分母求导并求极限，得到 $\\lim x\\ln x = 0$，所以 $y = e^0 = 1$。' }
+                ]
+            }
+        };
+
+        const typeSummary = [
+            { name: '$\\dfrac{0}{0}$ 型', hint: '直接检查分子、分母在极限点的值。', example: '$\\displaystyle \\lim_{x \\to 0} \\dfrac{\\sin x}{x}$' },
+            { name: '$\\dfrac{\\infty}{\\infty}$ 型', hint: '常见于高阶多项式或指数比值。', example: '$\\displaystyle \\lim_{x \\to \\infty} \\dfrac{2x^2-1}{x^2+3}$' },
+            { name: '$0 \cdot \\infty$', hint: '通过改写为 $\\dfrac{0}{1/a}$ 或 $\\dfrac{\\infty}{1/b}$。', example: '$\\displaystyle \\lim_{x \\to 0^+} x \cdot \ln x$' },
+            { name: '$\\infty - \\infty$', hint: '先通分或乘以共轭，再判断类型。', example: '$\\displaystyle \\lim_{x \\to \\infty} (\\sqrt{x^2+x}-x)$' },
+            { name: '$1^{\\infty}$ 型', hint: '取对数，将幂指数转化为乘积形式。', example: '$\\displaystyle \\lim_{x \\to \infty} \left(1+\frac{3}{x}\right)^x$' }
+        ];
+
+        const navButtons = document.querySelectorAll('.nav-btn');
+        const pages = document.querySelectorAll('.page-content');
+        const caseSelector = document.getElementById('caseSelector');
+        const flowContainer = document.getElementById('flowContainer');
+        const startFlowBtn = document.getElementById('startFlow');
+        const nextStepBtn = document.getElementById('nextStep');
+        const resetFlowBtn = document.getElementById('resetFlow');
+        const caseDescription = document.getElementById('caseDescription');
+        const typeTable = document.getElementById('typeTable');
+
+        const approachSlider = document.getElementById('approachSlider');
+        const approachValue = document.getElementById('approachValue');
+        const directionSelector = document.getElementById('directionSelector');
+        const valueInfo = document.getElementById('valueInfo');
+        const ratioInfo = document.getElementById('ratioInfo');
+        const derivativeInfo = document.getElementById('derivativeInfo');
+        const hintInfo = document.getElementById('hintInfo');
+
+        const canvas = document.getElementById('lhopitalCanvas');
+
+        let currentCaseKey = 'zero_zero';
+        let currentStepIndex = -1;
+        let animationTimer = null;
+
+        function populateTypeTable() {
+            typeTable.innerHTML = typeSummary.map(row => `
+                <tr>
+                    <td>${row.name}</td>
+                    <td>${row.hint}</td>
+                    <td>${row.example}</td>
+                </tr>
+            `).join('');
+            renderMath();
+        }
+
+        function populateCaseSelector() {
+            Object.entries(cases).forEach(([key, item]) => {
+                const option = document.createElement('option');
+                option.value = key;
+                option.innerHTML = item.type;
+                caseSelector.appendChild(option);
+            });
+            caseSelector.value = currentCaseKey;
+        }
+
+        function buildFlowSteps() {
+            const current = cases[currentCaseKey];
+            flowContainer.innerHTML = '';
+            current.steps.forEach((step, index) => {
+                const div = document.createElement('div');
+                div.className = 'flow-step';
+                div.dataset.stepIndex = index;
+                div.innerHTML = `
+                    <h4>步骤 ${index + 1}</h4>
+                    <p>${step.detail}</p>
+                `;
+                flowContainer.appendChild(div);
+            });
+            currentStepIndex = -1;
+            renderMath();
+        }
+
+        function highlightStep(index) {
+            const steps = flowContainer.querySelectorAll('.flow-step');
+            steps.forEach(step => step.className = 'flow-step');
+            if (index >= 0 && index < steps.length) {
+                steps[index].classList.add('active');
+                if (index === steps.length - 1) {
+                    steps[index].classList.add('success');
+                }
+            }
+            currentStepIndex = index;
+        }
+
+        function advanceStep() {
+            const current = cases[currentCaseKey];
+            const total = current.steps.length;
+            if (currentStepIndex >= total - 1) return;
+            highlightStep(currentStepIndex + 1);
+        }
+
+        function resetFlow() {
+            clearInterval(animationTimer);
+            animationTimer = null;
+            startFlowBtn.textContent = '开始演示';
+            buildFlowSteps();
+            updateCaseSummary();
+            updateCanvas();
+        }
+
+        function toggleAnimation() {
+            if (animationTimer) {
+                clearInterval(animationTimer);
+                animationTimer = null;
+                startFlowBtn.textContent = '开始演示';
+                return;
+            }
+            startFlowBtn.textContent = '暂停演示';
+            advanceStep();
+            animationTimer = setInterval(() => {
+                const current = cases[currentCaseKey];
+                if (currentStepIndex >= current.steps.length - 1) {
+                    clearInterval(animationTimer);
+                    animationTimer = null;
+                    startFlowBtn.textContent = '开始演示';
+                    return;
+                }
+                advanceStep();
+            }, 2000);
+        }
+
+        function updateCaseSummary(sectionKey) {
+            const item = cases[currentCaseKey];
+            caseDescription.innerHTML = item.description;
+            if (sectionKey) {
+                hintInfo.textContent = item.ratioConclusion;
+            }
+        }
+
+        function switchPage(section) {
+            pages.forEach(page => {
+                page.classList.toggle('active', page.id === section);
+            });
+            navButtons.forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.section === section);
+            });
+
+            if (section === 'zero') {
+                currentCaseKey = 'zero_zero';
+            } else if (section === 'infty') {
+                currentCaseKey = 'infinity_infinity';
+            } else {
+                currentCaseKey = 'other';
+            }
+            caseSelector.value = currentCaseKey;
+            resetFlow();
+            updateCaseSummary(section);
+
+            setTimeout(renderMath, 80);
+
+            setTimeout(() => {
+                if (section === 'zero') {
+                    updateCanvas();
+                } else if (section === 'infty') {
+                    updateInftyCanvas();
+                } else if (section === 'other') {
+                    updateOtherCanvas();
+                }
+            }, 200);
+        }
+
+        navButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                switchPage(btn.dataset.section);
+            });
+        });
+
+\n        caseSelector.addEventListener('change', () => {
+            currentCaseKey = caseSelector.value;
+            resetFlow();
+            const btn = Array.from(navButtons).find(b => b.dataset.section === (currentCaseKey === 'zero_zero' ? 'zero' : currentCaseKey === 'infinity_infinity' ? 'infty' : 'other'));
+            if (btn) updateCaseSummary(btn.dataset.section);
+        });
+
+        startFlowBtn.addEventListener('click', toggleAnimation);
+        nextStepBtn.addEventListener('click', () => { advanceStep(); });
+        resetFlowBtn.addEventListener('click', resetFlow);
+
+        approachSlider.addEventListener('input', () => {
+            approachValue.textContent = parseFloat(approachSlider.value).toFixed(2);
+            updateCanvas();
+        });
+
+        directionSelector.addEventListener('change', () => {
+            updateCanvas();
+        });
+
+        // 添加缺失的Canvas更新函数
+        function updateInftyCanvas() {
+            const canvas = document.getElementById('inftyCanvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            const width = canvas.width = 400;
+            const height = canvas.height = 300;
+            ctx.clearRect(0, 0, width, height);
+            
+            // 绘制坐标轴
+            ctx.strokeStyle = '#374151';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(40, height - 40);
+            ctx.lineTo(width - 40, height - 40);
+            ctx.moveTo(40, 40);
+            ctx.lineTo(40, height - 40);
+            ctx.stroke();
+            
+            // 绘制函数曲线
+            ctx.strokeStyle = '#2563eb';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            for (let x = 0; x <= 10; x += 0.1) {
+                const y = 2 * x * x - 3 * x;
+                const canvasX = 40 + (x / 10) * (width - 80);
+                const canvasY = height - 40 - (y / 100) * (height - 80);
+                if (x === 0) {
+                    ctx.moveTo(canvasX, canvasY);
+                } else {
+                    ctx.lineTo(canvasX, canvasY);
+                }
+            }
+            ctx.stroke();
+            
+            // 添加标签
+            ctx.fillStyle = '#1f2937';
+            ctx.font = '14px Arial';
+            ctx.fillText('f(x) = 2x² - 3x', 50, 60);
+        }
+
+        function updateOtherCanvas() {
+            const canvas = document.getElementById('otherCanvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            const width = canvas.width = 400;
+            const height = canvas.height = 300;
+            ctx.clearRect(0, 0, width, height);
+            
+            // 绘制坐标轴
+            ctx.strokeStyle = '#374151';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(40, height - 40);
+            ctx.lineTo(width - 40, height - 40);
+            ctx.moveTo(40, 40);
+            ctx.lineTo(40, height - 40);
+            ctx.stroke();
+            
+            // 绘制函数曲线
+            ctx.strokeStyle = '#f59e0b';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            for (let x = 0.1; x <= 3; x += 0.01) {
+                const y = Math.pow(x, x);
+                const canvasX = 40 + (x / 3) * (width - 80);
+                const canvasY = height - 40 - (y / 3) * (height - 80);
+                if (x === 0.1) {
+                    ctx.moveTo(canvasX, canvasY);
+                } else {
+                    ctx.lineTo(canvasX, canvasY);
+                }
+            }
+            ctx.stroke();
+            
+            // 添加标签
+            ctx.fillStyle = '#1f2937';
+            ctx.font = '14px Arial';
+            ctx.fillText('f(x) = x^x', 50, 60);
+        }
+
+        populateTypeTable();
+        populateCaseSelector();
+        buildFlowSteps();
+        updateCaseSummary('zero');
+        updateCanvas();
+        initNavigation();
+        const firstNavButton = document.querySelector('.nav-btn[data-section]');
+        if (firstNavButton) {
+            switchPage(firstNavButton.dataset.section);
+        }
+        renderMath();
+    </script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+

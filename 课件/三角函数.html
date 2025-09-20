@@ -1,0 +1,723 @@
+﻿<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>三角函數動態展示</title>
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true,
+                processEnvironments: true
+            },
+            svg: {
+                fontCache: 'global'
+            },
+            startup: {
+                pageReady: () => {
+                    return window.MathJax.startup.defaultPageReady().then(() => {
+                        console.log('MathJax is ready!');
+                    });
+                }
+            }
+        };
+    </script>
+    <script type="text/javascript" id="MathJax-script" async
+            src="../common-assets/js/mathjax-3.2.2-tex-svg.min.js">
+    </script>
+    <style>
+        @import url('../common-assets/css/fonts.css');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Serif SC', serif;
+            width: 100vw;
+            height: 100vh;
+            overflow: auto;
+            background: #0a0a0a;
+            position: relative;
+        }
+
+        .function-info {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            z-index: 10;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 15px 30px;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+        }
+
+        .function-name, .reciprocal-name {
+            font-size: 24px;
+            color: white;
+        }
+
+        .function-name {
+            color: #ff6b6b;
+        }
+
+        .arrow {
+            color: #666;
+            font-size: 20px;
+        }
+
+        .reciprocal-name {
+            color: #a855f7;
+        }
+
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        .reciprocal-window {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            width: 350px;
+            height: 250px;
+            background: rgba(20, 20, 20, 0.95);
+            border: 2px solid rgba(168, 85, 247, 0.5);
+            border-radius: 10px;
+            padding: 10px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 0 30px rgba(168, 85, 247, 0.3);
+        }
+
+        .reciprocal-title {
+            color: #a855f7;
+            font-size: 16px;
+            margin-bottom: 5px;
+            text-align: center;
+        }
+
+        .reciprocal-canvas {
+            width: 100%;
+            height: calc(100% - 30px);
+            border-radius: 5px;
+        }
+
+        .legend {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: white;
+            font-size: 14px;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+
+        .legend-color {
+            width: 20px;
+            height: 3px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .function-info.changing {
+            animation: fadeIn 0.5s ease;
+        }
+
+        .reciprocal-window.changing {
+            animation: fadeIn 0.5s ease;
+        }
+
+        .knowledge-tip {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            width: 320px;
+            background: rgba(30, 30, 30, 0.95);
+            border: 2px solid rgba(255, 193, 7, 0.6);
+            border-radius: 10px;
+            padding: 15px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 0 20px rgba(255, 193, 7, 0.2);
+            color: #fff;
+            font-size: 14px;
+            line-height: 1.5;
+            z-index: 15;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.3s ease;
+        }
+
+        .knowledge-tip.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .knowledge-tip-title {
+            color: #ffc107;
+            font-weight: bold;
+            margin-bottom: 8px;
+            font-size: 15px;
+        }
+
+        .knowledge-tip-content {
+            color: #e0e0e0;
+        }
+
+        .knowledge-tip-highlight {
+            color: #ff6b6b;
+            font-weight: bold;
+        }
+
+
+    </style>
+
+    <style>
+        .return-home-panel {
+            position: fixed;
+            top: 16px;
+            left: 16px;
+            display: flex;
+            gap: 10px;
+            z-index: 9999;
+            flex-wrap: wrap;
+        }
+        .return-home-panel .return-link {
+            padding: 8px 14px;
+            border-radius: 999px;
+            background: rgba(15, 23, 42, 0.8);
+            color: #f8fafc;
+            font-size: 14px;
+            text-decoration: none;
+            box-shadow: 0 6px 20px rgba(15, 23, 42, 0.25);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .return-home-panel .return-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 24px rgba(15, 23, 42, 0.35);
+        }
+        .return-home-panel .return-link.return-main {
+            background: rgba(79, 70, 229, 0.85);
+        }
+        @media (max-width: 640px) {
+            .return-home-panel {
+                top: 12px;
+                left: 12px;
+                right: 12px;
+                justify-content: center;
+            }
+            .return-home-panel .return-link {
+                width: 100%;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="return-home-panel">
+        <a class="return-link return-sub" href="index.html">← 返回课件目录</a>
+        <a class="return-link return-main" href="../index.html">⌂ 返回主站</a>
+    </div>
+    <canvas id="trigCanvas"></canvas>
+
+
+
+    <div class="function-info" id="functionInfo">
+        <div class="function-name" id="functionName">$y = \sin x$</div>
+        <div class="arrow">→</div>
+        <div class="reciprocal-name" id="reciprocalName">$y = \csc x = \frac{1}{\sin x}$</div>
+    </div>
+
+    <div class="reciprocal-window" id="reciprocalWindow">
+        <div class="reciprocal-title" id="reciprocalTitle">倒數函數: $y = \csc x$</div>
+        <canvas class="reciprocal-canvas" id="reciprocalCanvas"></canvas>
+    </div>
+
+    <div class="legend">
+        <div class="legend-item">
+            <div class="legend-color" style="background: #ff6b6b;"></div>
+            <span>$\sin x$ / $\csc x$</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background: #4dabf7;"></div>
+            <span>$\cos x$ / $\sec x$</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background: #51cf66;"></div>
+            <span>$\tan x$ / $\cot x$</span>
+        </div>
+    </div>
+
+    <div class="knowledge-tip" id="knowledgeTip">
+        <div class="knowledge-tip-title">💡 知识要点</div>
+        <div class="knowledge-tip-content">
+            当原函数值为<span class="knowledge-tip-highlight">零</span>时，其倒数函数趋向<span class="knowledge-tip-highlight">无穷大</span>，形成垂直渐近线。<br>
+            例如：$\sin(0) = 0$ → 当 $x \to 0$ 时，$\csc(x) = \frac{1}{\sin(x)} \to \pm\infty$
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('trigCanvas');
+        const ctx = canvas.getContext('2d');
+        const recipCanvas = document.getElementById('reciprocalCanvas');
+        const recipCtx = recipCanvas.getContext('2d');
+        const functionNameEl = document.getElementById('functionName');
+        const reciprocalNameEl = document.getElementById('reciprocalName');
+        const reciprocalTitleEl = document.getElementById('reciprocalTitle');
+        const functionInfoEl = document.getElementById('functionInfo');
+        const reciprocalWindowEl = document.getElementById('reciprocalWindow');
+
+        // 設定畫布大小
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            
+            const recipWindow = document.querySelector('.reciprocal-window');
+            recipCanvas.width = recipWindow.clientWidth - 20;
+            recipCanvas.height = recipWindow.clientHeight - 40;
+        }
+
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        // 函數資訊
+        const functions = [
+            {
+                name: '$y = \\sin x$',
+                reciprocal: '$y = \\csc x = \\frac{1}{\\sin x}$',
+                reciprocalShort: '$y = \\csc x$',
+                color: '#ff6b6b',
+                func: Math.sin,
+                recipFunc: (x) => 1 / Math.sin(x)
+            },
+            {
+                name: '$y = \\cos x$',
+                reciprocal: '$y = \\sec x = \\frac{1}{\\cos x}$',
+                reciprocalShort: '$y = \\sec x$',
+                color: '#4dabf7',
+                func: Math.cos,
+                recipFunc: (x) => 1 / Math.cos(x)
+            },
+            {
+                name: '$y = \\tan x$',
+                reciprocal: '$y = \\cot x = \\frac{1}{\\tan x}$',
+                reciprocalShort: '$y = \\cot x$',
+                color: '#51cf66',
+                func: Math.tan,
+                recipFunc: (x) => 1 / Math.tan(x)
+            }
+        ];
+
+        let currentFunctionIndex = 0;
+        let animationProgress = 0;
+        let isAnimating = false;
+        let pauseTimeout = null;
+        let isPlaying = true;
+        let animationSpeed = 1.0;
+        let animationId = null;
+
+        // 主畫布座標系統
+        const xMin = -Math.PI;
+        const xMax = 3 * Math.PI;
+        const yMin = -3;
+        const yMax = 3;
+
+        // 倒數函數畫布座標系統
+        const recipYMin = -5;
+        const recipYMax = 5;
+
+        // 主畫布座標轉換
+        function toCanvasX(x) {
+            const padding = 60;
+            const scaleX = (canvas.width - 2 * padding) / (xMax - xMin);
+            return padding + (x - xMin) * scaleX;
+        }
+
+        function toCanvasY(y) {
+            const padding = 80;
+            const scaleY = (canvas.height - 2 * padding) / (yMax - yMin);
+            return canvas.height - padding - (y - yMin) * scaleY;
+        }
+
+        // 倒數函數畫布座標轉換
+        function toRecipCanvasX(x) {
+            const padding = 20;
+            const scaleX = (recipCanvas.width - 2 * padding) / (xMax - xMin);
+            return padding + (x - xMin) * scaleX;
+        }
+
+        function toRecipCanvasY(y) {
+            const padding = 20;
+            const scaleY = (recipCanvas.height - 2 * padding) / (recipYMax - recipYMin);
+            return recipCanvas.height - padding - (y - recipYMin) * scaleY;
+        }
+
+        // 繪製主網格和座標軸
+        function drawGrid() {
+            ctx.fillStyle = '#0a0a0a';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
+            ctx.lineWidth = 1;
+
+            for (let x = -Math.PI; x <= 3 * Math.PI; x += Math.PI / 2) {
+                ctx.beginPath();
+                ctx.moveTo(toCanvasX(x), 80);
+                ctx.lineTo(toCanvasX(x), canvas.height - 80);
+                ctx.stroke();
+            }
+
+            for (let y = -3; y <= 3; y += 0.5) {
+                ctx.beginPath();
+                ctx.moveTo(60, toCanvasY(y));
+                ctx.lineTo(canvas.width - 60, toCanvasY(y));
+                ctx.stroke();
+            }
+
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
+            ctx.lineWidth = 2;
+
+            ctx.beginPath();
+            ctx.moveTo(60, toCanvasY(0));
+            ctx.lineTo(canvas.width - 60, toCanvasY(0));
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.moveTo(toCanvasX(0), 80);
+            ctx.lineTo(toCanvasX(0), canvas.height - 80);
+            ctx.stroke();
+
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+            ctx.font = '14px Arial';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'top';
+
+            const xLabels = [
+                { value: -Math.PI, label: '-π' },
+                { value: 0, label: '0' },
+                { value: Math.PI, label: 'π' },
+                { value: 2*Math.PI, label: '2π' },
+                { value: 3*Math.PI, label: '3π' }
+            ];
+
+            xLabels.forEach(item => {
+                ctx.fillText(item.label, toCanvasX(item.value), toCanvasY(0) + 10);
+            });
+
+            ctx.textAlign = 'right';
+            ctx.textBaseline = 'middle';
+            for (let y = -2; y <= 2; y++) {
+                if (y !== 0) {
+                    ctx.fillText(y.toString(), toCanvasX(0) - 10, toCanvasY(y));
+                }
+            }
+        }
+
+        // 繪製倒數函數網格
+        function drawRecipGrid() {
+            recipCtx.fillStyle = '#141414';
+            recipCtx.fillRect(0, 0, recipCanvas.width, recipCanvas.height);
+
+            recipCtx.strokeStyle = 'rgba(168, 85, 247, 0.1)';
+            recipCtx.lineWidth = 1;
+
+            for (let x = -Math.PI; x <= 3 * Math.PI; x += Math.PI) {
+                recipCtx.beginPath();
+                recipCtx.moveTo(toRecipCanvasX(x), 20);
+                recipCtx.lineTo(toRecipCanvasX(x), recipCanvas.height - 20);
+                recipCtx.stroke();
+            }
+
+            for (let y = -4; y <= 4; y += 2) {
+                recipCtx.beginPath();
+                recipCtx.moveTo(20, toRecipCanvasY(y));
+                recipCtx.lineTo(recipCanvas.width - 20, toRecipCanvasY(y));
+                recipCtx.stroke();
+            }
+
+            recipCtx.strokeStyle = 'rgba(168, 85, 247, 0.3)';
+            recipCtx.lineWidth = 1;
+
+            recipCtx.beginPath();
+            recipCtx.moveTo(20, toRecipCanvasY(0));
+            recipCtx.lineTo(recipCanvas.width - 20, toRecipCanvasY(0));
+            recipCtx.stroke();
+
+            recipCtx.beginPath();
+            recipCtx.moveTo(toRecipCanvasX(0), 20);
+            recipCtx.lineTo(toRecipCanvasX(0), recipCanvas.height - 20);
+            recipCtx.stroke();
+        }
+
+        // 動畫繪製函數
+        function animateFunction() {
+            if (!isPlaying) return;
+
+            const currentFunc = functions[currentFunctionIndex];
+
+            if (!isAnimating) {
+                isAnimating = true;
+                animationProgress = 0;
+
+                functionInfoEl.classList.add('changing');
+                reciprocalWindowEl.classList.add('changing');
+
+                setTimeout(() => {
+                    functionInfoEl.classList.remove('changing');
+                    reciprocalWindowEl.classList.remove('changing');
+                }, 500);
+
+                functionNameEl.innerHTML = currentFunc.name;
+                reciprocalNameEl.innerHTML = currentFunc.reciprocal;
+                reciprocalTitleEl.innerHTML = '倒數函數: ' + currentFunc.reciprocalShort;
+
+                // 使用MathJax 3.x语法重新渲染数学公式
+                if (window.MathJax && window.MathJax.typesetPromise) {
+                    window.MathJax.typesetPromise();
+                }
+            }
+
+            drawGrid();
+            drawRecipGrid();
+
+            // 繪製主函數曲線
+            ctx.strokeStyle = currentFunc.color;
+            ctx.lineWidth = 3;
+            ctx.shadowColor = currentFunc.color;
+            ctx.shadowBlur = 10;
+            ctx.beginPath();
+
+            const endX = xMin + (xMax - xMin) * (animationProgress / 100);
+            let firstPoint = true;
+
+            for (let x = xMin; x <= endX; x += 0.01) {
+                const y = currentFunc.func(x);
+
+                if (currentFunc.name.includes('tan')) {
+                    if (Math.abs(y) > 10) {
+                        firstPoint = true;
+                        continue;
+                    }
+                }
+
+                const canvasX = toCanvasX(x);
+                const canvasY = toCanvasY(y);
+
+                if (canvasY >= 80 && canvasY <= canvas.height - 80) {
+                    if (firstPoint) {
+                        ctx.moveTo(canvasX, canvasY);
+                        firstPoint = false;
+                    } else {
+                        ctx.lineTo(canvasX, canvasY);
+                    }
+                } else {
+                    firstPoint = true;
+                }
+            }
+
+            ctx.stroke();
+            ctx.shadowBlur = 0;
+
+            // 繪製倒數函數曲線
+            recipCtx.strokeStyle = currentFunc.color;
+            recipCtx.lineWidth = 2;
+            recipCtx.shadowColor = currentFunc.color;
+            recipCtx.shadowBlur = 5;
+            recipCtx.beginPath();
+
+            firstPoint = true;
+
+            for (let x = xMin; x <= endX; x += 0.01) {
+                const y = currentFunc.recipFunc(x);
+
+                if (Math.abs(y) > 10 || isNaN(y) || !isFinite(y)) {
+                    firstPoint = true;
+                    continue;
+                }
+
+                const canvasX = toRecipCanvasX(x);
+                const canvasY = toRecipCanvasY(y);
+
+                if (canvasY >= 20 && canvasY <= recipCanvas.height - 20) {
+                    if (firstPoint) {
+                        recipCtx.moveTo(canvasX, canvasY);
+                        firstPoint = false;
+                    } else {
+                        recipCtx.lineTo(canvasX, canvasY);
+                    }
+                } else {
+                    firstPoint = true;
+                }
+            }
+
+            recipCtx.stroke();
+            recipCtx.shadowBlur = 0;
+
+            // 繪製漸近線
+            if (currentFunc.name.includes('tan') && animationProgress > 50) {
+                ctx.strokeStyle = 'rgba(255, 107, 107, 0.3)';
+                ctx.lineWidth = 1;
+                ctx.setLineDash([5, 5]);
+
+                for (let k = -1; k <= 3; k++) {
+                    const x = Math.PI/2 + k * Math.PI;
+                    if (x >= xMin && x <= endX) {
+                        ctx.beginPath();
+                        ctx.moveTo(toCanvasX(x), 80);
+                        ctx.lineTo(toCanvasX(x), canvas.height - 80);
+                        ctx.stroke();
+                    }
+                }
+
+                ctx.setLineDash([]);
+            }
+
+            // 繪製倒數函數的漸近線
+            recipCtx.strokeStyle = 'rgba(168, 85, 247, 0.3)';
+            recipCtx.lineWidth = 1;
+            recipCtx.setLineDash([3, 3]);
+
+            if (currentFunc.name.includes('sin')) {
+                for (let k = -1; k <= 3; k++) {
+                    const x = k * Math.PI;
+                    if (x >= xMin && x <= endX) {
+                        recipCtx.beginPath();
+                        recipCtx.moveTo(toRecipCanvasX(x), 20);
+                        recipCtx.lineTo(toRecipCanvasX(x), recipCanvas.height - 20);
+                        recipCtx.stroke();
+                    }
+                }
+            } else if (currentFunc.name.includes('cos')) {
+                for (let k = -1; k <= 3; k++) {
+                    const x = Math.PI/2 + k * Math.PI;
+                    if (x >= xMin && x <= endX) {
+                        recipCtx.beginPath();
+                        recipCtx.moveTo(toRecipCanvasX(x), 20);
+                        recipCtx.lineTo(toRecipCanvasX(x), recipCanvas.height - 20);
+                        recipCtx.stroke();
+                    }
+                }
+            } else if (currentFunc.name.includes('tan')) {
+                for (let k = -1; k <= 3; k++) {
+                    const x = k * Math.PI;
+                    if (x >= xMin && x <= endX) {
+                        recipCtx.beginPath();
+                        recipCtx.moveTo(toRecipCanvasX(x), 20);
+                        recipCtx.lineTo(toRecipCanvasX(x), recipCanvas.height - 20);
+                        recipCtx.stroke();
+                    }
+                }
+            }
+
+            recipCtx.setLineDash([]);
+
+            // 動畫進行
+            if (animationProgress < 100) {
+                animationProgress += 1.5 * animationSpeed;
+                animationId = requestAnimationFrame(animateFunction);
+            } else {
+                isAnimating = false;
+                pauseTimeout = setTimeout(() => {
+                    if (isPlaying) {
+                        currentFunctionIndex = (currentFunctionIndex + 1) % functions.length;
+                        animateFunction();
+                    }
+                }, 2500 / animationSpeed);
+            }
+        }
+
+        // 知识提示显示控制
+        function showKnowledgeTip() {
+            const tip = document.getElementById('knowledgeTip');
+            setTimeout(() => {
+                tip.classList.add('show');
+            }, 2000);
+
+            // 5秒后自动隐藏
+            setTimeout(() => {
+                tip.classList.remove('show');
+            }, 8000);
+        }
+
+        // 监听来自主页面的控制消息
+        window.addEventListener('message', (event) => {
+            if (event.data.type === 'animationControl') {
+                // 更新播放状态
+                isPlaying = event.data.playing;
+
+                // 更新速度
+                animationSpeed = event.data.speed;
+
+                // 根据播放状态控制动画
+                if (isPlaying) {
+                    if (!isAnimating) {
+                        animateFunction();
+                    } else {
+                        animationId = requestAnimationFrame(animateFunction);
+                    }
+                } else {
+                    if (animationId) {
+                        cancelAnimationFrame(animationId);
+                    }
+                    if (pauseTimeout) {
+                        clearTimeout(pauseTimeout);
+                    }
+                }
+            }
+        });
+
+        // 页面加载时请求当前动画状态
+        window.parent.postMessage({
+            type: 'requestAnimationState'
+        }, '*');
+
+        // 等待MathJax完全加载后开始动画
+        function startAnimation() {
+            drawGrid();
+            drawRecipGrid();
+            animateFunction();
+            showKnowledgeTip();
+        }
+
+        // 检查MathJax是否已加载
+        function checkMathJaxReady() {
+            if (window.MathJax && window.MathJax.startup && window.MathJax.startup.document) {
+                startAnimation();
+            } else {
+                setTimeout(checkMathJaxReady, 100);
+            }
+        }
+
+        // 延迟启动，确保所有资源加载完成
+        setTimeout(checkMathJaxReady, 1500);
+    </script>
+
+</body>
+</html>
+
+

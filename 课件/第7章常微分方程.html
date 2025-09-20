@@ -1,0 +1,2532 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>第七章：常微分方程基础 (互动式课件)</title>
+    <script src="../common-assets/js/d3-7.8.5.min.js"></script>
+    <script src="../common-assets/js/mathjax-config.js"></script>
+      <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true,
+                processEnvironments: true
+            },
+            svg: {
+                fontCache: 'global'
+            },
+            startup: {
+                pageReady: () => {
+                    return window.MathJax.startup.defaultPageReady().then(() => {
+                        console.log('MathJax is ready!');
+                    });
+                }
+            }
+        };
+    </script>
+    <script type="text/javascript" id="MathJax-script" async
+            src="../common-assets/js/mathjax-3.2.2-tex-svg.min.js">
+    </script>
+
+
+    <style>
+        @import url('../common-assets/css/fonts.css');
+
+        :root {
+            --chalkboard-bg: transparent;
+            --chalk-text: #ecf0f1;
+            --visualization-bg: #fdfdfd00;
+            --primary-color: #3498db;
+            --accent-color: #e67e22;
+            --success-color: #2ecc71;
+            --danger-color: #e74c3c;
+            --warning-color: #f39c12;
+            --info-color: #9b59b6;
+            --text-color: #34495e;
+            --heading-font: 'Noto Serif SC', serif;
+            --handwriting-font: 'Noto Serif SC', serif;
+        }
+
+        body {
+            font-family: var(--heading-font);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            overflow: auto;
+            height: 100vh;
+            width: 100vw;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+        }
+
+        #presentation-container {
+            width: 100vw;
+            height: 100vh;
+            max-width: 100vw;
+            aspect-ratio: 16 / 9;
+            position: relative;
+            background: rgba(255, 255, 255, 0);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            overflow: auto;
+        }
+
+        .slide {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            visibility: hidden;
+            display: flex;
+            transition: opacity 0.6s ease-in-out;
+        }
+
+        .slide.active {
+            opacity: 1;
+            visibility: visible;
+            z-index: 10;
+        }
+
+        .chalkboard {
+            flex: 0 0 35%;
+            background-color: #2c3e50 !important;
+            background-image: url('../common-assets/images/black-felt.png');
+            border: 10px solid #8B4513;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.5), inset 0 0 15px rgba(0,0,0,0.7);
+            color: var(--chalk-text, #f0f0f0);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            overflow-y: auto;
+            box-sizing: border-box;
+        }
+
+        .chalkboard h2 {
+            font-family: var(--handwriting-font);
+            font-size: 2.2rem;
+            color: #f1c40f;
+            border-bottom: 2px solid rgba(241, 196, 15, 0.5);
+            padding-bottom: 8px;
+            margin-bottom: 15px;
+        }
+
+        .chalkboard h3 {
+            font-family: var(--handwriting-font);
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            margin-top: 15px;
+            margin-bottom: 10px;
+        }
+
+        .chalkboard p, .chalkboard li {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 12px;
+        }
+
+        .chalkboard ul {
+            list-style-type: '→ ';
+            padding-left: 20px;
+        }
+
+        .math-formula {
+            font-size: 1.3rem;
+            color: #1abc9c;
+            background: rgba(0,0,0,0.2);
+            padding: 15px;
+            border-radius: 5px;
+            text-align: center;
+            margin: 15px 0;
+            line-height: 1.5;
+        }
+
+        .highlight {
+            color: var(--warning-color);
+            font-weight: bold;
+        }
+
+        .visualization {
+            flex: 1;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: auto;
+            position: relative;
+            box-sizing: border-box;
+        }
+
+        .visualization.full-width {
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+        }
+
+        .visualization.gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .value-display {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            min-width: 200px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        .value-item {
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .value-label {
+            font-size: 12px;
+            color: #ccc;
+            margin-right: 10px;
+        }
+
+        .value-number {
+            font-size: 14px;
+            font-weight: bold;
+            color: #fff;
+            text-align: right;
+        }
+
+        .example-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 15px;
+            margin: 10px 0;
+            border-left: 4px solid var(--accent-color);
+        }
+
+        .example-title {
+            font-size: 1.2em;
+            color: var(--accent-color);
+            margin-bottom: 10px;
+        }
+
+        /* 导航按钮 */
+        .nav-buttons {
+            position: absolute;
+            top: 60px;
+            right: 20px;
+            display: flex;
+            gap: 8px;
+            z-index: 100;
+        }
+
+        .nav-btn {
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            user-select: none;
+            min-width: 40px;
+            text-align: center;
+        }
+
+        .nav-btn:hover {
+            background: rgba(0, 0, 0, 0.8);
+            border-color: rgba(255, 255, 255, 0.6);
+            transform: translateY(-1px);
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .page-indicator {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        /* 全局动画控制面板 */
+        .global-animation-controls {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            display: flex;
+            gap: 8px;
+            z-index: 1000;
+        }
+
+        .global-control-btn {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: rgba(255, 255, 255, 0.8);
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: normal;
+            transition: all 0.2s ease;
+            backdrop-filter: blur(5px);
+            min-width: 50px;
+            text-align: center;
+        }
+
+        .global-control-btn:hover {
+            background: rgba(0, 0, 0, 0.5);
+            color: rgba(255, 255, 255, 1);
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+
+        .global-control-btn.pause {
+            background: rgba(255, 107, 107, 0.3);
+            border-color: rgba(255, 107, 107, 0.4);
+        }
+
+        /* 首页导航按钮 */
+        .home-nav-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 40px;
+            flex-wrap: wrap;
+        }
+
+        .nav-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 15px 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 15px;
+            text-decoration: none;
+            color: white;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            min-width: 120px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .nav-card:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.5);
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        /* 互动控制面板 */
+        .control-panel {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            padding: 15px 25px;
+            border-radius: 25px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+
+        .control-btn {
+            width: 40px;
+            height: 40px;
+            border: none;
+            border-radius: 50%;
+            background: var(--primary-color);
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .control-btn:hover {
+            background: var(--accent-color);
+            transform: scale(1.1);
+        }
+
+        .slider {
+            width: 200px;
+            -webkit-appearance: none;
+            appearance: none;
+            height: 5px;
+            border-radius: 5px;
+            background: #d3d3d3;
+            outline: none;
+            opacity: 0.7;
+            transition: opacity .2s;
+        }
+
+        .slider:hover {
+            opacity: 1;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            cursor: pointer;
+        }
+
+        /* 动画效果 */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes glow {
+            from { text-shadow: 0 0 20px rgba(255, 215, 0, 0.5); }
+            to { text-shadow: 0 0 30px rgba(255, 215, 0, 0.8), 0 0 40px rgba(255, 215, 0, 0.6); }
+        }
+
+        /* 特殊效果 */
+        .animated-title {
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        .floating-element {
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+    </style>
+
+    <style>
+        .return-home-panel {
+            position: fixed;
+            top: 16px;
+            left: 16px;
+            display: flex;
+            gap: 10px;
+            z-index: 9999;
+            flex-wrap: wrap;
+        }
+        .return-home-panel .return-link {
+            padding: 8px 14px;
+            border-radius: 999px;
+            background: rgba(15, 23, 42, 0.8);
+            color: #f8fafc;
+            font-size: 14px;
+            text-decoration: none;
+            box-shadow: 0 6px 20px rgba(15, 23, 42, 0.25);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .return-home-panel .return-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 24px rgba(15, 23, 42, 0.35);
+        }
+        .return-home-panel .return-link.return-main {
+            background: rgba(79, 70, 229, 0.85);
+        }
+        @media (max-width: 640px) {
+            .return-home-panel {
+                top: 12px;
+                left: 12px;
+                right: 12px;
+                justify-content: center;
+            }
+            .return-home-panel .return-link {
+                width: 100%;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="return-home-panel">
+        <a class="return-link return-sub" href="index.html">← 返回目录</a>
+        <a class="return-link return-main" href="../index.html">⌂ 返回主站</a>
+    </div>
+
+<div id="presentation-container">
+
+    <!-- 第1页：封面 -->
+    <div class="slide active">
+        <div class="chalkboard" style="flex: 1; text-align: center; border: none;">
+            <h2 style="font-size: 4rem; border: none;" class="animated-title">第七章</h2>
+            <p style="font-size: 2.5rem; color: white;">常微分方程</p>
+            <p style="font-size: 1.8rem; color: #e74c3c; margin-top: 30px;">变化的数学语言</p>
+            
+            <div class="home-nav-buttons">
+                <a href="../index.html" class="nav-card">
+                    <span style="font-size: 1.2rem; margin-bottom: 5px;">🏠</span>
+                    <span>主页</span>
+                </a>
+                <a href="#" class="nav-card">
+                    <span style="font-size: 1.2rem; margin-bottom: 5px;">📚</span>
+                    <span>故事书</span>
+                </a>
+                <a href="#" class="nav-card">
+                    <span style="font-size: 1.2rem; margin-bottom: 5px;">✏️</span>
+                    <span>习题</span>
+                </a>
+                <a href="#" class="nav-card">
+                    <span style="font-size: 1.2rem; margin-bottom: 5px;">🌐</span>
+                    <span>资源</span>
+                </a>
+            </div>
+            
+            <p style="font-size: 1.2rem; color: rgba(255,255,255,0.8); margin-top: 40px;">
+                探索生活中的动态变化规律
+            </p>
+        </div>
+    </div>
+
+    <!-- 第2页：目录 -->
+    <div class="slide">
+        <div class="chalkboard" style="flex: 1; overflow-y: auto;">
+            <h2 style="text-align: center; font-size: 3rem; margin-bottom: 30px;">目 录</h2>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; padding: 20px;">
+                <div style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 10px;">
+                    <h3 style="color: #3498db; border-bottom: 2px solid #3498db; padding-bottom: 5px;">第一部分：基础概念</h3>
+                    <ul style="list-style-type: decimal;">
+                        <li>生活中的变化现象</li>
+                        <li>什么是微分方程</li>
+                        <li>导数回顾</li>
+                    </ul>
+                </div>
+                
+                <div style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 10px;">
+                    <h3 style="color: #2ecc71; border-bottom: 2px solid #2ecc71; padding-bottom: 5px;">第二部分：基本方法</h3>
+                    <ul style="list-style-type: decimal;">
+                        <li>可分离变量方程</li>
+                        <li>一阶线性方程</li>
+                        <li>数值解法</li>
+                    </ul>
+                </div>
+                
+                <div style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 10px;">
+                    <h3 style="color: #e74c3c; border-bottom: 2px solid #e74c3c; padding-bottom: 5px;">第三部分：实际应用</h3>
+                    <ul style="list-style-type: decimal;">
+                        <li>牛顿冷却定律</li>
+                        <li>人口增长模型</li>
+                        <li>药物浓度变化</li>
+                    </ul>
+                </div>
+                
+                <div style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 10px;">
+                    <h3 style="color: #f39c12; border-bottom: 2px solid #f39c12; padding-bottom: 5px;">第四部分：深入探索</h3>
+                    <ul style="list-style-type: decimal;">
+                        <li>二阶微分方程</li>
+                        <li>振动问题</li>
+                        <li>稳定性分析</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第3页：生活中的变化 -->
+    <div class="slide">
+        <div class="chalkboard">
+            <h2>生活中的变化</h2>
+            <h3>观察日常现象</h3>
+            <p>我们生活在一个不断变化的世界：</p>
+            
+            <div class="example-card">
+                <div class="example-title">☕ 温度变化</div>
+                <p>热咖啡会慢慢变凉，冰水会慢慢变温</p>
+                <p>变化速度与温差有关</p>
+            </div>
+            
+            <div class="example-card">
+                <div class="example-title">📈 增长现象</div>
+                <p>• 银行存款按利率增长</p>
+                <p>• 细菌数量指数增长</p>
+                <p>• 学习曲线逐渐平缓</p>
+            </div>
+            
+            <p style="color: #1abc9c; font-size: 1.2em; margin-top: 20px;">
+                💡 关键思想：<span class="highlight">变化率</span>决定了事物的发展
+            </p>
+        </div>
+        <div class="visualization gradient-bg" id="vis-changes"></div>
+    </div>
+
+    <!-- 第4页：什么是微分方程 -->
+    <div class="slide">
+        <div class="chalkboard">
+            <h2>什么是微分方程？</h2>
+            
+            <h3>简单理解</h3>
+            <p>微分方程 = 包含<span class="highlight">导数</span>的方程</p>
+            <p>它描述事物的<span class="highlight">变化规律</span></p>
+            
+            <div class="math-formula">
+                变化率 = $\frac{dy}{dx}$ = f(x, y)
+            </div>
+            
+            <div class="example-card">
+                <div class="example-title">🌱 举例：植物生长</div>
+                <p>设植物高度为 h(t)</p>
+                <p>生长速度正比于当前高度：</p>
+                <div class="math-formula">
+                    $\frac{dh}{dt} = k \cdot h$
+                </div>
+                <p>这就是一个微分方程！</p>
+            </div>
+        </div>
+        <div class="visualization" id="vis-what-is-ode"></div>
+    </div>
+
+    <!-- 第5页：导数回顾 -->
+    <div class="slide">
+        <div class="chalkboard">
+            <h2>导数回顾</h2>
+            
+            <h3>导数 = 瞬时变化率</h3>
+            
+            <div class="example-card">
+                <div class="example-title">🚗 汽车运动</div>
+                <p>位置：s(t)</p>
+                <p>速度：$v = \frac{ds}{dt}$（位置的变化率）</p>
+                <p>加速度：$a = \frac{dv}{dt}$（速度的变化率）</p>
+            </div>
+            
+            <h3>常用导数公式</h3>
+            <ul>
+                <li>$(x^n)' = nx^{n-1}$</li>
+                <li>$(e^x)' = e^x$</li>
+                <li>$(\sin x)' = \cos x$</li>
+                <li>$(\ln x)' = \frac{1}{x}$</li>
+            </ul>
+            
+            <p style="color: #2ecc71;">
+                📌 记住：导数告诉我们函数如何变化
+            </p>
+        </div>
+        <div class="visualization" id="vis-derivative"></div>
+    </div>
+
+    <!-- 第6页：可分离变量方程 -->
+    <div class="slide">
+        <div class="chalkboard">
+            <h2>可分离变量方程</h2>
+            
+            <h3>最简单的微分方程类型</h3>
+            <p>形式：<span class="highlight">$\frac{dy}{dx} = f(x) \cdot g(y)$</span></p>
+            
+            <h3>解法步骤</h3>
+            <ol>
+                <li>分离变量：$\frac{dy}{g(y)} = f(x)dx$</li>
+                <li>两边积分：$\int \frac{dy}{g(y)} = \int f(x)dx$</li>
+                <li>求解得到 y</li>
+            </ol>
+            
+            <div class="example-card">
+                <div class="example-title">📝 例题</div>
+                <p>解方程：$\frac{dy}{dx} = xy$</p>
+                <p>步骤1：$\frac{dy}{y} = xdx$</p>
+                <p>步骤2：$\ln|y| = \frac{x^2}{2} + C$</p>
+                <p>步骤3：$y = Ae^{x^2/2}$</p>
+            </div>
+        </div>
+        <div class="visualization" id="vis-separable"></div>
+    </div>
+
+    <!-- 第7页：咖啡冷却问题 -->
+    <div class="slide">
+        <div class="chalkboard">
+            <h2>应用：咖啡冷却</h2>
+            
+            <h3>牛顿冷却定律</h3>
+            <p>物体温度变化率与温差成正比</p>
+            
+            <div class="math-formula">
+                $\frac{dT}{dt} = -k(T - T_{环境})$
+            </div>
+            
+            <div class="example-card">
+                <div class="example-title">☕ 实际问题</div>
+                <p>• 咖啡初温：90°C</p>
+                <p>• 室温：20°C</p>
+                <p>• 冷却系数：k = 0.05</p>
+                <p style="color: #e74c3c;">问：10分钟后温度？</p>
+            </div>
+            
+            <h3>解答</h3>
+            <p>$T(t) = 20 + 70e^{-0.05t}$</p>
+            <p>10分钟后：T(10) ≈ 62.6°C</p>
+        </div>
+        <div class="visualization" id="vis-cooling"></div>
+    </div>
+
+    <!-- 第8页：人口增长模型 -->
+    <div class="slide">
+        <div class="chalkboard">
+            <h2>应用：人口增长</h2>
+            
+            <h3>两种模型对比</h3>
+            
+            <div class="example-card">
+                <div class="example-title">📊 指数增长</div>
+                <p>无限制增长：</p>
+                <div class="math-formula">$\frac{dP}{dt} = rP$</div>
+                <p>解：$P(t) = P_0e^{rt}$</p>
+            </div>
+            
+            <div class="example-card">
+                <div class="example-title">📈 逻辑斯蒂增长</div>
+                <p>考虑环境承载力K：</p>
+                <div class="math-formula">$\frac{dP}{dt} = rP(1 - \frac{P}{K})$</div>
+                <p>增长最终趋于稳定</p>
+            </div>
+            
+            <p style="color: #3498db;">
+                💡 实际中，资源有限，逻辑斯蒂模型更符合实际
+            </p>
+        </div>
+        <div class="visualization" id="vis-population"></div>
+    </div>
+
+    <!-- 第9页：药物浓度 -->
+    <div class="slide">
+        <div class="chalkboard">
+            <h2>应用：药物浓度</h2>
+            
+            <h3>体内药物代谢</h3>
+            <p>药物浓度的衰减：</p>
+            <div class="math-formula">
+                $\frac{dC}{dt} = -kC$
+            </div>
+            
+            <div class="example-card">
+                <div class="example-title">💊 临床用药</div>
+                <p>• 初始剂量：500mg</p>
+                <p>• 半衰期：4小时</p>
+                <p>• 每8小时服药一次</p>
+            </div>
+            
+            <h3>临床意义</h3>
+            <ul>
+                <li>确定给药间隔</li>
+                <li>维持有效浓度</li>
+                <li>避免药物中毒</li>
+            </ul>
+            
+            <p style="color: #e74c3c;">
+                ⚠️ 合理用药，科学计算剂量
+            </p>
+        </div>
+        <div class="visualization" id="vis-drug"></div>
+    </div>
+
+    <!-- 第10页：简谐振动 -->
+    <div class="slide">
+        <div class="chalkboard">
+            <h2>弹簧振动</h2>
+            
+            <h3>二阶微分方程</h3>
+            <p>牛顿第二定律 + 胡克定律：</p>
+            <div class="math-formula">
+                $m\frac{d^2x}{dt^2} + kx = 0$
+            </div>
+            
+            <h3>解的形式</h3>
+            <p>$x(t) = A\cos(\omega t) + B\sin(\omega t)$</p>
+            <p>其中 $\omega = \sqrt{\frac{k}{m}}$ 是角频率</p>
+            
+            <div class="example-card">
+                <div class="example-title">🎯 物理意义</div>
+                <p>• m：质量（惯性）</p>
+                <p>• k：弹性系数（恢复力）</p>
+                <p>• ω：振动快慢</p>
+            </div>
+        </div>
+        <div class="visualization" id="vis-spring"></div>
+    </div>
+
+    <!-- 第11页：方向场 -->
+    <div class="slide">
+        <div class="chalkboard">
+            <h2>方向场</h2>
+            
+            <h3>可视化微分方程</h3>
+            <p>不用求解，也能看出解的趋势！</p>
+            
+            <h3>什么是方向场？</h3>
+            <p>在每个点(x,y)画一个小箭头</p>
+            <p>箭头斜率 = $\frac{dy}{dx}$</p>
+            
+            <div class="example-card">
+                <div class="example-title">💡 直观理解</div>
+                <p>• 像地图上的风向图</p>
+                <p>• 箭头指示"流动"方向</p>
+                <p>• 解曲线沿箭头方向前进</p>
+            </div>
+            
+            <p style="color: #9b59b6;">
+                🎨 方向场帮助我们理解方程的整体行为
+            </p>
+        </div>
+        <div class="visualization" id="vis-direction-field"></div>
+    </div>
+
+    <!-- 第12页：数值解法 -->
+    <div class="slide">
+        <div class="chalkboard">
+            <h2>数值解法</h2>
+            
+            <h3>当无法求出精确解时...</h3>
+            <p>很多微分方程没有解析解</p>
+            <p>需要<span class="highlight">数值方法</span>近似求解</p>
+            
+            <h3>欧拉方法</h3>
+            <div class="math-formula">
+                $y_{n+1} = y_n + h \cdot f(x_n, y_n)$
+            </div>
+            <p>h是步长，越小越精确</p>
+            
+            <div class="example-card">
+                <div class="example-title">💻 计算机求解</div>
+                <p>• Excel可以做简单计算</p>
+                <p>• Python有强大的求解器</p>
+                <p>• 步长影响精度和速度</p>
+            </div>
+        </div>
+        <div class="visualization" id="vis-numerical"></div>
+    </div>
+
+    <!-- 第13页：稳定性分析 -->
+    <div class="slide">
+        <div class="chalkboard">
+            <h2>稳定性分析</h2>
+            
+            <h3>平衡点</h3>
+            <p>当$\frac{dy}{dt} = 0$时，系统不再变化</p>
+            
+            <h3>三种稳定性</h3>
+            <ul>
+                <li><span class="highlight">稳定</span>：小扰动后回到平衡</li>
+                <li><span class="highlight">不稳定</span>：小扰动后远离平衡</li>
+                <li><span class="highlight">半稳定</span>：一侧稳定一侧不稳定</li>
+            </ul>
+            
+            <div class="example-card">
+                <div class="example-title">⚖️ 生活比喻</div>
+                <p>• 稳定：碗底的小球</p>
+                <p>• 不稳定：山顶的小球</p>
+                <p>• 应用：生态平衡、市场均衡</p>
+            </div>
+        </div>
+        <div class="visualization" id="vis-stability"></div>
+    </div>
+
+    <!-- 第14页：SIR传染病模型 -->
+    <div class="slide">
+        <div class="chalkboard">
+            <h2>传染病模型</h2>
+            
+            <h3>SIR模型</h3>
+            <p>人群分为三类：</p>
+            <ul>
+                <li>S：易感者（Susceptible）</li>
+                <li>I：感染者（Infected）</li>
+                <li>R：康复者（Recovered）</li>
+            </ul>
+            
+            <h3>方程组</h3>
+            <div class="math-formula" style="font-size: 1.1rem;">
+                $\begin{cases}
+                \frac{dS}{dt} = -\beta SI \\
+                \frac{dI}{dt} = \beta SI - \gamma I \\
+                \frac{dR}{dt} = \gamma I
+                \end{cases}$
+            </div>
+            
+            <p style="color: #e74c3c;">
+                🦠 这个模型帮助我们理解疫情发展
+            </p>
+        </div>
+        <div class="visualization" id="vis-sir"></div>
+    </div>
+
+    <!-- 第15页：建模步骤 -->
+    <div class="slide">
+        <div class="chalkboard">
+            <h2>建立微分方程模型</h2>
+            
+            <h3>五步法</h3>
+            <ol style="font-size: 1.2em; line-height: 2;">
+                <li><span class="highlight">理解问题</span>
+                    <p style="font-size: 0.9em;">明确研究对象和目标</p>
+                </li>
+                <li><span class="highlight">识别变量</span>
+                    <p style="font-size: 0.9em;">什么在变化？如何变化？</p>
+                </li>
+                <li><span class="highlight">建立关系</span>
+                    <p style="font-size: 0.9em;">变化率与什么有关？</p>
+                </li>
+                <li><span class="highlight">写出方程</span>
+                    <p style="font-size: 0.9em;">用数学语言表达</p>
+                </li>
+                <li><span class="highlight">求解验证</span>
+                    <p style="font-size: 0.9em;">解方程并检验合理性</p>
+                </li>
+            </ol>
+            
+            <p style="color: #2ecc71; margin-top: 20px;">
+                💡 关键：理解"变化率"的含义！
+            </p>
+        </div>
+        <div class="visualization" id="vis-modeling"></div>
+    </div>
+
+    <!-- 第16页：总结 -->
+    <div class="slide">
+        <div class="chalkboard" style="flex: 1; text-align: center;">
+            <h2 style="font-size: 3rem;">课程总结</h2>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-top: 40px;">
+                <div class="example-card">
+                    <div class="example-title">📚 核心概念</div>
+                    <ul style="text-align: left;">
+                        <li>微分方程描述变化规律</li>
+                        <li>导数表示变化率</li>
+                        <li>解释现实世界的动态过程</li>
+                    </ul>
+                </div>
+                
+                <div class="example-card">
+                    <div class="example-title">🔧 主要方法</div>
+                    <ul style="text-align: left;">
+                        <li>可分离变量法</li>
+                        <li>一阶线性方程</li>
+                        <li>数值解法</li>
+                    </ul>
+                </div>
+                
+                <div class="example-card">
+                    <div class="example-title">🌟 实际应用</div>
+                    <ul style="text-align: left;">
+                        <li>物理：运动、振动、冷却</li>
+                        <li>生物：人口、传染病、生态</li>
+                        <li>经济：投资、市场、增长</li>
+                    </ul>
+                </div>
+                
+                <div class="example-card">
+                    <div class="example-title">💡 学习建议</div>
+                    <ul style="text-align: left;">
+                        <li>理解物理意义</li>
+                        <li>多做实际问题</li>
+                        <li>使用软件辅助</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <p style="font-size: 1.5rem; color: #f1c40f; margin-top: 40px;">
+                微分方程——理解世界变化的钥匙！
+            </p>
+        </div>
+    </div>
+
+    <!-- 导航按钮 -->
+    <div class="nav-buttons">
+        <button class="nav-btn" id="prev-btn" onclick="previousSlide()">‹</button>
+        <button class="nav-btn" id="next-btn" onclick="nextSlide()">›</button>
+    </div>
+
+    <div class="page-indicator" id="page-indicator">1 / 16</div>
+
+    <!-- 全局动画控制 -->
+    <div class="global-animation-controls">
+        <button class="global-control-btn" id="globalPlayPauseBtn" onclick="toggleGlobalAnimation()">暂停</button>
+        <button class="global-control-btn" id="globalSpeedBtn" onclick="changeGlobalSpeed()">1.0x</button>
+    </div>
+
+</div>
+
+<script>
+    // 全局变量
+    let slides, totalSlides, counter, currentSlide = 0;
+    let globalAnimationPlaying = true;
+    let globalAnimationSpeed = 1.0;
+    let currentAnimation = null;
+    let animationFrames = {};
+
+    // 导航功能
+    function updateNavButtons() {
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        
+        if (prevBtn && nextBtn) {
+            prevBtn.disabled = (currentSlide === 0);
+            nextBtn.disabled = (currentSlide === totalSlides - 1);
+        }
+    }
+
+    function nextSlide() {
+        if (!slides || totalSlides === 0) return;
+        currentSlide = (currentSlide + 1) % totalSlides;
+        showSlide(currentSlide);
+    }
+
+    function previousSlide() {
+        if (!slides || totalSlides === 0) return;
+        currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
+        showSlide(currentSlide);
+    }
+
+    function showSlide(index) {
+        if (!slides || index < 0 || index >= totalSlides) return;
+
+        // 清理之前的动画
+        cleanupAnimations();
+
+        slides.forEach(slide => slide.classList.remove('active'));
+        currentSlide = index;
+        slides[currentSlide].classList.add('active');
+        counter.textContent = `${currentSlide + 1} / ${totalSlides}`;
+        updateNavButtons();
+        
+        // 运行当前页的可视化
+        runVisualization(currentSlide);
+        
+        // 渲染数学公式
+        if (window.MathJax) {
+            window.MathJax.typesetPromise([slides[currentSlide]]).catch((e) => {
+                console.warn('MathJax rendering failed:', e);
+            });
+        }
+    }
+
+    // 清理动画
+    function cleanupAnimations() {
+        Object.values(animationFrames).forEach(frame => {
+            if (frame) cancelAnimationFrame(frame);
+        });
+        animationFrames = {};
+        
+        if (currentAnimation && typeof currentAnimation === 'function') {
+            currentAnimation();
+            currentAnimation = null;
+        }
+    }
+
+    // 全局动画控制
+    function toggleGlobalAnimation() {
+        globalAnimationPlaying = !globalAnimationPlaying;
+        const btn = document.getElementById('globalPlayPauseBtn');
+        btn.textContent = globalAnimationPlaying ? '暂停' : '播放';
+        btn.className = globalAnimationPlaying ? 'global-control-btn' : 'global-control-btn pause';
+    }
+
+    function changeGlobalSpeed() {
+        const speeds = [0.5, 1.0, 1.5, 2.0];
+        const currentIndex = speeds.indexOf(globalAnimationSpeed);
+        globalAnimationSpeed = speeds[(currentIndex + 1) % speeds.length];
+        document.getElementById('globalSpeedBtn').textContent = globalAnimationSpeed + 'x';
+    }
+
+    // D3可视化辅助函数
+    function setupD3(containerId, margins = {top: 40, right: 40, bottom: 40, left: 40}) {
+        const container = d3.select(`#${containerId}`);
+        if (container.empty()) {
+            console.error("Container not found:", containerId);
+            return null;
+        }
+        container.html('');
+
+        const bounds = container.node().getBoundingClientRect();
+        if (bounds.width === 0 || bounds.height === 0) return null;
+
+        const svg = container.append('svg')
+            .attr('width', bounds.width)
+            .attr('height', bounds.height);
+
+        const width = bounds.width - margins.left - margins.right;
+        const height = bounds.height - margins.top - margins.bottom;
+
+        const g = svg.append('g')
+            .attr('transform', `translate(${margins.left}, ${margins.top})`);
+
+        return { container, svg, g, width, height };
+    }
+
+    // 可视化函数
+
+    // 第3页：生活中的变化
+    function visualizeChanges(containerId) {
+        const setup = setupD3(containerId);
+        if (!setup) return;
+        const { g, width, height } = setup;
+
+        // 创建四个象限展示不同的变化
+        const examples = [
+            { title: "咖啡冷却", icon: "☕", color: "#e74c3c", curve: "exponential-decay" },
+            { title: "植物生长", icon: "🌱", color: "#2ecc71", curve: "logistic" },
+            { title: "药物浓度", icon: "💊", color: "#3498db", curve: "periodic-decay" },
+            { title: "银行存款", icon: "💰", color: "#f39c12", curve: "exponential-growth" }
+        ];
+
+        const gridSize = 2;
+        const cellWidth = width / gridSize;
+        const cellHeight = height / gridSize;
+
+        examples.forEach((ex, i) => {
+            const row = Math.floor(i / gridSize);
+            const col = i % gridSize;
+            const x = col * cellWidth + cellWidth / 2;
+            const y = row * cellHeight + cellHeight / 2;
+
+            const group = g.append('g')
+                .attr('transform', `translate(${x}, ${y})`)
+                .style('opacity', 0);
+
+            // 背景圆
+            group.append('circle')
+                .attr('r', 60)
+                .attr('fill', ex.color)
+                .attr('opacity', 0.2);
+
+            // 图标
+            group.append('text')
+                .attr('text-anchor', 'middle')
+                .attr('dy', -10)
+                .style('font-size', '3em')
+                .text(ex.icon);
+
+            // 标题
+            group.append('text')
+                .attr('text-anchor', 'middle')
+                .attr('dy', 40)
+                .style('font-size', '1.2em')
+                .style('fill', ex.color)
+                .style('font-weight', 'bold')
+                .text(ex.title);
+
+            // 小型曲线图
+            const miniWidth = 100;
+            const miniHeight = 40;
+            const miniX = d3.scaleLinear().domain([0, 1]).range([-miniWidth/2, miniWidth/2]);
+            const miniY = d3.scaleLinear().domain([0, 1]).range([miniHeight/2, -miniHeight/2]);
+
+            let data = [];
+            const steps = 30;
+            for (let j = 0; j <= steps; j++) {
+                const t = j / steps;
+                let value;
+                switch(ex.curve) {
+                    case "exponential-decay":
+                        value = Math.exp(-3 * t);
+                        break;
+                    case "logistic":
+                        value = 1 / (1 + Math.exp(-10 * (t - 0.5)));
+                        break;
+                    case "periodic-decay":
+                        value = Math.exp(-2 * t) * (0.5 + 0.5 * Math.cos(10 * t));
+                        break;
+                    case "exponential-growth":
+                        value = Math.exp(1.5 * t) / Math.exp(1.5);
+                        break;
+                }
+                data.push({x: t, y: value});
+            }
+
+            const line = d3.line()
+                .x(d => miniX(d.x))
+                .y(d => miniY(d.y) + 80)
+                .curve(d3.curveBasis);
+
+            group.append('path')
+                .datum(data)
+                .attr('fill', 'none')
+                .attr('stroke', ex.color)
+                .attr('stroke-width', 2)
+                .attr('d', line);
+
+            // 动画
+            group.transition()
+                .delay(i * 300)
+                .duration(800)
+                .style('opacity', 1);
+        });
+    }
+
+    // 第4页：什么是微分方程
+    function visualizeWhatIsODE(containerId) {
+        const setup = setupD3(containerId);
+        if (!setup) return;
+        const { g, width, height } = setup;
+
+        // 创建一个动态增长的植物可视化
+        const xScale = d3.scaleLinear().domain([0, 10]).range([0, width]);
+        const yScale = d3.scaleLinear().domain([0, 100]).range([height, 0]);
+
+        // 坐标轴
+        g.append('g')
+            .attr('transform', `translate(0, ${height})`)
+            .call(d3.axisBottom(xScale).ticks(5))
+            .append('text')
+            .attr('x', width / 2)
+            .attr('y', 35)
+            .style('fill', 'black')
+            .style('text-anchor', 'middle')
+            .text('时间 (天)');
+
+        g.append('g')
+            .call(d3.axisLeft(yScale).ticks(5))
+            .append('text')
+            .attr('transform', 'rotate(-90)')
+            .attr('y', -35)
+            .attr('x', -height / 2)
+            .style('fill', 'black')
+            .style('text-anchor', 'middle')
+            .text('高度 (cm)');
+
+        // 生成指数增长数据
+        const k = 0.3;
+        const h0 = 5;
+        const data = [];
+        for (let t = 0; t <= 10; t += 0.1) {
+            data.push({
+                time: t,
+                height: h0 * Math.exp(k * t)
+            });
+        }
+
+        // 绘制曲线
+        const line = d3.line()
+            .x(d => xScale(d.time))
+            .y(d => yScale(d.height))
+            .curve(d3.curveMonotoneX);
+
+        const path = g.append('path')
+            .datum(data)
+            .attr('fill', 'none')
+            .attr('stroke', '#2ecc71')
+            .attr('stroke-width', 3)
+            .attr('d', line);
+
+        // 动画
+        const totalLength = path.node().getTotalLength();
+        path.attr('stroke-dasharray', totalLength + ' ' + totalLength)
+            .attr('stroke-dashoffset', totalLength)
+            .transition()
+            .duration(3000 / globalAnimationSpeed)
+            .attr('stroke-dashoffset', 0);
+
+        // 添加植物图标动画
+        const plant = g.append('text')
+            .attr('font-size', '2em')
+            .text('🌱')
+            .attr('x', xScale(0))
+            .attr('y', yScale(h0));
+
+        plant.transition()
+            .duration(3000 / globalAnimationSpeed)
+            .attrTween('transform', function() {
+                return function(t) {
+                    const index = Math.floor(t * (data.length - 1));
+                    const x = xScale(data[index].time);
+                    const y = yScale(data[index].height);
+                    return `translate(${x - xScale(0)}, ${y - yScale(h0)})`;
+                };
+            });
+
+        // 添加说明文字
+        g.append('text')
+            .attr('x', width / 2)
+            .attr('y', 20)
+            .style('text-anchor', 'middle')
+            .style('font-size', '1.2em')
+            .style('font-weight', 'bold')
+            .style('fill', '#2c3e50')
+            .text('指数增长：h(t) = 5e^(0.3t)');
+    }
+
+    // 第5页：导数可视化
+    function visualizeDerivative(containerId) {
+        const setup = setupD3(containerId);
+        if (!setup) return;
+        const { g, width, height } = setup;
+
+        const xScale = d3.scaleLinear().domain([-3, 3]).range([0, width]);
+        const yScale = d3.scaleLinear().domain([-2, 10]).range([height, 0]);
+
+        // 坐标轴
+        g.append('g')
+            .attr('transform', `translate(0, ${yScale(0)})`)
+            .call(d3.axisBottom(xScale));
+        g.append('g')
+            .attr('transform', `translate(${xScale(0)}, 0)`)
+            .call(d3.axisLeft(yScale));
+
+        // 原函数 f(x) = x^2
+        const funcData = d3.range(-3, 3.1, 0.1).map(x => ({x: x, y: x * x}));
+        
+        // 导数 f'(x) = 2x
+        const derivData = d3.range(-3, 3.1, 0.1).map(x => ({x: x, y: 2 * x}));
+
+        const line = d3.line()
+            .x(d => xScale(d.x))
+            .y(d => yScale(d.y))
+            .curve(d3.curveMonotoneX);
+
+        // 绘制原函数
+        g.append('path')
+            .datum(funcData)
+            .attr('fill', 'none')
+            .attr('stroke', '#3498db')
+            .attr('stroke-width', 3)
+            .attr('d', line);
+
+        // 绘制导数
+        g.append('path')
+            .datum(derivData)
+            .attr('fill', 'none')
+            .attr('stroke', '#e74c3c')
+            .attr('stroke-width', 3)
+            .attr('stroke-dasharray', '5,5')
+            .attr('d', line);
+
+        // 添加切线动画
+        const tangentGroup = g.append('g');
+        const point = tangentGroup.append('circle')
+            .attr('r', 6)
+            .attr('fill', '#2ecc71');
+        const tangent = tangentGroup.append('line')
+            .attr('stroke', '#2ecc71')
+            .attr('stroke-width', 2);
+
+        function animateTangent() {
+            if (!globalAnimationPlaying) {
+                setTimeout(animateTangent, 100);
+                return;
+            }
+
+            const t = (Date.now() / 3000) % 1;
+            const x = -3 + 6 * t;
+            const y = x * x;
+            const slope = 2 * x;
+            
+            point.attr('cx', xScale(x))
+                .attr('cy', yScale(y));
+            
+            tangent.attr('x1', xScale(x - 1))
+                .attr('y1', yScale(y - slope))
+                .attr('x2', xScale(x + 1))
+                .attr('y2', yScale(y + slope));
+            
+            animationFrames.tangent = requestAnimationFrame(animateTangent);
+        }
+        animateTangent();
+
+        // 图例
+        const legend = g.append('g')
+            .attr('transform', `translate(${width - 120}, 20)`);
+
+        legend.append('line')
+            .attr('x1', 0).attr('x2', 30)
+            .attr('stroke', '#3498db')
+            .attr('stroke-width', 3);
+        legend.append('text')
+            .attr('x', 35).attr('y', 5)
+            .text('f(x) = x²');
+
+        legend.append('line')
+            .attr('x1', 0).attr('x2', 30)
+            .attr('y1', 20).attr('y2', 20)
+            .attr('stroke', '#e74c3c')
+            .attr('stroke-width', 3)
+            .attr('stroke-dasharray', '5,5');
+        legend.append('text')
+            .attr('x', 35).attr('y', 25)
+            .text("f'(x) = 2x");
+    }
+
+    // 第6页：可分离变量
+    function visualizeSeparable(containerId) {
+        const setup = setupD3(containerId);
+        if (!setup) return;
+        const { g, width, height } = setup;
+
+        const xScale = d3.scaleLinear().domain([-2, 2]).range([0, width]);
+        const yScale = d3.scaleLinear().domain([0, 5]).range([height, 0]);
+
+        // 坐标轴
+        g.append('g')
+            .attr('transform', `translate(0, ${height})`)
+            .call(d3.axisBottom(xScale));
+        g.append('g')
+            .call(d3.axisLeft(yScale));
+
+        // 绘制解曲线族 y = Ce^(x^2/2)
+        const constants = [0.5, 1, 1.5, 2, 2.5];
+        const colors = d3.scaleOrdinal(d3.schemeCategory10);
+
+        constants.forEach((C, i) => {
+            const data = d3.range(-2, 2.01, 0.05).map(x => ({
+                x: x,
+                y: C * Math.exp(x * x / 2)
+            })).filter(d => d.y <= 5);
+
+            const line = d3.line()
+                .x(d => xScale(d.x))
+                .y(d => yScale(d.y))
+                .curve(d3.curveMonotoneX);
+
+            g.append('path')
+                .datum(data)
+                .attr('fill', 'none')
+                .attr('stroke', colors(i))
+                .attr('stroke-width', 2)
+                .attr('d', line)
+                .attr('opacity', 0)
+                .transition()
+                .delay(i * 200)
+                .duration(1000)
+                .attr('opacity', 0.8);
+
+            // 添加曲线标签
+            if (data.length > 0) {
+                const lastPoint = data[data.length - 1];
+                g.append('text')
+                    .attr('x', xScale(lastPoint.x))
+                    .attr('y', yScale(lastPoint.y))
+                    .style('fill', colors(i))
+                    .style('font-size', '12px')
+                    .style('opacity', 0)
+                    .text(`C = ${C}`)
+                    .transition()
+                    .delay(i * 200 + 1000)
+                    .duration(500)
+                    .style('opacity', 1);
+            }
+        });
+
+        // 标题
+        g.append('text')
+            .attr('x', width / 2)
+            .attr('y', -10)
+            .attr('text-anchor', 'middle')
+            .style('font-weight', 'bold')
+            .style('font-size', '1.2em')
+            .text('解曲线族: y = Ce^(x²/2)');
+    }
+
+    // 第7页：咖啡冷却
+    function visualizeCooling(containerId) {
+        const setup = setupD3(containerId);
+        if (!setup) return;
+        const { g, width, height, container } = setup;
+
+        // 添加温度显示
+        const tempDisplay = container.append('div')
+            .attr('class', 'value-display');
+
+        tempDisplay.html(`
+            <div class="value-item">
+                <span class="value-label">当前温度：</span>
+                <span class="value-number" id="temp-value">90.0°C</span>
+            </div>
+            <div class="value-item">
+                <span class="value-label">时间：</span>
+                <span class="value-number" id="time-value">0 分钟</span>
+            </div>
+            <div class="value-item">
+                <span class="value-label">室温：</span>
+                <span class="value-number">20°C</span>
+            </div>
+        `);
+
+        const time = d3.range(0, 60, 0.5);
+        const T_env = 20;
+        const T_0 = 90;
+        const k = 0.05;
+        
+        const data = time.map(t => ({
+            time: t,
+            temp: T_env + (T_0 - T_env) * Math.exp(-k * t)
+        }));
+
+        const xScale = d3.scaleLinear().domain([0, 60]).range([0, width]);
+        const yScale = d3.scaleLinear().domain([0, 100]).range([height, 0]);
+
+        // 坐标轴
+        g.append('g')
+            .attr('transform', `translate(0, ${height})`)
+            .call(d3.axisBottom(xScale))
+            .append('text')
+            .attr('x', width / 2)
+            .attr('y', 35)
+            .attr('fill', 'black')
+            .style('text-anchor', 'middle')
+            .text('时间（分钟）');
+
+        g.append('g')
+            .call(d3.axisLeft(yScale))
+            .append('text')
+            .attr('transform', 'rotate(-90)')
+            .attr('y', -35)
+            .attr('x', -height / 2)
+            .attr('fill', 'black')
+            .style('text-anchor', 'middle')
+            .text('温度（°C）');
+
+        // 室温线
+        g.append('line')
+            .attr('x1', 0)
+            .attr('x2', width)
+            .attr('y1', yScale(T_env))
+            .attr('y2', yScale(T_env))
+            .attr('stroke', '#e74c3c')
+            .attr('stroke-width', 2)
+            .attr('stroke-dasharray', '5,5');
+
+        g.append('text')
+            .attr('x', width - 50)
+            .attr('y', yScale(T_env) - 5)
+            .attr('fill', '#e74c3c')
+            .text('室温 20°C');
+
+        // 温度曲线
+        const line = d3.line()
+            .x(d => xScale(d.time))
+            .y(d => yScale(d.temp))
+            .curve(d3.curveMonotoneX);
+
+        const path = g.append('path')
+            .datum(data)
+            .attr('fill', 'none')
+            .attr('stroke', '#3498db')
+            .attr('stroke-width', 3)
+            .attr('d', line);
+
+        // 动画
+        const totalLength = path.node().getTotalLength();
+        path.attr('stroke-dasharray', totalLength + ' ' + totalLength)
+            .attr('stroke-dashoffset', totalLength)
+            .transition()
+            .duration(4000 / globalAnimationSpeed)
+            .attr('stroke-dashoffset', 0);
+
+        // 咖啡杯动画
+        const coffee = g.append('text')
+            .attr('x', xScale(0))
+            .attr('y', yScale(90))
+            .style('font-size', '2em')
+            .text('☕');
+
+        coffee.transition()
+            .duration(4000 / globalAnimationSpeed)
+            .attrTween('transform', function() {
+                return function(t) {
+                    const index = Math.floor(t * (data.length - 1));
+                    const currentData = data[index];
+                    
+                    // 更新温度显示
+                    container.select('#temp-value').text(currentData.temp.toFixed(1) + '°C');
+                    container.select('#time-value').text(currentData.time.toFixed(1) + ' 分钟');
+                    
+                    const x = xScale(currentData.time);
+                    const y = yScale(currentData.temp);
+                    return `translate(${x - xScale(0)}, ${y - yScale(90)})`;
+                };
+            });
+    }
+
+    // 第8页：人口增长
+    function visualizePopulation(containerId) {
+        const setup = setupD3(containerId);
+        if (!setup) return;
+        const { g, width, height } = setup;
+
+        const time = d3.range(0, 50, 0.5);
+        const P0 = 100;
+        const r = 0.02;
+        const K = 200;
+
+        // 指数增长
+        const expData = time.map(t => ({
+            time: t,
+            population: P0 * Math.exp(r * t)
+        }));
+
+        // 逻辑斯蒂增长
+        const logisticData = time.map(t => ({
+            time: t,
+            population: K * P0 * Math.exp(r * t) / (K + P0 * (Math.exp(r * t) - 1))
+        }));
+
+        const xScale = d3.scaleLinear().domain([0, 50]).range([0, width]);
+        const yScale = d3.scaleLinear().domain([0, 250]).range([height, 0]);
+
+        // 坐标轴
+        g.append('g')
+            .attr('transform', `translate(0, ${height})`)
+            .call(d3.axisBottom(xScale))
+            .append('text')
+            .attr('x', width / 2)
+            .attr('y', 35)
+            .attr('fill', 'black')
+            .style('text-anchor', 'middle')
+            .text('时间（年）');
+
+        g.append('g')
+            .call(d3.axisLeft(yScale))
+            .append('text')
+            .attr('transform', 'rotate(-90)')
+            .attr('y', -35)
+            .attr('x', -height / 2)
+            .attr('fill', 'black')
+            .style('text-anchor', 'middle')
+            .text('人口（万）');
+
+        // 承载力线
+        g.append('line')
+            .attr('x1', 0)
+            .attr('x2', width)
+            .attr('y1', yScale(K))
+            .attr('y2', yScale(K))
+            .attr('stroke', '#e74c3c')
+            .attr('stroke-width', 2)
+            .attr('stroke-dasharray', '5,5');
+
+        g.append('text')
+            .attr('x', width - 80)
+            .attr('y', yScale(K) - 5)
+            .attr('fill', '#e74c3c')
+            .text('承载力 200万');
+
+        const line = d3.line()
+            .x(d => xScale(d.time))
+            .y(d => yScale(d.population))
+            .curve(d3.curveMonotoneX);
+
+        // 指数增长曲线（虚线）
+        g.append('path')
+            .datum(expData.filter(d => d.population <= 250))
+            .attr('fill', 'none')
+            .attr('stroke', '#95a5a6')
+            .attr('stroke-width', 2)
+            .attr('stroke-dasharray', '3,3')
+            .attr('d', line);
+
+        // 逻辑斯蒂曲线（实线）
+        const logisticPath = g.append('path')
+            .datum(logisticData)
+            .attr('fill', 'none')
+            .attr('stroke', '#2ecc71')
+            .attr('stroke-width', 3)
+            .attr('d', line);
+
+        // 动画
+        const totalLength = logisticPath.node().getTotalLength();
+        logisticPath.attr('stroke-dasharray', totalLength + ' ' + totalLength)
+            .attr('stroke-dashoffset', totalLength)
+            .transition()
+            .duration(3000 / globalAnimationSpeed)
+            .attr('stroke-dashoffset', 0);
+
+        // 图例
+        const legend = g.append('g')
+            .attr('transform', `translate(${width - 150}, 20)`);
+
+        legend.append('line')
+            .attr('x1', 0)
+            .attr('x2', 30)
+            .attr('stroke', '#95a5a6')
+            .attr('stroke-width', 2)
+            .attr('stroke-dasharray', '3,3');
+        legend.append('text')
+            .attr('x', 35)
+            .attr('y', 5)
+            .text('指数增长');
+
+        legend.append('line')
+            .attr('x1', 0)
+            .attr('x2', 30)
+            .attr('y1', 20)
+            .attr('y2', 20)
+            .attr('stroke', '#2ecc71')
+            .attr('stroke-width', 3);
+        legend.append('text')
+            .attr('x', 35)
+            .attr('y', 25)
+            .text('逻辑斯蒂');
+    }
+
+    // 第9页：药物浓度
+    function visualizeDrug(containerId) {
+        const setup = setupD3(containerId);
+        if (!setup) return;
+        const { g, width, height } = setup;
+
+        const halfLife = 4;
+        const k = Math.log(2) / halfLife;
+        const dose = 500;
+        const interval = 8;
+        
+        const time = d3.range(0, 24, 0.1);
+        const data = [];
+        
+        time.forEach(t => {
+            let concentration = 0;
+            for (let doseTime = 0; doseTime <= t; doseTime += interval) {
+                concentration += dose * Math.exp(-k * (t - doseTime));
+            }
+            data.push({ time: t, concentration: concentration });
+        });
+
+        const xScale = d3.scaleLinear().domain([0, 24]).range([0, width]);
+        const yScale = d3.scaleLinear().domain([0, 800]).range([height, 0]);
+
+        // 坐标轴
+        g.append('g')
+            .attr('transform', `translate(0, ${height})`)
+            .call(d3.axisBottom(xScale))
+            .append('text')
+            .attr('x', width / 2)
+            .attr('y', 35)
+            .attr('fill', 'black')
+            .style('text-anchor', 'middle')
+            .text('时间（小时）');
+
+        g.append('g')
+            .call(d3.axisLeft(yScale))
+            .append('text')
+            .attr('transform', 'rotate(-90)')
+            .attr('y', -35)
+            .attr('x', -height / 2)
+            .attr('fill', 'black')
+            .style('text-anchor', 'middle')
+            .text('浓度（mg）');
+
+        // 治疗区间
+        const therapyZone = g.append('rect')
+            .attr('x', 0)
+            .attr('y', yScale(600))
+            .attr('width', width)
+            .attr('height', yScale(300) - yScale(600))
+            .attr('fill', '#2ecc71')
+            .attr('opacity', 0.2);
+
+        g.append('text')
+            .attr('x', 10)
+            .attr('y', yScale(450) + 5)
+            .attr('fill', '#27ae60')
+            .text('有效治疗区间');
+
+        // 浓度曲线
+        const line = d3.line()
+            .x(d => xScale(d.time))
+            .y(d => yScale(d.concentration))
+            .curve(d3.curveMonotoneX);
+
+        const path = g.append('path')
+            .datum(data)
+            .attr('fill', 'none')
+            .attr('stroke', '#3498db')
+            .attr('stroke-width', 3)
+            .attr('d', line);
+
+        // 服药时间标记
+        [0, 8, 16].forEach((t, i) => {
+            g.append('line')
+                .attr('x1', xScale(t))
+                .attr('x2', xScale(t))
+                .attr('y1', 0)
+                .attr('y2', height)
+                .attr('stroke', '#e74c3c')
+                .attr('stroke-width', 1)
+                .attr('stroke-dasharray', '3,3')
+                .attr('opacity', 0)
+                .transition()
+                .delay(t * 100)
+                .duration(500)
+                .attr('opacity', 1);
+
+            g.append('text')
+                .attr('x', xScale(t))
+                .attr('y', -5)
+                .attr('text-anchor', 'middle')
+                .attr('fill', '#e74c3c')
+                .style('font-size', '1.5em')
+                .style('opacity', 0)
+                .text('💊')
+                .transition()
+                .delay(t * 100)
+                .duration(500)
+                .style('opacity', 1);
+        });
+
+        // 动画
+        const totalLength = path.node().getTotalLength();
+        path.attr('stroke-dasharray', totalLength + ' ' + totalLength)
+            .attr('stroke-dashoffset', totalLength)
+            .transition()
+            .duration(3000 / globalAnimationSpeed)
+            .attr('stroke-dashoffset', 0);
+    }
+
+    // 第10页：弹簧振动
+    function visualizeSpring(containerId) {
+        const setup = setupD3(containerId);
+        if (!setup) return;
+        const { g, width, height, container } = setup;
+
+        const time = d3.range(0, 10, 0.05);
+        const omega = 2;
+        const A = 1;
+        
+        const data = time.map(t => ({
+            time: t,
+            position: A * Math.cos(omega * t)
+        }));
+
+        const xScale = d3.scaleLinear().domain([0, 10]).range([0, width]);
+        const yScale = d3.scaleLinear().domain([-1.5, 1.5]).range([height, 0]);
+
+        // 坐标轴
+        g.append('g')
+            .attr('transform', `translate(0, ${height/2})`)
+            .call(d3.axisBottom(xScale))
+            .append('text')
+            .attr('x', width / 2)
+            .attr('y', 35)
+            .attr('fill', 'black')
+            .style('text-anchor', 'middle')
+            .text('时间（秒）');
+
+        g.append('g')
+            .call(d3.axisLeft(yScale))
+            .append('text')
+            .attr('transform', 'rotate(-90)')
+            .attr('y', -35)
+            .attr('x', -height / 2)
+            .attr('fill', 'black')
+            .style('text-anchor', 'middle')
+            .text('位移（米）');
+
+        // 平衡位置线
+        g.append('line')
+            .attr('x1', 0)
+            .attr('x2', width)
+            .attr('y1', yScale(0))
+            .attr('y2', yScale(0))
+            .attr('stroke', '#95a5a6')
+            .attr('stroke-width', 1)
+            .attr('stroke-dasharray', '3,3');
+
+        // 振动曲线
+        const line = d3.line()
+            .x(d => xScale(d.time))
+            .y(d => yScale(d.position))
+            .curve(d3.curveMonotoneX);
+
+        const path = g.append('path')
+            .datum(data)
+            .attr('fill', 'none')
+            .attr('stroke', '#9b59b6')
+            .attr('stroke-width', 3)
+            .attr('d', line);
+
+        // 动画
+        const totalLength = path.node().getTotalLength();
+        path.attr('stroke-dasharray', totalLength + ' ' + totalLength)
+            .attr('stroke-dashoffset', totalLength)
+            .transition()
+            .duration(4000 / globalAnimationSpeed)
+            .attr('stroke-dashoffset', 0);
+
+        // 弹簧动画
+        const spring = container.append('div')
+            .style('position', 'absolute')
+            .style('top', '50px')
+            .style('left', '50%')
+            .style('transform', 'translateX(-50%)')
+            .style('font-size', '3em')
+            .text('🌀');
+
+        function animateSpring() {
+            if (!globalAnimationPlaying) {
+                setTimeout(animateSpring, 100);
+                return;
+            }
+
+            spring.transition()
+                .duration(1000 / globalAnimationSpeed)
+                .ease(d3.easeSinInOut)
+                .style('transform', 'translateX(-50%) scaleY(0.5)')
+                .transition()
+                .duration(1000 / globalAnimationSpeed)
+                .ease(d3.easeSinInOut)
+                .style('transform', 'translateX(-50%) scaleY(1.5)')
+                .on('end', animateSpring);
+        }
+        animateSpring();
+    }
+
+    // 第11页：方向场
+    function visualizeDirectionField(containerId) {
+        const setup = setupD3(containerId);
+        if (!setup) return;
+        const { g, width, height } = setup;
+
+        const xScale = d3.scaleLinear().domain([-3, 3]).range([0, width]);
+        const yScale = d3.scaleLinear().domain([-3, 3]).range([height, 0]);
+
+        // 坐标轴
+        g.append('g')
+            .attr('transform', `translate(0, ${height/2})`)
+            .call(d3.axisBottom(xScale).ticks(7));
+
+        g.append('g')
+            .attr('transform', `translate(${width/2}, 0)`)
+            .call(d3.axisLeft(yScale).ticks(7));
+
+        // 方向场
+        const step = 0.3;
+        let arrowIndex = 0;
+        for (let x = -3; x <= 3; x += step) {
+            for (let y = -3; y <= 3; y += step) {
+                const slope = -x / y; // dy/dx = -x/y (圆的方向场)
+                const angle = Math.atan(slope);
+                const length = 15;
+                
+                const x1 = xScale(x) - length * Math.cos(angle) / 2;
+                const y1 = yScale(y) + length * Math.sin(angle) / 2;
+                const x2 = xScale(x) + length * Math.cos(angle) / 2;
+                const y2 = yScale(y) - length * Math.sin(angle) / 2;
+                
+                if (!isNaN(angle) && isFinite(angle)) {
+                    g.append('line')
+                        .attr('x1', x1)
+                        .attr('y1', y1)
+                        .attr('x2', x2)
+                        .attr('y2', y2)
+                        .attr('stroke', '#3498db')
+                        .attr('stroke-width', 1.5)
+                        .attr('opacity', 0)
+                        .transition()
+                        .delay(arrowIndex * 10)
+                        .duration(500)
+                        .attr('opacity', 0.6);
+                    arrowIndex++;
+                }
+            }
+        }
+
+        // 解曲线（圆）
+        const circles = [0.5, 1, 1.5, 2];
+        circles.forEach((r, i) => {
+            g.append('circle')
+                .attr('cx', xScale(0))
+                .attr('cy', yScale(0))
+                .attr('r', 0)
+                .attr('fill', 'none')
+                .attr('stroke', '#e74c3c')
+                .attr('stroke-width', 2)
+                .attr('stroke-dasharray', '5,5')
+                .transition()
+                .delay(1500 + i * 200)
+                .duration(800)
+                .attr('r', r * width / 6);
+        });
+
+        // 添加说明
+        g.append('text')
+            .attr('x', width / 2)
+            .attr('y', 20)
+            .attr('text-anchor', 'middle')
+            .style('font-size', '1.2em')
+            .style('font-weight', 'bold')
+            .text('方向场：dy/dx = -x/y');
+    }
+
+    // 第12页：数值解法
+    function visualizeNumerical(containerId) {
+        const setup = setupD3(containerId);
+        if (!setup) return;
+        const { g, width, height } = setup;
+
+        // 真实解
+        const exactSolution = x => Math.exp(x);
+        
+        // 欧拉方法
+        function euler(x0, y0, h, xEnd) {
+            const points = [{x: x0, y: y0}];
+            let x = x0, y = y0;
+            while (x < xEnd) {
+                y = y + h * y; // dy/dx = y
+                x = x + h;
+                points.push({x: x, y: y});
+            }
+            return points;
+        }
+
+        const xScale = d3.scaleLinear().domain([0, 2]).range([0, width]);
+        const yScale = d3.scaleLinear().domain([0, 8]).range([height, 0]);
+
+        // 坐标轴
+        g.append('g')
+            .attr('transform', `translate(0, ${height})`)
+            .call(d3.axisBottom(xScale));
+        g.append('g')
+            .call(d3.axisLeft(yScale));
+
+        // 真实解
+        const exactData = d3.range(0, 2.01, 0.01).map(x => ({
+            x: x,
+            y: exactSolution(x)
+        }));
+
+        const line = d3.line()
+            .x(d => xScale(d.x))
+            .y(d => yScale(d.y))
+            .curve(d3.curveMonotoneX);
+
+        g.append('path')
+            .datum(exactData)
+            .attr('fill', 'none')
+            .attr('stroke', '#2ecc71')
+            .attr('stroke-width', 3)
+            .attr('d', line);
+
+        // 欧拉方法（不同步长）
+        const stepSizes = [0.5, 0.25, 0.1];
+        const colors = ['#e74c3c', '#f39c12', '#3498db'];
+        
+        stepSizes.forEach((h, i) => {
+            const eulerData = euler(0, 1, h, 2);
+            
+            g.selectAll(`.euler-${i}`)
+                .data(eulerData)
+                .enter().append('circle')
+                .attr('cx', d => xScale(d.x))
+                .attr('cy', d => yScale(d.y))
+                .attr('r', 0)
+                .attr('fill', colors[i])
+                .transition()
+                .delay(1000 + i * 500)
+                .duration(500)
+                .attr('r', 4);
+
+            const eulerLine = d3.line()
+                .x(d => xScale(d.x))
+                .y(d => yScale(d.y));
+
+            g.append('path')
+                .datum(eulerData)
+                .attr('fill', 'none')
+                .attr('stroke', colors[i])
+                .attr('stroke-width', 2)
+                .attr('stroke-dasharray', '3,3')
+                .attr('d', eulerLine)
+                .attr('opacity', 0)
+                .transition()
+                .delay(1000 + i * 500)
+                .duration(500)
+                .attr('opacity', 0.7);
+        });
+
+        // 图例
+        const legend = g.append('g')
+            .attr('transform', `translate(${width - 150}, 20)`);
+
+        legend.append('line')
+            .attr('x1', 0)
+            .attr('x2', 30)
+            .attr('stroke', '#2ecc71')
+            .attr('stroke-width', 3);
+        legend.append('text')
+            .attr('x', 35)
+            .attr('y', 5)
+            .text('精确解');
+
+        stepSizes.forEach((h, i) => {
+            const item = legend.append('g')
+                .attr('transform', `translate(0, ${(i + 1) * 25})`);
+
+            item.append('line')
+                .attr('x1', 0)
+                .attr('x2', 30)
+                .attr('stroke', colors[i])
+                .attr('stroke-width', 2)
+                .attr('stroke-dasharray', '3,3');
+
+            item.append('text')
+                .attr('x', 35)
+                .attr('y', 5)
+                .text(`h = ${h}`);
+        });
+    }
+
+    // 第13页：稳定性分析
+    function visualizeStability(containerId) {
+        const setup = setupD3(containerId);
+        if (!setup) return;
+        const { g, width, height } = setup;
+
+        // 三种稳定性的势能曲线
+        const xScale = d3.scaleLinear().domain([-3, 9]).range([0, width]);
+        const yScale = d3.scaleLinear().domain([0, 4]).range([height, 0]);
+
+        // 稳定（碗底）
+        const stableData = d3.range(-3, 0.01, 0.05).map(x => ({
+            x: x,
+            y: Math.pow(x + 1.5, 2) + 0.5
+        }));
+
+        // 不稳定（山顶）
+        const unstableData = d3.range(1.5, 4.51, 0.05).map(x => ({
+            x: x,
+            y: -Math.pow(x - 3, 2) + 3
+        }));
+
+        // 半稳定
+        const semiStableData = d3.range(5.5, 9.01, 0.05).map(x => ({
+            x: x,
+            y: Math.pow(x - 7, 3) / 10 + 2
+        }));
+
+        const line = d3.line()
+            .x(d => xScale(d.x))
+            .y(d => yScale(d.y))
+            .curve(d3.curveMonotoneX);
+
+        // 绘制曲线
+        g.append('path')
+            .datum(stableData)
+            .attr('fill', 'none')
+            .attr('stroke', '#2ecc71')
+            .attr('stroke-width', 3)
+            .attr('d', line);
+
+        g.append('path')
+            .datum(unstableData)
+            .attr('fill', 'none')
+            .attr('stroke', '#e74c3c')
+            .attr('stroke-width', 3)
+            .attr('d', line);
+
+        g.append('path')
+            .datum(semiStableData)
+            .attr('fill', 'none')
+            .attr('stroke', '#f39c12')
+            .attr('stroke-width', 3)
+            .attr('d', line);
+
+        // 添加小球动画
+        const ball1 = g.append('circle')
+            .attr('r', 8)
+            .attr('fill', '#2ecc71')
+            .attr('cx', xScale(-1.5))
+            .attr('cy', yScale(0.5));
+
+        const ball2 = g.append('circle')
+            .attr('r', 8)
+            .attr('fill', '#e74c3c')
+            .attr('cx', xScale(3))
+            .attr('cy', yScale(3));
+
+        const ball3 = g.append('circle')
+            .attr('r', 8)
+            .attr('fill', '#f39c12')
+            .attr('cx', xScale(7))
+            .attr('cy', yScale(2));
+
+        // 标签
+        g.append('text')
+            .attr('x', xScale(-1.5))
+            .attr('y', yScale(3.5))
+            .attr('text-anchor', 'middle')
+            .style('font-weight', 'bold')
+            .text('稳定');
+
+        g.append('text')
+            .attr('x', xScale(3))
+            .attr('y', yScale(3.5))
+            .attr('text-anchor', 'middle')
+            .style('font-weight', 'bold')
+            .text('不稳定');
+
+        g.append('text')
+            .attr('x', xScale(7))
+            .attr('y', yScale(3.5))
+            .attr('text-anchor', 'middle')
+            .style('font-weight', 'bold')
+            .text('半稳定');
+
+        // 小球摆动动画
+        function animateBalls() {
+            if (!globalAnimationPlaying) {
+                setTimeout(animateBalls, 100);
+                return;
+            }
+
+            // 稳定小球
+            ball1.transition()
+                .duration(1000 / globalAnimationSpeed)
+                .attr('cy', yScale(1.5))
+                .transition()
+                .duration(1000 / globalAnimationSpeed)
+                .attr('cy', yScale(0.5))
+                .on('end', animateBalls);
+
+            // 不稳定小球
+            ball2.transition()
+                .duration(1000 / globalAnimationSpeed)
+                .attr('cx', xScale(2.5))
+                .attr('cy', yScale(2.75))
+                .transition()
+                .duration(1000 / globalAnimationSpeed)
+                .attr('cx', xScale(3.5))
+                .attr('cy', yScale(2.75));
+
+            // 半稳定小球
+            ball3.transition()
+                .duration(1000 / globalAnimationSpeed)
+                .attr('cx', xScale(6.5))
+                .attr('cy', yScale(1.8))
+                .transition()
+                .duration(1000 / globalAnimationSpeed)
+                .attr('cx', xScale(7.5))
+                .attr('cy', yScale(2.2));
+        }
+        animateBalls();
+    }
+
+    // 第14页：SIR模型
+    function visualizeSIR(containerId) {
+        const setup = setupD3(containerId);
+        if (!setup) return;
+        const { g, width, height } = setup;
+
+        const beta = 0.3;
+        const gamma = 0.1;
+        const N = 1000;
+        const I0 = 10;
+        const S0 = N - I0;
+        const R0 = 0;
+
+        const dt = 0.1;
+        const time = d3.range(0, 100, dt);
+        
+        let S = S0, I = I0, R = R0;
+        const data = [];
+        
+        time.forEach(t => {
+            data.push({
+                time: t,
+                S: S,
+                I: I,
+                R: R
+            });
+            
+            const dS = -beta * S * I / N * dt;
+            const dI = (beta * S * I / N - gamma * I) * dt;
+            const dR = gamma * I * dt;
+            
+            S += dS;
+            I += dI;
+            R += dR;
+        });
+
+        const xScale = d3.scaleLinear().domain([0, 100]).range([0, width]);
+        const yScale = d3.scaleLinear().domain([0, N]).range([height, 0]);
+
+        // 坐标轴
+        g.append('g')
+            .attr('transform', `translate(0, ${height})`)
+            .call(d3.axisBottom(xScale))
+            .append('text')
+            .attr('x', width / 2)
+            .attr('y', 35)
+            .attr('fill', 'black')
+            .style('text-anchor', 'middle')
+            .text('时间（天）');
+
+        g.append('g')
+            .call(d3.axisLeft(yScale))
+            .append('text')
+            .attr('transform', 'rotate(-90)')
+            .attr('y', -35)
+            .attr('x', -height / 2)
+            .attr('fill', 'black')
+            .style('text-anchor', 'middle')
+            .text('人数');
+
+        const line = d3.line()
+            .x(d => xScale(d.time))
+            .curve(d3.curveMonotoneX);
+
+        // S曲线（易感者）- 蓝色
+        const sPath = g.append('path')
+            .datum(data)
+            .attr('fill', 'none')
+            .attr('stroke', '#3498db')
+            .attr('stroke-width', 3)
+            .attr('d', line.y(d => yScale(d.S)));
+
+        // I曲线（感染者）- 红色
+        const iPath = g.append('path')
+            .datum(data)
+            .attr('fill', 'none')
+            .attr('stroke', '#e74c3c')
+            .attr('stroke-width', 3)
+            .attr('d', line.y(d => yScale(d.I)));
+
+        // R曲线（康复者）- 绿色
+        const rPath = g.append('path')
+            .datum(data)
+            .attr('fill', 'none')
+            .attr('stroke', '#2ecc71')
+            .attr('stroke-width', 3)
+            .attr('d', line.y(d => yScale(d.R)));
+
+        // 动画
+        [sPath, iPath, rPath].forEach((path, i) => {
+            const totalLength = path.node().getTotalLength();
+            path.attr('stroke-dasharray', totalLength + ' ' + totalLength)
+                .attr('stroke-dashoffset', totalLength)
+                .transition()
+                .delay(i * 500)
+                .duration(2000 / globalAnimationSpeed)
+                .attr('stroke-dashoffset', 0);
+        });
+
+        // 图例
+        const legend = g.append('g')
+            .attr('transform', `translate(${width - 100}, 20)`);
+
+        const legendData = [
+            { color: '#3498db', label: '易感者' },
+            { color: '#e74c3c', label: '感染者' },
+            { color: '#2ecc71', label: '康复者' }
+        ];
+
+        legendData.forEach((d, i) => {
+            const item = legend.append('g')
+                .attr('transform', `translate(0, ${i * 25})`);
+
+            item.append('rect')
+                .attr('width', 20)
+                .attr('height', 3)
+                .attr('fill', d.color);
+
+            item.append('text')
+                .attr('x', 25)
+                .attr('y', 5)
+                .text(d.label);
+        });
+    }
+
+    // 第15页：建模步骤
+    function visualizeModeling(containerId) {
+        const setup = setupD3(containerId);
+        if (!setup) return;
+        const { g, width, height } = setup;
+
+        // 创建五个步骤的流程图
+        const steps = [
+            { id: 1, label: "理解问题", x: width * 0.2, y: height * 0.2, color: "#3498db" },
+            { id: 2, label: "识别变量", x: width * 0.8, y: height * 0.2, color: "#2ecc71" },
+            { id: 3, label: "建立关系", x: width * 0.8, y: height * 0.5, color: "#e74c3c" },
+            { id: 4, label: "写出方程", x: width * 0.5, y: height * 0.8, color: "#f39c12" },
+            { id: 5, label: "求解验证", x: width * 0.2, y: height * 0.5, color: "#9b59b6" }
+        ];
+
+        // 连接线
+        const connections = [
+            { from: 1, to: 2 },
+            { from: 2, to: 3 },
+            { from: 3, to: 4 },
+            { from: 4, to: 5 },
+            { from: 5, to: 1 }
+        ];
+
+        // 绘制连接线
+        connections.forEach((conn, i) => {
+            const fromStep = steps.find(s => s.id === conn.from);
+            const toStep = steps.find(s => s.id === conn.to);
+            
+            g.append('line')
+                .attr('x1', fromStep.x)
+                .attr('y1', fromStep.y)
+                .attr('x2', fromStep.x)
+                .attr('y2', fromStep.y)
+                .attr('stroke', '#95a5a6')
+                .attr('stroke-width', 2)
+                .attr('marker-end', 'url(#arrowhead)')
+                .transition()
+                .delay(i * 300)
+                .duration(800)
+                .attr('x2', toStep.x)
+                .attr('y2', toStep.y);
+        });
+
+        // 绘制步骤节点
+        steps.forEach((step, i) => {
+            const group = g.append('g')
+                .attr('transform', `translate(${step.x}, ${step.y})`)
+                .style('opacity', 0);
+
+            // 外圈动画
+            group.append('circle')
+                .attr('r', 45)
+                .attr('fill', 'none')
+                .attr('stroke', step.color)
+                .attr('stroke-width', 2)
+                .attr('stroke-dasharray', '5,5')
+                .attr('opacity', 0.5)
+                .attr('class', 'rotating-circle');
+
+            group.append('circle')
+                .attr('r', 40)
+                .attr('fill', step.color)
+                .attr('stroke', 'white')
+                .attr('stroke-width', 3);
+
+            group.append('text')
+                .attr('text-anchor', 'middle')
+                .attr('dy', -5)
+                .style('fill', 'white')
+                .style('font-size', '2em')
+                .style('font-weight', 'bold')
+                .text(step.id);
+
+            group.append('text')
+                .attr('text-anchor', 'middle')
+                .attr('dy', 60)
+                .style('fill', step.color)
+                .style('font-size', '1.2em')
+                .style('font-weight', 'bold')
+                .text(step.label);
+
+            group.transition()
+                .delay(i * 300)
+                .duration(800)
+                .style('opacity', 1);
+        });
+
+        // 添加箭头标记
+        g.append('defs').append('marker')
+            .attr('id', 'arrowhead')
+            .attr('markerWidth', 10)
+            .attr('markerHeight', 10)
+            .attr('refX', 45)
+            .attr('refY', 3)
+            .attr('orient', 'auto')
+            .append('polygon')
+            .attr('points', '0 0, 10 3, 0 6')
+            .attr('fill', '#95a5a6');
+
+        // 添加旋转动画
+        function rotateCircles() {
+            if (!globalAnimationPlaying) {
+                setTimeout(rotateCircles, 100);
+                return;
+            }
+
+            g.selectAll('.rotating-circle')
+                .transition()
+                .duration(8000 / globalAnimationSpeed)
+                .ease(d3.easeLinear)
+                .attrTween('transform', function() {
+                    return d3.interpolateString('rotate(0)', 'rotate(360)');
+                })
+                .on('end', rotateCircles);
+        }
+        rotateCircles();
+    }
+
+    // 运行可视化
+    function runVisualization(slideIndex) {
+        switch(slideIndex) {
+            case 2: visualizeChanges('vis-changes'); break;
+            case 3: visualizeWhatIsODE('vis-what-is-ode'); break;
+            case 4: visualizeDerivative('vis-derivative'); break;
+            case 5: visualizeSeparable('vis-separable'); break;
+            case 6: visualizeCooling('vis-cooling'); break;
+            case 7: visualizePopulation('vis-population'); break;
+            case 8: visualizeDrug('vis-drug'); break;
+            case 9: visualizeSpring('vis-spring'); break;
+            case 10: visualizeDirectionField('vis-direction-field'); break;
+            case 11: visualizeNumerical('vis-numerical'); break;
+            case 12: visualizeStability('vis-stability'); break;
+            case 13: visualizeSIR('vis-sir'); break;
+            case 14: visualizeModeling('vis-modeling'); break;
+        }
+    }
+
+    // 初始化
+    document.addEventListener('DOMContentLoaded', function() {
+        slides = document.querySelectorAll('.slide');
+        totalSlides = slides.length;
+        counter = document.getElementById('page-indicator');
+        
+        showSlide(0);
+
+        // 键盘导航
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                e.preventDefault();
+                nextSlide();
+            } else if (e.key === 'ArrowLeft') {
+                e.preventDefault();
+                previousSlide();
+            } else if (e.key === 'Home') {
+                e.preventDefault();
+                showSlide(0);
+            } else if (e.key === 'End') {
+                e.preventDefault();
+                showSlide(totalSlides - 1);
+            }
+        });
+
+        // 鼠标滚轮导航
+        document.addEventListener('wheel', (e) => {
+            e.preventDefault();
+            if (e.deltaY > 0) {
+                nextSlide();
+            } else {
+                previousSlide();
+            }
+        }, { passive: false });
+    });
+</script>
+
+</body>
+</html>

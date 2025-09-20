@@ -1,0 +1,2428 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>第五章：不定积分 (交互式课件)</title>
+    <script src="../common-assets/js/d3-7.8.5.min.js"></script>
+    <script src="../common-assets/js/mathjax-config.js"></script>
+      <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true,
+                processEnvironments: true
+            },
+            svg: {
+                fontCache: 'global'
+            },
+            startup: {
+                pageReady: () => {
+                    return window.MathJax.startup.defaultPageReady().then(() => {
+                        console.log('MathJax is ready!');
+                    });
+                }
+            }
+        };
+    </script>
+    <script type="text/javascript" id="MathJax-script" async
+            src="../common-assets/js/mathjax-3.2.2-tex-svg.min.js">
+    </script>
+
+    <style>
+        @import url('../common-assets/css/fonts.css');
+
+        :root {
+            --chalkboard-bg: transparent;
+            --chalk-text: #ecf0f1;
+            --visualization-bg: #fdfdfd00;
+            --primary-color: #3498db;
+            --accent-color: #e67e22;
+            --success-color: #2ecc71;
+            --danger-color: #e74c3c;
+            --warning-color: #f39c12;
+            --info-color: #9b59b6;
+            --text-color: #34495e;
+            --heading-font: 'Noto Serif SC', serif;
+            --handwriting-font: 'Noto Serif SC', serif;
+        }
+
+        body {
+            font-family: var(--heading-font);
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            overflow: auto;
+            height: 100vh;
+            width: 100vw;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        #presentation-container {
+            width: 100vw;
+            height: 100vh;
+            max-width: 100vw;
+            aspect-ratio: 16 / 9;
+            position: relative;
+            background: rgba(255, 255, 255, 0);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            overflow: auto;
+        }
+
+        .slide {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            visibility: hidden;
+            display: flex;
+            transition: opacity 0.6s ease-in-out;
+        }
+
+        .slide.active {
+            opacity: 1;
+            visibility: visible;
+            z-index: 10;
+        }
+
+        .chalkboard {
+            flex: 0 0 35%;
+            background-color: #2c3e50 !important;
+            background-image: url('../common-assets/images/black-felt.png');
+            border: 10px solid #8B4513;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.5), inset 0 0 15px rgba(0,0,0,0.7);
+            color: var(--chalk-text);
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            overflow-y: auto;
+            box-sizing: border-box;
+        }
+
+        .chalkboard h2 {
+            font-family: var(--handwriting-font);
+            font-size: 2.8rem;
+            color: #f1c40f;
+            border-bottom: 2px solid rgba(241, 196, 15, 0.5);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+
+        .chalkboard h3 {
+            font-family: var(--handwriting-font);
+            font-size: 1.8rem;
+            color: var(--primary-color);
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+
+        .chalkboard p, .chalkboard li {
+            font-size: 1.2rem;
+            line-height: 1.8;
+            margin-bottom: 15px;
+        }
+
+        .chalkboard ul {
+            list-style-type: '→ ';
+            padding-left: 20px;
+        }
+
+        .math-formula {
+            font-size: 1.4rem;
+            color: #1abc9c;
+            background: rgba(0,0,0,0.3);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin: 20px 0;
+            line-height: 1.8;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        .highlight {
+            color: var(--warning-color);
+            font-weight: bold;
+            text-shadow: 0 0 10px rgba(243, 156, 18, 0.5);
+        }
+
+        .visualization {
+            flex: 1;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: auto;
+            position: relative;
+            box-sizing: border-box;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        }
+
+        .visualization.full-width {
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+        }
+
+        .formula-rule {
+            font-size: 1.3rem;
+            color: #16a085;
+            background: rgba(0,0,0,0.2);
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 4px solid #16a085;
+        }
+
+        .page-indicator {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .nav-buttons {
+            position: absolute;
+            top: 60px;
+            right: 20px;
+            display: flex;
+            gap: 5px;
+            z-index: 100;
+        }
+
+        .nav-btn {
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 15px;
+            font-size: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            user-select: none;
+            min-width: 30px;
+            text-align: center;
+        }
+
+        .nav-btn:hover {
+            background: rgba(0, 0, 0, 0.8);
+            border-color: rgba(255, 255, 255, 0.6);
+            transform: translateY(-1px);
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        /* 动画样式 */
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes glow {
+            from { box-shadow: 0 0 5px rgba(52, 152, 219, 0.5); }
+            to { box-shadow: 0 0 20px rgba(52, 152, 219, 0.8); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+
+        .machine-box {
+            fill: white;
+            stroke: #3498db;
+            stroke-width: 3;
+            rx: 10;
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1));
+        }
+
+        .arrow-path {
+            stroke: #2c3e50;
+            stroke-width: 2;
+            fill: none;
+            marker-end: url(#arrowhead);
+        }
+
+        .formula-table {
+            margin: 20px 0;
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        .formula-table td {
+            padding: 12px;
+            border: 1px solid rgba(255,255,255,0.3);
+            text-align: center;
+            background: rgba(255,255,255,0.05);
+        }
+
+        .formula-table tr:nth-child(even) {
+            background: rgba(255,255,255,0.1);
+        }
+
+        /* 全局动画控制面板 */
+        .global-animation-controls {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            display: flex;
+            gap: 8px;
+            z-index: 1000;
+        }
+
+        .global-control-btn {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: rgba(255, 255, 255, 0.8);
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: normal;
+            transition: all 0.2s ease;
+            backdrop-filter: blur(5px);
+            min-width: 50px;
+            text-align: center;
+        }
+
+        .global-control-btn:hover {
+            background: rgba(0, 0, 0, 0.5);
+            color: rgba(255, 255, 255, 1);
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+
+        /* 积分机器样式 */
+        .integral-machine {
+            width: 300px;
+            height: 150px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            animation: pulse 2s infinite;
+        }
+
+        .star {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 2s infinite;
+        }
+
+        /* 浮动菜单样式 */
+        #floating-menu {
+            position: fixed;
+            bottom: 20px;
+            right: 200px;
+            z-index: 9999;
+            font-family: var(--heading-font);
+        }
+
+        .menu-toggle {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: rgba(255, 255, 255, 0.8);
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: normal;
+            transition: all 0.2s ease;
+            backdrop-filter: blur(5px);
+            min-width: 50px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .menu-toggle:hover {
+            background: rgba(0, 0, 0, 0.5);
+            color: rgba(255, 255, 255, 1);
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+
+        .menu-content {
+            position: absolute;
+            bottom: 50px;
+            right: 0;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 10px 0;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(20px);
+            transition: all 0.3s ease;
+            min-width: 220px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .menu-content.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 15px;
+            text-decoration: none;
+            color: #333;
+            transition: all 0.3s ease;
+            border-radius: 10px;
+            margin: 0 8px;
+        }
+
+        .menu-item:hover {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            transform: translateX(5px);
+        }
+    </style>
+
+    <style>
+        .return-home-panel {
+            position: fixed;
+            top: 16px;
+            left: 16px;
+            display: flex;
+            gap: 10px;
+            z-index: 9999;
+            flex-wrap: wrap;
+        }
+        .return-home-panel .return-link {
+            padding: 8px 14px;
+            border-radius: 999px;
+            background: rgba(15, 23, 42, 0.8);
+            color: #f8fafc;
+            font-size: 14px;
+            text-decoration: none;
+            box-shadow: 0 6px 20px rgba(15, 23, 42, 0.25);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .return-home-panel .return-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 24px rgba(15, 23, 42, 0.35);
+        }
+        .return-home-panel .return-link.return-main {
+            background: rgba(79, 70, 229, 0.85);
+        }
+        @media (max-width: 640px) {
+            .return-home-panel {
+                top: 12px;
+                left: 12px;
+                right: 12px;
+                justify-content: center;
+            }
+            .return-home-panel .return-link {
+                width: 100%;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="return-home-panel">
+        <a class="return-link return-sub" href="index.html">← 返回目录</a>
+        <a class="return-link return-main" href="../index.html">⌂ 返回主站</a>
+    </div>
+
+<div id="presentation-container">
+    <!-- 第1页：标题页 -->
+    <div class="slide active">
+        <div class="chalkboard" style="flex: 1; text-align: center; border: none;">
+            <h2 style="font-size: 4rem; border: none;">第五章</h2>
+            <p style="font-size: 2.5rem; color: white;">不定积分</p>
+            <p style="font-size: 1.8rem; color: #bdc3c7; margin-top: 40px;">导数的逆运算</p>
+            <div style="margin-top: 60px;">
+                <p style="font-size: 1.2rem; color: #ecf0f1;">高职数学 · 互动教学课件</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第2页：引入 - 逆运算的概念 -->
+    <div class="slide">
+        <div class="chalkboard">
+            <h2>从逆运算说起</h2>
+            <p>在数学中，很多运算都有它的<span class="highlight">逆运算</span>：</p>
+            <ul>
+                <li>加法 ↔ 减法</li>
+                <li>乘法 ↔ 除法</li>
+                <li>乘方 ↔ 开方</li>
+                <li>指数 ↔ 对数</li>
+            </ul>
+            <p>那么，<span class="highlight">导数有逆运算吗？</span></p>
+            <p>答案是：<strong style="color: #2ecc71; font-size: 1.4rem;">有！那就是积分。</strong></p>
+            <p style="margin-top: 20px; font-size: 1.1rem; color: #95a5a6;">积分让我们从"变化率"找回"原函数"</p>
+        </div>
+        <div class="visualization" id="vis-reverse-operations"></div>
+    </div>
+
+    <!-- 第3页：原函数的概念 -->
+    <div class="slide">
+        <div class="chalkboard">
+            <h2>原函数</h2>
+            <h3>问题引入</h3>
+            <p>已知某函数的导数是 $f'(x) = 2x$</p>
+            <p>问：<span class="highlight">原来的函数是什么？</span></p>
+            
+            <h3>思考过程</h3>
+            <p>什么函数求导后得到 $2x$？</p>
+            <p>答案：$F(x) = x^2$</p>
+            <p>因为 $(x^2)' = 2x$ ✓</p>
+            
+            <div style="background: rgba(231, 76, 60, 0.1); padding: 15px; border-radius: 8px; margin-top: 20px;">
+                <p style="color: #e74c3c;">但是，$x^2 + 1$、$x^2 + 5$、$x^2 - 10$ 求导后也都是 $2x$！</p>
+                <p style="color: #ecf0f1;">所以原函数<span class="highlight">不唯一</span></p>
+            </div>
+        </div>
+        <div class="visualization" id="vis-antiderivative"></div>
+    </div>
+
+    <!-- 第4页：不定积分的定义 -->
+    <div class="slide">
+        <div class="chalkboard">
+            <h2>不定积分</h2>
+            <h3>定义</h3>
+            <p>函数 $f(x)$ 的所有原函数的集合，叫做 $f(x)$ 的<span class="highlight">不定积分</span>。</p>
+            <div class="math-formula">
+                $\int f(x)dx = F(x) + C$
+            </div>
+            <ul>
+                <li>$\int$ - 积分号（像拉长的S）</li>
+                <li>$f(x)$ - 被积函数</li>
+                <li>$dx$ - 积分变量</li>
+                <li>$F(x)$ - 一个原函数</li>
+                <li>$C$ - 任意常数</li>
+            </ul>
+            <p style="margin-top: 20px; background: rgba(46, 204, 113, 0.1); padding: 10px; border-radius: 5px;">
+                💡 记忆技巧：积分号 ∫ 来源于拉丁文 summa（求和）的首字母 S
+            </p>
+        </div>
+        <div class="visualization" id="vis-integral-notation"></div>
+    </div>
+
+    <!-- 第5页：导数与积分的关系 -->
+    <div class="slide">
+        <div class="chalkboard">
+            <h2>导数与积分的关系</h2>
+            <p>导数和积分是<span class="highlight">互逆运算</span>：</p>
+            <div class="formula-rule">
+                求导：$F(x) \xrightarrow{求导} f(x)$<br>
+                积分：$f(x) \xrightarrow{积分} F(x) + C$
+            </div>
+            <h3>重要性质</h3>
+            <p>1. $\frac{d}{dx}\int f(x)dx = f(x)$ （积分后求导，回到原函数）</p>
+            <p>2. $\int f'(x)dx = f(x) + C$ （导数的积分，得原函数）</p>
+            <div style="background: rgba(52, 152, 219, 0.1); padding: 15px; border-radius: 8px; margin-top: 20px;">
+                <p style="text-align: center; font-size: 1.3rem;">记住：<span class="highlight">积分是"反求导"</span></p>
+            </div>
+        </div>
+        <div class="visualization" id="vis-derivative-integral"></div>
+    </div>
+
+    <!-- 第6页：基本积分公式1 - 幂函数 -->
+    <div class="slide">
+        <div class="chalkboard">
+            <h2>基本积分公式（一）</h2>
+            <h3>幂函数积分</h3>
+            <div class="formula-rule">
+                $\int x^n dx = \frac{x^{n+1}}{n+1} + C$ （$n \neq -1$）
+            </div>
+            <h3>例子</h3>
+            <table class="formula-table">
+                <tr>
+                    <td>$\int x^2 dx = \frac{x^3}{3} + C$</td>
+                </tr>
+                <tr>
+                    <td>$\int x^3 dx = \frac{x^4}{4} + C$</td>
+                </tr>
+                <tr>
+                    <td>$\int \sqrt{x} dx = \int x^{1/2} dx = \frac{2x^{3/2}}{3} + C$</td>
+                </tr>
+            </table>
+            <div style="background: rgba(243, 156, 18, 0.1); padding: 15px; border-radius: 8px; margin-top: 20px;">
+                <p style="text-align: center;">口诀：<span class="highlight">指数加1，除以新指数</span></p>
+            </div>
+        </div>
+        <div class="visualization" id="vis-power-integral"></div>
+    </div>
+
+    <!-- 第7页：基本积分公式2 - 三角函数 -->
+    <div class="slide">
+        <div class="chalkboard">
+            <h2>基本积分公式（二）</h2>
+            <h3>三角函数积分</h3>
+            <table class="formula-table">
+                <tr>
+                    <td>$\int \sin x dx = -\cos x + C$</td>
+                </tr>
+                <tr>
+                    <td>$\int \cos x dx = \sin x + C$</td>
+                </tr>
+                <tr>
+                    <td>$\int \sec^2 x dx = \tan x + C$</td>
+                </tr>
+                <tr>
+                    <td>$\int \csc^2 x dx = -\cot x + C$</td>
+                </tr>
+            </table>
+            <div style="background: rgba(52, 152, 219, 0.1); padding: 15px; border-radius: 8px; margin-top: 20px;">
+                <p>记忆技巧：<span class="highlight">sin积分变负cos，cos积分变sin</span></p>
+                <p style="font-size: 1rem; color: #95a5a6;">想象正弦波和余弦波的相互转换</p>
+            </div>
+        </div>
+        <div class="visualization" id="vis-trig-integral"></div>
+    </div>
+
+    <!-- 第8页：基本积分公式3 - 指数对数 -->
+    <div class="slide">
+        <div class="chalkboard">
+            <h2>基本积分公式（三）</h2>
+            <h3>指数与对数函数</h3>
+            <table class="formula-table">
+                <tr>
+                    <td>$\int e^x dx = e^x + C$</td>
+                </tr>
+                <tr>
+                    <td>$\int a^x dx = \frac{a^x}{\ln a} + C$</td>
+                </tr>
+                <tr>
+                    <td>$\int \frac{1}{x} dx = \ln|x| + C$</td>
+                </tr>
+            </table>
+            <div style="background: rgba(155, 89, 182, 0.1); padding: 15px; border-radius: 8px; margin-top: 20px;">
+                <p>特殊：<span class="highlight">$e^x$ 积分后还是自己！</span></p>
+                <p>注意：<span class="highlight">$\frac{1}{x}$ 的积分是 $\ln|x|$（要加绝对值）</span></p>
+            </div>
+        </div>
+        <div class="visualization" id="vis-exp-integral"></div>
+    </div>
+
+    <!-- 第9页：直接积分法 -->
+    <div class="slide">
+        <div class="chalkboard">
+            <h2>直接积分法</h2>
+            <h3>方法</h3>
+            <p>利用积分的<span class="highlight">线性性质</span>和基本公式直接求解。</p>
+            <div class="formula-rule">
+                $\int [af(x) + bg(x)]dx = a\int f(x)dx + b\int g(x)dx$
+            </div>
+            <h3>例题</h3>
+            <p>求 $\int (3x^2 + 2x - 5)dx$</p>
+            <p>解：拆开来算</p>
+            <p>$= 3\int x^2 dx + 2\int x dx - 5\int 1 dx$</p>
+            <p>$= 3 \cdot \frac{x^3}{3} + 2 \cdot \frac{x^2}{2} - 5x + C$</p>
+            <p>$= x^3 + x^2 - 5x + C$</p>
+        </div>
+        <div class="visualization" id="vis-direct-integral"></div>
+    </div>
+
+    <!-- 第10页：换元积分法 - 凑微分 -->
+    <div class="slide">
+        <div class="chalkboard">
+            <h2>换元积分法（凑微分）</h2>
+            <h3>基本思想</h3>
+            <p>把复杂的积分<span class="highlight">凑成</span>基本积分公式的形式。</p>
+            <h3>例：求 $\int 2x e^{x^2} dx$</h3>
+            <p>观察：$2x dx$ 正好是 $x^2$ 的微分！</p>
+            <p>令 $u = x^2$，则 $du = 2x dx$</p>
+            <p>原式 $= \int e^u du = e^u + C = e^{x^2} + C$</p>
+            <div style="background: rgba(46, 204, 113, 0.1); padding: 15px; border-radius: 8px; margin-top: 20px;">
+                <p>技巧：<span class="highlight">找到内函数和它的导数</span></p>
+            </div>
+        </div>
+        <div class="visualization" id="vis-substitution"></div>
+    </div>
+
+    <!-- 第11页：分部积分法 -->
+    <div class="slide">
+        <div class="chalkboard">
+            <h2>分部积分法</h2>
+            <h3>公式</h3>
+            <div class="formula-rule">
+                $\int u \cdot dv = u \cdot v - \int v \cdot du$
+            </div>
+            <h3>例：求 $\int x e^x dx$</h3>
+            <p>令 $u = x$，$dv = e^x dx$</p>
+            <p>则 $du = dx$，$v = e^x$</p>
+            <p>原式 $= x e^x - \int e^x dx = x e^x - e^x + C$</p>
+            <p>$= e^x(x - 1) + C$</p>
+            <div style="background: rgba(231, 76, 60, 0.1); padding: 15px; border-radius: 8px; margin-top: 20px;">
+                <p>口诀：<span class="highlight">反对幂指三</span>（选u的顺序）</p>
+                <p style="font-size: 0.9rem;">反三角 > 对数 > 幂函数 > 指数 > 三角</p>
+            </div>
+        </div>
+        <div class="visualization" id="vis-parts"></div>
+    </div>
+
+    <!-- 第12页：积分机器 -->
+    <div class="slide">
+        <div class="chalkboard">
+            <h2>积分机器</h2>
+            <p>想象积分是一台<span class="highlight">逆向机器</span>：</p>
+            <ul>
+                <li>输入：导数 $f(x)$</li>
+                <li>处理：找原函数</li>
+                <li>输出：$F(x) + C$</li>
+            </ul>
+            <div style="margin: 30px 0; text-align: center;">
+                <p style="background: rgba(52, 152, 219, 0.1); padding: 15px; border-radius: 8px; display: inline-block;">
+                    输入 $2x$ → 积分机器 → 输出 $x^2 + C$
+                </p>
+                <p style="background: rgba(46, 204, 113, 0.1); padding: 15px; border-radius: 8px; display: inline-block; margin-top: 10px;">
+                    输入 $\cos x$ → 积分机器 → 输出 $\sin x + C$
+                </p>
+            </div>
+            <p style="color: #95a5a6; font-size: 1rem;">💡 积分机器总是要加上常数C，因为原函数有无穷多个</p>
+        </div>
+        <div class="visualization" id="vis-integral-machine"></div>
+    </div>
+
+    <!-- 第13页：实际应用1 - 速度与位移 -->
+    <div class="slide">
+        <div class="chalkboard">
+            <h2>应用：速度与位移</h2>
+            <h3>物理背景</h3>
+            <p>已知速度函数 $v(t)$，求位移函数 $s(t)$</p>
+            <p>因为 $v(t) = s'(t)$ （速度是位移的导数）</p>
+            <p>所以 $s(t) = \int v(t) dt$ （位移是速度的积分）</p>
+            <h3>例题</h3>
+            <p>速度 $v(t) = 3t^2 + 2t$ （米/秒）</p>
+            <p>位移 $s(t) = \int (3t^2 + 2t) dt = t^3 + t^2 + C$</p>
+            <p>若 $s(0) = 0$（初始位置），则 $C = 0$</p>
+            <p>所以 $s(t) = t^3 + t^2$ 米</p>
+            <div style="background: rgba(52, 152, 219, 0.1); padding: 10px; border-radius: 5px; margin-top: 15px;">
+                <p style="font-size: 1rem;">物理意义：积分让我们从"瞬时速度"恢复"总位移"</p>
+            </div>
+        </div>
+        <div class="visualization" id="vis-physics-app"></div>
+    </div>
+
+    <!-- 第14页：常见错误 -->
+    <div class="slide">
+        <div class="chalkboard">
+            <h2>常见错误提醒</h2>
+            <div style="margin: 20px 0;">
+                <h3 style="color: #e74c3c;">❌ 错误1：忘记加C</h3>
+                <p>$\int 2x dx = x^2$ ❌</p>
+                <p>$\int 2x dx = x^2 + C$ ✓</p>
+            </div>
+            
+            <div style="margin: 20px 0;">
+                <h3 style="color: #e74c3c;">❌ 错误2：幂函数公式用错</h3>
+                <p>$\int x^2 dx = \frac{x^2}{2} + C$ ❌</p>
+                <p>$\int x^2 dx = \frac{x^3}{3} + C$ ✓</p>
+            </div>
+            
+            <div style="margin: 20px 0;">
+                <h3 style="color: #e74c3c;">❌ 错误3：$\frac{1}{x}$的积分</h3>
+                <p>$\int \frac{1}{x} dx = \ln x + C$ ❌（缺绝对值）</p>
+                <p>$\int \frac{1}{x} dx = \ln|x| + C$ ✓</p>
+            </div>
+            
+            <div style="background: rgba(243, 156, 18, 0.1); padding: 15px; border-radius: 8px;">
+                <p style="text-align: center;">记住：<span class="highlight">细节决定成败！</span></p>
+            </div>
+        </div>
+        <div class="visualization" id="vis-common-mistakes"></div>
+    </div>
+
+    <!-- 第15页：总结 -->
+    <div class="slide">
+        <div class="chalkboard" style="flex: 1; text-align: center; border: none;">
+            <h2 style="font-size: 3rem; border: none;">课程总结</h2>
+            <div style="text-align: left; max-width: 700px; margin: 0 auto;">
+                <p style="font-size: 1.4rem; margin: 15px 0;">✅ 不定积分是导数的逆运算</p>
+                <p style="font-size: 1.4rem; margin: 15px 0;">✅ 原函数不唯一，要加常数C</p>
+                <p style="font-size: 1.4rem; margin: 15px 0;">✅ 掌握基本积分公式</p>
+                <p style="font-size: 1.4rem; margin: 15px 0;">✅ 三种方法：直接法、换元法、分部法</p>
+                <p style="font-size: 1.4rem; margin: 15px 0;">✅ 多练习，熟能生巧</p>
+            </div>
+            <div style="margin-top: 40px;">
+                <p style="font-size: 2rem; color: #f39c12;">继续加油！</p>
+                <p style="font-size: 1.2rem; color: #95a5a6; margin-top: 20px;">下一章：定积分与应用</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="page-indicator" id="page-indicator">1 / 15</div>
+    
+    <!-- 翻页按钮 -->
+    <div class="nav-buttons">
+        <button class="nav-btn" id="prev-btn" onclick="previousSlide()" title="上一页 (←)">‹</button>
+        <button class="nav-btn" id="next-btn" onclick="nextSlide()" title="下一页 (→)">›</button>
+    </div>
+
+    <!-- 全局动画控制面板 -->
+    <div class="global-animation-controls" id="globalAnimationControls">
+        <button class="global-control-btn" id="globalPlayPauseBtn">暂停</button>
+        <button class="global-control-btn" id="globalSpeedBtn">1.0x</button>
+    </div>
+</div>
+
+<!-- 浮动菜单 -->
+<div id="floating-menu">
+    <div id="menu-toggle" class="menu-toggle">
+        <span class="menu-icon">☰</span>
+    </div>
+    <div id="menu-content" class="menu-content">
+        <a href="#" class="menu-item">
+            <span class="menu-icon">LAB</span>
+            <span class="menu-text">积分计算实验室</span>
+        </a>
+        <a href="#" class="menu-item">
+            <span class="menu-icon">LAB</span>
+            <span class="menu-text">图形面积计算</span>
+        </a>
+        <a href="#" class="menu-item">
+            <span class="menu-icon">GAME</span>
+            <span class="menu-text">积分闯关游戏</span>
+        </a>
+        <a href="#" class="menu-item">
+            <span class="menu-icon">EXER</span>
+            <span class="menu-text">习题练习</span>
+        </a>
+    </div>
+</div>
+
+<script>
+    let slides, totalSlides, currentSlide = 0;
+    let globalAnimationPlaying = true;
+    let globalAnimationSpeed = 1.0;
+    let animationFrames = [];
+    let currentAnimation = null;
+
+    // 初始化
+    document.addEventListener('DOMContentLoaded', function() {
+        slides = document.querySelectorAll('.slide');
+        totalSlides = slides.length;
+        
+        initGlobalAnimationControls();
+        initFloatingMenu();
+        showSlide(0);
+        
+        // 键盘导航
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'Enter') {
+                e.preventDefault();
+                nextSlide();
+            } else if (e.key === 'ArrowLeft' || e.key === 'Backspace') {
+                e.preventDefault();
+                previousSlide();
+            } else if (e.key === 'Home') {
+                e.preventDefault();
+                goToSlide(0);
+            } else if (e.key === 'End') {
+                e.preventDefault();
+                goToSlide(totalSlides - 1);
+            }
+        });
+        
+        // 鼠标滚轮导航
+        document.addEventListener('wheel', (e) => {
+            e.preventDefault();
+            if (e.deltaY > 0) {
+                nextSlide();
+            } else {
+                previousSlide();
+            }
+        }, { passive: false });
+    });
+
+    function nextSlide() {
+        currentSlide = (currentSlide + 1) % totalSlides;
+        showSlide(currentSlide);
+    }
+
+    function previousSlide() {
+        currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
+        showSlide(currentSlide);
+    }
+
+    function goToSlide(index) {
+        currentSlide = index;
+        showSlide(currentSlide);
+    }
+
+    function showSlide(index) {
+        // 清理之前的动画
+        animationFrames.forEach(frame => cancelAnimationFrame(frame));
+        animationFrames = [];
+        
+        if (currentAnimation && typeof currentAnimation.stop === 'function') {
+            currentAnimation.stop();
+            currentAnimation = null;
+        }
+        
+        slides.forEach(slide => slide.classList.remove('active'));
+        currentSlide = index;
+        slides[currentSlide].classList.add('active');
+        
+        document.getElementById('page-indicator').textContent = `${currentSlide + 1} / ${totalSlides}`;
+        updateNavButtons();
+        
+        // 运行对应的可视化
+        runVisualization(currentSlide);
+        
+        // 渲染数学公式
+        if (window.MathJax && window.MathJax.typesetPromise) {
+            window.MathJax.typesetPromise([slides[currentSlide]]).catch(error => {
+                console.warn('MathJax rendering failed:', error);
+            });
+        }
+    }
+
+    function updateNavButtons() {
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        
+        if (prevBtn && nextBtn) {
+            prevBtn.disabled = (currentSlide === 0);
+            nextBtn.disabled = (currentSlide === totalSlides - 1);
+        }
+    }
+
+    function initGlobalAnimationControls() {
+        const playPauseBtn = document.getElementById('globalPlayPauseBtn');
+        const speedBtn = document.getElementById('globalSpeedBtn');
+        
+        const speedOptions = [0.5, 1, 1.5, 2, 3];
+        let currentSpeedIndex = 1;
+        
+        playPauseBtn.addEventListener('click', () => {
+            globalAnimationPlaying = !globalAnimationPlaying;
+            playPauseBtn.textContent = globalAnimationPlaying ? '暂停' : '播放';
+        });
+        
+        speedBtn.addEventListener('click', () => {
+            currentSpeedIndex = (currentSpeedIndex + 1) % speedOptions.length;
+            globalAnimationSpeed = speedOptions[currentSpeedIndex];
+            speedBtn.textContent = globalAnimationSpeed + 'x';
+        });
+    }
+
+    function initFloatingMenu() {
+        const menuToggle = document.getElementById('menu-toggle');
+        const menuContent = document.getElementById('menu-content');
+        
+        if (menuToggle && menuContent) {
+            menuToggle.addEventListener('click', function(e) {
+                e.stopPropagation();
+                menuToggle.classList.toggle('active');
+                menuContent.classList.toggle('active');
+            });
+            
+            document.addEventListener('click', function(e) {
+                if (!menuToggle.contains(e.target) && !menuContent.contains(e.target)) {
+                    menuToggle.classList.remove('active');
+                    menuContent.classList.remove('active');
+                }
+            });
+        }
+    }
+
+    // D3.js 辅助函数
+    function setupD3(containerId, margins = {top: 40, right: 40, bottom: 40, left: 40}) {
+        const container = d3.select(`#${containerId}`);
+        if (container.empty()) return null;
+        
+        container.html('');
+        
+        const bounds = container.node().getBoundingClientRect();
+        if (bounds.width === 0 || bounds.height === 0) return null;
+        
+        const svg = container.append('svg')
+            .attr('width', bounds.width)
+            .attr('height', bounds.height);
+        
+        const width = bounds.width - margins.left - margins.right;
+        const height = bounds.height - margins.top - margins.bottom;
+        
+        const g = svg.append('g')
+            .attr('transform', `translate(${margins.left}, ${margins.top})`);
+        
+        return { container, svg, g, width, height };
+    }
+
+    // 可视化函数
+    function runVisualization(slideIndex) {
+        switch(slideIndex) {
+            case 1: visualizeReverseOperations(); break;
+            case 2: visualizeAntiderivative(); break;
+            case 3: visualizeIntegralNotation(); break;
+            case 4: visualizeDerivativeIntegral(); break;
+            case 5: visualizePowerIntegral(); break;
+            case 6: visualizeTrigIntegral(); break;
+            case 7: visualizeExpIntegral(); break;
+            case 8: visualizeDirectIntegral(); break;
+            case 9: visualizeSubstitution(); break;
+            case 10: visualizeParts(); break;
+            case 11: visualizeIntegralMachine(); break;
+            case 12: visualizePhysicsApp(); break;
+            case 13: visualizeCommonMistakes(); break;
+        }
+    }
+
+    // 第2页：逆运算可视化
+    function visualizeReverseOperations() {
+        const setup = setupD3('vis-reverse-operations');
+        if (!setup) return;
+        const { g, width, height } = setup;
+        
+        const operations = [
+            { op1: '加法', op2: '减法', symbol1: '+', symbol2: '-', color1: '#3498db', color2: '#2ecc71' },
+            { op1: '乘法', op2: '除法', symbol1: '×', symbol2: '÷', color1: '#e74c3c', color2: '#f39c12' },
+            { op1: '乘方', op2: '开方', symbol1: 'x²', symbol2: '√', color1: '#9b59b6', color2: '#1abc9c' },
+            { op1: '导数', op2: '积分', symbol1: "d/dx", symbol2: '∫', color1: '#e67e22', color2: '#27ae60' }
+        ];
+        
+        const yPos = d3.scaleBand()
+            .domain(operations.map((d, i) => i))
+            .range([0, height])
+            .padding(0.3);
+        
+        operations.forEach((op, i) => {
+            const group = g.append('g')
+                .attr('transform', `translate(${width/2}, ${yPos(i) + yPos.bandwidth()/2})`)
+                .style('opacity', 0);
+            
+            // 左侧操作
+            const leftBox = group.append('g')
+                .attr('transform', `translate(-150, 0)`);
+            
+            leftBox.append('rect')
+                .attr('x', -60)
+                .attr('y', -30)
+                .attr('width', 120)
+                .attr('height', 60)
+                .attr('rx', 10)
+                .attr('fill', op.color1)
+                .attr('fill-opacity', 0.8)
+                .style('filter', 'drop-shadow(0 4px 8px rgba(0,0,0,0.2))');
+            
+            leftBox.append('text')
+                .attr('text-anchor', 'middle')
+                .attr('dy', '0.3em')
+                .attr('fill', 'white')
+                .attr('font-size', '24px')
+                .attr('font-weight', 'bold')
+                .text(op.symbol1);
+            
+            // 双向箭头
+            const arrow = group.append('g');
+            arrow.append('path')
+                .attr('d', 'M -60 0 L 60 0')
+                .attr('stroke', '#2c3e50')
+                .attr('stroke-width', 3);
+            arrow.append('path')
+                .attr('d', 'M 50 -8 L 60 0 L 50 8 M -50 -8 L -60 0 L -50 8')
+                .attr('stroke', '#2c3e50')
+                .attr('stroke-width', 3)
+                .attr('fill', 'none');
+            
+            // 右侧操作
+            const rightBox = group.append('g')
+                .attr('transform', `translate(150, 0)`);
+            
+            rightBox.append('rect')
+                .attr('x', -60)
+                .attr('y', -30)
+                .attr('width', 120)
+                .attr('height', 60)
+                .attr('rx', 10)
+                .attr('fill', op.color2)
+                .attr('fill-opacity', 0.8)
+                .style('filter', 'drop-shadow(0 4px 8px rgba(0,0,0,0.2))');
+            
+            rightBox.append('text')
+                .attr('text-anchor', 'middle')
+                .attr('dy', '0.3em')
+                .attr('fill', 'white')
+                .attr('font-size', '24px')
+                .attr('font-weight', 'bold')
+                .text(op.symbol2);
+            
+            // 动画
+            group.transition()
+                .delay(i * 300)
+                .duration(800)
+                .style('opacity', 1)
+                .attr('transform', `translate(${width/2}, ${yPos(i) + yPos.bandwidth()/2}) scale(1.05)`)
+                .transition()
+                .duration(300)
+                .attr('transform', `translate(${width/2}, ${yPos(i) + yPos.bandwidth()/2}) scale(1)`);
+            
+            // 特殊强调最后一组
+            if (i === operations.length - 1) {
+                setTimeout(() => {
+                    group.select('rect').transition()
+                        .duration(1000)
+                        .attr('stroke', '#ffd700')
+                        .attr('stroke-width', 3);
+                }, 2000);
+            }
+        });
+    }
+
+    // 第3页：原函数可视化
+    function visualizeAntiderivative() {
+        const setup = setupD3('vis-antiderivative');
+        if (!setup) return;
+        const { g, width, height } = setup;
+        
+        const functions = [
+            { f: 'x²', color: '#3498db' },
+            { f: 'x² + 1', color: '#e74c3c' },
+            { f: 'x² + 5', color: '#2ecc71' },
+            { f: 'x² - 10', color: '#f39c12' }
+        ];
+        
+        const centerX = width / 2;
+        const centerY = height / 2;
+        
+        // 中心节点（导数）
+        const center = g.append('g')
+            .attr('transform', `translate(${centerX}, ${centerY})`)
+            .style('opacity', 0);
+        
+        center.append('circle')
+            .attr('r', 60)
+            .attr('fill', '#9b59b6')
+            .attr('opacity', 0.9)
+            .style('filter', 'drop-shadow(0 4px 10px rgba(155, 89, 182, 0.5))');
+        
+        center.append('text')
+            .attr('text-anchor', 'middle')
+            .attr('dy', '0.3em')
+            .attr('fill', 'white')
+            .attr('font-size', '28px')
+            .attr('font-weight', 'bold')
+            .text("f'(x) = 2x");
+        
+        center.transition()
+            .duration(800)
+            .style('opacity', 1)
+            .attr('transform', `translate(${centerX}, ${centerY}) scale(1.1)`)
+            .transition()
+            .duration(300)
+            .attr('transform', `translate(${centerX}, ${centerY}) scale(1)`);
+        
+        // 原函数节点（围绕中心）
+        functions.forEach((func, i) => {
+            const angle = (i * 2 * Math.PI) / functions.length - Math.PI/2;
+            const x = centerX + Math.cos(angle) * 200;
+            const y = centerY + Math.sin(angle) * 200;
+            
+            const group = g.append('g')
+                .attr('transform', `translate(${centerX}, ${centerY})`)
+                .style('opacity', 0);
+            
+            // 连线
+            const line = g.append('line')
+                .attr('x1', centerX)
+                .attr('y1', centerY)
+                .attr('x2', centerX)
+                .attr('y2', centerY)
+                .attr('stroke', func.color)
+                .attr('stroke-width', 2)
+                .attr('stroke-dasharray', '5,5')
+                .style('opacity', 0);
+            
+            line.transition()
+                .delay(1000 + i * 200)
+                .duration(500)
+                .attr('x2', x)
+                .attr('y2', y)
+                .style('opacity', 0.5);
+            
+            group.append('circle')
+                .attr('r', 45)
+                .attr('fill', func.color)
+                .attr('opacity', 0.8)
+                .style('filter', `drop-shadow(0 4px 8px ${func.color})`);
+            
+            group.append('text')
+                .attr('text-anchor', 'middle')
+                .attr('dy', '0.3em')
+                .attr('fill', 'white')
+                .attr('font-size', '20px')
+                .attr('font-weight', 'bold')
+                .text(func.f);
+            
+            group.transition()
+                .delay(1000 + i * 200)
+                .duration(800)
+                .style('opacity', 1)
+                .attr('transform', `translate(${x}, ${y}) scale(1.1)`)
+                .transition()
+                .duration(300)
+                .attr('transform', `translate(${x}, ${y}) scale(1)`);
+        });
+        
+        // 添加说明文字
+        g.append('text')
+            .attr('x', width / 2)
+            .attr('y', height - 20)
+            .attr('text-anchor', 'middle')
+            .attr('font-size', '16px')
+            .attr('fill', '#7f8c8d')
+            .style('opacity', 0)
+            .text('所有这些函数求导后都得到 2x')
+            .transition()
+            .delay(2500)
+            .duration(800)
+            .style('opacity', 1);
+    }
+
+    // 第4页：积分符号可视化
+    function visualizeIntegralNotation() {
+        const setup = setupD3('vis-integral-notation');
+        if (!setup) return;
+        const { g, width, height } = setup;
+        
+        const parts = [
+            { symbol: '∫', label: '积分号', x: 120, color: '#e74c3c', size: 48 },
+            { symbol: 'f(x)', label: '被积函数', x: 220, color: '#3498db', size: 28 },
+            { symbol: 'dx', label: '积分变量', x: 320, color: '#2ecc71', size: 28 },
+            { symbol: '=', label: '等于', x: 400, color: '#95a5a6', size: 36 },
+            { symbol: 'F(x)', label: '原函数', x: 480, color: '#9b59b6', size: 28 },
+            { symbol: '+ C', label: '常数', x: 580, color: '#f39c12', size: 28 }
+        ];
+        
+        const centerY = height / 2;
+        
+        parts.forEach((part, i) => {
+            const group = g.append('g')
+                .attr('transform', `translate(${part.x}, ${centerY})`)
+                .style('opacity', 0);
+            
+            // 背景圆形
+            if (part.symbol !== '=') {
+                group.append('circle')
+                    .attr('r', 35)
+                    .attr('fill', part.color)
+                    .attr('opacity', 0.1);
+            }
+            
+            // 符号
+            group.append('text')
+                .attr('text-anchor', 'middle')
+                .attr('font-size', `${part.size}px`)
+                .attr('fill', part.color)
+                .attr('font-weight', 'bold')
+                .text(part.symbol);
+            
+            // 标签
+            group.append('text')
+                .attr('text-anchor', 'middle')
+                .attr('y', 60)
+                .attr('font-size', '14px')
+                .attr('fill', '#7f8c8d')
+                .text(part.label);
+            
+            // 动画
+            group.transition()
+                .delay(i * 300)
+                .duration(500)
+                .style('opacity', 1)
+                .attr('transform', `translate(${part.x}, ${centerY - 10}) scale(1.2)`)
+                .transition()
+                .duration(300)
+                .attr('transform', `translate(${part.x}, ${centerY}) scale(1)`);
+        });
+        
+        // 添加连接线动画
+        setTimeout(() => {
+            g.append('path')
+                .attr('d', `M 140 ${centerY} Q ${width/2} ${centerY - 50} 560 ${centerY}`)
+                .attr('stroke', '#95a5a6')
+                .attr('stroke-width', 1)
+                .attr('fill', 'none')
+                .attr('stroke-dasharray', '3,3')
+                .style('opacity', 0)
+                .transition()
+                .duration(1000)
+                .style('opacity', 0.3);
+        }, 2000);
+    }
+
+    // 第5页：导数积分关系可视化
+    function visualizeDerivativeIntegral() {
+        const setup = setupD3('vis-derivative-integral');
+        if (!setup) return;
+        const { svg, g, width, height } = setup;
+        
+        // 创建箭头标记
+        svg.append('defs').append('marker')
+            .attr('id', 'arrowhead')
+            .attr('refX', 9)
+            .attr('refY', 3)
+            .attr('markerWidth', 10)
+            .attr('markerHeight', 6)
+            .attr('orient', 'auto')
+            .append('path')
+            .attr('d', 'M 0 0 L 10 3 L 0 6 Z')
+            .attr('fill', '#2c3e50');
+        
+        const boxWidth = 160;
+        const boxHeight = 80;
+        const centerY = height / 2;
+        
+        // 原函数框
+        const originalBox = g.append('g')
+            .attr('transform', `translate(80, ${centerY - boxHeight/2})`)
+            .style('opacity', 0);
+        
+        originalBox.append('rect')
+            .attr('width', boxWidth)
+            .attr('height', boxHeight)
+            .attr('class', 'machine-box')
+            .attr('fill', 'white')
+            .attr('stroke', '#9b59b6')
+            .attr('stroke-width', 3)
+            .attr('rx', 10);
+        
+        originalBox.append('text')
+            .attr('x', boxWidth/2)
+            .attr('y', boxHeight/2)
+            .attr('text-anchor', 'middle')
+            .attr('dy', '0.3em')
+            .attr('font-size', '24px')
+            .attr('fill', '#9b59b6')
+            .text('F(x) = x²');
+        
+        originalBox.transition()
+            .duration(800)
+            .style('opacity', 1);
+        
+        // 导函数框
+        const derivativeBox = g.append('g')
+            .attr('transform', `translate(${width - 240}, ${centerY - boxHeight/2})`)
+            .style('opacity', 0);
+        
+        derivativeBox.append('rect')
+            .attr('width', boxWidth)
+            .attr('height', boxHeight)
+            .attr('class', 'machine-box')
+            .attr('fill', 'white')
+            .attr('stroke', '#3498db')
+            .attr('stroke-width', 3)
+            .attr('rx', 10);
+        
+        derivativeBox.append('text')
+            .attr('x', boxWidth/2)
+            .attr('y', boxHeight/2)
+            .attr('text-anchor', 'middle')
+            .attr('dy', '0.3em')
+            .attr('font-size', '24px')
+            .attr('fill', '#3498db')
+            .text("f(x) = 2x");
+        
+        derivativeBox.transition()
+            .delay(500)
+            .duration(800)
+            .style('opacity', 1);
+        
+        // 上箭头（求导）
+        const topArrow = g.append('g')
+            .style('opacity', 0);
+        
+        topArrow.append('path')
+            .attr('d', `M 240 ${centerY - 20} Q ${width/2} ${centerY - 80} ${width - 240} ${centerY - 20}`)
+            .attr('class', 'arrow-path')
+            .attr('stroke', '#3498db')
+            .attr('stroke-width', 3);
+        
+        topArrow.append('text')
+            .attr('x', width/2)
+            .attr('y', centerY - 90)
+            .attr('text-anchor', 'middle')
+            .attr('font-size', '18px')
+            .attr('fill', '#3498db')
+            .attr('font-weight', 'bold')
+            .text('求导 d/dx');
+        
+        topArrow.transition()
+            .delay(1300)
+            .duration(800)
+            .style('opacity', 1);
+        
+        // 下箭头（积分）
+        const bottomArrow = g.append('g')
+            .style('opacity', 0);
+        
+        bottomArrow.append('path')
+            .attr('d', `M ${width - 240} ${centerY + 20} Q ${width/2} ${centerY + 80} 240 ${centerY + 20}`)
+            .attr('class', 'arrow-path')
+            .attr('stroke', '#e67e22')
+            .attr('stroke-width', 3);
+        
+        bottomArrow.append('text')
+            .attr('x', width/2)
+            .attr('y', centerY + 100)
+            .attr('text-anchor', 'middle')
+            .attr('font-size', '18px')
+            .attr('fill', '#e67e22')
+            .attr('font-weight', 'bold')
+            .text('积分 ∫...dx (+C)');
+        
+        bottomArrow.transition()
+            .delay(2100)
+            .duration(800)
+            .style('opacity', 1);
+    }
+
+    // 第6页：幂函数积分可视化
+    function visualizePowerIntegral() {
+        const setup = setupD3('vis-power-integral');
+        if (!setup) return;
+        const { g, width, height } = setup;
+        
+        const examples = [
+            { input: 'x²', output: 'x³/3 + C', step: '指数+1=3, ÷3', color: '#3498db' },
+            { input: 'x³', output: 'x⁴/4 + C', step: '指数+1=4, ÷4', color: '#e74c3c' },
+            { input: '√x', output: '(2/3)x^(3/2) + C', step: '1/2+1=3/2, ÷3/2', color: '#2ecc71' }
+        ];
+        
+        const yPos = d3.scaleBand()
+            .domain(examples.map((d, i) => i))
+            .range([50, height - 50])
+            .padding(0.2);
+        
+        examples.forEach((ex, i) => {
+            const y = yPos(i) + yPos.bandwidth()/2;
+            const group = g.append('g')
+                .style('opacity', 0);
+            
+            // 输入框
+            const inputGroup = group.append('g');
+            inputGroup.append('rect')
+                .attr('x', 30)
+                .attr('y', y - 30)
+                .attr('width', 120)
+                .attr('height', 60)
+                .attr('rx', 8)
+                .attr('fill', ex.color)
+                .attr('opacity', 0.2);
+            
+            inputGroup.append('text')
+                .attr('x', 90)
+                .attr('y', y)
+                .attr('text-anchor', 'middle')
+                .attr('dy', '0.3em')
+                .attr('font-size', '24px')
+                .attr('font-weight', 'bold')
+                .text(ex.input);
+            
+            // 箭头和步骤
+            group.append('path')
+                .attr('d', `M 160 ${y} L 250 ${y}`)
+                .attr('stroke', '#7f8c8d')
+                .attr('stroke-width', 3)
+                .attr('marker-end', 'url(#arrowhead)');
+            
+            group.append('text')
+                .attr('x', 205)
+                .attr('y', y - 25)
+                .attr('text-anchor', 'middle')
+                .attr('font-size', '12px')
+                .attr('fill', '#7f8c8d')
+                .text(ex.step);
+            
+            // 输出框
+            const outputGroup = group.append('g');
+            outputGroup.append('rect')
+                .attr('x', 270)
+                .attr('y', y - 30)
+                .attr('width', 180)
+                .attr('height', 60)
+                .attr('rx', 8)
+                .attr('fill', '#2ecc71')
+                .attr('opacity', 0.2);
+            
+            outputGroup.append('text')
+                .attr('x', 360)
+                .attr('y', y)
+                .attr('text-anchor', 'middle')
+                .attr('dy', '0.3em')
+                .attr('font-size', '22px')
+                .attr('font-weight', 'bold')
+                .text(ex.output);
+            
+            // 动画
+            group.transition()
+                .delay(i * 600)
+                .duration(800)
+                .style('opacity', 1);
+            
+            // 输入框脉动
+            inputGroup.select('rect')
+                .transition()
+                .delay(i * 600 + 800)
+                .duration(300)
+                .attr('opacity', 0.4)
+                .transition()
+                .duration(300)
+                .attr('opacity', 0.2);
+        });
+    }
+
+    // 第7页：三角函数积分可视化
+    function visualizeTrigIntegral() {
+        const setup = setupD3('vis-trig-integral');
+        if (!setup) return;
+        const { g, width, height } = setup;
+        
+        // 创建正弦余弦的动画曲线
+        const xScale = d3.scaleLinear()
+            .domain([0, 2 * Math.PI])
+            .range([50, width - 50]);
+        
+        const yScale = d3.scaleLinear()
+            .domain([-2, 2])
+            .range([height - 50, 50]);
+        
+        // 坐标轴
+        const xAxis = g.append('g')
+            .attr('transform', `translate(0, ${yScale(0)})`)
+            .style('opacity', 0);
+        
+        xAxis.append('line')
+            .attr('x1', xScale(0))
+            .attr('x2', xScale(2 * Math.PI))
+            .attr('stroke', '#95a5a6')
+            .attr('stroke-width', 2);
+        
+        xAxis.transition()
+            .duration(500)
+            .style('opacity', 1);
+        
+        // sin(x) 曲线
+        const sinData = d3.range(0, 2 * Math.PI, 0.05).map(x => ({x: x, y: Math.sin(x)}));
+        const sinLine = d3.line()
+            .x(d => xScale(d.x))
+            .y(d => yScale(d.y))
+            .curve(d3.curveMonotoneX);
+        
+        const sinPath = g.append('path')
+            .datum(sinData)
+            .attr('d', sinLine)
+            .attr('fill', 'none')
+            .attr('stroke', '#e74c3c')
+            .attr('stroke-width', 3)
+            .attr('stroke-dasharray', function() { 
+                const length = this.getTotalLength();
+                return `${length} ${length}`;
+            })
+            .attr('stroke-dashoffset', function() { 
+                return this.getTotalLength();
+            });
+        
+        // cos(x) 曲线
+        const cosData = d3.range(0, 2 * Math.PI, 0.05).map(x => ({x: x, y: Math.cos(x)}));
+        const cosLine = d3.line()
+            .x(d => xScale(d.x))
+            .y(d => yScale(d.y))
+            .curve(d3.curveMonotoneX);
+        
+        const cosPath = g.append('path')
+            .datum(cosData)
+            .attr('d', cosLine)
+            .attr('fill', 'none')
+            .attr('stroke', '#3498db')
+            .attr('stroke-width', 3)
+            .attr('stroke-dasharray', function() { 
+                const length = this.getTotalLength();
+                return `${length} ${length}`;
+            })
+            .attr('stroke-dashoffset', function() { 
+                return this.getTotalLength();
+            });
+        
+        // 标签
+        const sinLabel = g.append('text')
+            .attr('x', xScale(Math.PI/2))
+            .attr('y', yScale(1.5))
+            .attr('text-anchor', 'middle')
+            .attr('font-size', '18px')
+            .attr('fill', '#e74c3c')
+            .attr('font-weight', 'bold')
+            .style('opacity', 0)
+            .text('sin(x) → -cos(x) + C');
+        
+        const cosLabel = g.append('text')
+            .attr('x', xScale(3*Math.PI/2))
+            .attr('y', yScale(-1.5))
+            .attr('text-anchor', 'middle')
+            .attr('font-size', '18px')
+            .attr('fill', '#3498db')
+            .attr('font-weight', 'bold')
+            .style('opacity', 0)
+            .text('cos(x) → sin(x) + C');
+        
+        // 动画
+        sinPath.transition()
+            .duration(2000)
+            .attr('stroke-dashoffset', 0);
+        
+        cosPath.transition()
+            .delay(500)
+            .duration(2000)
+            .attr('stroke-dashoffset', 0);
+        
+        sinLabel.transition()
+            .delay(2000)
+            .duration(800)
+            .style('opacity', 1);
+        
+        cosLabel.transition()
+            .delay(2500)
+            .duration(800)
+            .style('opacity', 1);
+        
+        // 添加周期标记
+        [0, Math.PI, 2*Math.PI].forEach((x, i) => {
+            const label = i === 0 ? '0' : i === 1 ? 'π' : '2π';
+            g.append('text')
+                .attr('x', xScale(x))
+                .attr('y', yScale(0) + 20)
+                .attr('text-anchor', 'middle')
+                .attr('font-size', '14px')
+                .attr('fill', '#7f8c8d')
+                .style('opacity', 0)
+                .text(label)
+                .transition()
+                .delay(3000)
+                .duration(500)
+                .style('opacity', 1);
+        });
+    }
+
+    // 第8页：指数函数积分可视化
+    function visualizeExpIntegral() {
+        const setup = setupD3('vis-exp-integral');
+        if (!setup) return;
+        const { g, width, height } = setup;
+        
+        const centerX = width / 2;
+        const centerY = height / 2;
+        
+        // e^x 的特殊性质展示
+        const expGroup = g.append('g')
+            .attr('transform', `translate(${centerX}, ${centerY - 100})`);
+        
+        // 圆形展示 e^x 的自我性质
+        const circle = expGroup.append('circle')
+            .attr('r', 0)
+            .attr('fill', 'none')
+            .attr('stroke', '#9b59b6')
+            .attr('stroke-width', 4)
+            .attr('stroke-dasharray', '10,5');
+        
+        circle.transition()
+            .duration(1000)
+            .attr('r', 100);
+        
+        // 中心文字
+        const centerText = expGroup.append('g')
+            .style('opacity', 0);
+        
+        centerText.append('text')
+            .attr('text-anchor', 'middle')
+            .attr('y', -20)
+            .attr('font-size', '32px')
+            .attr('fill', '#9b59b6')
+            .attr('font-weight', 'bold')
+            .text('e^x');
+        
+        centerText.append('text')
+            .attr('text-anchor', 'middle')
+            .attr('y', 10)
+            .attr('font-size', '18px')
+            .attr('fill', '#7f8c8d')
+            .text('求导→e^x');
+        
+        centerText.append('text')
+            .attr('text-anchor', 'middle')
+            .attr('y', 35)
+            .attr('font-size', '18px')
+            .attr('fill', '#7f8c8d')
+            .text('积分→e^x + C');
+        
+        centerText.transition()
+            .delay(500)
+            .duration(800)
+            .style('opacity', 1);
+        
+        // 环绕箭头
+        const arrowPath = expGroup.append('path')
+            .attr('d', d3.arc()({
+                innerRadius: 110,
+                outerRadius: 110,
+                startAngle: 0,
+                endAngle: Math.PI * 1.8
+            }))
+            .attr('fill', 'none')
+            .attr('stroke', '#9b59b6')
+            .attr('stroke-width', 2)
+            .attr('marker-end', 'url(#arrowhead)')
+            .style('opacity', 0);
+        
+        arrowPath.transition()
+            .delay(1500)
+            .duration(1000)
+            .style('opacity', 1);
+        
+        // 1/x 的特殊性质
+        const lnGroup = g.append('g')
+            .attr('transform', `translate(${centerX}, ${centerY + 120})`);
+        
+        const lnBox = lnGroup.append('rect')
+            .attr('x', -150)
+            .attr('y', -40)
+            .attr('width', 300)
+            .attr('height', 80)
+            .attr('rx', 10)
+            .attr('fill', '#f39c12')
+            .attr('opacity', 0);
+        
+        lnBox.transition()
+            .delay(2000)
+            .duration(800)
+            .attr('opacity', 0.2);
+        
+        const lnText = lnGroup.append('text')
+            .attr('text-anchor', 'middle')
+            .attr('font-size', '24px')
+            .attr('fill', '#f39c12')
+            .attr('font-weight', 'bold')
+            .style('opacity', 0)
+            .text('∫ 1/x dx = ln|x| + C');
+        
+        lnText.transition()
+            .delay(2200)
+            .duration(800)
+            .style('opacity', 1);
+        
+        // 添加提示
+        g.append('text')
+            .attr('x', centerX)
+            .attr('y', height - 30)
+            .attr('text-anchor', 'middle')
+            .attr('font-size', '16px')
+            .attr('fill', '#e74c3c')
+            .style('opacity', 0)
+            .text('⚠️ 注意：ln|x| 要加绝对值！')
+            .transition()
+            .delay(3000)
+            .duration(800)
+            .style('opacity', 1);
+    }
+
+    // 第9页：直接积分法可视化
+    function visualizeDirectIntegral() {
+        const setup = setupD3('vis-direct-integral');
+        if (!setup) return;
+        const { g, width, height } = setup;
+        
+        const steps = [
+            { text: '∫(3x² + 2x - 5)dx', y: 50, color: '#2c3e50', size: 28 },
+            { text: '= 3∫x²dx + 2∫xdx - 5∫1dx', y: 130, color: '#3498db', size: 24 },
+            { text: '= 3·(x³/3) + 2·(x²/2) - 5·x + C', y: 210, color: '#e67e22', size: 24 },
+            { text: '= x³ + x² - 5x + C', y: 290, color: '#2ecc71', size: 28 }
+        ];
+        
+        steps.forEach((step, i) => {
+            const group = g.append('g')
+                .attr('transform', `translate(${width/2}, ${step.y})`)
+                .style('opacity', 0);
+            
+            // 背景
+            if (i === steps.length - 1) {
+                group.append('rect')
+                    .attr('x', -200)
+                    .attr('y', -25)
+                    .attr('width', 400)
+                    .attr('height', 50)
+                    .attr('rx', 10)
+                    .attr('fill', '#2ecc71')
+                    .attr('opacity', 0.1);
+            }
+            
+            const text = group.append('text')
+                .attr('text-anchor', 'middle')
+                .attr('font-size', `${step.size}px`)
+                .attr('fill', step.color)
+                .attr('font-weight', i === 0 || i === steps.length - 1 ? 'bold' : 'normal')
+                .text(step.text);
+            
+            // 动画
+            group.transition()
+                .delay(i * 800)
+                .duration(600)
+                .style('opacity', 1)
+                .attr('transform', `translate(${width/2}, ${step.y - 10})`)
+                .transition()
+                .duration(300)
+                .attr('transform', `translate(${width/2}, ${step.y})`);
+            
+            // 添加下箭头
+            if (i < steps.length - 1) {
+                g.append('path')
+                    .attr('d', `M ${width/2} ${step.y + 30} L ${width/2} ${step.y + 50}`)
+                    .attr('stroke', '#95a5a6')
+                    .attr('stroke-width', 2)
+                    .attr('marker-end', 'url(#arrowhead)')
+                    .style('opacity', 0)
+                    .transition()
+                    .delay(i * 800 + 600)
+                    .duration(400)
+                    .style('opacity', 0.5);
+            }
+        });
+    }
+
+    // 第10页：换元法可视化
+    function visualizeSubstitution() {
+        const setup = setupD3('vis-substitution');
+        if (!setup) return;
+        const { g, width, height } = setup;
+        
+        const steps = [
+            { text: '∫ 2x·e^(x²) dx', color: '#2c3e50', highlight: false },
+            { text: '令 u = x²', color: '#3498db', highlight: true },
+            { text: '则 du = 2x dx', color: '#3498db', highlight: true },
+            { text: '原式 = ∫ e^u du', color: '#e67e22', highlight: false },
+            { text: '= e^u + C', color: '#e67e22', highlight: false },
+            { text: '= e^(x²) + C', color: '#2ecc71', highlight: false }
+        ];
+        
+        const yPos = d3.scaleBand()
+            .domain(steps.map((d, i) => i))
+            .range([50, height - 50])
+            .padding(0.1);
+        
+        steps.forEach((step, i) => {
+            const y = yPos(i);
+            const group = g.append('g')
+                .attr('transform', `translate(${width/2}, ${y})`)
+                .style('opacity', 0);
+            
+            // 高亮框
+            if (step.highlight) {
+                group.append('rect')
+                    .attr('x', -180)
+                    .attr('y', -20)
+                    .attr('width', 360)
+                    .attr('height', 40)
+                    .attr('rx', 5)
+                    .attr('fill', '#3498db')
+                    .attr('opacity', 0.1);
+            }
+            
+            // 文字
+            group.append('text')
+                .attr('text-anchor', 'middle')
+                .attr('font-size', '22px')
+                .attr('fill', step.color)
+                .attr('font-weight', i === 0 || i === steps.length - 1 ? 'bold' : 'normal')
+                .text(step.text);
+            
+            // 动画
+            group.transition()
+                .delay(i * 600)
+                .duration(500)
+                .style('opacity', 1);
+            
+            // 特殊动画：换元步骤
+            if (i === 1 || i === 2) {
+                group.select('rect')
+                    .transition()
+                    .delay(i * 600 + 500)
+                    .duration(300)
+                    .attr('opacity', 0.3)
+                    .transition()
+                    .duration(300)
+                    .attr('opacity', 0.1);
+            }
+        });
+        
+        // 添加连接箭头
+        setTimeout(() => {
+            const arrow = g.append('path')
+                .attr('d', `M ${width/2 - 100} ${yPos(2) + 20} Q ${width/2} ${yPos(2) + 60} ${width/2 + 100} ${yPos(3) - 20}`)
+                .attr('stroke', '#e67e22')
+                .attr('stroke-width', 2)
+                .attr('fill', 'none')
+                .attr('marker-end', 'url(#arrowhead)')
+                .style('opacity', 0);
+            
+            arrow.transition()
+                .duration(800)
+                .style('opacity', 0.7);
+        }, 2000);
+    }
+
+    // 第11页：分部积分法可视化
+    function visualizeParts() {
+        const setup = setupD3('vis-parts');
+        if (!setup) return;
+        const { g, width, height } = setup;
+        
+        // 创建分部积分的步骤展示
+        const formula = g.append('g')
+            .attr('transform', `translate(${width/2}, 60)`);
+        
+        // 公式背景
+        formula.append('rect')
+            .attr('x', -220)
+            .attr('y', -30)
+            .attr('width', 440)
+            .attr('height', 60)
+            .attr('rx', 10)
+            .attr('fill', '#9b59b6')
+            .attr('opacity', 0);
+        
+        formula.select('rect')
+            .transition()
+            .duration(800)
+            .attr('opacity', 0.2);
+        
+        formula.append('text')
+            .attr('text-anchor', 'middle')
+            .attr('font-size', '24px')
+            .attr('font-weight', 'bold')
+            .attr('fill', '#9b59b6')
+            .style('opacity', 0)
+            .text('∫ u·dv = u·v - ∫ v·du')
+            .transition()
+            .delay(300)
+            .duration(800)
+            .style('opacity', 1);
+        
+        // 例题步骤
+        const example = [
+            { text: '∫ x·e^x dx', y: 140, color: '#2c3e50' },
+            { text: 'u = x, dv = e^x dx', y: 190, color: '#3498db' },
+            { text: 'du = dx, v = e^x', y: 240, color: '#3498db' },
+            { text: '= x·e^x - ∫ e^x dx', y: 290, color: '#e67e22' },
+            { text: '= x·e^x - e^x + C', y: 340, color: '#2ecc71' },
+            { text: '= e^x(x - 1) + C', y: 390, color: '#2ecc71' }
+        ];
+        
+        example.forEach((step, i) => {
+            const group = g.append('g')
+                .attr('transform', `translate(${width/2}, ${step.y})`)
+                .style('opacity', 0);
+            
+            // 特殊背景
+            if (i === example.length - 1) {
+                group.append('rect')
+                    .attr('x', -150)
+                    .attr('y', -20)
+                    .attr('width', 300)
+                    .attr('height', 40)
+                    .attr('rx', 8)
+                    .attr('fill', '#2ecc71')
+                    .attr('opacity', 0.1);
+            }
+            
+            group.append('text')
+                .attr('text-anchor', 'middle')
+                .attr('font-size', '20px')
+                .attr('fill', step.color)
+                .attr('font-weight', i === 0 || i >= example.length - 2 ? 'bold' : 'normal')
+                .text(step.text);
+            
+            group.transition()
+                .delay(1200 + i * 500)
+                .duration(600)
+                .style('opacity', 1);
+        });
+        
+        // 添加选择u的提示
+        const tip = g.append('g')
+            .attr('transform', `translate(50, 250)`)
+            .style('opacity', 0);
+        
+        tip.append('rect')
+            .attr('x', -10)
+            .attr('y', -10)
+            .attr('width', 180)
+            .attr('height', 80)
+            .attr('rx', 8)
+            .attr('fill', '#f39c12')
+            .attr('opacity', 0.1);
+        
+        tip.append('text')
+            .attr('font-size', '14px')
+            .attr('fill', '#f39c12')
+            .text('口诀：反对幂指三');
+        
+        tip.append('text')
+            .attr('y', 25)
+            .attr('font-size', '12px')
+            .attr('fill', '#7f8c8d')
+            .text('反三角>对数>幂>指数>三角');
+        
+        tip.transition()
+            .delay(4000)
+            .duration(800)
+            .style('opacity', 1);
+    }
+
+    // 第12页：积分机器可视化
+    function visualizeIntegralMachine() {
+        const setup = setupD3('vis-integral-machine');
+        if (!setup) return;
+        const { g, width, height } = setup;
+        
+        const centerX = width / 2;
+        const centerY = height / 2;
+        
+        // 创建积分机器
+        const machine = g.append('g')
+            .attr('transform', `translate(${centerX}, ${centerY})`)
+            .style('opacity', 0);
+        
+        // 机器主体
+        const machineBody = machine.append('g');
+        
+        // 创建渐变
+        const defs = g.append('defs');
+        const gradient = defs.append('linearGradient')
+            .attr('id', 'machineGradient')
+            .attr('x1', '0%')
+            .attr('y1', '0%')
+            .attr('x2', '0%')
+            .attr('y2', '100%');
+        
+        gradient.append('stop')
+            .attr('offset', '0%')
+            .attr('stop-color', '#667eea');
+        
+        gradient.append('stop')
+            .attr('offset', '100%')
+            .attr('stop-color', '#764ba2');
+        
+        machineBody.append('rect')
+            .attr('x', -150)
+            .attr('y', -75)
+            .attr('width', 300)
+            .attr('height', 150)
+            .attr('rx', 20)
+            .attr('fill', 'url(#machineGradient)')
+            .attr('stroke', '#7f8c8d')
+            .attr('stroke-width', 3)
+            .style('filter', 'drop-shadow(0 10px 20px rgba(0,0,0,0.3))');
+        
+        // 积分符号
+        machine.append('text')
+            .attr('x', -100)
+            .attr('y', 10)
+            .attr('font-size', '60px')
+            .attr('fill', 'white')
+            .attr('opacity', 0.3)
+            .text('∫');
+        
+        machine.append('text')
+            .attr('x', 70)
+            .attr('y', 10)
+            .attr('font-size', '30px')
+            .attr('fill', 'white')
+            .attr('opacity', 0.3)
+            .text('dx');
+        
+        // 机器名称
+        machine.append('text')
+            .attr('text-anchor', 'middle')
+            .attr('y', 0)
+            .attr('font-size', '20px')
+            .attr('fill', 'white')
+            .attr('font-weight', 'bold')
+            .text('积分机器');
+        
+        machine.transition()
+            .duration(1000)
+            .style('opacity', 1);
+        
+        // 输入输出示例动画
+        const examples = [
+            { input: '2x', output: 'x² + C' },
+            { input: 'cos x', output: 'sin x + C' },
+            { input: 'e^x', output: 'e^x + C' }
+        ];
+        
+        let exampleIndex = 0;
+        
+        function animateExample() {
+            if (exampleIndex >= examples.length) {
+                exampleIndex = 0;
+            }
+            
+            const ex = examples[exampleIndex];
+            
+            // 输入动画
+            const inputText = g.append('text')
+                .attr('x', centerX - 300)
+                .attr('y', centerY)
+                .attr('font-size', '28px')
+                .attr('fill', '#3498db')
+                .attr('font-weight', 'bold')
+                .text(ex.input)
+                .style('opacity', 0);
+            
+            inputText.transition()
+                .duration(500)
+                .style('opacity', 1)
+                .transition()
+                .duration(1000)
+                .attr('x', centerX - 150)
+                .transition()
+                .duration(300)
+                .style('opacity', 0)
+                .remove();
+            
+            // 机器处理动画
+            setTimeout(() => {
+                machine.transition()
+                    .duration(300)
+                    .attr('transform', `translate(${centerX}, ${centerY}) scale(1.1)`)
+                    .transition()
+                    .duration(300)
+                    .attr('transform', `translate(${centerX}, ${centerY}) scale(1)`);
+            }, 1500);
+            
+            // 输出动画
+            setTimeout(() => {
+                const outputText = g.append('text')
+                    .attr('x', centerX + 150)
+                    .attr('y', centerY)
+                    .attr('font-size', '28px')
+                    .attr('fill', '#2ecc71')
+                    .attr('font-weight', 'bold')
+                    .text(ex.output)
+                    .style('opacity', 0);
+                
+                outputText.transition()
+                    .duration(500)
+                    .style('opacity', 1)
+                    .transition()
+                    .duration(1000)
+                    .attr('x', centerX + 300)
+                    .transition()
+                    .delay(1000)
+                    .duration(500)
+                    .style('opacity', 0)
+                    .remove();
+            }, 2000);
+            
+            exampleIndex++;
+        }
+        
+        // 开始动画循环
+        setTimeout(() => {
+            animateExample();
+            currentAnimation = {
+                intervalId: setInterval(animateExample, 5000),
+                stop: function() {
+                    clearInterval(this.intervalId);
+                }
+            };
+        }, 1500);
+    }
+
+    // 第13页：物理应用可视化
+    function visualizePhysicsApp() {
+        const setup = setupD3('vis-physics-app');
+        if (!setup) return;
+        const { g, width, height } = setup;
+        
+        // 创建坐标系
+        const margin = { top: 20, right: 20, bottom: 40, left: 60 };
+        const chartWidth = width - margin.left - margin.right;
+        const chartHeight = height - margin.top - margin.bottom;
+        
+        const xScale = d3.scaleLinear()
+            .domain([0, 5])
+            .range([0, chartWidth]);
+        
+        const yScale = d3.scaleLinear()
+            .domain([0, 100])
+            .range([chartHeight, 0]);
+        
+        const chart = g.append('g')
+            .attr('transform', `translate(${margin.left}, ${margin.top})`);
+        
+        // 坐标轴
+        chart.append('g')
+            .attr('transform', `translate(0, ${chartHeight})`)
+            .call(d3.axisBottom(xScale))
+            .append('text')
+            .attr('x', chartWidth / 2)
+            .attr('y', 35)
+            .attr('fill', '#2c3e50')
+            .style('text-anchor', 'middle')
+            .text('时间 t (秒)');
+        
+        chart.append('g')
+            .call(d3.axisLeft(yScale))
+            .append('text')
+            .attr('transform', 'rotate(-90)')
+            .attr('y', -40)
+            .attr('x', -chartHeight / 2)
+            .attr('fill', '#2c3e50')
+            .style('text-anchor', 'middle')
+            .text('速度 v (米/秒)');
+        
+        // 速度函数 v(t) = 3t² + 2t
+        const vData = d3.range(0, 5.1, 0.1).map(t => ({
+            t: t,
+            v: 3 * t * t + 2 * t
+        }));
+        
+        const line = d3.line()
+            .x(d => xScale(d.t))
+            .y(d => yScale(d.v))
+            .curve(d3.curveMonotoneX);
+        
+        // 绘制速度曲线
+        const path = chart.append('path')
+            .datum(vData)
+            .attr('d', line)
+            .attr('fill', 'none')
+            .attr('stroke', '#e74c3c')
+            .attr('stroke-width', 3)
+            .attr('stroke-dasharray', function() { 
+                const length = this.getTotalLength();
+                return `${length} ${length}`;
+            })
+            .attr('stroke-dashoffset', function() { 
+                return this.getTotalLength();
+            });
+        
+        // 标签
+        const velocityLabel = g.append('text')
+            .attr('x', width / 2)
+            .attr('y', 30)
+            .attr('text-anchor', 'middle')
+            .attr('font-size', '20px')
+            .attr('font-weight', 'bold')
+            .attr('fill', '#e74c3c')
+            .style('opacity', 0)
+            .text('速度函数: v(t) = 3t² + 2t');
+        
+        const displacementLabel = g.append('text')
+            .attr('x', width / 2)
+            .attr('y', height - 10)
+            .attr('text-anchor', 'middle')
+            .attr('font-size', '18px')
+            .attr('fill', '#2ecc71')
+            .style('opacity', 0)
+            .text('位移: s(t) = t³ + t² + C');
+        
+        // 动画
+        path.transition()
+            .duration(2000)
+            .attr('stroke-dashoffset', 0);
+        
+        velocityLabel.transition()
+            .delay(500)
+            .duration(800)
+            .style('opacity', 1);
+        
+        displacementLabel.transition()
+            .delay(2000)
+            .duration(800)
+            .style('opacity', 1);
+        
+        // 添加动态点
+        const movingDot = chart.append('circle')
+            .attr('r', 6)
+            .attr('fill', '#e74c3c')
+            .attr('stroke', 'white')
+            .attr('stroke-width', 2)
+            .style('opacity', 0);
+        
+        const timeText = g.append('text')
+            .attr('x', margin.left + 20)
+            .attr('y', margin.top + 20)
+            .attr('font-size', '16px')
+            .attr('fill', '#2c3e50')
+            .style('opacity', 0);
+        
+        // 动态移动点
+        let t = 0;
+        function animateDot() {
+            if (!globalAnimationPlaying) {
+                setTimeout(animateDot, 100);
+                return;
+            }
+            
+            t += 0.05 / globalAnimationSpeed;
+            if (t > 5) t = 0;
+            
+            const v = 3 * t * t + 2 * t;
+            const s = t * t * t + t * t;
+            
+            movingDot
+                .attr('cx', xScale(t))
+                .attr('cy', yScale(v))
+                .style('opacity', 1);
+            
+            timeText
+                .text(`t = ${t.toFixed(1)}s, v = ${v.toFixed(1)}m/s, s = ${s.toFixed(1)}m`)
+                .style('opacity', 1);
+            
+            animationFrames.push(requestAnimationFrame(animateDot));
+        }
+        
+        setTimeout(() => {
+            animateDot();
+        }, 2500);
+    }
+
+    // 第14页：常见错误可视化
+    function visualizeCommonMistakes() {
+        const setup = setupD3('vis-common-mistakes');
+        if (!setup) return;
+        const { g, width, height } = setup;
+        
+        const mistakes = [
+            {
+                wrong: '∫ 2x dx = x²',
+                correct: '∫ 2x dx = x² + C',
+                note: '别忘了 +C！',
+                color: '#e74c3c'
+            },
+            {
+                wrong: '∫ x² dx = x²/2 + C',
+                correct: '∫ x² dx = x³/3 + C',
+                note: '指数要加1',
+                color: '#f39c12'
+            },
+            {
+                wrong: '∫ 1/x dx = ln x + C',
+                correct: '∫ 1/x dx = ln|x| + C',
+                note: '需要绝对值',
+                color: '#9b59b6'
+            }
+        ];
+        
+        const yPos = d3.scaleBand()
+            .domain(mistakes.map((d, i) => i))
+            .range([50, height - 50])
+            .padding(0.3);
+        
+        mistakes.forEach((mistake, i) => {
+            const y = yPos(i);
+            const group = g.append('g')
+                .style('opacity', 0);
+            
+            // 错误示例
+            const wrongGroup = group.append('g');
+            wrongGroup.append('rect')
+                .attr('x', 30)
+                .attr('y', y)
+                .attr('width', 200)
+                .attr('height', 50)
+                .attr('rx', 8)
+                .attr('fill', '#e74c3c')
+                .attr('opacity', 0.1);
+            
+            wrongGroup.append('text')
+                .attr('x', 40)
+                .attr('y', y + 30)
+                .attr('font-size', '18px')
+                .attr('fill', '#e74c3c')
+                .text('❌ ' + mistake.wrong);
+            
+            // 正确示例
+            const correctGroup = group.append('g');
+            correctGroup.append('rect')
+                .attr('x', 250)
+                .attr('y', y)
+                .attr('width', 200)
+                .attr('height', 50)
+                .attr('rx', 8)
+                .attr('fill', '#2ecc71')
+                .attr('opacity', 0.1);
+            
+            correctGroup.append('text')
+                .attr('x', 260)
+                .attr('y', y + 30)
+                .attr('font-size', '18px')
+                .attr('fill', '#2ecc71')
+                .text('✓ ' + mistake.correct);
+            
+            // 注释
+            const noteText = group.append('text')
+                .attr('x', 470)
+                .attr('y', y + 30)
+                .attr('font-size', '16px')
+                .attr('fill', mistake.color)
+                .attr('font-weight', 'bold')
+                .text('💡 ' + mistake.note);
+            
+            // 动画
+            group.transition()
+                .delay(i * 600)
+                .duration(800)
+                .style('opacity', 1);
+            
+            // 错误闪烁提醒
+            wrongGroup.select('rect')
+                .transition()
+                .delay(i * 600 + 800)
+                .duration(300)
+                .attr('opacity', 0.3)
+                .transition()
+                .duration(300)
+                .attr('opacity', 0.1);
+        });
+    }
+</script>
+
+<!-- 渲染数学公式 -->
+<script>
+    if (window.MathJax && window.MathJax.startup) {
+        window.MathJax.startup.document.clear();
+        window.MathJax.startup.document.updateDocument();
+    }
+</script>
+
+</body>
+</html>

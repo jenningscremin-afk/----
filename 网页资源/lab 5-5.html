@@ -1,0 +1,519 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>分部积分法实验室</title>
+
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']] },
+            options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre'] }
+        };
+    </script>
+    <script defer src="../common-assets/js/mathjax-3.2.2-tex-svg.min.js"></script>
+    <style>
+    :root {
+        --primary: #4f46e5;
+        --primary-dark: #3730a3;
+        --primary-light: #6366f1;
+        --success: #10b981;
+        --warning: #f59e0b;
+        --danger: #ef4444;
+        --gray-50: #f9fafb;
+        --gray-100: #f3f4f6;
+        --gray-200: #e5e7eb;
+        --gray-300: #d1d5db;
+        --gray-500: #6b7280;
+        --gray-600: #4b5563;
+        --gray-700: #1f2937;
+        --white: #ffffff;
+        --light: #ffffff;
+        --border: #e5e7eb;
+        --h1-size: 22px;
+        --h3-size: 18px;
+        --text-size: 16px;
+        --formula-size: 20px;
+    }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        *::-webkit-scrollbar { width: 0; background: transparent; }
+        * { scrollbar-width: none; -ms-overflow-style: none; }
+
+            body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
+        font-size: var(--text-size);
+        line-height: 1.5;
+        background: var(--gray-50);
+        color: var(--gray-700);
+    }
+
+            .container {
+        width: 100%;
+        max-width: 1400px;
+        height: min(100vh, 700px);
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        background: var(--white);
+    }
+
+            .header {
+        height: 40px;
+        background: var(--primary);
+        color: var(--white);
+        display: flex;
+        align-items: center;
+        padding: 0 20px;
+    }
+
+            .main { flex: 1; display: flex; overflow: hidden; }
+
+            .sidebar {
+        width: 120px;
+        background: var(--gray-50);
+        border-right: 1px solid var(--border);
+        padding: 10px 8px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+            .nav-btn {
+        width: 100%;
+        padding: 8px;
+        background: transparent;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: var(--text-size);
+        color: var(--gray-600);
+        text-align: left;
+        transition: background 0.2s ease, color 0.2s ease;
+    }
+
+            .nav-btn.active { background: var(--primary); color: var(--white); }
+            .nav-btn:hover { background: var(--gray-100); }
+
+                        .content {
+        flex: 1;
+        position: relative;
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 18px;
+        padding: 16px;
+        overflow: hidden;
+    }
+            .column { display: flex; flex-direction: column; gap: 16px; overflow-y: auto; padding-right: 4px; }
+
+            .card { background: var(--white); border: 1px solid var(--border); border-radius: 12px; padding: 12px; display: flex; flex-direction: column; gap: 10px; }
+
+        .card-scroll { overflow-y: auto; }
+        .card h3 { font-size: var(--h3-size); color: var(--primary-dark); }
+        .card p { line-height: 1.5; }
+
+        .tag-list { display: flex; gap: 8px; flex-wrap: wrap; }
+        .tag { font-size: 13px; padding: 4px 10px; border-radius: 999px; background: var(--gray-100); color: var(--gray-500); }
+
+        .tally-table { width: 100%; border-collapse: collapse; font-size: 15px; }
+        .tally-table th, .tally-table td { border: 1px solid var(--gray-200); padding: 8px; text-align: center; }
+        .tally-table thead { background: var(--gray-100); }
+
+        .controls { display: flex; flex-direction: column; gap: 10px; background: var(--gray-50); border: 1px solid var(--gray-200); border-radius: 10px; padding: 10px; }
+        .control-row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+        .control-row label { font-weight: 600; }
+        select { flex: 1; padding: 6px 8px; border-radius: 8px; border: 1px solid var(--gray-300); font-size: 15px; }
+        button.action { background: var(--primary); color: var(--white); border: none; border-radius: 8px; padding: 8px 12px; font-size: var(--text-size); cursor: pointer; transition: transform 0.2s ease; }
+        button.action.secondary { background: var(--white); color: var(--primary); border: 1px solid var(--primary); }
+        button.action:hover { transform: translateY(-2px); }
+
+        .work-panel { border: 1px solid var(--gray-200); border-radius: 12px; background: var(--gray-50); padding: 12px; display: flex; flex-direction: column; gap: 12px; }
+        .work-card { border: 1px solid var(--gray-200); border-radius: 10px; padding: 10px; background: var(--white); transition: border 0.2s ease, transform 0.2s ease; }
+        .work-card.active { border-color: var(--primary); box-shadow: 0 0 0 2px rgba(79,70,229,0.15); transform: translateX(4px); }
+        .work-card.success { border-color: var(--success); }
+        .work-card.error { border-color: var(--danger); background: rgba(239,68,68,0.07); }
+
+        .input-box { background: var(--white); border: 1px dashed var(--gray-300); border-radius: 10px; padding: 10px; display: flex; flex-direction: column; gap: 6px; }
+        .input-box input { border: 1px solid var(--gray-300); border-radius: 8px; padding: 6px 8px; font-size: 15px; }
+        .input-box .hint { font-size: 14px; color: var(--gray-500); }
+        .hint.success { color: var(--success); }
+        .hint.error { color: var(--danger); }
+
+        .status-box { background: #eef2ff; border-radius: 10px; padding: 10px; font-size: 14px; color: var(--primary-dark); }
+
+        .tally-wrapper { border: 1px solid var(--gray-200); border-radius: 12px; background: var(--white); padding: 10px; }
+        .tally-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>分部积分法实验室</h1>
+            <div>$\int u\,dv = uv - \int v\,du$ 的互动演练</div>
+        </header>
+        <div class="main">
+            <nav class="sidebar">
+                <button class="nav-btn active" data-section="basic">公式原理</button>
+                <button class="nav-btn" data-section="choice">u/dv 选择</button>
+                <button class="nav-btn" data-section="loop">循环积分</button>
+            </nav>
+            <section class="content">
+                <div class="column">
+                    <div class="card card-scroll">
+                        <h3>学习指引</h3>
+                        <p>通过“公式天平”和“列表法”掌握分部积分。选择合适的 $u$ 与 $dv$，并实时看到积分结构的变化。</p>
+                        <div class="tag-list">
+                            <span class="tag">公式天平</span>
+                            <span class="tag">选择策略</span>
+                            <span class="tag">循环积分</span>
+                            <span class="tag">表格法</span>
+                        </div>
+                        <div class="status-box" id="summaryBox">当前练习：$\int x e^x dx$。推荐 $u = x$, $dv = e^x dx$。</div>
+                    </div>
+
+                    <div class="card card-scroll">
+                        <h3>u/dv 选择指南</h3>
+                        <table class="tally-table">
+                            <thead>
+                                <tr><th>函数类型</th><th>优先设为 u</th><th>原因</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr><td>多项式</td><td>√</td><td>求导次数有限，简化速度快</td></tr>
+                                <tr><td>指数</td><td>×</td><td>导积分都不改变形状，宜设为 dv</td></tr>
+                                <tr><td>三角函数</td><td>视情况</td><td>sin/cos 可循环，tan 合适设为 dv</td></tr>
+                                <tr><td>对数/反三角</td><td>优先设为 u</td><td>求导变简单，难以积分</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="card">
+                        <h3>结论速记</h3>
+                        <div class="info-grid">
+                            <div class="info-item"><strong>一次分部</strong> $u$ 变简单，$dv$ 易积分。</div>
+                            <div class="info-item"><strong>多次分部</strong> 使用列表法，斜对角乘积取代反复写公式。</div>
+                            <div class="info-item"><strong>循环积分</strong> 遇到 $\int e^x \sin x dx$ 等时，设未知数解方程。</div>
+                            <div class="info-item"><strong>综合策略</strong> 结合换元、分部形成“先换后分”或“先分后换”。</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="column">
+                    <div class="card">
+                        <h3>公式天平互动区</h3>
+                        <div class="controls">
+                            <div class="control-row">
+                                <label>选择练习</label>
+                                <select id="caseSelector"></select>
+                                <button class="action secondary" id="autoFill">演示</button>
+                            </div>
+                        </div>
+                        <div class="work-panel" id="workPanel"></div>
+                        <div class="status-box" id="workHint">按顺序填写 $u, dv, du, v$，系统自动生成积分结果。</div>
+                    </div>
+
+                    <div class="card">
+                        <h3>列表法工具</h3>
+                        <div class="tally-wrapper">
+                            <div class="tally-header">
+                                <span>填入 $u$ 及其导数，$dv$ 及其积分</span>
+                                <button class="action secondary" id="tallyReset">清空</button>
+                            </div>
+                            <table class="tally-table" id="tallyTable">
+                                <thead>
+                                    <tr><th>$u$</th><th>$du$</th><th>$dv$</th><th>$v$</th></tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                        <div class="status-box" id="tallyHint">完成表格后，沿对角线组合获得最终表达式。</div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <script>
+        function renderMath() {
+            if (window.MathJax && window.MathJax.typesetPromise) {
+                MathJax.typesetPromise();
+            }
+        }
+
+        const cases = {
+            basic: [
+                {
+                    title: '$\\int x e^x dx$',
+                    steps: [
+                        { label: '选择 $u$', answer: 'x' },
+                        { label: '选择 $dv$', answer: 'e^x dx' },
+                        { label: '计算 $du$', answer: 'dx' },
+                        { label: '计算 $v$', answer: 'e^x' },
+                        { label: '写出结果', answer: 'x e^x - ∫ e^x dx' },
+                        { label: '化简积分', answer: 'x e^x - e^x + C' }
+                    ],
+                    tally: {
+                        u: ['x', '1', '0'],
+                        dv: ['e^x dx', 'e^x dx', 'e^x dx'],
+                        du: ['dx', '0', '0'],
+                        v: ['e^x', 'e^x', 'e^x']
+                    }
+                },
+                {
+                    title: '$\\int x\\ln x \\;dx$',
+                    steps: [
+                        { label: '选择 $u$', answer: 'ln x' },
+                        { label: '选择 $dv$', answer: 'x dx' },
+                        { label: '计算 $du$', answer: '1/x dx' },
+                        { label: '计算 $v$', answer: 'x^2/2' },
+                        { label: '写出结果', answer: '(x^2/2) ln x - ∫ (x^2/2)(1/x) dx' },
+                        { label: '化简积分', answer: '(x^2/2) ln x - (x^2/4) + C' }
+                    ],
+                    tally: {
+                        u: ['ln x', '1/x', '-1/x^2'],
+                        dv: ['x dx', 'dx', '0'],
+                        du: ['1/x dx', '-1/x^2 dx', '0'],
+                        v: ['x^2/2', 'x^2/2 + C', '']
+                    }
+                }
+            ],
+            choice: [
+                {
+                    title: '$\\int e^x \cos x \\;dx$',
+                    steps: [
+                        { label: '选择 $u$', answer: 'e^x' },
+                        { label: '选择 $dv$', answer: 'cos x dx' },
+                        { label: '计算 $du$', answer: 'e^x dx' },
+                        { label: '计算 $v$', answer: 'sin x' },
+                        { label: '写出结果', answer: 'e^x sin x - ∫ e^x sin x dx' },
+                        { label: '循环代回', answer: '1/2 e^x (sin x - cos x) + C' }
+                    ],
+                    tally: {
+                        u: ['e^x', 'e^x', 'e^x'],
+                        dv: ['cos x dx', 'sin x dx', '-cos x dx'],
+                        du: ['e^x dx', 'e^x dx', 'e^x dx'],
+                        v: ['sin x', '-cos x', '-sin x']
+                    }
+                },
+                {
+                    title: '$\\int x^2 e^x dx$',
+                    steps: [
+                        { label: '选择 $u$', answer: 'x^2' },
+                        { label: '选择 $dv$', answer: 'e^x dx' },
+                        { label: '继续分部积分', answer: '∫ x e^x dx' },
+                        { label: '最终结果', answer: 'e^x(x^2 - 2x + 2) + C' }
+                    ],
+                    tally: {
+                        u: ['x^2', '2x', '2', '0'],
+                        dv: ['e^x dx', 'e^x dx', 'e^x dx', 'e^x dx'],
+                        du: ['2x dx', '2 dx', '0', '0'],
+                        v: ['e^x', 'e^x', 'e^x', 'e^x']
+                    }
+                }
+            ],
+            loop: [
+                {
+                    title: '$\\int e^x \sin x \\;dx$',
+                    steps: [
+                        { label: '设 $u$, $dv$', answer: 'u = e^x, dv = sin x dx' },
+                        { label: '第一次积分', answer: 'e^x (-cos x) + ∫ e^x cos x dx' },
+                        { label: '第二次积分', answer: '引入原积分 I：I = e^x (-cos x) + e^x sin x - I' },
+                        { label: '解方程', answer: 'I = (1/2) e^x (sin x - cos x) + C' }
+                    ],
+                    tally: {
+                        u: ['e^x', 'e^x', 'e^x'],
+                        dv: ['sin x dx', '-cos x dx', '-sin x dx'],
+                        du: ['e^x dx', 'e^x dx', 'e^x dx'],
+                        v: ['-cos x', 'sin x', '-cos x']
+                    }
+                }
+            ]
+        };
+
+        const navButtons = document.querySelectorAll('.nav-btn');
+        const caseSelector = document.getElementById('caseSelector');
+        const workPanel = document.getElementById('workPanel');
+        const workHint = document.getElementById('workHint');
+        const autoFillBtn = document.getElementById('autoFill');
+        const tallyTable = document.getElementById('tallyTable').querySelector('tbody');
+        const tallyResetBtn = document.getElementById('tallyReset');
+        const tallyHint = document.getElementById('tallyHint');
+        const summaryBox = document.getElementById('summaryBox');
+
+        let currentSection = 'basic';
+        let currentCaseIndex = 0;
+
+        function initNav() {
+            navButtons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    navButtons.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    currentSection = btn.dataset.section;
+                    currentCaseIndex = 0;
+                    summaryBox.textContent = `当前练习：${cases[currentSection][currentCaseIndex].title}`;
+                    populateCases();
+                    buildWorkPanel();
+                    populateTally();
+                });
+            });
+        }
+
+        function populateCases() {
+            caseSelector.innerHTML = '';
+            cases[currentSection].forEach((item, index) => {
+                const option = document.createElement('option');
+                option.value = index;
+                option.innerHTML = item.title;
+                caseSelector.appendChild(option);
+            });
+            caseSelector.value = currentCaseIndex;
+            renderMath();
+        }
+
+        function buildWorkPanel() {
+            const data = cases[currentSection][currentCaseIndex];
+            workPanel.innerHTML = '';
+            data.steps.forEach((step, index) => {
+                const card = document.createElement('div');
+                card.className = 'work-card';
+                card.dataset.index = index;
+                card.innerHTML = `
+                    <strong>${index + 1}. ${step.label}</strong>
+                    <div class="input-box">
+                        <input type="text" placeholder="填写表达式" data-answer="${step.answer}">
+                        <div style="display:flex; gap:8px;">
+                            <button class="action secondary check-btn">检查</button>
+                            <button class="action secondary hint-btn">提示</button>
+                        </div>
+                        <span class="hint">表达式可简写，例如 e^x。</span>
+                    </div>
+                `;
+                workPanel.appendChild(card);
+            });
+            highlightCard(0);
+            renderMath();
+        }
+
+        function highlightCard(index) {
+            const cards = workPanel.querySelectorAll('.work-card');
+            cards.forEach(card => card.classList.remove('active'));
+            if (cards[index]) cards[index].classList.add('active');
+        }
+
+        function populateTally() {
+            tallyTable.innerHTML = '';
+            const data = cases[currentSection][currentCaseIndex];
+            const maxRows = Math.max(
+                data.tally.u ? data.tally.u.length : 0,
+                data.tally.dv ? data.tally.dv.length : 0,
+                data.tally.du ? data.tally.du.length : 0,
+                data.tally.v ? data.tally.v.length : 0
+            );
+            for (let i = 0; i < maxRows; i++) {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${data.tally.u?.[i] || ''}</td>
+                    <td>${data.tally.du?.[i] || ''}</td>
+                    <td>${data.tally.dv?.[i] || ''}</td>
+                    <td>${data.tally.v?.[i] || ''}</td>
+                `;
+                tallyTable.appendChild(row);
+            }
+            renderMath();
+        }
+
+        function attachEvents() {
+            workPanel.addEventListener('click', event => {
+                const card = event.target.closest('.work-card');
+                if (!card) return;
+                const input = card.querySelector('input');
+                const hint = card.querySelector('.hint');
+                const index = parseInt(card.dataset.index, 10);
+                const step = cases[currentSection][currentCaseIndex].steps[index];
+                if (event.target.classList.contains('check-btn')) {
+                    const value = normalize(input.value);
+                    const answer = normalize(step.answer);
+                    if (!value) {
+                        hint.textContent = '先填写答案。';
+                        hint.classList.remove('success', 'error');
+                        return;
+                    }
+                    if (value === answer) {
+                        hint.textContent = '正确！';
+                        hint.classList.add('success');
+                        card.classList.add('success');
+                        moveNext(card);
+                    } else {
+                        hint.textContent = '不符合预期，再检查运算。';
+                        hint.classList.add('error');
+                        card.classList.add('error');
+                    }
+                }
+                if (event.target.classList.contains('hint-btn')) {
+                    hint.textContent = `参考答案：${step.answer}`;
+                    hint.classList.add('success');
+                }
+            });
+
+            caseSelector.addEventListener('change', () => {
+                currentCaseIndex = parseInt(caseSelector.value, 10);
+                summaryBox.textContent = `当前练习：${cases[currentSection][currentCaseIndex].title}`;
+                buildWorkPanel();
+                populateTally();
+            });
+
+            autoFillBtn.addEventListener('click', () => {
+                const cards = workPanel.querySelectorAll('.work-card');
+                const data = cases[currentSection][currentCaseIndex];
+                cards.forEach((card, index) => {
+                    const input = card.querySelector('input');
+                    const hint = card.querySelector('.hint');
+                    input.value = data.steps[index].answer;
+                    hint.textContent = '已填入答案，可自行检查。';
+                });
+            });
+
+            tallyResetBtn.addEventListener('click', () => {
+                tallyHint.textContent = '表格已清空，可重填。';
+                populateTally();
+            });
+        }
+
+        function moveNext(card) {
+            const nextIndex = parseInt(card.dataset.index, 10) + 1;
+            highlightCard(nextIndex);
+            const total = cases[currentSection][currentCaseIndex].steps.length;
+            if (nextIndex === total) {
+                workHint.textContent = '分部积分完成，注意化简后的结果。';
+            }
+        }
+
+        function normalize(str) {
+            return (str || '')
+                .replace(/\\frac/g, 'frac')
+                .replace(/[{}()\[\]\s]/g, '')
+                .replace(/exp/g, 'e^')
+                .toLowerCase();
+        }
+
+        function init() {
+            initNav();
+            populateCases();
+            buildWorkPanel();
+            populateTally();
+            attachEvents();
+            renderMath();
+        }
+
+        init();
+    </script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+

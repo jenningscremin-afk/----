@@ -1,0 +1,1142 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>维度之镜：反函数之舞 - 指对数互为反函数</title>
+    <!-- D3.js -->
+    <script src="../common-assets/js/d3-7.8.5.min.js"></script>
+    <script src="navigation.js"></script>
+    <!-- MathJax -->
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+            },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script type="text/javascript" id="MathJax-script" async
+            src="../common-assets/js/mathjax-3.2.2-tex-svg.min.js">
+    </script>
+
+    <style>
+        @import url('../common-assets/css/fonts.css');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Serif SC', serif;
+            background: radial-gradient(ellipse at center, #0a0e27 0%, #020515 50%, #000000 100%);
+            overflow: auto;
+            height: 100vh;
+            width: 100vw;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* 主容器 */
+        #main-container {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+            overflow: auto;
+        }
+
+        /* 网格背景 - 对称设计 */
+        .grid-background {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(45deg, rgba(0, 255, 255, 0.02) 1px, transparent 1px),
+                linear-gradient(-45deg, rgba(255, 0, 255, 0.02) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: gridSymmetry 30s linear infinite;
+            opacity: 0.5;
+        }
+
+        @keyframes gridSymmetry {
+            0% { transform: rotate(0deg) scale(1); }
+            50% { transform: rotate(180deg) scale(1.1); }
+            100% { transform: rotate(360deg) scale(1); }
+        }
+
+        /* 维度之镜扫描效果 */
+        .mirror-scan {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, 
+                transparent 48%, 
+                rgba(255, 255, 255, 0.1) 49%, 
+                rgba(255, 255, 255, 0.1) 51%, 
+                transparent 52%);
+            animation: mirrorScan 10s linear infinite;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        @keyframes mirrorScan {
+            0%, 100% { opacity: 0; }
+            45%, 55% { opacity: 1; }
+        }
+
+        /* 主画布 */
+        #canvas-container {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* 标题区域 */
+        .title-area {
+            position: absolute;
+            top: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            z-index: 100;
+        }
+
+        .main-title {
+            font-family: 'Orbitron', monospace;
+            font-size: 36px;
+            font-weight: 900;
+            color: transparent;
+            background: linear-gradient(90deg, #00ffff, #ffffff, #ff00ff);
+            background-size: 200% 100%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            animation: titleGradient 5s linear infinite;
+            text-shadow: 0 0 30px rgba(255, 255, 255, 0.3);
+        }
+
+        @keyframes titleGradient {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 200% 50%; }
+        }
+
+        .subtitle {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 16px;
+            color: rgba(255, 255, 255, 0.7);
+            margin-top: 5px;
+            font-style: italic;
+        }
+
+        /* 信息面板 - 左右对称 */
+        .info-panel-left, .info-panel-right {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 250px;
+            padding: 20px;
+            background: linear-gradient(135deg, 
+                rgba(0, 20, 40, 0.8), 
+                rgba(0, 40, 80, 0.6));
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+            z-index: 100;
+        }
+
+        .info-panel-left {
+            left: 30px;
+            border-left: 3px solid #00ffff;
+        }
+
+        .info-panel-right {
+            right: 30px;
+            border-right: 3px solid #ff00ff;
+        }
+
+        .function-label {
+            font-family: 'Orbitron', monospace;
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .exponential-label {
+            color: #00ffff;
+            text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+        }
+
+        .logarithm-label {
+            color: #ff00ff;
+            text-shadow: 0 0 10px rgba(255, 0, 255, 0.5);
+        }
+
+        .function-formula {
+            font-size: 24px;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 5px;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .anchor-info {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.8);
+            margin-top: 10px;
+        }
+
+        .anchor-point {
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        /* 阶段指示器 */
+        .phase-indicator {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            z-index: 100;
+        }
+
+        .phase-name {
+            font-family: 'Orbitron', monospace;
+            font-size: 20px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: #ffffff;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+        }
+
+        .phase-description {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.7);
+            margin-top: 5px;
+            font-style: italic;
+        }
+
+        /* 控制面板 */
+        .control-panel {
+            position: absolute;
+            bottom: 30px;
+            right: 30px;
+            display: flex;
+            gap: 10px;
+            z-index: 100;
+        }
+
+        .control-btn {
+            padding: 10px 20px;
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.1), 
+                rgba(255, 255, 255, 0.05));
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: #ffffff;
+            font-family: 'Orbitron', monospace;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border-radius: 5px;
+        }
+
+        .control-btn:hover {
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.2), 
+                rgba(255, 255, 255, 0.1));
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+        }
+
+        .control-btn.active {
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.3), 
+                rgba(255, 255, 255, 0.2));
+            box-shadow: 0 0 30px rgba(255, 255, 255, 0.5);
+        }
+
+        /* 反射光线 */
+        .reflection-line {
+            stroke: #ffffff;
+            stroke-width: 1;
+            stroke-dasharray: 5, 5;
+            opacity: 0;
+            animation: reflectionPulse 1s ease-in-out;
+        }
+
+        @keyframes reflectionPulse {
+            0% { opacity: 0; }
+            50% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+
+        /* 光球效果 */
+        .light-orb {
+            animation: orbPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes orbPulse {
+            0%, 100% { r: 5; opacity: 0.8; }
+            50% { r: 8; opacity: 1; }
+        }
+
+        /* 粒子容器 */
+        .particles-container {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .particle-symmetric {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            border-radius: 50%;
+            animation: particleFloat 15s linear infinite;
+        }
+
+        @keyframes particleFloat {
+            0% { 
+                transform: translate(0, 0) rotate(0deg); 
+                opacity: 0;
+            }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { 
+                transform: translate(300px, -300px) rotate(360deg); 
+                opacity: 0;
+            }
+        }
+
+        /* 维度之镜特效 */
+        .mirror-glow {
+            stroke: url(#mirror-gradient);
+            stroke-width: 3;
+            fill: none;
+            filter: url(#mirror-glow-filter);
+            animation: mirrorPulse 3s ease-in-out infinite;
+        }
+
+        @keyframes mirrorPulse {
+            0%, 100% { opacity: 0.7; stroke-width: 3; }
+            50% { opacity: 1; stroke-width: 5; }
+        }
+
+        /* 结论文字 */
+        .conclusion-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-family: 'Orbitron', monospace;
+            font-size: 48px;
+            font-weight: 900;
+            color: #ffffff;
+            text-shadow: 
+                0 0 30px rgba(255, 255, 255, 0.8),
+                0 0 60px rgba(255, 255, 255, 0.5);
+            opacity: 0;
+            pointer-events: none;
+            z-index: 200;
+            text-align: center;
+        }
+
+        .conclusion-subtitle {
+            font-size: 24px;
+            color: rgba(255, 255, 255, 0.9);
+            margin-top: 10px;
+        }
+
+        /* 连接线动画 */
+        .connection-line {
+            stroke: rgba(255, 255, 255, 0.3);
+            stroke-width: 1;
+            stroke-dasharray: 5, 10;
+            animation: connectionFlow 2s linear infinite;
+        }
+
+        @keyframes connectionFlow {
+            0% { stroke-dashoffset: 0; }
+            100% { stroke-dashoffset: -15; }
+        }
+
+        /* 音效视觉反馈 */
+        .sound-ripple {
+            position: absolute;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            pointer-events: none;
+            animation: rippleExpand 1s ease-out;
+        }
+
+        @keyframes rippleExpand {
+            0% {
+                width: 10px;
+                height: 10px;
+                opacity: 1;
+            }
+            100% {
+                width: 100px;
+                height: 100px;
+                opacity: 0;
+            }
+        }
+
+    </style>
+
+    <style>
+        .return-home-panel {
+            position: fixed;
+            top: 16px;
+            left: 16px;
+            display: flex;
+            gap: 10px;
+            z-index: 9999;
+            flex-wrap: wrap;
+        }
+        .return-home-panel .return-link {
+            padding: 8px 14px;
+            border-radius: 999px;
+            background: rgba(15, 23, 42, 0.8);
+            color: #f8fafc;
+            font-size: 14px;
+            text-decoration: none;
+            box-shadow: 0 6px 20px rgba(15, 23, 42, 0.25);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .return-home-panel .return-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 24px rgba(15, 23, 42, 0.35);
+        }
+        .return-home-panel .return-link.return-main {
+            background: rgba(79, 70, 229, 0.85);
+        }
+        @media (max-width: 640px) {
+            .return-home-panel {
+                top: 12px;
+                left: 12px;
+                right: 12px;
+                justify-content: center;
+            }
+            .return-home-panel .return-link {
+                width: 100%;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="return-home-panel">
+        <a class="return-link return-sub" href="index.html">← 返回课件目录</a>
+        <a class="return-link return-main" href="../index.html">⌂ 返回主站</a>
+    </div>
+    <div id="main-container">
+        <!-- 对称网格背景 -->
+        <div class="grid-background"></div>
+        
+        <!-- 镜面扫描效果 -->
+        <div class="mirror-scan"></div>
+        
+        <!-- 粒子容器 -->
+        <div class="particles-container" id="particles"></div>
+        
+        <!-- 标题区域 -->
+        <div class="title-area">
+            <h1 class="main-title">维度之镜</h1>
+            <p class="subtitle">维度之镜：反函数之舞</p>
+        </div>
+        
+        <!-- 左侧信息面板 - 指数函数 -->
+        <div class="info-panel-left">
+            <div class="function-label exponential-label">指数函数</div>
+            <div class="function-formula">
+                <span style="color: #00ffff;">y = 2<sup>x</sup></span>
+            </div>
+            <div class="anchor-info">
+                锚点：<span class="anchor-point" style="color: #00ffff;">(0, 1)</span>
+            </div>
+        </div>
+        
+        <!-- 右侧信息面板 - 对数函数 -->
+        <div class="info-panel-right">
+            <div class="function-label logarithm-label">对数函数</div>
+            <div class="function-formula">
+                <span style="color: #ff00ff;">y = log₂(x)</span>
+            </div>
+            <div class="anchor-info">
+                锚点：<span class="anchor-point" style="color: #ff00ff;">(1, 0)</span>
+            </div>
+        </div>
+        
+        <!-- 阶段指示器 -->
+        <div class="phase-indicator">
+            <div class="phase-name" id="phase-name">初始化中</div>
+            <div class="phase-description" id="phase-description">准备镜像维度...</div>
+        </div>
+
+        <!-- 结论文字 -->
+        <div class="conclusion-text" id="conclusion">
+            <div>互为反函数</div>
+            <div class="conclusion-subtitle">指数函数与对数函数</div>
+        </div>
+
+        <!-- 控制面板 -->
+        <div class="control-panel">
+            <button class="control-btn active" id="play-pause-btn">暂停</button>
+            <button class="control-btn" id="speed-btn">速度: 2x</button>
+        </div>
+        
+        <!-- 主画布 -->
+        <div id="canvas-container">
+            <svg id="main-svg" style="width: 90%; height: 90%;"></svg>
+        </div>
+    </div>
+
+    <script>
+        // 全局变量
+        let svg, g, width, height;
+        let xScale, yScale;
+        let mirrorLine, exponentialCurve, logarithmCurve;
+        let animationPhase = 0;
+        let animationSpeed = 2;
+        let isPlaying = true;
+        let reflectionPoints = [];
+        let audioContext;
+        
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeAudio();
+            initializeVisualization();
+            createSymmetricParticles();
+            setupControls();
+            startAnimation();
+        });
+
+        // 初始化音频上下文（虽然这是静态页面，但预留接口）
+        function initializeAudio() {
+            // 在实际应用中可以添加Web Audio API
+            audioContext = null;
+        }
+
+        // 创建对称粒子效果
+        function createSymmetricParticles() {
+            const container = document.getElementById('particles');
+            for (let i = 0; i < 20; i++) {
+                // 左侧粒子（青色）
+                const particleLeft = document.createElement('div');
+                particleLeft.className = 'particle-symmetric';
+                particleLeft.style.left = Math.random() * 50 + '%';
+                particleLeft.style.top = Math.random() * 100 + '%';
+                particleLeft.style.background = '#00ffff';
+                particleLeft.style.boxShadow = '0 0 6px #00ffff';
+                particleLeft.style.animationDelay = Math.random() * 15 + 's';
+                container.appendChild(particleLeft);
+                
+                // 右侧粒子（品红色）
+                const particleRight = document.createElement('div');
+                particleRight.className = 'particle-symmetric';
+                particleRight.style.right = Math.random() * 50 + '%';
+                particleRight.style.top = Math.random() * 100 + '%';
+                particleRight.style.background = '#ff00ff';
+                particleRight.style.boxShadow = '0 0 6px #ff00ff';
+                particleRight.style.animationDelay = Math.random() * 15 + 's';
+                particleRight.style.animationDirection = 'reverse';
+                container.appendChild(particleRight);
+            }
+        }
+
+        // 初始化可视化
+        function initializeVisualization() {
+            const container = d3.select('#main-svg');
+            const bounds = container.node().getBoundingClientRect();
+            
+            svg = container;
+            width = bounds.width;
+            height = bounds.height;
+            
+            // 清空SVG
+            svg.selectAll("*").remove();
+            
+            // 创建定义区
+            const defs = svg.append('defs');
+            
+            // 创建镜面渐变
+            const mirrorGradient = defs.append('linearGradient')
+                .attr('id', 'mirror-gradient')
+                .attr('x1', '0%')
+                .attr('y1', '0%')
+                .attr('x2', '100%')
+                .attr('y2', '100%');
+            
+            mirrorGradient.append('stop')
+                .attr('offset', '0%')
+                .attr('stop-color', '#ffffff')
+                .attr('stop-opacity', 0.3);
+            
+            mirrorGradient.append('stop')
+                .attr('offset', '50%')
+                .attr('stop-color', '#ffffff')
+                .attr('stop-opacity', 0.8);
+            
+            mirrorGradient.append('stop')
+                .attr('offset', '100%')
+                .attr('stop-color', '#ffffff')
+                .attr('stop-opacity', 0.3);
+            
+            // 镜面发光滤镜
+            const mirrorGlowFilter = defs.append('filter')
+                .attr('id', 'mirror-glow-filter')
+                .attr('x', '-200%')
+                .attr('y', '-200%')
+                .attr('width', '400%')
+                .attr('height', '400%');
+            
+            mirrorGlowFilter.append('feGaussianBlur')
+                .attr('stdDeviation', '3')
+                .attr('result', 'coloredBlur');
+            
+            const mirrorMerge = mirrorGlowFilter.append('feMerge');
+            mirrorMerge.append('feMergeNode').attr('in', 'coloredBlur');
+            mirrorMerge.append('feMergeNode').attr('in', 'SourceGraphic');
+            
+            // 青色发光滤镜
+            const cyanGlowFilter = defs.append('filter')
+                .attr('id', 'cyan-glow')
+                .attr('x', '-200%')
+                .attr('y', '-200%')
+                .attr('width', '400%')
+                .attr('height', '400%');
+            
+            cyanGlowFilter.append('feGaussianBlur')
+                .attr('stdDeviation', '4')
+                .attr('result', 'coloredBlur');
+            
+            const cyanMerge = cyanGlowFilter.append('feMerge');
+            cyanMerge.append('feMergeNode').attr('in', 'coloredBlur');
+            cyanMerge.append('feMergeNode').attr('in', 'SourceGraphic');
+            
+            // 品红发光滤镜
+            const magentaGlowFilter = defs.append('filter')
+                .attr('id', 'magenta-glow')
+                .attr('x', '-200%')
+                .attr('y', '-200%')
+                .attr('width', '400%')
+                .attr('height', '400%');
+            
+            magentaGlowFilter.append('feGaussianBlur')
+                .attr('stdDeviation', '4')
+                .attr('result', 'coloredBlur');
+            
+            const magentaMerge = magentaGlowFilter.append('feMerge');
+            magentaMerge.append('feMergeNode').attr('in', 'coloredBlur');
+            magentaMerge.append('feMergeNode').attr('in', 'SourceGraphic');
+            
+            // 主绘图组
+            g = svg.append('g')
+                .attr('transform', `translate(${width/2}, ${height/2})`);
+            
+            // 设置坐标轴范围
+            const range = 8;
+            xScale = d3.scaleLinear()
+                .domain([-range, range])
+                .range([-width/2 + 50, width/2 - 50]);
+            
+            yScale = d3.scaleLinear()
+                .domain([-range, range])
+                .range([height/2 - 50, -height/2 + 50]);
+            
+            // 绘制坐标轴
+            drawAxes();
+            
+            // 预创建各种元素组
+            g.append('g').attr('class', 'mirror-group');
+            g.append('g').attr('class', 'connection-group');
+            g.append('g').attr('class', 'exponential-group');
+            g.append('g').attr('class', 'logarithm-group');
+            g.append('g').attr('class', 'reflection-group');
+            g.append('g').attr('class', 'orb-group');
+            g.append('g').attr('class', 'anchor-group');
+        }
+
+        // 绘制坐标轴
+        function drawAxes() {
+            // X轴
+            const xAxis = g.append('g')
+                .attr('class', 'x-axis')
+                .style('opacity', 0);
+            
+            xAxis.append('line')
+                .attr('x1', xScale(-8))
+                .attr('x2', xScale(8))
+                .attr('y1', yScale(0))
+                .attr('y2', yScale(0))
+                .attr('stroke', 'rgba(255, 255, 255, 0.2)')
+                .attr('stroke-width', 1);
+            
+            // Y轴
+            const yAxis = g.append('g')
+                .attr('class', 'y-axis')
+                .style('opacity', 0);
+            
+            yAxis.append('line')
+                .attr('x1', xScale(0))
+                .attr('x2', xScale(0))
+                .attr('y1', yScale(-8))
+                .attr('y2', yScale(8))
+                .attr('stroke', 'rgba(255, 255, 255, 0.2)')
+                .attr('stroke-width', 1);
+            
+            // 添加刻度
+            for (let i = -8; i <= 8; i += 2) {
+                if (i !== 0) {
+                    xAxis.append('line')
+                        .attr('x1', xScale(i))
+                        .attr('x2', xScale(i))
+                        .attr('y1', yScale(0) - 3)
+                        .attr('y2', yScale(0) + 3)
+                        .attr('stroke', 'rgba(255, 255, 255, 0.1)')
+                        .attr('stroke-width', 1);
+                    
+                    yAxis.append('line')
+                        .attr('x1', xScale(0) - 3)
+                        .attr('x2', xScale(0) + 3)
+                        .attr('y1', yScale(i))
+                        .attr('y2', yScale(i))
+                        .attr('stroke', 'rgba(255, 255, 255, 0.1)')
+                        .attr('stroke-width', 1);
+                }
+            }
+            
+            // 淡入动画
+            xAxis.transition().duration(1000).style('opacity', 1);
+            yAxis.transition().duration(1000).style('opacity', 1);
+        }
+
+        // 动画序列
+        function startAnimation() {
+            if (!isPlaying) return;
+            
+            switch(animationPhase) {
+                case 0:
+                    phase1_mirrorUnfolds();
+                    break;
+                case 1:
+                    phase2_originalDance();
+                    break;
+                case 2:
+                    phase3_reflection();
+                    break;
+                case 3:
+                    phase4_mirroredDance();
+                    break;
+                case 4:
+                    phase5_harmony();
+                    break;
+                default:
+                    animationPhase = 0;
+                    startAnimation();
+            }
+        }
+
+        // 第一幕：镜界展开
+        function phase1_mirrorUnfolds() {
+            updatePhase('镜界展开', '镜面正在展开');
+            
+            const mirrorGroup = g.select('.mirror-group');
+            
+            // 绘制y=x镜面线
+            const mirrorData = [];
+            for (let t = -8; t <= 8; t += 0.1) {
+                mirrorData.push({x: t, y: t});
+            }
+            
+            const line = d3.line()
+                .x(d => xScale(d.x))
+                .y(d => yScale(d.y));
+            
+            mirrorLine = mirrorGroup.append('path')
+                .datum(mirrorData)
+                .attr('class', 'mirror-glow')
+                .attr('d', line)
+                .style('opacity', 0);
+            
+            // 镜面展开动画
+            const totalLength = mirrorLine.node().getTotalLength();
+            mirrorLine
+                .attr('stroke-dasharray', totalLength + ' ' + totalLength)
+                .attr('stroke-dashoffset', totalLength)
+                .transition()
+                .duration(2000 / animationSpeed)
+                .attr('stroke-dashoffset', 0)
+                .style('opacity', 1)
+                .on('end', () => {
+                    // 添加音效视觉反馈
+                    createSoundRipple(width/2, height/2);
+                    animationPhase = 1;
+                    setTimeout(() => startAnimation(), 1000 / animationSpeed);
+                });
+        }
+
+        // 第二幕：源生之舞
+        function phase2_originalDance() {
+            updatePhase('源生之舞', '原始函数之舞');
+            
+            const exponentialGroup = g.select('.exponential-group');
+            
+            // 生成指数函数数据 y = 2^x
+            const expData = [];
+            for (let x = -8; x <= 3; x += 0.05) {
+                const y = Math.pow(2, x);
+                if (y <= 8 && y >= -8) {
+                    expData.push({x: x, y: y});
+                }
+            }
+            
+            const line = d3.line()
+                .x(d => xScale(d.x))
+                .y(d => yScale(d.y))
+                .curve(d3.curveBasis);
+            
+            exponentialCurve = exponentialGroup.append('path')
+                .datum(expData)
+                .attr('d', line)
+                .attr('fill', 'none')
+                .attr('stroke', '#00ffff')
+                .attr('stroke-width', 3)
+                .style('filter', 'url(#cyan-glow)')
+                .style('opacity', 0);
+            
+            // 绘制动画
+            const totalLength = exponentialCurve.node().getTotalLength();
+            exponentialCurve
+                .attr('stroke-dasharray', totalLength + ' ' + totalLength)
+                .attr('stroke-dashoffset', totalLength)
+                .transition()
+                .duration(2000 / animationSpeed)
+                .attr('stroke-dashoffset', 0)
+                .style('opacity', 1)
+                .on('end', () => {
+                    // 添加锚点 (0, 1)
+                    createAnchor(0, 1, '#00ffff');
+                    animationPhase = 2;
+                    setTimeout(() => startAnimation(), 1000 / animationSpeed);
+                });
+        }
+
+        // 第三幕：镜像穿越
+        function phase3_reflection() {
+            updatePhase('镜像穿越', '镜像反射过程');
+            
+            // 选择反射点
+            reflectionPoints = [
+                {x: -1, y: 0.5},
+                {x: 0, y: 1},
+                {x: 1, y: 2},
+                {x: 2, y: 4}
+            ];
+            
+            const reflectionGroup = g.select('.reflection-group');
+            const orbGroup = g.select('.orb-group');
+            
+            // 逐个处理反射点
+            reflectionPoints.forEach((point, i) => {
+                setTimeout(() => {
+                    // 在指数曲线上创建光球
+                    const sourceOrb = orbGroup.append('circle')
+                        .attr('cx', xScale(point.x))
+                        .attr('cy', yScale(point.y))
+                        .attr('r', 0)
+                        .attr('fill', '#00ffff')
+                        .attr('stroke', '#ffffff')
+                        .attr('stroke-width', 2)
+                        .style('filter', 'url(#cyan-glow)')
+                        .transition()
+                        .duration(300 / animationSpeed)
+                        .attr('r', 6);
+                    
+                    // 创建反射线
+                    setTimeout(() => {
+                        // 到镜面的垂直线
+                        const mirrorPoint = {x: (point.x + point.y) / 2, y: (point.x + point.y) / 2};
+                        
+                        const line1 = reflectionGroup.append('line')
+                            .attr('x1', xScale(point.x))
+                            .attr('y1', yScale(point.y))
+                            .attr('x2', xScale(point.x))
+                            .attr('y2', yScale(point.y))
+                            .attr('stroke', '#ffffff')
+                            .attr('stroke-width', 2)
+                            .attr('stroke-dasharray', '5, 5')
+                            .style('opacity', 0.8)
+                            .transition()
+                            .duration(500 / animationSpeed)
+                            .attr('x2', xScale(mirrorPoint.x))
+                            .attr('y2', yScale(mirrorPoint.y));
+                        
+                        // 从镜面到对称点
+                        setTimeout(() => {
+                            const line2 = reflectionGroup.append('line')
+                                .attr('x1', xScale(mirrorPoint.x))
+                                .attr('y1', yScale(mirrorPoint.y))
+                                .attr('x2', xScale(mirrorPoint.x))
+                                .attr('y2', yScale(mirrorPoint.y))
+                                .attr('stroke', '#ffffff')
+                                .attr('stroke-width', 2)
+                                .attr('stroke-dasharray', '5, 5')
+                                .style('opacity', 0.8)
+                                .transition()
+                                .duration(500 / animationSpeed)
+                                .attr('x2', xScale(point.y))
+                                .attr('y2', yScale(point.x))
+                                .on('end', () => {
+                                    // 创建对称点光球
+                                    const targetOrb = orbGroup.append('circle')
+                                        .attr('cx', xScale(point.y))
+                                        .attr('cy', yScale(point.x))
+                                        .attr('r', 0)
+                                        .attr('fill', '#ff00ff')
+                                        .attr('stroke', '#ffffff')
+                                        .attr('stroke-width', 2)
+                                        .style('filter', 'url(#magenta-glow)')
+                                        .transition()
+                                        .duration(300 / animationSpeed)
+                                        .attr('r', 6);
+                                    
+                                    // 音效反馈
+                                    createSoundRipple(
+                                        xScale(point.y) + width/2,
+                                        yScale(point.x) + height/2
+                                    );
+                                    
+                                    // 淡出反射线
+                                    setTimeout(() => {
+                                        line1.transition()
+                                            .duration(500 / animationSpeed)
+                                            .style('opacity', 0);
+                                        line2.transition()
+                                            .duration(500 / animationSpeed)
+                                            .style('opacity', 0);
+                                    }, 500 / animationSpeed);
+                                });
+                        }, 500 / animationSpeed);
+                    }, 300 / animationSpeed);
+                }, i * 1500 / animationSpeed);
+            });
+            
+            // 等待所有反射完成
+            setTimeout(() => {
+                animationPhase = 3;
+                startAnimation();
+            }, (reflectionPoints.length * 1500 + 1000) / animationSpeed);
+        }
+
+        // 第四幕：镜像之舞
+        function phase4_mirroredDance() {
+            updatePhase('镜像之舞', '镜像函数之舞');
+            
+            const logarithmGroup = g.select('.logarithm-group');
+            
+            // 生成对数函数数据 y = log2(x)
+            const logData = [];
+            for (let x = 0.125; x <= 8; x += 0.05) {
+                const y = Math.log2(x);
+                if (y >= -8 && y <= 8) {
+                    logData.push({x: x, y: y});
+                }
+            }
+            
+            const line = d3.line()
+                .x(d => xScale(d.x))
+                .y(d => yScale(d.y))
+                .curve(d3.curveBasis);
+            
+            logarithmCurve = logarithmGroup.append('path')
+                .datum(logData)
+                .attr('d', line)
+                .attr('fill', 'none')
+                .attr('stroke', '#ff00ff')
+                .attr('stroke-width', 3)
+                .style('filter', 'url(#magenta-glow)')
+                .style('opacity', 0);
+            
+            // 绘制动画
+            const totalLength = logarithmCurve.node().getTotalLength();
+            logarithmCurve
+                .attr('stroke-dasharray', totalLength + ' ' + totalLength)
+                .attr('stroke-dashoffset', totalLength)
+                .transition()
+                .duration(2000 / animationSpeed)
+                .attr('stroke-dashoffset', 0)
+                .style('opacity', 1)
+                .on('end', () => {
+                    // 添加锚点 (1, 0)
+                    createAnchor(1, 0, '#ff00ff');
+                    // 连接两个锚点
+                    createAnchorConnection();
+                    animationPhase = 4;
+                    setTimeout(() => startAnimation(), 1000 / animationSpeed);
+                });
+        }
+
+        // 第五幕：和谐共舞
+        function phase5_harmony() {
+            updatePhase('和谐共舞', '和谐统一');
+            
+            // 缓慢旋转整个场景
+            g.transition()
+                .duration(5000 / animationSpeed)
+                .attrTween('transform', () => {
+                    return d3.interpolateString(
+                        `translate(${width/2}, ${height/2}) rotate(0)`,
+                        `translate(${width/2}, ${height/2}) rotate(10)`
+                    );
+                })
+                .transition()
+                .duration(5000 / animationSpeed)
+                .attrTween('transform', () => {
+                    return d3.interpolateString(
+                        `translate(${width/2}, ${height/2}) rotate(10)`,
+                        `translate(${width/2}, ${height/2}) rotate(-10)`
+                    );
+                })
+                .transition()
+                .duration(5000 / animationSpeed)
+                .attrTween('transform', () => {
+                    return d3.interpolateString(
+                        `translate(${width/2}, ${height/2}) rotate(-10)`,
+                        `translate(${width/2}, ${height/2}) rotate(0)`
+                    );
+                });
+            
+            // 显示结论文字
+            setTimeout(() => {
+                const conclusion = document.getElementById('conclusion');
+                conclusion.style.transition = 'opacity 2s';
+                conclusion.style.opacity = '1';
+                
+                setTimeout(() => {
+                    conclusion.style.opacity = '0';
+                    animationPhase = 0;
+                    
+                    // 循环动画
+                    setTimeout(() => {
+                        if (isPlaying) {
+                            clearVisualization();
+                            initializeVisualization();
+                            startAnimation();
+                        }
+                    }, 3000 / animationSpeed);
+                }, 5000 / animationSpeed);
+            }, 2000 / animationSpeed);
+        }
+
+        // 创建锚点
+        function createAnchor(x, y, color) {
+            const anchorGroup = g.select('.anchor-group');
+            
+            const anchor = anchorGroup.append('g')
+                .attr('transform', `translate(${xScale(x)}, ${yScale(y)})`);
+            
+            // 多层光环
+            for (let i = 3; i > 0; i--) {
+                anchor.append('circle')
+                    .attr('r', 5 + i * 5)
+                    .attr('fill', 'none')
+                    .attr('stroke', color)
+                    .attr('stroke-width', 0.5)
+                    .attr('opacity', 0)
+                    .transition()
+                    .duration(500 / animationSpeed)
+                    .attr('opacity', 0.2 * i);
+            }
+            
+            // 核心
+            anchor.append('circle')
+                .attr('r', 0)
+                .attr('fill', color)
+                .attr('stroke', '#ffffff')
+                .attr('stroke-width', 2)
+                .transition()
+                .duration(500 / animationSpeed)
+                .attr('r', 5);
+        }
+
+        // 创建锚点连接线
+        function createAnchorConnection() {
+            const connectionGroup = g.select('.connection-group');
+            
+            connectionGroup.append('line')
+                .attr('x1', xScale(0))
+                .attr('y1', yScale(1))
+                .attr('x2', xScale(0))
+                .attr('y2', yScale(1))
+                .attr('class', 'connection-line')
+                .transition()
+                .duration(1000 / animationSpeed)
+                .attr('x2', xScale(1))
+                .attr('y2', yScale(0));
+        }
+
+        // 创建音效视觉反馈
+        function createSoundRipple(x, y) {
+            const ripple = document.createElement('div');
+            ripple.className = 'sound-ripple';
+            ripple.style.left = x + 'px';
+            ripple.style.top = y + 'px';
+            ripple.style.transform = 'translate(-50%, -50%)';
+            document.getElementById('main-container').appendChild(ripple);
+            
+            setTimeout(() => ripple.remove(), 1000);
+        }
+
+        // 更新阶段显示
+        function updatePhase(name, description) {
+            document.getElementById('phase-name').textContent = name.toUpperCase();
+            document.getElementById('phase-description').textContent = description;
+        }
+
+        // 清理可视化
+        function clearVisualization() {
+            svg.selectAll("*").transition().duration(500).style('opacity', 0).remove();
+        }
+
+        // 设置控制按钮
+        function setupControls() {
+            // 播放/暂停按钮
+            document.getElementById('play-pause-btn').addEventListener('click', function() {
+                isPlaying = !isPlaying;
+                this.textContent = isPlaying ? '暂停' : '播放';
+                this.classList.toggle('active', isPlaying);
+                if (isPlaying) startAnimation();
+            });
+
+            // 速度控制按钮
+            document.getElementById('speed-btn').addEventListener('click', function() {
+                const speeds = [1, 2, 4, 8];
+                const speedTexts = ['1x', '2x', '4x', '8x'];
+                let currentIndex = speeds.indexOf(animationSpeed);
+                currentIndex = (currentIndex + 1) % speeds.length;
+                animationSpeed = speeds[currentIndex];
+                this.textContent = '速度: ' + speedTexts[currentIndex];
+            });
+        }
+    </script>
+
+</body>
+</html>
+
+
+

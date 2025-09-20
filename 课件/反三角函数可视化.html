@@ -1,0 +1,855 @@
+﻿<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>反三角函數可視化</title>
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true,
+                processEnvironments: true
+            },
+            svg: {
+                fontCache: 'global'
+            },
+            startup: {
+                pageReady: () => {
+                    return window.MathJax.startup.defaultPageReady().then(() => {
+                        console.log('MathJax is ready!');
+                    });
+                }
+            }
+        };
+    </script>
+    <script type="text/javascript" id="MathJax-script" async
+            src="../common-assets/js/mathjax-3.2.2-tex-svg.min.js">
+    </script>
+    <style>
+        @import url('../common-assets/css/fonts.css');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Serif SC', serif;
+            width: 100vw;
+            height: 100vh;
+            overflow: auto;
+            background: #0a0a0a;
+            position: relative;
+        }
+
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        .title-info {
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 10px 30px;
+            border-radius: 8px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .transformation-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 18px;
+            color: white;
+        }
+
+        .original-func {
+            color: #ff6b6b;
+            font-weight: bold;
+        }
+
+        .arrow-transform {
+            color: #888;
+            font-size: 16px;
+        }
+
+        .inverse-func {
+            color: #51cf66;
+            font-weight: bold;
+        }
+
+        .stage-indicator {
+            position: absolute;
+            top: 60px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.9);
+            padding: 8px 25px;
+            border-radius: 15px;
+            color: #ffd43b;
+            font-size: 14px;
+            z-index: 10;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .stage-indicator.show {
+            opacity: 1;
+        }
+
+        .emphasis-box {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, rgba(77, 171, 247, 0.15), rgba(77, 171, 247, 0.05));
+            border: 2px solid #4dabf7;
+            padding: 15px 35px;
+            border-radius: 8px;
+            z-index: 10;
+            opacity: 0;
+            transition: all 0.5s ease;
+        }
+
+        .emphasis-box.show {
+            opacity: 1;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { 
+                box-shadow: 0 0 20px rgba(77, 171, 247, 0.5);
+            }
+            50% { 
+                box-shadow: 0 0 40px rgba(77, 171, 247, 0.8);
+            }
+        }
+
+        .emphasis-text {
+            color: #4dabf7;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .title-info.changing {
+            animation: fadeIn 0.5s ease;
+        }
+
+        .legend {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            z-index: 10;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 6px 12px;
+            border-radius: 5px;
+            color: white;
+            font-size: 13px;
+        }
+
+        .legend-color {
+            width: 20px;
+            height: 3px;
+        }
+
+        .control-panel {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 20;
+        }
+
+        .control-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 10px 15px;
+            border-radius: 8px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .control-btn {
+            background: linear-gradient(135deg, #4dabf7, #339af0);
+            border: none;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(77, 171, 247, 0.3);
+        }
+
+        .control-btn:hover {
+            background: linear-gradient(135deg, #339af0, #228be6);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(77, 171, 247, 0.4);
+        }
+
+        .control-btn:active {
+            transform: translateY(0);
+        }
+
+        .control-btn.pause {
+            background: linear-gradient(135deg, #ff6b6b, #fa5252);
+        }
+
+        .control-btn.pause:hover {
+            background: linear-gradient(135deg, #fa5252, #e03131);
+        }
+
+        .speed-control {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: white;
+            font-size: 14px;
+        }
+
+        .speed-slider {
+            width: 100px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 2px;
+            outline: none;
+            cursor: pointer;
+            -webkit-appearance: none;
+        }
+
+        .speed-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 16px;
+            height: 16px;
+            background: #4dabf7;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(77, 171, 247, 0.4);
+        }
+
+        .speed-slider::-moz-range-thumb {
+            width: 16px;
+            height: 16px;
+            background: #4dabf7;
+            border-radius: 50%;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 2px 6px rgba(77, 171, 247, 0.4);
+        }
+
+        .speed-value {
+            color: #4dabf7;
+            font-weight: bold;
+            min-width: 30px;
+        }
+    </style>
+
+    <style>
+        .return-home-panel {
+            position: fixed;
+            top: 16px;
+            left: 16px;
+            display: flex;
+            gap: 10px;
+            z-index: 9999;
+            flex-wrap: wrap;
+        }
+        .return-home-panel .return-link {
+            padding: 8px 14px;
+            border-radius: 999px;
+            background: rgba(15, 23, 42, 0.8);
+            color: #f8fafc;
+            font-size: 14px;
+            text-decoration: none;
+            box-shadow: 0 6px 20px rgba(15, 23, 42, 0.25);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .return-home-panel .return-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 24px rgba(15, 23, 42, 0.35);
+        }
+        .return-home-panel .return-link.return-main {
+            background: rgba(79, 70, 229, 0.85);
+        }
+        @media (max-width: 640px) {
+            .return-home-panel {
+                top: 12px;
+                left: 12px;
+                right: 12px;
+                justify-content: center;
+            }
+            .return-home-panel .return-link {
+                width: 100%;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="return-home-panel">
+        <a class="return-link return-sub" href="index.html">← 返回课件目录</a>
+        <a class="return-link return-main" href="../index.html">⌂ 返回主站</a>
+    </div>
+    <canvas id="mainCanvas"></canvas>
+    
+    <div class="title-info" id="titleInfo">
+        <div class="transformation-info">
+            <span class="original-func" id="originalFunc">$y = \sin x$</span>
+            <span class="arrow-transform">⟷ (x,y) 互換 ⟷</span>
+            <span class="inverse-func" id="inverseFunc">$y = \arcsin x$</span>
+        </div>
+    </div>
+
+    <div class="stage-indicator" id="stageIndicator"></div>
+
+    <div class="emphasis-box" id="emphasisBox">
+        <div class="emphasis-text">⭐ 重點記憶：$y = \arctan x$ 的圖像</div>
+    </div>
+
+    <div class="legend">
+        <div class="legend-item">
+            <div class="legend-color" style="background: #ff6b6b;"></div>
+            <span>原函數</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background: #51cf66;"></div>
+            <span>反函數</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-color" style="background: rgba(255, 255, 255, 0.3);"></div>
+            <span>$y = x$</span>
+        </div>
+    </div>
+
+    <div class="control-panel">
+        <div class="control-group">
+            <button class="control-btn" id="playPauseBtn">暂停</button>
+        </div>
+        <div class="control-group">
+            <div class="speed-control">
+                <span>速度:</span>
+                <input type="range" class="speed-slider" id="speedSlider" min="0.5" max="3" step="0.1" value="1">
+                <span class="speed-value" id="speedValue">1.0x</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('mainCanvas');
+        const ctx = canvas.getContext('2d');
+        const originalFuncEl = document.getElementById('originalFunc');
+        const inverseFuncEl = document.getElementById('inverseFunc');
+        const titleInfoEl = document.getElementById('titleInfo');
+        const stageIndicatorEl = document.getElementById('stageIndicator');
+        const emphasisBoxEl = document.getElementById('emphasisBox');
+
+        // 設定畫布大小
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        // 函數資訊
+        const functions = [
+            {
+                name: '$y = \\sin x$',
+                inverseName: '$y = \\arcsin x$',
+                func: Math.sin,
+                inverseFunc: Math.asin,
+                originalDomain: [-Math.PI/2, Math.PI/2],
+                inverseDomain: [-1, 1],
+                inverseRange: [-Math.PI/2, Math.PI/2],
+                isImportant: false
+            },
+            {
+                name: '$y = \\cos x$',
+                inverseName: '$y = \\arccos x$',
+                func: Math.cos,
+                inverseFunc: Math.acos,
+                originalDomain: [0, Math.PI],
+                inverseDomain: [-1, 1],
+                inverseRange: [0, Math.PI],
+                isImportant: false
+            },
+            {
+                name: '$y = \\tan x$',
+                inverseName: '$y = \\arctan x$',
+                func: Math.tan,
+                inverseFunc: Math.atan,
+                originalDomain: [-Math.PI/2 + 0.1, Math.PI/2 - 0.1],
+                inverseDomain: [-20, 20],  // 擴大範圍以充分展示
+                inverseRange: [-Math.PI/2, Math.PI/2],
+                isImportant: true
+            }
+        ];
+
+        let currentFunctionIndex = 0;
+        let animationStage = 0;
+        let rotationProgress = 0;
+        let drawProgress = 0;
+        let isPlaying = true;
+        let animationSpeed = 1.0;
+        let animationId = null;
+
+        // 座標系統參數 - 充分利用頁面
+        const xMin = -5;
+        const xMax = 5;
+        const yMin = -5;
+        const yMax = 5;
+
+        // 座標轉換函數 - 減少padding以充分利用空間
+        function toCanvasX(x) {
+            const padding = 40;
+            const scaleX = (canvas.width - 2 * padding) / (xMax - xMin);
+            return padding + (x - xMin) * scaleX;
+        }
+
+        function toCanvasY(y) {
+            const padding = 40;
+            const scaleY = (canvas.height - 2 * padding) / (yMax - yMin);
+            return canvas.height - padding - (y - yMin) * scaleY;
+        }
+
+        // 繪製網格和座標軸
+        function drawGrid() {
+            ctx.fillStyle = '#0a0a0a';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // 細密網格 - 充滿整個畫面
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.03)';
+            ctx.lineWidth = 1;
+
+            for (let x = -5; x <= 5; x += 0.25) {
+                ctx.beginPath();
+                ctx.moveTo(toCanvasX(x), 0);
+                ctx.lineTo(toCanvasX(x), canvas.height);
+                ctx.stroke();
+            }
+
+            for (let y = -5; y <= 5; y += 0.25) {
+                ctx.beginPath();
+                ctx.moveTo(0, toCanvasY(y));
+                ctx.lineTo(canvas.width, toCanvasY(y));
+                ctx.stroke();
+            }
+
+            // 主網格線
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
+            ctx.lineWidth = 1;
+
+            for (let x = -5; x <= 5; x += 1) {
+                ctx.beginPath();
+                ctx.moveTo(toCanvasX(x), 0);
+                ctx.lineTo(toCanvasX(x), canvas.height);
+                ctx.stroke();
+            }
+
+            for (let y = -5; y <= 5; y += 1) {
+                ctx.beginPath();
+                ctx.moveTo(0, toCanvasY(y));
+                ctx.lineTo(canvas.width, toCanvasY(y));
+                ctx.stroke();
+            }
+
+            // 座標軸
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.6)';
+            ctx.lineWidth = 2;
+
+            ctx.beginPath();
+            ctx.moveTo(0, toCanvasY(0));
+            ctx.lineTo(canvas.width, toCanvasY(0));
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.moveTo(toCanvasX(0), 0);
+            ctx.lineTo(toCanvasX(0), canvas.height);
+            ctx.stroke();
+
+            // y = x 對稱軸
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.25)';
+            ctx.lineWidth = 2;
+            ctx.setLineDash([10, 5]);
+            ctx.beginPath();
+            ctx.moveTo(toCanvasX(-5), toCanvasY(-5));
+            ctx.lineTo(toCanvasX(5), toCanvasY(5));
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            // 刻度標籤
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+            ctx.font = '12px Arial';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'top';
+
+            // π 相關標籤
+            const piLabels = [
+                { value: -Math.PI, label: '-π' },
+                { value: -Math.PI/2, label: '-π/2' },
+                { value: Math.PI/2, label: 'π/2' },
+                { value: Math.PI, label: 'π' }
+            ];
+
+            ctx.fillStyle = 'rgba(255, 217, 59, 0.9)';
+            piLabels.forEach(item => {
+                if (Math.abs(item.value) <= 5) {
+                    ctx.fillText(item.label, toCanvasX(item.value), toCanvasY(0) + 8);
+                    // Y軸上也標記
+                    ctx.save();
+                    ctx.textAlign = 'right';
+                    ctx.textBaseline = 'middle';
+                    ctx.fillText(item.label, toCanvasX(0) - 8, toCanvasY(item.value));
+                    ctx.restore();
+                }
+            });
+
+            // 數值標籤
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+            for (let x = -4; x <= 4; x++) {
+                if (x !== 0 && Math.abs(x) > 1.8) {
+                    ctx.fillText(x.toString(), toCanvasX(x), toCanvasY(0) + 8);
+                }
+            }
+
+            ctx.textAlign = 'right';
+            ctx.textBaseline = 'middle';
+            for (let y = -4; y <= 4; y++) {
+                if (y !== 0 && Math.abs(y) > 1.8) {
+                    ctx.fillText(y.toString(), toCanvasX(0) - 8, toCanvasY(y));
+                }
+            }
+        }
+
+        // 繪製原函數
+        function drawOriginalFunction(func, domain, progress) {
+            ctx.strokeStyle = '#ff6b6b';
+            ctx.lineWidth = 3;
+            ctx.shadowColor = '#ff6b6b';
+            ctx.shadowBlur = 15;
+            ctx.beginPath();
+
+            const startX = domain[0];
+            const endX = domain[0] + (domain[1] - domain[0]) * (progress / 100);
+            let firstPoint = true;
+
+            for (let x = startX; x <= endX; x += 0.005) {
+                const y = func.func(x);
+
+                if (func.name.includes('tan') && Math.abs(y) > 20) {
+                    firstPoint = true;
+                    continue;
+                }
+
+                const canvasX = toCanvasX(x);
+                const canvasY = toCanvasY(y);
+
+                if (canvasY >= 0 && canvasY <= canvas.height) {
+                    if (firstPoint) {
+                        ctx.moveTo(canvasX, canvasY);
+                        firstPoint = false;
+                    } else {
+                        ctx.lineTo(canvasX, canvasY);
+                    }
+                } else {
+                    firstPoint = true;
+                }
+            }
+
+            ctx.stroke();
+            ctx.shadowBlur = 0;
+        }
+
+        // 繪製反函數
+        function drawInverseFunction(func, progress) {
+            ctx.strokeStyle = '#51cf66';
+            ctx.lineWidth = 3;
+            ctx.shadowColor = '#51cf66';
+            ctx.shadowBlur = 15;
+            ctx.beginPath();
+
+            const startX = func.inverseDomain[0];
+            const endX = func.inverseDomain[0] + (func.inverseDomain[1] - func.inverseDomain[0]) * (progress / 100);
+            let firstPoint = true;
+
+            for (let x = startX; x <= endX; x += 0.005) {
+                let y;
+                
+                if (func.name.includes('sin')) {
+                    if (x >= -1 && x <= 1) {
+                        y = Math.asin(x);
+                    } else continue;
+                } else if (func.name.includes('cos')) {
+                    if (x >= -1 && x <= 1) {
+                        y = Math.acos(x);
+                    } else continue;
+                } else if (func.name.includes('tan')) {
+                    y = Math.atan(x);
+                }
+
+                const canvasX = toCanvasX(x);
+                const canvasY = toCanvasY(y);
+
+                if (firstPoint) {
+                    ctx.moveTo(canvasX, canvasY);
+                    firstPoint = false;
+                } else {
+                    ctx.lineTo(canvasX, canvasY);
+                }
+            }
+
+            ctx.stroke();
+            ctx.shadowBlur = 0;
+
+            // arctan 的漸近線
+            if (func.name.includes('tan') && progress > 50) {
+                ctx.strokeStyle = 'rgba(81, 207, 102, 0.4)';
+                ctx.lineWidth = 2;
+                ctx.setLineDash([8, 4]);
+                
+                // 上漸近線 y = π/2
+                ctx.beginPath();
+                ctx.moveTo(0, toCanvasY(Math.PI/2));
+                ctx.lineTo(canvas.width, toCanvasY(Math.PI/2));
+                ctx.stroke();
+                
+                // 下漸近線 y = -π/2
+                ctx.beginPath();
+                ctx.moveTo(0, toCanvasY(-Math.PI/2));
+                ctx.lineTo(canvas.width, toCanvasY(-Math.PI/2));
+                ctx.stroke();
+                
+                ctx.setLineDash([]);
+
+                // 標註漸近線值
+                ctx.fillStyle = 'rgba(81, 207, 102, 0.8)';
+                ctx.font = '14px Arial';
+                ctx.textAlign = 'left';
+                ctx.fillText('y = π/2', toCanvasX(3), toCanvasY(Math.PI/2) - 5);
+                ctx.fillText('y = -π/2', toCanvasX(3), toCanvasY(-Math.PI/2) + 15);
+            }
+        }
+
+        // 繪製旋轉動畫
+        function drawRotatingPoints(func, progress) {
+            const samplePoints = 30;
+            
+            for (let i = 0; i <= samplePoints; i++) {
+                const t = i / samplePoints;
+                const x = func.originalDomain[0] + (func.originalDomain[1] - func.originalDomain[0]) * t;
+                const y = func.func(x);
+                
+                if (func.name.includes('tan') && Math.abs(y) > 10) continue;
+                
+                // 計算插值位置
+                const originalX = toCanvasX(x);
+                const originalY = toCanvasY(y);
+                const targetX = toCanvasX(y);
+                const targetY = toCanvasY(x);
+                
+                const currentX = originalX + (targetX - originalX) * (progress / 100);
+                const currentY = originalY + (targetY - originalY) * (progress / 100);
+                
+                // 繪製移動的點
+                const alpha = 0.9 - (i / samplePoints) * 0.3;
+                ctx.fillStyle = `rgba(255, 217, 59, ${alpha})`;
+                ctx.shadowColor = 'rgba(255, 217, 59, 0.8)';
+                ctx.shadowBlur = 10;
+                ctx.beginPath();
+                ctx.arc(currentX, currentY, 4, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // 繪製軌跡線
+                if (i % 5 === 0) {
+                    ctx.strokeStyle = `rgba(255, 217, 59, ${alpha * 0.3})`;
+                    ctx.lineWidth = 1;
+                    ctx.beginPath();
+                    ctx.moveTo(originalX, originalY);
+                    ctx.lineTo(currentX, currentY);
+                    ctx.stroke();
+                }
+            }
+            ctx.shadowBlur = 0;
+        }
+
+        // 主動畫函數
+        function animate() {
+            if (!isPlaying) return;
+
+            const currentFunc = functions[currentFunctionIndex];
+
+            drawGrid();
+
+            if (animationStage === 0) {
+                // 階段1：繪製原函數
+                stageIndicatorEl.textContent = '步驟 1：原函數';
+                stageIndicatorEl.classList.add('show');
+
+                drawOriginalFunction(currentFunc, currentFunc.originalDomain, drawProgress);
+
+                drawProgress += 2 * animationSpeed;
+                if (drawProgress >= 100) {
+                    drawProgress = 100;
+                    setTimeout(() => {
+                        if (isPlaying) {
+                            animationStage = 1;
+                            rotationProgress = 0;
+                            animationId = requestAnimationFrame(animate);
+                        }
+                    }, 1500 / animationSpeed);
+                    return;
+                }
+            } else if (animationStage === 1) {
+                // 階段2：旋轉動畫
+                stageIndicatorEl.textContent = '步驟 2：座標 (x,y) 互換';
+
+                drawOriginalFunction(currentFunc, currentFunc.originalDomain, 100);
+                drawRotatingPoints(currentFunc, rotationProgress);
+
+                rotationProgress += 1.5 * animationSpeed;
+                if (rotationProgress >= 100) {
+                    animationStage = 2;
+                    drawProgress = 0;
+                    animationId = requestAnimationFrame(animate);
+                    return;
+                }
+            } else if (animationStage === 2) {
+                // 階段3：繪製反函數
+                stageIndicatorEl.textContent = '步驟 3：反函數';
+
+                if (currentFunc.isImportant && drawProgress > 50) {
+                    emphasisBoxEl.classList.add('show');
+                }
+
+                drawOriginalFunction(currentFunc, currentFunc.originalDomain, 100);
+                drawInverseFunction(currentFunc, drawProgress);
+
+                drawProgress += 2 * animationSpeed;
+                if (drawProgress >= 100) {
+                    drawProgress = 100;
+                    setTimeout(() => {
+                        const delay = (currentFunc.isImportant ? 4000 : 2000) / animationSpeed;
+                        setTimeout(() => {
+                            if (isPlaying) {
+                                emphasisBoxEl.classList.remove('show');
+                                stageIndicatorEl.classList.remove('show');
+                                currentFunctionIndex = (currentFunctionIndex + 1) % functions.length;
+                                animationStage = 0;
+                                drawProgress = 0;
+                                rotationProgress = 0;
+
+                                titleInfoEl.classList.add('changing');
+                                originalFuncEl.innerHTML = functions[currentFunctionIndex].name;
+                                inverseFuncEl.innerHTML = functions[currentFunctionIndex].inverseName;
+
+                                // 使用MathJax 3.x语法重新渲染数学公式
+                                if (window.MathJax && window.MathJax.typesetPromise) {
+                                    window.MathJax.typesetPromise();
+                                }
+
+                                setTimeout(() => {
+                                    titleInfoEl.classList.remove('changing');
+                                }, 500);
+
+                                animationId = requestAnimationFrame(animate);
+                            }
+                        }, delay);
+                    }, 1500 / animationSpeed);
+                    return;
+                }
+            }
+
+            animationId = requestAnimationFrame(animate);
+        }
+
+        // 控制按钮事件
+        const playPauseBtn = document.getElementById('playPauseBtn');
+        const speedSlider = document.getElementById('speedSlider');
+        const speedValue = document.getElementById('speedValue');
+
+        playPauseBtn.addEventListener('click', () => {
+            isPlaying = !isPlaying;
+            if (isPlaying) {
+                playPauseBtn.textContent = '暂停';
+                playPauseBtn.classList.remove('pause');
+                animationId = requestAnimationFrame(animate);
+            } else {
+                playPauseBtn.textContent = '播放';
+                playPauseBtn.classList.add('pause');
+                if (animationId) {
+                    cancelAnimationFrame(animationId);
+                }
+            }
+        });
+
+        speedSlider.addEventListener('input', (e) => {
+            animationSpeed = parseFloat(e.target.value);
+            speedValue.textContent = animationSpeed.toFixed(1) + 'x';
+        });
+
+        // 等待MathJax完全加载后开始动画
+        function startAnimation() {
+            drawGrid();
+            originalFuncEl.innerHTML = functions[0].name;
+            inverseFuncEl.innerHTML = functions[0].inverseName;
+
+            // 使用MathJax 3.x语法重新渲染数学公式
+            if (window.MathJax && window.MathJax.typesetPromise) {
+                window.MathJax.typesetPromise().then(() => {
+                    animationId = requestAnimationFrame(animate);
+                });
+            } else {
+                animationId = requestAnimationFrame(animate);
+            }
+        }
+
+        // 检查MathJax是否已加载
+        function checkMathJaxReady() {
+            if (window.MathJax && window.MathJax.startup && window.MathJax.startup.document) {
+                startAnimation();
+            } else {
+                setTimeout(checkMathJaxReady, 100);
+            }
+        }
+
+        // 延迟启动，确保所有资源加载完成
+        setTimeout(checkMathJaxReady, 1500);
+    </script>
+
+</body>
+</html>
+
+

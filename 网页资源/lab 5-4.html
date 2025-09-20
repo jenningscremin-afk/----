@@ -1,0 +1,548 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>部分分式分解实验室</title>
+
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true,
+                processEnvironments: true
+            },
+            options: {
+                skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+            },
+            startup: {
+                pageReady: () => {
+                    return MathJax.startup.defaultPageReady().then(() => {
+                        console.log('MathJax 初始化完成');
+                    }).catch((error) => {
+                        console.error('MathJax 初始化错误:', error);
+                    });
+                }
+            }
+        };
+    </script>
+    <script defer src="../common-assets/js/mathjax-3.2.2-tex-svg.min.js"></script>
+
+    <style>
+    :root {
+        --primary: #4f46e5;
+        --primary-dark: #3730a3;
+        --primary-light: #6366f1;
+        --success: #10b981;
+        --warning: #f59e0b;
+        --danger: #ef4444;
+        --gray-50: #f9fafb;
+        --gray-100: #f3f4f6;
+        --gray-200: #e5e7eb;
+        --gray-300: #d1d5db;
+        --gray-500: #6b7280;
+        --gray-600: #4b5563;
+        --gray-700: #1f2937;
+        --white: #ffffff;
+        --light: #ffffff;
+        --border: #e5e7eb;
+        --h1-size: 22px;
+        --h3-size: 18px;
+        --text-size: 16px;
+        --formula-size: 20px;
+    }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        *::-webkit-scrollbar { width: 0; background: transparent; }
+        * { scrollbar-width: none; -ms-overflow-style: none; }
+
+            body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
+        font-size: var(--text-size);
+        line-height: 1.5;
+        background: var(--gray-50);
+        color: var(--gray-700);
+    }
+
+            .container {
+        width: 100%;
+        max-width: 1400px;
+        height: min(100vh, 700px);
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        background: var(--white);
+    }
+
+            .header {
+        height: 40px;
+        background: var(--primary);
+        color: var(--white);
+        display: flex;
+        align-items: center;
+        padding: 0 20px;
+    }
+
+            .main { flex: 1; display: flex; overflow: hidden; }
+
+            .sidebar {
+        width: 120px;
+        background: var(--gray-50);
+        border-right: 1px solid var(--border);
+        padding: 10px 8px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+            .nav-btn {
+        width: 100%;
+        padding: 8px;
+        background: transparent;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: var(--text-size);
+        color: var(--gray-600);
+        text-align: left;
+        transition: background 0.2s ease, color 0.2s ease;
+    }
+
+            .nav-btn.active { background: var(--primary); color: var(--white); }
+            .nav-btn:hover { background: var(--gray-100); }
+
+    .content {
+        flex: 1;
+        position: relative;
+        overflow: hidden;
+        padding: 0;
+    }
+
+    .page-content {
+        display: none;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 18px;
+        padding: 16px;
+        height: 100%;
+    }
+
+    .page-content.active {
+        display: grid;
+    }
+            .column { display: flex; flex-direction: column; gap: 16px; overflow-y: auto; padding-right: 4px; }
+
+            .card { background: var(--white); border: 1px solid var(--border); border-radius: 12px; padding: 12px; display: flex; flex-direction: column; gap: 10px; }
+
+        .card-scroll { overflow-y: auto; }
+        .card h3 { font-size: var(--h3-size); color: var(--primary-dark); }
+        .card p { line-height: 1.5; }
+
+        .tag-list { display: flex; gap: 8px; flex-wrap: wrap; }
+        .tag { font-size: 13px; padding: 4px 10px; border-radius: 999px; background: var(--gray-100); color: var(--gray-500); }
+
+        table { width: 100%; border-collapse: collapse; font-size: 15px; }
+        th, td { border: 1px solid var(--gray-200); padding: 8px; text-align: center; }
+        thead { background: var(--gray-100); }
+
+        .controls { display: flex; flex-direction: column; gap: 10px; background: var(--gray-50); border: 1px solid var(--gray-200); border-radius: 10px; padding: 10px; }
+        .control-row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+        .control-row label { font-weight: 600; }
+        select { flex: 1; padding: 6px 8px; border-radius: 8px; border: 1px solid var(--gray-300); font-size: 15px; }
+        button.action { background: var(--primary); color: var(--white); border: none; border-radius: 8px; padding: 8px 12px; font-size: var(--text-size); cursor: pointer; transition: transform 0.2s ease; }
+        button.action.secondary { background: var(--white); color: var(--primary); border: 1px solid var(--primary); }
+        button.action:hover { transform: translateY(-2px); }
+
+        .decomposition-panel { border: 1px solid var(--gray-200); border-radius: 12px; background: var(--gray-50); padding: 12px; display: flex; flex-direction: column; gap: 12px; }
+        .step-card { border: 1px solid var(--gray-200); border-radius: 10px; padding: 10px; background: var(--white); transition: border 0.2s ease, transform 0.2s ease; }
+        .step-card.active { border-color: var(--primary); box-shadow: 0 0 0 2px rgba(79,70,229,0.15); transform: translateX(4px); }
+        .step-card.success { border-color: var(--success); }
+        .step-card.error { border-color: var(--danger); background: rgba(239,68,68,0.07); }
+
+        .input-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; }
+        .input-box { background: var(--white); border: 1px dashed var(--gray-300); border-radius: 10px; padding: 10px; display: flex; flex-direction: column; gap: 6px; }
+        .input-box input { border: 1px solid var(--gray-300); border-radius: 8px; padding: 6px 8px; font-size: 15px; }
+        .input-box .hint { font-size: 14px; color: var(--gray-500); }
+        .hint.success { color: var(--success); }
+        .hint.error { color: var(--danger); }
+
+        .status-box { background: #eef2ff; border-radius: 10px; padding: 10px; font-size: 14px; color: var(--primary-dark); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>部分分式分解实验室</h1>
+            <div>把真分式拆成简单分式，轻松积分</div>
+        </header>
+        <div class="main">
+            <nav class="sidebar">
+                <button class="nav-btn active" data-section="simple">一次因式</button>
+                <button class="nav-btn" data-section="repeated">重根处理</button>
+                <button class="nav-btn" data-section="quadratic">不可约二次</button>
+            </nav>
+            <section class="content">
+                <div class="page-content active" id="partial-fractions">
+<div class="column">
+                    <div class="card card-scroll">
+                        <h3>学习指引</h3>
+                        <p>有理函数积分的关键是把分母因式分解，再拆成若干易于积分的部分分式。本实验支持“一次因式”“重根”“二次因式”三种情形，提供待定系数求解与积分验证。</p>
+                        <div class="tag-list">
+                            <span class="tag">因式分类</span>
+                            <span class="tag">待定系数</span>
+                            <span class="tag">代入验证</span>
+                            <span class="tag">积分步骤</span>
+                        </div>
+                        <div class="status-box" id="summaryBox">当前案例：一次因式分解。目标是将 $\frac{5x+3}{x^2+3x+2}$ 拆成两个简单分式。</div>
+                    </div>
+
+                    <div class="card card-scroll">
+                        <h3>操作要点表</h3>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>步骤</th>
+                                    <th>策略</th>
+                                    <th>提示</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>分母因式分解</td>
+                                    <td>写成一次或二次因式的乘积</td>
+                                    <td>使用配方法、公式或求根公式</td>
+                                </tr>
+                                <tr>
+                                    <td>设分式形式</td>
+                                    <td>一次因式 → $\frac{A}{x-a}$，重根 → $\frac{A}{(x-a)^k}$ 递减</td>
+                                    <td>不可约二次需写成 $\frac{Ax+B}{x^2+bx+c}$</td>
+                                </tr>
+                                <tr>
+                                    <td>求待定系数</td>
+                                    <td>可通过代入特殊值或比较系数</td>
+                                    <td>系统提供半自动求解工具</td>
+                                </tr>
+                                <tr>
+                                    <td>积分</td>
+                                    <td>使用已知公式，如 $\int \frac{1}{x-a} dx$</td>
+                                    <td>二次因式积分会出现 $\arctan$ 或 $\ln$</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="card">
+                        <h3>结论速记</h3>
+                        <div class="info-grid">
+                            <div class="info-item"><strong>分母次数高于分子</strong> 若不满足，先长除法得到多项式 + 真分式。</div>
+                            <div class="info-item"><strong>待定系数灵活选择</strong> 常用“代入根”“令 $x=0$”或比较相同幂次系数。</div>
+                            <div class="info-item"><strong>积分规则</strong> 一次分式积分是 $\ln$，二次分式积分多为 $\arctan$。</div>
+                            <div class="info-item"><strong>验证步骤</strong> 分解后可把分式相加，检查是否回到原函数。</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="column">
+                    <div class="card">
+                        <h3>分解互动面板</h3>
+                        <div class="controls">
+                            <div class="control-row">
+                                <label>选择练习</label>
+                                <select id="caseSelector"></select>
+                                <button class="action secondary" id="autoSolve">演示分解</button>
+                            </div>
+                        </div>
+                        <div class="decomposition-panel" id="decompositionPanel"></div>
+                        <div class="status-box" id="panelHint">逐步填写分解与积分结果。</div>
+                    </div>
+
+                    <div class="card">
+                        <h3>待定系数求解器</h3>
+                        <div class="controls">
+                            <div class="control-row">
+                                <label>代入 $x =$</label>
+                                <input type="number" id="valueInput" style="flex:1; padding:6px 8px; border:1px solid var(--gray-300); border-radius:8px;">
+                                <button class="action" id="substituteBtn">代入求值</button>
+                            </div>
+                        </div>
+                        <div class="status-box" id="solverOutput">输入一个 $x$ 值，计算左侧和右侧的数值比较，帮助验证系数。</div>
+                    </div>
+                </div>
+            
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <script>
+        function renderMath() {
+            if (window.MathJax && window.MathJax.typesetPromise) {
+                MathJax.typesetPromise();
+            }
+        }
+
+        const scenarios = {
+            simple: {
+                summary: '一次因式：分母拆成 $(x+1)(x+2)$ 形式。',
+                cases: [
+                    {
+                        title: '$\\frac{5x+3}{x^2+3x+2}$',
+                        decomposition: [
+                            { prompt: '写出分母分解形式：', answer: '(x+1)(x+2)' },
+                            { prompt: '设部分分式：', answer: 'A/(x+1) + B/(x+2)' },
+                            { prompt: '求系数 A：', answer: '1' },
+                            { prompt: '求系数 B：', answer: '4' },
+                            { prompt: '积分结果：', answer: 'ln|x+1| + 4 ln|x+2| + C' }
+                        ],
+                        coefficients: { A: 1, B: 4 }
+                    },
+                    {
+                        title: '$\\frac{3x-1}{x^2 - x - 6}$',
+                        decomposition: [
+                            { prompt: '写出分母分解形式：', answer: '(x-3)(x+2)' },
+                            { prompt: '设部分分式：', answer: 'A/(x-3) + B/(x+2)' },
+                            { prompt: '求系数 A：', answer: '1/5' },
+                            { prompt: '求系数 B：', answer: '14/5' },
+                            { prompt: '积分结果：', answer: '(1/5) ln|x-3| + (14/5) ln|x+2| + C' }
+                        ],
+                        coefficients: { A: 1/5, B: 14/5 }
+                    }
+                ]
+            },
+            repeated: {
+                summary: '重根：例如 $(x+1)^2$，需列出所有阶次。',
+                cases: [
+                    {
+                        title: '$\\frac{2x+1}{(x+1)^2}$',
+                        decomposition: [
+                            { prompt: '设部分分式：', answer: 'A/(x+1) + B/(x+1)^2' },
+                            { prompt: '求 A：', answer: '2' },
+                            { prompt: '求 B：', answer: '-1' },
+                            { prompt: '积分结果：', answer: '2 ln|x+1| + 1/(x+1) + C' }
+                        ],
+                        coefficients: { A: 2, B: -1 }
+                    },
+                    {
+                        title: '$\\frac{x^2+3x+2}{x(x+1)^2}$',
+                        decomposition: [
+                            { prompt: '设部分分式：', answer: 'A/x + B/(x+1) + C/(x+1)^2' },
+                            { prompt: '求 A：', answer: '2' },
+                            { prompt: '求 B：', answer: '-1' },
+                            { prompt: '求 C：', answer: '1' },
+                            { prompt: '积分结果：', answer: '2 ln|x| - ln|x+1| - 1/(x+1) + C' }
+                        ],
+                        coefficients: { A: 2, B: -1, C: 1 }
+                    }
+                ]
+            },
+            quadratic: {
+                summary: '不可约二次：分子写成线性形式 $Ax+B$。',
+                cases: [
+                    {
+                        title: '$\\frac{2x}{x^2+4}$',
+                        decomposition: [
+                            { prompt: '设部分分式：', answer: '(Ax + B)/(x^2+4)' },
+                            { prompt: '求 A：', answer: '2' },
+                            { prompt: '求 B：', answer: '0' },
+                            { prompt: '积分结果：', answer: 'ln(x^2+4) + C' }
+                        ],
+                        coefficients: { A: 2, B: 0 }
+                    },
+                    {
+                        title: '$\\frac{3x+5}{(x^2+1)(x-1)}$',
+                        decomposition: [
+                            { prompt: '设分式形式：', answer: 'A/(x-1) + (Bx + C)/(x^2+1)' },
+                            { prompt: '求 A：', answer: '4' },
+                            { prompt: '求 B：', answer: '-1' },
+                            { prompt: '求 C：', answer: '2' },
+                            { prompt: '积分类比：', answer: '4 ln|x-1| - (1/2) ln(x^2+1) + 2 arctan x + C' }
+                        ],
+                        coefficients: { A: 4, B: -1, C: 2 }
+                    }
+                ]
+            }
+        };
+
+        const caseSelector = document.getElementById('caseSelector');
+        const decompositionPanel = document.getElementById('decompositionPanel');
+        const panelHint = document.getElementById('panelHint');
+        const autoSolveBtn = document.getElementById('autoSolve');
+        const navButtons = document.querySelectorAll('.nav-btn');
+        const summaryBox = document.getElementById('summaryBox');
+        const valueInput = document.getElementById('valueInput');
+        const substituteBtn = document.getElementById('substituteBtn');
+        const solverOutput = document.getElementById('solverOutput');
+
+        let currentScenario = 'simple';
+        let currentCaseIndex = 0;
+
+        function initNav() {
+            navButtons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    navButtons.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    currentScenario = btn.dataset.section;
+                    currentCaseIndex = 0;
+                    summaryBox.textContent = scenarios[currentScenario].summary;
+                    populateCases();
+                    buildDecomposition();
+                });
+            });
+        }
+
+        function populateCases() {
+            caseSelector.innerHTML = '';
+            scenarios[currentScenario].cases.forEach((item, index) => {
+                const option = document.createElement('option');
+                option.value = index;
+                option.innerHTML = item.title;
+                caseSelector.appendChild(option);
+            });
+            caseSelector.value = currentCaseIndex;
+            renderMath();
+        }
+
+        function buildDecomposition() {
+            const data = scenarios[currentScenario].cases[currentCaseIndex];
+            decompositionPanel.innerHTML = '';
+            data.decomposition.forEach((step, index) => {
+                const card = document.createElement('div');
+                card.className = 'step-card';
+                card.dataset.index = index;
+                card.innerHTML = `
+                    <strong>${index + 1}. ${step.prompt}</strong>
+                    <div class="input-box">
+                        <input type="text" placeholder="填写表达式或数字" data-answer="${step.answer}">
+                        <div class="input-grid">
+                            <button class="action secondary check-btn">检查</button>
+                            <button class="action secondary hint-btn">提示</button>
+                        </div>
+                        <span class="hint">支持简写，如 ln(x+1)。</span>
+                    </div>
+                `;
+                decompositionPanel.appendChild(card);
+            });
+            highlightStep(0);
+            panelHint.textContent = '从设分式开始，逐步确认系数与积分。';
+            renderMath();
+        }
+
+        function highlightStep(index) {
+            const cards = decompositionPanel.querySelectorAll('.step-card');
+            cards.forEach(card => card.classList.remove('active'));
+            if (cards[index]) cards[index].classList.add('active');
+        }
+
+        function attachEvents() {
+            decompositionPanel.addEventListener('click', event => {
+                const card = event.target.closest('.step-card');
+                if (!card) return;
+                const input = card.querySelector('input');
+                const hint = card.querySelector('.hint');
+                const stepData = scenarios[currentScenario].cases[currentCaseIndex].decomposition[parseInt(card.dataset.index, 10)];
+                if (event.target.classList.contains('check-btn')) {
+                    const value = normalize(input.value);
+                    const answer = normalize(stepData.answer);
+                    if (!value) {
+                        hint.textContent = '先填写答案。';
+                        hint.classList.remove('success', 'error');
+                        return;
+                    }
+                    if (value === answer) {
+                        hint.textContent = '正确！';
+                        hint.classList.add('success');
+                        card.classList.add('success');
+                        moveNext(card);
+                    } else {
+                        hint.textContent = '再检查一下常数或符号。';
+                        hint.classList.add('error');
+                        card.classList.add('error');
+                    }
+                }
+                if (event.target.classList.contains('hint-btn')) {
+                    hint.textContent = `参考：${stepData.answer}`;
+                    hint.classList.add('success');
+                }
+            });
+
+            caseSelector.addEventListener('change', () => {
+                currentCaseIndex = parseInt(caseSelector.value, 10);
+                buildDecomposition();
+            });
+
+            autoSolveBtn.addEventListener('click', () => {
+                const cards = decompositionPanel.querySelectorAll('.step-card');
+                const data = scenarios[currentScenario].cases[currentCaseIndex].decomposition;
+                cards.forEach((card, index) => {
+                    const input = card.querySelector('input');
+                    const hint = card.querySelector('.hint');
+                    input.value = data[index].answer;
+                    hint.textContent = '已填入答案，可点击检查确认。';
+                    hint.classList.remove('error');
+                });
+            });
+
+            substituteBtn.addEventListener('click', () => {
+                const xVal = parseFloat(valueInput.value);
+                if (!Number.isFinite(xVal)) {
+                    solverOutput.textContent = '请输入数字再代入。';
+                    return;
+                }
+                const caseData = scenarios[currentScenario].cases[currentCaseIndex];
+                const solution = evaluateDecomposition(caseData, xVal);
+                solverOutput.textContent = solution;
+            });
+        }
+
+        function moveNext(card) {
+            const nextIndex = parseInt(card.dataset.index, 10) + 1;
+            highlightStep(nextIndex);
+            const total = scenarios[currentScenario].cases[currentCaseIndex].decomposition.length;
+            if (nextIndex === total) {
+                panelHint.textContent = '恭喜分解完成，可以尝试其他案例或切换类别。';
+            }
+        }
+
+        function normalize(str) {
+            return (str || '')
+                .replace(/\\frac/g, 'frac')
+                .replace(/\\ln/g, 'ln')
+                .replace(/\\arctan/g, 'arctan')
+                .replace(/[{}()\[\]\s]/g, '')
+                .replace(/sqrt/g, 'sqrt')
+                .replace(/\*+/g, '')
+                .toLowerCase();
+        }
+
+        function evaluateDecomposition(caseData, x) {\n            return \`验证功能暂未开放，请通过步骤检查系数。\`;\n        }\n\n        function evaluateExpression(expr, x) {
+            const replaced = expr
+                .replace(/ln/g, 'Math.log')
+                .replace(/arctan/g, 'Math.atan')
+                .replace(/sqrt/g, 'Math.sqrt')
+                .replace(/π/g, 'Math.PI');
+            const fn = new Function('x', `return ${replaced};`);
+            return fn(x);
+        }
+
+        function init() {
+            initNav();
+            populateCases();
+            buildDecomposition();
+            attachEvents();
+            renderMath();
+        }
+
+        init();
+    </script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,532 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>旋转体体积实验室</title>
+
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']] },
+            options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre'] }
+        };
+    </script>
+    <script defer src="../common-assets/js/mathjax-3.2.2-tex-svg.min.js"></script>
+    <style>
+    :root {
+        --primary: #4f46e5;
+        --primary-dark: #3730a3;
+        --primary-light: #6366f1;
+        --success: #10b981;
+        --warning: #f59e0b;
+        --danger: #ef4444;
+        --gray-50: #f9fafb;
+        --gray-100: #f3f4f6;
+        --gray-200: #e5e7eb;
+        --gray-300: #d1d5db;
+        --gray-500: #6b7280;
+        --gray-600: #4b5563;
+        --gray-700: #1f2937;
+        --white: #ffffff;
+        --light: #ffffff;
+        --border: #e5e7eb;
+        --h1-size: 22px;
+        --h3-size: 18px;
+        --text-size: 16px;
+        --formula-size: 20px;
+    }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        *::-webkit-scrollbar { width: 0; background: transparent; }
+        * { scrollbar-width: none; -ms-overflow-style: none; }
+
+            body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
+        font-size: var(--text-size);
+        line-height: 1.5;
+        background: var(--gray-50);
+        color: var(--gray-700);
+    }
+
+            .container {
+        width: 100%;
+        max-width: 1400px;
+        height: min(100vh, 700px);
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        background: var(--white);
+    }
+
+            .header {
+        height: 40px;
+        background: var(--primary);
+        color: var(--white);
+        display: flex;
+        align-items: center;
+        padding: 0 20px;
+    }
+
+            .main { flex: 1; display: flex; overflow: hidden; }
+
+            .sidebar {
+        width: 120px;
+        background: var(--gray-50);
+        border-right: 1px solid var(--border);
+        padding: 10px 8px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+            .nav-btn {
+        width: 100%;
+        padding: 8px;
+        background: transparent;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: var(--text-size);
+        color: var(--gray-600);
+        text-align: left;
+        transition: background 0.2s ease, color 0.2s ease;
+    }
+
+            .nav-btn.active { background: var(--primary); color: var(--white); }
+            .nav-btn:hover { background: var(--gray-100); }
+
+                        .content {
+        flex: 1;
+        position: relative;
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 18px;
+        padding: 16px;
+        overflow: hidden;
+    }
+            .column { display: flex; flex-direction: column; gap: 16px; overflow-y: auto; padding-right: 4px; }
+
+            .card { background: var(--white); border: 1px solid var(--border); border-radius: 12px; padding: 12px; display: flex; flex-direction: column; gap: 10px; }
+
+        .card-scroll { overflow-y: auto; }
+        .card h3 { font-size: var(--h3-size); color: var(--primary-dark); }
+        .card p { line-height: 1.5; }
+
+        .tag-list { display: flex; gap: 8px; flex-wrap: wrap; }
+        .tag { font-size: 13px; padding: 4px 10px; border-radius: 999px; background: var(--gray-100); color: var(--gray-500); }
+
+        .info-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 12px; }
+        .info-item { background: var(--gray-50); border: 1px solid var(--gray-200); border-radius: 10px; padding: 10px; font-size: 15px; }
+        .info-item strong { color: var(--primary-dark); display: block; margin-bottom: 6px; }
+
+        .controls { display: flex; flex-direction: column; gap: 10px; background: var(--gray-50); border: 1px solid var(--gray-200); border-radius: 10px; padding: 10px; }
+        .control-row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+        .control-row label { font-weight: 600; }
+        select { flex: 1; padding: 6px 8px; border-radius: 8px; border: 1px solid var(--gray-300); font-size: 15px; }
+        button.action { background: var(--primary); color: var(--white); border: none; border-radius: 8px; padding: 8px 12px; font-size: var(--text-size); cursor: pointer; transition: transform 0.2s ease; }
+        button.action.secondary { background: var(--white); color: var(--primary); border: 1px solid var(--primary); }
+        button.action:hover { transform: translateY(-2px); }
+
+        .canvas-wrapper { border: 1px solid var(--gray-200); border-radius: 12px; background: var(--gray-50); padding: 10px; display: flex; flex-direction: column; gap: 8px; }
+        canvas { width: 100%; height: 280px; border-radius: 10px; background: var(--white); }
+
+        .input-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 10px; }
+        .input-box { background: var(--white); border: 1px dashed var(--gray-300); border-radius: 10px; padding: 10px; display: flex; flex-direction: column; gap: 6px; }
+        .input-box label { font-weight: 600; font-size: 14px; color: var(--primary-dark); }
+        .input-box input { border: 1px solid var(--gray-300); border-radius: 8px; padding: 6px 8px; font-size: 15px; }
+        .input-box .hint { font-size: 14px; color: var(--gray-500); }
+        .hint.success { color: var(--success); }
+        .hint.error { color: var(--danger); }
+
+        .status-box { background: #eef2ff; border-radius: 10px; padding: 10px; font-size: 14px; color: var(--primary-dark); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>旋转体体积实验室</h1>
+            <div>圆盘/壳层方法一目了然</div>
+        </header>
+        <div class="main">
+            <nav class="sidebar">
+                <button class="nav-btn active">圆盘法</button>
+                <button class="nav-btn">壳层法</button>
+            </nav>
+            <section class="content">
+                <div class="column">
+                    <div class="card card-scroll">
+                        <h3>思路速记</h3>
+                        <p>圆盘（垫片）法：$V = \pi \int_a^b [R(x)^2 - r(x)^2] dx$。壳层法：$V = 2\pi \int_a^b \rho(x) h(x) dx$。选择哪种方法取决于旋转轴和图形位置。</p>
+                        <div class="tag-list">
+                            <span class="tag">圆盘法</span>
+                            <span class="tag">壳层法</span>
+                            <span class="tag">动画旋转</span>
+                            <span class="tag">积分验证</span>
+                        </div>
+                        <div class="status-box" id="summaryBox">当前案例：$y=\sqrt{x}$ 围成的区域绕 x 轴旋转。</div>
+                    </div>
+
+                    <div class="card">
+                        <h3>方法比较</h3>
+                        <div class="info-grid">
+                            <div class="info-item"><strong>圆盘法</strong> 横条旋转形成圆盘/垫片，适合绕 x 轴或 y=常数。</div>
+                            <div class="info-item"><strong>壳层法</strong> 竖条旋转形成圆柱壳，适合绕 y 轴或 x=常数。</div>
+                            <div class="info-item"><strong>函数表达</strong> 需写出半径/高度关于变量的表达式。</div>
+                            <div class="info-item"><strong>数值验证</strong> 完成积分后记得验证数值是否合理。</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="column">
+                    <div class="card">
+                        <h3>旋转演示</h3>
+                        <div class="controls">
+                            <div class="control-row">
+                                <label>选择模型</label>
+                                <select id="modelSelector"></select>
+                                <button class="action secondary" id="toggleAnimation">启动旋转</button>
+                            </div>
+                        </div>
+                        <div class="canvas-wrapper">
+                            <canvas id="volumeCanvas"></canvas>
+                            <div class="status-box" id="volumeStatus">动画展示切片微元旋转成圆盘/圆柱壳。</div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h3>积分表达式校验</h3>
+                        <div class="input-grid">
+                            <div class="input-box">
+                                <label>方法</label>
+                                <input type="text" id="methodInput" placeholder="圆盘法 或 壳层法">
+                                <span class="hint">填写所用方法。</span>
+                            </div>
+                            <div class="input-box">
+                                <label>被积函数</label>
+                                <input type="text" id="integrandInput" placeholder="例如 pi*x">
+                                <span class="hint">圆盘法填写 $\pi R^2$，壳层法填写 $2\pi\rho h$。</span>
+                            </div>
+                            <div class="input-box">
+                                <label>积分区间</label>
+                                <input type="text" id="boundsInput" placeholder="例如 0,1">
+                                <span class="hint">填上下限，逗号分隔。</span>
+                            </div>
+                        </div>
+                        <div class="controls">
+                            <div class="control-row">
+                                <button class="action" id="checkBtn">检查</button>
+                                <button class="action secondary" id="showBtn">显示答案</button>
+                            </div>
+                        </div>
+                        <div class="status-box" id="checkStatus">填写三项后点击检查，系统核验正确性。</div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <script>
+        function renderMath() {
+            if (window.MathJax && window.MathJax.typesetPromise) {
+                MathJax.typesetPromise();
+            }
+        }
+
+        const models = [
+            {
+                category: '圆盘法',
+                label: '绕 x 轴：$y=\sqrt{x}$, $x\in[0,1]$',
+                method: '圆盘法',
+                integrand: 'pi*x',
+                bounds: [0, 1],
+                radius: x => Math.sqrt(x),
+                exact: Math.PI / 2,
+                axis: 'x'
+            },
+            {
+                category: '圆盘法',
+                label: '绕 x 轴：$y=1+\cos x$, $x\in[0,\pi]$',
+                method: '圆盘法',
+                integrand: 'pi*(1+cos(x))^2',
+                bounds: [0, Math.PI],
+                radius: x => 1 + Math.cos(x),
+                exact: Math.PI * (Math.PI + Math.sin(Math.PI))
+            },
+            {
+                category: '壳层法',
+                label: '绕 y 轴：$y=x+1$, $x\in[0,2]$',
+                method: '壳层法',
+                integrand: '2*pi*x*(x+1)',
+                bounds: [0, 2],
+                shell: x => ({ radius: x, height: x + 1 }),
+                exact: 2 * Math.PI * (x => (x*x/2 + x*x*x/6))(2)
+            }
+        ];
+
+        const navButtons = document.querySelectorAll('.nav-btn');
+        const modelSelector = document.getElementById('modelSelector');
+        const toggleAnimation = document.getElementById('toggleAnimation');
+        const volumeCanvas = document.getElementById('volumeCanvas');
+        const volumeStatus = document.getElementById('volumeStatus');
+        const summaryBox = document.getElementById('summaryBox');
+        const methodInput = document.getElementById('methodInput');
+        const integrandInput = document.getElementById('integrandInput');
+        const boundsInput = document.getElementById('boundsInput');
+        const checkBtn = document.getElementById('checkBtn');
+        const showBtn = document.getElementById('showBtn');
+        const checkStatus = document.getElementById('checkStatus');
+
+        let currentCategory = '圆盘法';
+        let currentIndex = 0;
+        let animationActive = false;
+        let animationFrame = null;
+        let animationT = 0;
+
+        function getCurrentModels() {
+            return models.filter(m => m.category === currentCategory);
+        }
+
+        function populateModels() {
+            const list = getCurrentModels();
+            modelSelector.innerHTML = '';
+            list.forEach((item, index) => {
+                const option = document.createElement('option');
+                option.value = index;
+                option.innerHTML = item.label;
+                modelSelector.appendChild(option);
+            });
+            currentIndex = 0;
+            modelSelector.value = currentIndex;
+            updateSummary();
+            renderMath();
+        }
+
+        function updateSummary() {
+            summaryBox.textContent = `当前案例：${getCurrentModels()[currentIndex].label}`;
+        }
+
+        function setupCanvas(canvas) {
+            const ctx = canvas.getContext('2d');
+            const rect = canvas.getBoundingClientRect();
+            const dpr = window.devicePixelRatio || 1;
+            canvas.width = rect.width * dpr;
+            canvas.height = rect.height * dpr;
+            canvas.style.width = rect.width + 'px';
+            canvas.style.height = rect.height + 'px';
+            ctx.scale(dpr, dpr);
+            return { ctx, width: rect.width, height: rect.height };
+        }
+
+        function drawModel(t) {
+            const data = getCurrentModels()[currentIndex];
+            const { ctx, width, height } = setupCanvas(volumeCanvas);
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0, 0, width, height);
+
+            if (data.method === '圆盘法') {
+                const [a, b] = data.bounds;
+                const padding = 40;
+                const steps = 200;
+                const values = [];
+                let maxY = 0;
+                for (let i = 0; i <= steps; i++) {
+                    const x = a + (i / steps) * (b - a);
+                    const r = data.radius(x);
+                    values.push({ x, r });
+                    maxY = Math.max(maxY, r);
+                }
+
+                const toCanvas = (x, y) => {
+                    const cx = padding + (x - a) / (b - a) * (width / 2 - padding);
+                    const cy = height - padding - y / (maxY + 0.5) * (height - 2 * padding);
+                    return { x: cx, y: cy };
+                };
+
+                ctx.beginPath();
+                ctx.moveTo(padding, height - padding);
+                ctx.lineTo(width / 2, height - padding);
+                ctx.moveTo(padding, padding);
+                ctx.lineTo(padding, height - padding);
+                ctx.strokeStyle = '#1f2937';
+                ctx.lineWidth = 1.5;
+                ctx.stroke();
+
+                ctx.save();
+                ctx.strokeStyle = '#2563eb';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                values.forEach(({ x, r }, index) => {
+                    const pos = toCanvas(x, r);
+                    if (index === 0) ctx.moveTo(pos.x, pos.y);
+                    else ctx.lineTo(pos.x, pos.y);
+                });
+                ctx.stroke();
+                ctx.restore();
+
+                const currentX = a + t * (b - a);
+                const radius = data.radius(currentX);
+                const base = toCanvas(currentX, 0);
+                const top = toCanvas(currentX, radius);
+                ctx.fillStyle = 'rgba(79,70,229,0.18)';
+                ctx.fillRect(base.x - 6, top.y, 12, base.y - top.y);
+
+                // 3D disk representation
+                const diskCenterX = width / 2 + (width / 2 - padding) * 0.4;
+                const diskCenterY = height / 2;
+                const diskRadius = radius / (maxY + 0.5) * (height / 2 - padding);
+                ctx.save();
+                ctx.fillStyle = 'rgba(79,70,229,0.25)';
+                ctx.beginPath();
+                ctx.ellipse(diskCenterX, diskCenterY, diskRadius, diskRadius * 0.4, 0, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.fillStyle = 'rgba(79,70,229,0.35)';
+                ctx.beginPath();
+                ctx.ellipse(diskCenterX, diskCenterY - diskRadius, diskRadius, diskRadius * 0.4, 0, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+
+                const approx = Math.PI * radius * radius * (currentX - a);
+                volumeStatus.textContent = `当前半径 r ≈ ${radius.toFixed(3)}，对应圆盘面积 ≈ ${(Math.PI * radius * radius).toFixed(3)}。`;
+            } else {
+                const [a, b] = data.bounds;
+                const padding = 40;
+                const steps = 200;
+                const values = [];
+                let maxH = 0;
+                let maxR = 0;
+                for (let i = 0; i <= steps; i++) {
+                    const x = a + (i / steps) * (b - a);
+                    const { radius, height: h } = data.shell(x);
+                    values.push({ x, radius, h });
+                    maxH = Math.max(maxH, h);
+                    maxR = Math.max(maxR, radius);
+                }
+
+                const toCanvas = (x, y) => {
+                    const cx = padding + (x - a) / (b - a) * (width / 2 - padding);
+                    const cy = height - padding - y / (maxH + 0.5) * (height - 2 * padding);
+                    return { x: cx, y: cy };
+                };
+
+                ctx.beginPath();
+                ctx.moveTo(padding, height - padding);
+                ctx.lineTo(width / 2, height - padding);
+                ctx.moveTo(padding, padding);
+                ctx.lineTo(padding, height - padding);
+                ctx.strokeStyle = '#1f2937';
+                ctx.lineWidth = 1.5;
+                ctx.stroke();
+
+                ctx.save();
+                ctx.strokeStyle = '#2563eb';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                values.forEach(({ x, h }, index) => {
+                    const pos = toCanvas(x, h);
+                    if (index === 0) ctx.moveTo(pos.x, pos.y);
+                    else ctx.lineTo(pos.x, pos.y);
+                });
+                ctx.stroke();
+                ctx.restore();
+
+                const currentX = a + t * (b - a);
+                const shellData = data.shell(currentX);
+                const base = toCanvas(currentX, 0);
+                const top = toCanvas(currentX, shellData.height);
+                ctx.fillStyle = 'rgba(79,70,229,0.2)';
+                ctx.fillRect(base.x - 6, top.y, 12, base.y - top.y);
+
+                const shellOuterRadius = shellData.radius / (maxR + 0.5) * (width / 2 - padding);
+                const shellHeight = shellData.height / (maxH + 0.5) * (height - 2 * padding) * 0.6;
+                const center = { x: width / 2 + (width / 2 - padding) * 0.4, y: height / 2 };
+                ctx.save();
+                ctx.strokeStyle = 'rgba(79,70,229,0.35)';
+                ctx.lineWidth = 6;
+                ctx.beginPath();
+                ctx.ellipse(center.x, center.y, shellOuterRadius, shellOuterRadius * 0.4, 0, 0, Math.PI * 2);
+                ctx.stroke();
+                ctx.restore();
+
+                volumeStatus.textContent = `当前壳层半径 ρ ≈ ${shellData.radius.toFixed(3)}，高度 h ≈ ${shellData.height.toFixed(3)}。`;
+            }
+            renderMath();
+        }
+
+        function attachEvents() {
+            navButtons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    navButtons.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    currentCategory = btn.textContent.trim();
+                    populateModels();
+                    drawModel(animationT);
+                });
+            });
+
+            modelSelector.addEventListener('change', () => {
+                currentIndex = parseInt(modelSelector.value, 10);
+                updateSummary();
+                drawModel(animationT);
+            });
+
+            toggleAnimation.addEventListener('click', () => {
+                animationActive = !animationActive;
+                toggleAnimation.textContent = animationActive ? '暂停旋转' : '启动旋转';
+                if (animationActive) animate();
+                else cancelAnimationFrame(animationFrame);
+            });
+
+            checkBtn.addEventListener('click', () => {
+                const data = getCurrentModels()[currentIndex];
+                const methodOk = methodInput.value.trim() === data.method;
+                const integrandOk = normalize(integrandInput.value) === normalize(data.integrand);
+                const boundsOk = normalize(boundsInput.value) === normalize(`${formatBound(data.bounds[0])},${formatBound(data.bounds[1])}`);
+                checkStatus.textContent = methodOk && integrandOk && boundsOk ? '三项填写正确，积分表达式匹配！' : `参考：方法 ${data.method}，被积函数 ${data.integrand}，区间 ${formatBound(data.bounds[0])},${formatBound(data.bounds[1])}`;
+            });
+
+            showBtn.addEventListener('click', () => {
+                const data = getCurrentModels()[currentIndex];
+                methodInput.value = data.method;
+                integrandInput.value = data.integrand;
+                boundsInput.value = `${formatBound(data.bounds[0])},${formatBound(data.bounds[1])}`;
+                checkStatus.textContent = '答案已填入，可再次检查确认。';
+            });
+        }
+
+        function animate() {
+            if (!animationActive) return;
+            animationT += 0.01;
+            if (animationT > 1) animationT = 0;
+            drawModel(animationT);
+            animationFrame = requestAnimationFrame(animate);
+        }
+
+        function formatBound(value) {
+            if (Math.abs(value - Math.PI) < 1e-6) return 'pi';
+            if (Math.abs(value - Math.PI / 2) < 1e-6) return 'pi/2';
+            return value.toFixed(3).replace(/\.000$/, '');
+        }
+
+        function normalize(str) {
+            return (str || '')
+                .replace(/\\pi/g, 'pi')
+                .replace(/\s/g, '')
+                .toLowerCase();
+        }
+
+        populateModels();
+        attachEvents();
+        drawModel(animationT);
+        renderMath();
+    </script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+

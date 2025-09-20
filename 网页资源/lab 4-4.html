@@ -1,0 +1,978 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>函数性态与图形绘制实验室</title>
+
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true,
+                processEnvironments: true
+            },
+            options: {
+                skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+            },
+            startup: {
+                pageReady: () => {
+                    return MathJax.startup.defaultPageReady().then(() => {
+                        console.log('MathJax加载完成');
+                    });
+                }
+            }
+        };
+    </script>
+    <script defer src="../common-assets/js/mathjax-3.2.2-tex-svg.min.js"></script>
+
+    <style>
+    :root {
+        --primary: #4f46e5;
+        --primary-dark: #3730a3;
+        --primary-light: #6366f1;
+        --success: #10b981;
+        --warning: #f59e0b;
+        --danger: #ef4444;
+        --gray-50: #f9fafb;
+        --gray-100: #f3f4f6;
+        --gray-200: #e5e7eb;
+        --gray-300: #d1d5db;
+        --gray-500: #6b7280;
+        --gray-600: #4b5563;
+        --gray-700: #1f2937;
+        --white: #ffffff;
+        --light: #ffffff;
+        --border: #e5e7eb;
+        --h1-size: 22px;
+        --h3-size: 18px;
+        --text-size: 16px;
+        --formula-size: 20px;
+    }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        *::-webkit-scrollbar { width: 0; background: transparent; }
+        * { scrollbar-width: none; -ms-overflow-style: none; }
+
+            body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
+        font-size: var(--text-size);
+        line-height: 1.5;
+        background: var(--gray-50);
+        color: var(--gray-700);
+    }
+
+            .container {
+        width: 100%;
+        max-width: 1400px;
+        height: min(100vh, 700px);
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        background: var(--white);
+    }
+
+            .header {
+        height: 40px;
+        background: var(--primary);
+        color: var(--white);
+        display: flex;
+        align-items: center;
+        padding: 0 20px;
+    }
+            .header h1 { font-size: var(--h1-size); margin: 0; }
+
+            .main { flex: 1; display: flex; overflow: hidden; }
+
+            .sidebar {
+        width: 120px;
+        background: var(--gray-50);
+        border-right: 1px solid var(--border);
+        padding: 10px 8px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+            .nav-btn {
+        width: 100%;
+        padding: 8px;
+        background: transparent;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: var(--text-size);
+        color: var(--gray-600);
+        text-align: left;
+        transition: background 0.2s ease, color 0.2s ease;
+    }
+            .nav-btn.active { background: var(--primary); color: var(--white); }
+            .nav-btn:hover { background: var(--gray-100); }
+
+            .content {
+        flex: 1;
+        position: relative;
+        overflow: hidden;
+        padding: 0;
+    }
+            .page-content {
+        display: none;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 18px;
+        height: 100%;
+        padding: 16px;
+    }
+
+    .page-content.active {
+        display: grid;
+    }
+
+            .column { display: flex; flex-direction: column; gap: 16px; overflow-y: auto; padding-right: 4px; }
+
+            .card { background: var(--white); border: 1px solid var(--border); border-radius: 12px; padding: 12px; display: flex; flex-direction: column; gap: 10px; }
+        .card h3 { font-size: var(--h3-size); color: var(--primary-dark); }
+        .card p { line-height: 1.5; }
+        .card-scroll { overflow-y: auto; }
+
+        .tag-list { display: flex; gap: 8px; flex-wrap: wrap; }
+        .tag { font-size: 13px; padding: 4px 10px; border-radius: 999px; background: var(--gray-100); color: var(--gray-500); }
+
+        .controls { display: flex; flex-direction: column; gap: 10px; background: var(--gray-50); border: 1px solid var(--gray-200); border-radius: 10px; padding: 10px; }
+        .control-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+        .control-row label { font-weight: 600; }
+        select, input[type="text"] { flex: 1; padding: 6px 8px; border-radius: 8px; border: 1px solid var(--gray-300); font-size: 15px; }
+        input[type="range"] { flex: 1; }
+        .btn-group { display: flex; gap: 10px; }
+        button.action { flex: 1; background: var(--primary); color: var(--white); border: none; border-radius: 8px; padding: 10px 12px; font-size: var(--text-size); cursor: pointer; transition: transform 0.2s ease; position: relative; z-index: 10; pointer-events: auto; }
+        button.action.secondary { background: var(--white); color: var(--primary); border: 1px solid var(--primary); }
+        button.action:hover { transform: translateY(-2px); }
+
+        .canvas-grid { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 12px; }
+        .canvas-item { border: 1px solid var(--gray-200); border-radius: 12px; background: var(--gray-50); padding: 8px; display: flex; flex-direction: column; gap: 6px; }
+        .canvas-item canvas { width: 100%; height: 160px; border-radius: 8px; background: var(--white); }
+        .canvas-item h4 { font-size: 15px; color: var(--primary-dark); }
+
+        .info-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 12px; }
+        .info-item { background: var(--gray-50); border: 1px solid var(--gray-200); border-radius: 10px; padding: 10px; font-size: 15px; }
+        .info-item strong { display: block; margin-bottom: 6px; color: var(--primary-dark); }
+
+        table { width: 100%; border-collapse: collapse; font-size: 15px; }
+        th, td { border: 1px solid var(--gray-200); padding: 8px; text-align: center; }
+        thead { background: var(--gray-100); }
+
+        .status-box { background: #eef2ff; color: var(--primary-dark); border-radius: 10px; padding: 10px; font-size: 14px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>函数性态与图形绘制实验室</h1>
+            <div>综合 $f(x), f'(x), f''(x)$ 的信息构建精准图像</div>
+        </header>
+        <div class="main">
+            <nav class="sidebar">
+                <button class="nav-btn active" data-section="overview">综合观察</button>
+                <button class="nav-btn" data-section="concavity">凹凸性判断</button>
+                <button class="nav-btn" data-section="inflection">拐点分析</button>
+            </nav>
+            <section class="content">
+                <!-- 综合观察页面 -->
+                <div class="page-content active" id="overview">
+                    <div class="column">
+                        <div class="card card-scroll">
+                            <h3>学习指引</h3>
+                            <p>本实验聚焦于曲线的"整体性态"。通过三张同步画布展示 $f(x)$、$f'(x)$、$f''(x)$，配合扫描线和数值分析，你可以迅速判断凹凸区间、拐点位置以及图像的转折特征。</p>
+                            <div class="tag-list">
+                                <span class="tag">凹凸分析</span>
+                                <span class="tag">拐点检测</span>
+                                <span class="tag">三重对照</span>
+                                <span class="tag">动画扫描</span>
+                            </div>
+                            <div class="status-box" id="summaryBox">当前函数：$f(x)=x^3-3x$，二阶导数 $f''(x)=6x$，拐点位于 $x=0$，在 $x>0$ 区域曲线凹向上。</div>
+                        </div>
+
+                        <div class="card card-scroll">
+                            <h3>凹凸及拐点表</h3>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>区间</th>
+                                        <th>$f''(x)$ 符号</th>
+                                        <th>凹凸性</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="concavityTable"></tbody>
+                            </table>
+                        </div>
+
+                        <div class="card">
+                            <h3>结论速记</h3>
+                            <div class="info-grid">
+                                <div class="info-item">
+                                    <strong>凹凸判别</strong>
+                                    $f''(x)>0$ 凹向上（微笑形），$f''(x)<0$ 凹向下（皱眉形），符号改变处可能是拐点。
+                                </div>
+                                <div class="info-item">
+                                    <strong>图像形状</strong>
+                                    综合 $f'(x)$ 和 $f''(x)$ 可以判断图像的走势、弯曲方向以及极值类型。
+                                </div>
+                                <div class="info-item">
+                                    <strong>绘图步骤</strong>
+                                    先找驻点与拐点，再在各区间标出增减与凹凸，最后连接成光滑曲线。
+                                </div>
+                                <div class="info-item">
+                                    <strong>常见误区</strong>
+                                    忽略不可导点或二阶导数不存在的地方，可能导致漏判拐点或错误的凹凸结论。
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="column">
+                        <div class="card">
+                            <h3>三重曲线同步观察</h3>
+                            <div class="controls">
+                                <div class="control-row">
+                                    <label>选择函数</label>
+                                    <select id="presetSelector"></select>
+                                </div>
+                                <div class="control-row">
+                                    <label>自定义表达式</label>
+                                    <input type="text" id="customInput" placeholder="例如: Math.exp(-x*x) - x">
+                                    <button class="action secondary" id="applyCustom">应用</button>
+                                </div>
+                                <div class="control-row">
+                                    <label>扫描速度</label>
+                                    <input type="range" id="speedSlider" min="1" max="5" step="1" value="3">
+                                    <span id="speedValue">偏快</span>
+                                    <button class="action" id="toggleScan">启动扫描</button>
+                                    <button class="action secondary" id="resetView">重置</button>
+                                </div>
+                            </div>
+                            <div class="canvas-grid">
+                                <div class="canvas-item">
+                                    <h4>$f(x)$</h4>
+                                    <canvas id="fxCanvas"></canvas>
+                                </div>
+                                <div class="canvas-item">
+                                    <h4>$f'(x)$</h4>
+                                    <canvas id="fxPrimeCanvas"></canvas>
+                                </div>
+                                <div class="canvas-item">
+                                    <h4>$f''(x)$</h4>
+                                    <canvas id="fxSecondCanvas"></canvas>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <h3>关键结论与解读</h3>
+                            <div class="info-grid">
+                                <div class="info-item">
+                                    <strong>拐点</strong>
+                                    <span id="inflectionInfo">拐点：$x=0$</span>
+                                </div>
+                                <div class="info-item">
+                                    <strong>凹凸区间</strong>
+                                    <span id="concavityInfo">$(-\\infty,0)$ 凹向下，$(0,\\infty)$ 凹向上</span>
+                                </div>
+                                <div class="info-item">
+                                    <strong>综合说明</strong>
+                                    <span id="explainInfo">扫描线经过拐点时，$f'(x)$ 的增长速度发生突变，图像弯曲方向改变。</span>
+                                </div>
+                                <div class="info-item">
+                                    <strong>即时提示</strong>
+                                    <span id="hintInfo">拖动或自动扫描会同步更新三张图和凹凸判断。</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <h3>工程与设计应用</h3>
+                            <div class="info-grid">
+                                <div class="info-item">
+                                    <strong>结构工程</strong>
+                                    桥梁设计：分析弯矩图的凹凸性，确定最大弯矩点
+                                </div>
+                                <div class="info-item">
+                                    <strong>机械设计</strong>
+                                    凸轮设计：利用凹凸性控制运动轨迹的平滑性
+                                </div>
+                                <div class="info-item">
+                                    <strong>光学设计</strong>
+                                    透镜设计：分析光线路径的凹凸性，优化成像质量
+                                </div>
+                                <div class="info-item">
+                                    <strong>经济分析</strong>
+                                    成本函数：分析边际成本的变化趋势，找到最优点
+                                </div>
+                            </div>
+                            <div class="status-box">
+                                💡 提示：凹凸性分析在工程设计中非常重要，能帮助优化结构性能和降低成本。
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 凹凸性判断页面 -->
+                <div class="page-content" id="concavity">
+                    <div class="column">
+                        <div class="card card-scroll">
+                            <h3>凹凸性判断</h3>
+                            <p>凹凸性是函数图像的重要特征，通过分析二阶导数的符号可以准确判断曲线的凹凸性。</p>
+                            <div class="tag-list">
+                                <span class="tag">二阶导数</span>
+                                <span class="tag">凹凸判别</span>
+                                <span class="tag">符号变化</span>
+                                <span class="tag">图像形状</span>
+                            </div>
+                            <div class="status-box">通过分析 $f''(x)$ 的符号来判断曲线的凹凸性。</div>
+                        </div>
+                        <div class="card">
+                            <h3>凹凸性判别法</h3>
+                            <div class="info-grid">
+                                <div class="info-item">
+                                    <strong>凹向上</strong>
+                                    $f''(x) > 0$，曲线向上弯曲，形状如微笑。
+                                </div>
+                                <div class="info-item">
+                                    <strong>凹向下</strong>
+                                    $f''(x) < 0$，曲线向下弯曲，形状如皱眉。
+                                </div>
+                                <div class="info-item">
+                                    <strong>拐点</strong>
+                                    $f''(x) = 0$ 且符号改变，曲线弯曲方向改变。
+                                </div>
+                                <div class="info-item">
+                                    <strong>应用意义</strong>
+                                    凹凸性在经济学、工程学中有重要应用。
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="column">
+                        <div class="card">
+                            <h3>凹凸性可视化</h3>
+                            <div class="canvas-grid">
+                                <div class="canvas-item">
+                                    <h4>原函数</h4>
+                                    <canvas id="concavityCanvas"></canvas>
+                                </div>
+                                <div class="canvas-item">
+                                    <h4>二阶导数</h4>
+                                    <canvas id="secondDerivCanvas"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 拐点分析页面 -->
+                <div class="page-content" id="inflection">
+                    <div class="column">
+                        <div class="card card-scroll">
+                            <h3>拐点分析</h3>
+                            <p>拐点是函数图像的重要特征点，是曲线凹凸性发生改变的位置。</p>
+                            <div class="tag-list">
+                                <span class="tag">拐点定义</span>
+                                <span class="tag">寻找方法</span>
+                                <span class="tag">判别条件</span>
+                                <span class="tag">实际应用</span>
+                            </div>
+                            <div class="status-box">拐点是曲线凹凸性发生改变的关键点。</div>
+                        </div>
+                        <div class="card">
+                            <h3>拐点判别</h3>
+                            <div class="info-grid">
+                                <div class="info-item">
+                                    <strong>必要条件</strong>
+                                    $f''(x_0) = 0$ 或 $f''(x_0)$ 不存在。
+                                </div>
+                                <div class="info-item">
+                                    <strong>充分条件</strong>
+                                    $f''(x)$ 在 $x_0$ 左右符号相反。
+                                </div>
+                                <div class="info-item">
+                                    <strong>几何意义</strong>
+                                    曲线在该点改变弯曲方向。
+                                </div>
+                                <div class="info-item">
+                                    <strong>物理意义</strong>
+                                    加速度为零或方向改变的点。
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="column">
+                        <div class="card">
+                            <h3>拐点可视化</h3>
+                            <div class="canvas-grid">
+                                <div class="canvas-item">
+                                    <h4>函数与拐点</h4>
+                                    <canvas id="inflectionCanvas"></canvas>
+                                </div>
+                                <div class="canvas-item">
+                                    <h4>二阶导数变化</h4>
+                                    <canvas id="secondDerivChangeCanvas"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <script>
+        function renderMath() {
+            if (window.MathJax && MathJax.typesetPromise) {
+                MathJax.typesetPromise().catch(err => console.log('渲染错误:', err));
+            }
+        }
+
+        // 确保页面加载完成后渲染数学公式
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(renderMath, 100);
+        });
+
+        function setupCanvas(canvas) {
+            const ctx = canvas.getContext('2d');
+            const rect = canvas.getBoundingClientRect();
+            const dpr = window.devicePixelRatio || 1;
+            canvas.width = rect.width * dpr;
+            canvas.height = rect.height * dpr;
+            canvas.style.width = rect.width + 'px';
+            canvas.style.height = rect.height + 'px';
+            ctx.scale(dpr, dpr);
+            return { ctx, width: rect.width, height: rect.height };
+        }
+
+        function drawAxes(ctx, width, height) {
+            const padding = 30;
+            ctx.save();
+            ctx.strokeStyle = '#e2e8f0';
+            ctx.lineWidth = 1;
+            for (let i = 0; i <= 6; i++) {
+                const x = padding + i * (width - 2 * padding) / 6;
+                ctx.beginPath();
+                ctx.moveTo(x, padding);
+                ctx.lineTo(x, height - padding);
+                ctx.stroke();
+                const y = padding + i * (height - 2 * padding) / 6;
+                ctx.beginPath();
+                ctx.moveTo(padding, y);
+                ctx.lineTo(width - padding, y);
+                ctx.stroke();
+            }
+            ctx.strokeStyle = '#1f2937';
+            ctx.lineWidth = 1.2;
+            ctx.beginPath(); ctx.moveTo(padding, height / 2); ctx.lineTo(width - padding, height / 2); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(width / 2, padding); ctx.lineTo(width / 2, height - padding); ctx.stroke();
+            ctx.restore();
+        }
+
+        function mathToCanvas(x, y, width, height, xRange, yRange, padding = 30) {
+            const plotWidth = width - 2 * padding;
+            const plotHeight = height - 2 * padding;
+            const cx = padding + (x - xRange[0]) / (xRange[1] - xRange[0]) * plotWidth;
+            const cy = height - padding - (y - yRange[0]) / (yRange[1] - yRange[0]) * plotHeight;
+            return { x: cx, y: cy };
+        }
+
+        function derivative(fn, x, h = 1e-4) {
+            const f1 = fn(x + h);
+            const f2 = fn(x - h);
+            if (!Number.isFinite(f1) || !Number.isFinite(f2)) return NaN;
+            return (f1 - f2) / (2 * h);
+        }
+
+        function secondDerivative(fn, x, h = 1e-3) {
+            const f1 = fn(x + h);
+            const f2 = fn(x);
+            const f3 = fn(x - h);
+            if (!Number.isFinite(f1) || !Number.isFinite(f2) || !Number.isFinite(f3)) return NaN;
+            return (f1 - 2 * f2 + f3) / (h * h);
+        }
+
+        const presets = {
+            cubic: { name: '$x^3 - 3x$', expression: 'x*x*x - 3*x', domain: [-4, 4] },
+            quartic: { name: '$x^4 - 2x^2$', expression: 'Math.pow(x,4) - 2*Math.pow(x,2)', domain: [-3, 3] },
+            logistic: { name: '$\frac{1}{1+e^{-x}}$', expression: '1/(1+Math.exp(-x))', domain: [-6, 6] }
+        };
+
+        let currentFn = x => x * x * x - 3 * x;
+        let currentExpression = 'x*x*x - 3*x';
+        let domain = [-4, 4];
+        let scanActive = false;
+        let scanX = -4;
+        let scanDirection = 1;
+        let animationFrame = null;
+
+        const presetSelector = document.getElementById('presetSelector');
+        const customInput = document.getElementById('customInput');
+        const applyCustomBtn = document.getElementById('applyCustom');
+        const speedSlider = document.getElementById('speedSlider');
+        const speedValue = document.getElementById('speedValue');
+        const toggleScanBtn = document.getElementById('toggleScan');
+        const resetViewBtn = document.getElementById('resetView');
+        const navButtons = document.querySelectorAll('.nav-btn');
+        const pages = document.querySelectorAll('.page-content');
+
+        const fxCanvas = document.getElementById('fxCanvas');
+        const fxPrimeCanvas = document.getElementById('fxPrimeCanvas');
+        const fxSecondCanvas = document.getElementById('fxSecondCanvas');
+
+        const concavityTable = document.getElementById('concavityTable');
+        const summaryBox = document.getElementById('summaryBox');
+        const inflectionInfo = document.getElementById('inflectionInfo');
+        const concavityInfo = document.getElementById('concavityInfo');
+        const explainInfo = document.getElementById('explainInfo');
+        const hintInfo = document.getElementById('hintInfo');
+
+        let concavityData = [];
+
+        function populatePresetSelector() {
+            Object.entries(presets).forEach(([key, item]) => {
+                const option = document.createElement('option');
+                option.value = key;
+                option.innerHTML = item.name;
+                presetSelector.appendChild(option);
+            });
+            presetSelector.value = 'cubic';
+        }
+
+        function parseExpression(expr) {
+            try {
+                const sanitized = expr.replace(/\^/g, '**');
+                return new Function('x', `return ${sanitized};`);
+            } catch (e) {
+                return null;
+            }
+        }
+
+        function safeEval(fn, x) {
+            try {
+                const v = fn(x);
+                if (!Number.isFinite(v)) return NaN;
+                return v;
+            } catch (e) {
+                return NaN;
+            }
+        }
+
+        function analyzeConcavity() {
+            const points = findInflectionPoints();
+            concavityData = buildConcavityIntervals(points);
+            updateConcavityTable(points);
+            updateSummary(points);
+            drawAllCanvases();
+        }
+
+        function findInflectionPoints(samples = 240) {
+            const pts = [];
+            const [minX, maxX] = domain;
+            let prevX = minX;
+            let prevSecond = secondDerivative(currentFn, prevX);
+            for (let i = 1; i <= samples; i++) {
+                const x = minX + (i / samples) * (maxX - minX);
+                const second = secondDerivative(currentFn, x);
+                if (!Number.isFinite(second) || !Number.isFinite(prevSecond)) {
+                    prevX = x; prevSecond = second; continue;
+                }
+                if (Math.abs(second) < 1e-4) {
+                    pts.push(x);
+                } else if (prevSecond * second < 0) {
+                    let left = prevX;
+                    let right = x;
+                    for (let k = 0; k < 18; k++) {
+                        const mid = (left + right) / 2;
+                        const midSecond = secondDerivative(currentFn, mid);
+                        if (!Number.isFinite(midSecond)) break;
+                        if (prevSecond * midSecond <= 0) {
+                            right = mid;
+                        } else {
+                            left = mid;
+                            prevSecond = midSecond;
+                        }
+                    }
+                    pts.push((left + right) / 2);
+                }
+                prevX = x;
+                prevSecond = second;
+            }
+            return Array.from(new Set(pts.map(p => parseFloat(p.toFixed(3))))).sort((a, b) => a - b);
+        }
+
+        function buildConcavityIntervals(points) {
+            const arr = [domain[0], ...points, domain[1]];
+            const intervals = [];
+            for (let i = 0; i < arr.length - 1; i++) {
+                const left = arr[i];
+                const right = arr[i + 1];
+                const mid = (left + right) / 2;
+                const second = secondDerivative(currentFn, mid);
+                let status = 'flat';
+                if (Number.isFinite(second)) {
+                    if (second > 0) status = 'up';
+                    else if (second < 0) status = 'down';
+                }
+                intervals.push({ left, right, mid, status });
+            }
+            return intervals;
+        }
+
+        function updateConcavityTable(points) {
+            concavityTable.innerHTML = '';
+            concavityData.forEach(interval => {
+                const row = document.createElement('tr');
+                const intervalCell = document.createElement('td');
+                intervalCell.innerHTML = `$(${format(interval.left)}, ${format(interval.right)})$`;
+                const signCell = document.createElement('td');
+                signCell.textContent = interval.status === 'up' ? '正' : interval.status === 'down' ? '负' : '0';
+                const concavityCell = document.createElement('td');
+                concavityCell.textContent = interval.status === 'up' ? '凹向上' : interval.status === 'down' ? '凹向下' : '待定';
+                row.appendChild(intervalCell);
+                row.appendChild(signCell);
+                row.appendChild(concavityCell);
+                concavityTable.appendChild(row);
+            });
+            renderMath();
+        }
+
+        function updateSummary(points) {
+            const expressionDisplay = currentExpression.replace(/\*/g, '\\cdot ');
+            summaryBox.innerHTML = `当前函数：$f(x)=${expressionDisplay}$，检测到拐点 ${points.length ? points.map(p => p.toFixed(2)).join(', ') : '无'}。`;
+            inflectionInfo.innerHTML = points.length ? points.map(p => `$x=${p.toFixed(2)}$`).join('，') : '暂无拐点';
+            concavityInfo.innerHTML = concavityData.map(item => `$(${format(item.left)}, ${format(item.right)})${item.status === 'up' ? '凹向上' : item.status === 'down' ? '凹向下' : '待定'}$`).join('，');
+            explainInfo.innerHTML = points.length ? '在拐点附近，$f''(x)$ 的符号发生改变，图像弯曲方向随之变化。' : '暂无符号改变，曲线在定义域内保持同一凹凸性。';
+            renderMath();
+        }
+
+        function drawAllCanvases() {
+            drawCanvasWithFunction(fxCanvas, currentFn, '#1d4ed8');
+            drawCanvasWithFunction(fxPrimeCanvas, x => derivative(currentFn, x), '#f97316');
+            drawCanvasWithFunction(fxSecondCanvas, x => secondDerivative(currentFn, x), '#0ea5e9', true);
+        }
+
+        function drawCanvasWithFunction(canvas, fn, color, showSmile = false) {
+            const { ctx, width, height } = setupCanvas(canvas);
+            ctx.clearRect(0, 0, width, height);
+            drawAxes(ctx, width, height);
+            const [minX, maxX] = domain;
+            const samples = 500;
+            let minY = Infinity, maxY = -Infinity;
+            const points = [];
+            for (let i = 0; i <= samples; i++) {
+                const x = minX + (i / samples) * (maxX - minX);
+                const y = safeEval(fn, x);
+                if (!Number.isFinite(y)) continue;
+                minY = Math.min(minY, y);
+                maxY = Math.max(maxY, y);
+                points.push({ x, y });
+            }
+            const pad = (maxY - minY) * 0.2 || 1;
+            const yRange = [minY - pad, maxY + pad];
+            ctx.save();
+            ctx.strokeStyle = color;
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            let started = false;
+            points.forEach(({ x, y }) => {
+                const { x: cx, y: cy } = mathToCanvas(x, y, width, height, domain, yRange);
+                if (!started) { ctx.moveTo(cx, cy); started = true; }
+                else ctx.lineTo(cx, cy);
+            });
+            ctx.stroke();
+            ctx.restore();
+            if (showSmile) drawConcavityMarks(ctx, width, height, yRange);
+            drawScanLine(ctx, width, height, yRange, color);
+        }
+
+        function drawConcavityMarks(ctx, width, height, yRange) {
+            const radius = 12;
+            concavityData.forEach(interval => {
+                const mid = (interval.left + interval.right) / 2;
+                const value = safeEval(x => secondDerivative(currentFn, x), mid);
+                const { x, y } = mathToCanvas(mid, 0, width, height, domain, yRange);
+                ctx.save();
+                ctx.translate(x, height / 2);
+                ctx.beginPath();
+                if (interval.status === 'up') {
+                    ctx.strokeStyle = '#10b981';
+                    ctx.arc(0, 6, radius, Math.PI, 2 * Math.PI);
+                    ctx.moveTo(-radius, 5);
+                    ctx.lineTo(-radius + 4, 0);
+                    ctx.moveTo(radius, 5);
+                    ctx.lineTo(radius - 4, 0);
+                } else if (interval.status === 'down') {
+                    ctx.strokeStyle = '#ef4444';
+                    ctx.arc(0, -6, radius, 0, Math.PI);
+                    ctx.moveTo(-radius, -5);
+                    ctx.lineTo(-radius + 4, 0);
+                    ctx.moveTo(radius, -5);
+                    ctx.lineTo(radius - 4, 0);
+                }
+                ctx.stroke();
+                ctx.restore();
+            });
+        }
+
+        function drawScanLine(ctx, width, height, yRange, color) {
+            if (!scanActive) return;
+            const { x } = mathToCanvas(scanX, 0, width, height, domain, yRange);
+            ctx.save();
+            ctx.strokeStyle = color;
+            ctx.setLineDash([6, 6]);
+            ctx.beginPath();
+            ctx.moveTo(x, 15);
+            ctx.lineTo(x, height - 15);
+            ctx.stroke();
+            ctx.restore();
+        }
+
+        function animateScan() {
+            const speed = parseInt(speedSlider.value, 10);
+            const delta = (domain[1] - domain[0]) / (speed === 1 ? 700 : speed === 2 ? 450 : speed === 3 ? 300 : speed === 4 ? 180 : 120);
+            scanX += scanDirection * delta;
+            if (scanX >= domain[1] || scanX <= domain[0]) {
+                scanDirection *= -1;
+                scanX = Math.max(domain[0], Math.min(domain[1], scanX));
+            }
+            const concavity = secondDerivative(currentFn, scanX);
+            hintInfo.textContent = `当前 $x=${scanX.toFixed(2)}$，$f''(x)=${Number.isFinite(concavity) ? concavity.toFixed(3) : '∞'}$，曲线${concavity > 0 ? '凹向上' : concavity < 0 ? '凹向下' : '接近拐点' }。`;
+            drawAllCanvases();
+            animationFrame = requestAnimationFrame(animateScan);
+        }
+
+        function stopScan() {
+            scanActive = false;
+            toggleScanBtn.textContent = '启动扫描';
+            if (animationFrame) cancelAnimationFrame(animationFrame);
+            animationFrame = null;
+            drawAllCanvases();
+        }
+
+        function format(value) {
+            if (!Number.isFinite(value)) return '∞';
+            if (Math.abs(value) >= 1000 || Math.abs(value) < 0.001) return value.toExponential(2);
+            return value.toFixed(2);
+        }
+
+        presetSelector.addEventListener('change', () => {
+            const item = presets[presetSelector.value];
+            if (!item) return;
+            const fn = parseExpression(item.expression);
+            if (!fn) return;
+            currentFn = fn;
+            currentExpression = item.expression;
+            domain = item.domain.slice();
+            scanX = domain[0];
+            scanDirection = 1;
+            stopScan();
+            analyzeConcavity();
+        });
+
+        applyCustomBtn.addEventListener('click', () => {
+            const expr = customInput.value.trim();
+            if (!expr) return;
+            const fn = parseExpression(expr);
+            if (!fn) {
+                hintInfo.textContent = '表达式解析失败，请使用 Math 函数并检查语法。';
+                return;
+            }
+            currentFn = fn;
+            currentExpression = expr;
+            domain = [-5, 5];
+            scanX = domain[0];
+            scanDirection = 1;
+            stopScan();
+            analyzeConcavity();
+        });
+
+        speedSlider.addEventListener('input', () => {
+            const value = parseInt(speedSlider.value, 10);
+            speedValue.textContent = value === 1 ? '慢速' : value === 2 ? '中速' : value === 3 ? '偏快' : value === 4 ? '快速' : '极速';
+        });
+
+        toggleScanBtn.addEventListener('click', () => {
+            scanActive = !scanActive;
+            if (scanActive) {
+                toggleScanBtn.textContent = '暂停扫描';
+                animationFrame = requestAnimationFrame(animateScan);
+            } else {
+                stopScan();
+            }
+        });
+
+        resetViewBtn.addEventListener('click', () => {
+            presetSelector.value = 'cubic';
+            const item = presets['cubic'];
+            currentFn = parseExpression(item.expression);
+            currentExpression = item.expression;
+            domain = item.domain.slice();
+            scanX = domain[0];
+            scanDirection = 1;
+            customInput.value = '';
+            stopScan();
+            analyzeConcavity();
+        });
+
+        // 页面切换功能
+        function switchPage(section) {
+            pages.forEach(page => {
+                page.classList.toggle('active', page.id === section);
+            });
+            navButtons.forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.section === section);
+            });
+
+            setTimeout(renderMath, 80);
+
+            setTimeout(() => {
+                if (section === 'overview') {
+                    updateOverviewCanvas();
+                } else if (section === 'concavity') {
+                    updateConcavityCanvas();
+                } else if (section === 'inflection') {
+                    updateInflectionCanvas();
+                }
+            }, 200);
+        }
+
+        // 绑定导航按钮事件
+        function initNavigation() {
+            navButtons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const section = btn.dataset.section;
+                    switchPage(section);
+                });
+            });
+        }
+
+        // 添加缺失的Canvas更新函数
+        function updateConcavityCanvas() {
+            const canvas = document.getElementById('concavityCanvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            const width = canvas.width = 400;
+            const height = canvas.height = 300;
+            ctx.clearRect(0, 0, width, height);
+            
+            // 绘制坐标轴
+            ctx.strokeStyle = '#374151';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(40, height - 40);
+            ctx.lineTo(width - 40, height - 40);
+            ctx.moveTo(40, 40);
+            ctx.lineTo(40, height - 40);
+            ctx.stroke();
+            
+            // 绘制函数曲线
+            ctx.strokeStyle = '#2563eb';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            for (let x = -3; x <= 3; x += 0.1) {
+                const y = x * x * x - 3 * x;
+                const canvasX = 40 + ((x + 3) / 6) * (width - 80);
+                const canvasY = height - 40 - ((y + 10) / 20) * (height - 80);
+                if (x === -3) {
+                    ctx.moveTo(canvasX, canvasY);
+                } else {
+                    ctx.lineTo(canvasX, canvasY);
+                }
+            }
+            ctx.stroke();
+            
+            // 标记凹凸区间
+            ctx.fillStyle = 'rgba(16, 185, 129, 0.3)';
+            ctx.beginPath();
+            ctx.moveTo(40 + ((0 + 3) / 6) * (width - 80), 40);
+            ctx.lineTo(40 + ((3 + 3) / 6) * (width - 80), 40);
+            ctx.lineTo(40 + ((3 + 3) / 6) * (width - 80), height - 40);
+            ctx.lineTo(40 + ((0 + 3) / 6) * (width - 80), height - 40);
+            ctx.fill();
+            
+            ctx.fillStyle = 'rgba(239, 68, 68, 0.3)';
+            ctx.beginPath();
+            ctx.moveTo(40 + ((-3 + 3) / 6) * (width - 80), 40);
+            ctx.lineTo(40 + ((0 + 3) / 6) * (width - 80), 40);
+            ctx.lineTo(40 + ((0 + 3) / 6) * (width - 80), height - 40);
+            ctx.lineTo(40 + ((-3 + 3) / 6) * (width - 80), height - 40);
+            ctx.fill();
+            
+            // 添加标签
+            ctx.fillStyle = '#1f2937';
+            ctx.font = '14px Arial';
+            ctx.fillText('凹向上', 40 + ((1.5 + 3) / 6) * (width - 80), 60);
+            ctx.fillText('凹向下', 40 + ((-1.5 + 3) / 6) * (width - 80), 60);
+        }
+
+        function updateInflectionCanvas() {
+            const canvas = document.getElementById('inflectionCanvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            const width = canvas.width = 400;
+            const height = canvas.height = 300;
+            ctx.clearRect(0, 0, width, height);
+            
+            // 绘制坐标轴
+            ctx.strokeStyle = '#374151';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(40, height - 40);
+            ctx.lineTo(width - 40, height - 40);
+            ctx.moveTo(40, 40);
+            ctx.lineTo(40, height - 40);
+            ctx.stroke();
+            
+            // 绘制函数曲线
+            ctx.strokeStyle = '#2563eb';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            for (let x = -3; x <= 3; x += 0.1) {
+                const y = x * x * x - 3 * x;
+                const canvasX = 40 + ((x + 3) / 6) * (width - 80);
+                const canvasY = height - 40 - ((y + 10) / 20) * (height - 80);
+                if (x === -3) {
+                    ctx.moveTo(canvasX, canvasY);
+                } else {
+                    ctx.lineTo(canvasX, canvasY);
+                }
+            }
+            ctx.stroke();
+            
+            // 标记拐点
+            ctx.fillStyle = '#f59e0b';
+            ctx.beginPath();
+            ctx.arc(40 + ((0 + 3) / 6) * (width - 80), height - 40 - ((0 + 10) / 20) * (height - 80), 8, 0, 2 * Math.PI);
+            ctx.fill();
+            
+            // 添加标签
+            ctx.fillStyle = '#1f2937';
+            ctx.font = '14px Arial';
+            ctx.fillText('拐点', 40 + ((0 + 3) / 6) * (width - 80) + 10, height - 40 - ((0 + 10) / 20) * (height - 80) - 10);
+        }
+
+        populatePresetSelector();
+        analyzeConcavity();
+        initNavigation();
+        const firstNavButton = document.querySelector('.nav-btn[data-section]');
+        if (firstNavButton) {
+            switchPage(firstNavButton.dataset.section);
+        }
+        renderMath();
+    </script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,542 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>定积分概念实验室</title>
+
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']] },
+            options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre'] }
+        };
+    </script>
+    <script defer src="../common-assets/js/mathjax-3.2.2-tex-svg.min.js"></script>
+    <style>
+    :root {
+        --primary: #4f46e5;
+        --primary-dark: #3730a3;
+        --primary-light: #6366f1;
+        --success: #10b981;
+        --warning: #f59e0b;
+        --danger: #ef4444;
+        --gray-50: #f9fafb;
+        --gray-100: #f3f4f6;
+        --gray-200: #e5e7eb;
+        --gray-300: #d1d5db;
+        --gray-500: #6b7280;
+        --gray-600: #4b5563;
+        --gray-700: #1f2937;
+        --white: #ffffff;
+        --light: #ffffff;
+        --border: #e5e7eb;
+        --h1-size: 22px;
+        --h3-size: 18px;
+        --text-size: 16px;
+        --formula-size: 20px;
+    }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        *::-webkit-scrollbar { width: 0; background: transparent; }
+        * { scrollbar-width: none; -ms-overflow-style: none; }
+
+            body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
+        font-size: var(--text-size);
+        line-height: 1.5;
+        background: var(--gray-50);
+        color: var(--gray-700);
+    }
+
+            .container {
+        width: 100%;
+        max-width: 1400px;
+        height: min(100vh, 700px);
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        background: var(--white);
+    }
+
+            .header {
+        height: 40px;
+        background: var(--primary);
+        color: var(--white);
+        display: flex;
+        align-items: center;
+        padding: 0 20px;
+    }
+
+            .main { flex: 1; display: flex; overflow: hidden; }
+
+            .sidebar {
+        width: 120px;
+        background: var(--gray-50);
+        border-right: 1px solid var(--border);
+        padding: 10px 8px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+            .nav-btn {
+        width: 100%;
+        padding: 8px;
+        background: transparent;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: var(--text-size);
+        color: var(--gray-600);
+        text-align: left;
+        transition: background 0.2s ease, color 0.2s ease;
+    }
+
+            .nav-btn.active { background: var(--primary); color: var(--white); }
+            .nav-btn:hover { background: var(--gray-100); }
+
+                        .content {
+        flex: 1;
+        position: relative;
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 18px;
+        padding: 16px;
+        overflow: hidden;
+    }
+            .column { display: flex; flex-direction: column; gap: 16px; overflow-y: auto; padding-right: 4px; }
+
+            .card { background: var(--white); border: 1px solid var(--border); border-radius: 12px; padding: 12px; display: flex; flex-direction: column; gap: 10px; }
+
+        .card-scroll { overflow-y: auto; }
+        .card h3 { font-size: var(--h3-size); color: var(--primary-dark); }
+        .card p { line-height: 1.5; }
+
+        .tag-list { display: flex; gap: 8px; flex-wrap: wrap; }
+        .tag { font-size: 13px; padding: 4px 10px; border-radius: 999px; background: var(--gray-100); color: var(--gray-500); }
+
+        .info-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 12px; }
+        .info-item { background: var(--gray-50); border: 1px solid var(--gray-200); border-radius: 10px; padding: 10px; font-size: 15px; }
+        .info-item strong { color: var(--primary-dark); display: block; margin-bottom: 6px; }
+
+        .controls { display: flex; flex-direction: column; gap: 10px; background: var(--gray-50); border: 1px solid var(--gray-200); border-radius: 10px; padding: 10px; }
+        .control-row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+        .control-row label { font-weight: 600; }
+        input[type="range"] { flex: 1; }
+        .btn-group { display: flex; gap: 10px; }
+        button.action { background: var(--primary); color: var(--white); border: none; border-radius: 8px; padding: 8px 12px; font-size: var(--text-size); cursor: pointer; transition: transform 0.2s ease; }
+        button.action.secondary { background: var(--white); color: var(--primary); border: 1px solid var(--primary); }
+        button.action:hover { transform: translateY(-2px); }
+
+        .canvas-wrapper { border: 1px solid var(--gray-200); border-radius: 12px; background: var(--gray-50); padding: 10px; display: flex; flex-direction: column; gap: 8px; }
+        canvas { width: 100%; height: 280px; border-radius: 10px; background: var(--white); }
+
+        .status-box { background: #eef2ff; border-radius: 10px; padding: 10px; font-size: 14px; color: var(--primary-dark); }
+        .mode-group { display: flex; gap: 6px; }
+        .mode-group button { padding: 6px 10px; border-radius: 8px; border: 1px solid var(--gray-300); background: var(--white); cursor: pointer; font-size: 14px; }
+        .mode-group button.active { background: rgba(79,70,229,0.15); color: var(--primary-dark); border-color: var(--primary); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>定积分概念实验室</h1>
+            <div>通过黎曼和感受“分割-求和-取极限”</div>
+        </header>
+        <div class="main">
+            <nav class="sidebar">
+                <button class="nav-btn active" data-section="concept">概念引入</button>
+                <button class="nav-btn" data-section="riemann">黎曼和演示</button>
+                <button class="nav-btn" data-section="error">误差分析</button>
+            </nav>
+            <section class="content">
+                <div class="page-content active" id="concept">
+                    <div class="column">
+                        <div class="card card-scroll">
+                            <h3>学习指引</h3>
+                            <p>定积分表示曲线与坐标轴围成区域的面积。通过不断细分区间、累加矩形面积，我们可以看到黎曼和逐渐逼近真实面积，从而理解“极限”思想。</p>
+                            <div class="tag-list">
+                                <span class="tag">黎曼和</span>
+                                <span class="tag">取点方式</span>
+                                <span class="tag">误差曲线</span>
+                                <span class="tag">动画演示</span>
+                            </div>
+                            <div class="status-box" id="summaryBox">当前函数：$f(x)=\sin x + 1.5$，区间 $[0, \pi]$。</div>
+                        </div>
+
+                        <div class="card card-scroll">
+                            <h3>概念速记</h3>
+                            <div class="info-grid">
+                                <div class="info-item"><strong>分割</strong> 将区间等分为 $n$ 个子区间。</div>
+                                <div class="info-item"><strong>取样</strong> 在每个子区间内选一个点决定矩形高度（左端、右端或中点）。</div>
+                                <div class="info-item"><strong>累加</strong> 将所有矩形面积求和得到黎曼和 $S_n$。</div>
+                                <div class="info-item"><strong>极限</strong> 当 $n\to\infty$ 时，$S_n$ 收敛到定积分 $\int_a^b f(x)dx$。</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="column">
+                        <div class="card">
+                            <h3>定积分的意义</h3>
+                            <p>将“分割—求和—取极限”的过程可视化，有助于建立定积分的面积观。通过比较黎曼和与真实面积的差异，学生可以直观地理解为什么取样点和分割数会影响结果。</p>
+                            <p>在后续学习中，定积分不仅用于面积计算，还会关联到物理量累积、概率分布等场景。因此建议先掌握概念，再进入算法练习。</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="page-content" id="riemann">
+                    <div class="column">
+                        <div class="card card-scroll">
+                            <h3>操作说明</h3>
+                            <p>调整分割数 $n$、选择取样方式（左端、中点、右端），观察矩形高度变化。启动动画可自动增加 $n$，体验黎曼和逐渐逼近真实面积的过程。</p>
+                            <p>建议在不同模式下比较黎曼和的数值与误差，理解为什么中点法通常更精确。</p>
+                        </div>
+                    </div>
+
+                    <div class="column">
+                        <div class="card">
+                            <h3>黎曼和演示区</h3>
+                            <div class="controls">
+                                <div class="control-row">
+                                    <label>分割数 n</label>
+                                    <input type="range" id="sliceSlider" min="4" max="400" value="20">
+                                    <span id="sliceValue">20</span>
+                                </div>
+                                <div class="control-row">
+                                    <label>取点方式</label>
+                                    <div class="mode-group" id="modeGroup">
+                                        <button data-mode="left" class="active">左端点</button>
+                                        <button data-mode="mid">中点</button>
+                                        <button data-mode="right">右端点</button>
+                                    </div>
+                                </div>
+                                <div class="btn-group">
+                                    <button class="action" id="toggleAnimation">启动动画</button>
+                                    <button class="action secondary" id="resetView">重置</button>
+                                </div>
+                            </div>
+                            <div class="canvas-wrapper">
+                                <canvas id="riemannCanvas"></canvas>
+                                <div class="status-box" id="riemannInfo">黎曼和 $S_n = 0.0000$，真实面积 $I = 2 + 1.5\pi \approx 6.7124$。</div>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <h3>误差轨迹</h3>
+                            <div class="canvas-wrapper">
+                                <canvas id="errorCanvas"></canvas>
+                                <div class="status-box" id="errorInfo">误差曲线展示 $|S_n - I|$ 随 $n$ 增长的变化。</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="page-content" id="error">
+                    <div class="column">
+                        <div class="card">
+                            <h3>误差观察</h3>
+                            <p>当 $n$ 逐渐增大时，黎曼和与真实面积的差值 $|S_n - I|$ 会快速减小：左端/右端取样呈单调下降，中点取样通常显著优于另外两种方法。</p>
+                            <p>建议记录不同 $n$ 下的误差，并尝试使用对数坐标分析误差与 $1/n$ 的关系，从而建立误差估计的直觉。</p>
+                        </div>
+                    </div>
+
+                    <div class="column">
+                        <div class="card">
+                            <h3>思考题</h3>
+                            <ul style="padding-left:20px; line-height:1.6;">
+                                <li>在同样的 $n$ 下，为何中点法的误差更小？尝试从泰勒展开角度解释。</li>
+                                <li>如果函数并非常数正值，而是部分为负，黎曼和图像应该如何调整？</li>
+                                <li>把函数换成 $f(x)=e^{-x^2}$ 或分段函数，再比较三种取样误差。</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <script>
+        function renderMath() {
+            if (window.MathJax && window.MathJax.typesetPromise) {
+                MathJax.typesetPromise();
+            }
+        }
+
+        function switchPage(section) {
+            pages.forEach(page => {
+                page.classList.toggle('active', page.id === section);
+            });
+            navButtons.forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.section === section);
+            });
+
+            if (section === 'riemann') {
+                drawRiemann();
+            } else if (section === 'error') {
+                drawErrorChart();
+            }
+
+            setTimeout(renderMath, 60);
+        }
+
+        const sliceSlider = document.getElementById('sliceSlider');
+        const sliceValue = document.getElementById('sliceValue');
+        const modeGroup = document.getElementById('modeGroup');
+        const riemannCanvas = document.getElementById('riemannCanvas');
+        const riemannInfo = document.getElementById('riemannInfo');
+        const errorCanvas = document.getElementById('errorCanvas');
+        const errorInfo = document.getElementById('errorInfo');
+        const toggleAnimation = document.getElementById('toggleAnimation');
+        const resetView = document.getElementById('resetView');
+        const summaryBox = document.getElementById('summaryBox');
+        const navButtons = document.querySelectorAll('.nav-btn');
+        const pages = document.querySelectorAll('.page-content');
+
+        const a = 0;
+        const b = Math.PI;
+        const trueValue = 2 + 1.5 * Math.PI;
+
+        function f(x) {
+            return Math.sin(x) + 1.5;
+        }
+
+        let mode = 'left';
+        let animationFrame = null;
+        let animationActive = false;
+        let currentSamples = [];
+
+        function setupCanvas(canvas) {
+            const ctx = canvas.getContext('2d');
+            const rect = canvas.getBoundingClientRect();
+            const dpr = window.devicePixelRatio || 1;
+            canvas.width = rect.width * dpr;
+            canvas.height = rect.height * dpr;
+            canvas.style.width = rect.width + 'px';
+            canvas.style.height = rect.height + 'px';
+            ctx.scale(dpr, dpr);
+            return { ctx, width: rect.width, height: rect.height };
+        }
+
+        function drawAxes(ctx, width, height) {
+            const padding = 40;
+            ctx.save();
+            ctx.strokeStyle = '#e2e8f0';
+            ctx.lineWidth = 1;
+            for (let i = 0; i <= 8; i++) {
+                const x = padding + i * (width - 2 * padding) / 8;
+                ctx.beginPath();
+                ctx.moveTo(x, padding);
+                ctx.lineTo(x, height - padding);
+                ctx.stroke();
+                const y = padding + i * (height - 2 * padding) / 8;
+                ctx.beginPath();
+                ctx.moveTo(padding, y);
+                ctx.lineTo(width - padding, y);
+                ctx.stroke();
+            }
+            ctx.strokeStyle = '#1f2937';
+            ctx.lineWidth = 1.5;
+            ctx.beginPath();
+            ctx.moveTo(padding, height - padding);
+            ctx.lineTo(width - padding, height - padding);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(padding, padding);
+            ctx.lineTo(padding, height - padding);
+            ctx.stroke();
+            ctx.restore();
+        }
+
+        function toCanvasCoords(x, y, width, height, padding = 40) {
+            const plotWidth = width - 2 * padding;
+            const plotHeight = height - 2 * padding;
+            const cx = padding + (x - a) / (b - a) * plotWidth;
+            const maxY = 3.5;
+            const minY = 0;
+            const cy = height - padding - (y - minY) / (maxY - minY) * plotHeight;
+            return { x: cx, y: cy };
+        }
+
+        function computeRiemann(n, mode) {
+            const dx = (b - a) / n;
+            let sum = 0;
+            const rectangles = [];
+            for (let i = 0; i < n; i++) {
+                let sample;
+                if (mode === 'left') sample = a + i * dx;
+                else if (mode === 'right') sample = a + (i + 1) * dx;
+                else sample = a + (i + 0.5) * dx;
+                const height = f(sample);
+                sum += height * dx;
+                rectangles.push({
+                    x: a + i * dx,
+                    width: dx,
+                    height,
+                    sample
+                });
+            }
+            return { sum, rectangles };
+        }
+
+        function drawRiemann() {
+            const n = parseInt(sliceSlider.value, 10);
+            sliceValue.textContent = n;
+            const { ctx, width, height } = setupCanvas(riemannCanvas);
+            drawAxes(ctx, width, height);
+
+            const steps = 200;
+            ctx.save();
+            ctx.strokeStyle = '#2563eb';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            for (let i = 0; i <= steps; i++) {
+                const x = a + (i / steps) * (b - a);
+                const y = f(x);
+                const pos = toCanvasCoords(x, y, width, height);
+                if (i === 0) ctx.moveTo(pos.x, pos.y);
+                else ctx.lineTo(pos.x, pos.y);
+            }
+            ctx.stroke();
+            ctx.restore();
+
+            const { sum, rectangles } = computeRiemann(n, mode);
+            currentSamples.push({ n, sum });
+
+            ctx.save();
+            rectangles.forEach((rect, index) => {
+                const left = rect.x;
+                const right = rect.x + rect.width;
+                const base = toCanvasCoords(left, 0, width, height);
+                const top = toCanvasCoords(left, rect.height, width, height);
+                const rightTop = toCanvasCoords(right, rect.height, width, height);
+                ctx.fillStyle = 'rgba(79, 70, 229, 0.15)';
+                ctx.strokeStyle = 'rgba(79, 70, 229, 0.4)';
+                ctx.beginPath();
+                ctx.moveTo(base.x, base.y);
+                ctx.lineTo(base.x, top.y);
+                ctx.lineTo(rightTop.x, rightTop.y);
+                ctx.lineTo(rightTop.x, base.y);
+                ctx.closePath();
+                ctx.fill();
+                ctx.stroke();
+
+                if (n <= 40) {
+                    ctx.fillStyle = '#ef4444';
+                    const samplePos = toCanvasCoords(rect.sample, rect.height, width, height);
+                    ctx.beginPath();
+                    ctx.arc(samplePos.x, samplePos.y, 3, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            });
+            ctx.restore();
+
+            riemannInfo.textContent = `黎曼和 $S_n = ${sum.toFixed(4)}$，真实面积 $I ≈ ${trueValue.toFixed(4)}$，误差 $|S_n - I| ≈ ${Math.abs(sum - trueValue).toFixed(4)}`;
+            drawErrorChart();
+        }
+
+        function drawErrorChart() {
+            const maxPoints = 80;
+            if (currentSamples.length > maxPoints) currentSamples = currentSamples.slice(-maxPoints);
+            const { ctx, width, height } = setupCanvas(errorCanvas);
+            drawAxes(ctx, width, height);
+
+            const padding = 40;
+            const plotWidth = width - 2 * padding;
+            const plotHeight = height - 2 * padding;
+            const values = currentSamples.map(item => Math.abs(item.sum - trueValue));
+            const maxError = Math.max(...values, 0.001);
+
+            ctx.save();
+            ctx.strokeStyle = '#10b981';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            currentSamples.forEach((item, index) => {
+                const nNorm = index / Math.max(currentSamples.length - 1, 1);
+                const errorNorm = 1 - (values[index] / maxError);
+                const x = padding + nNorm * plotWidth;
+                const y = padding + errorNorm * plotHeight;
+                if (index === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            });
+            ctx.stroke();
+            ctx.restore();
+
+            errorInfo.textContent = `最近一次误差 ≈ ${values[values.length - 1]?.toFixed(4) || '0.0000'}，最大误差显示范围 ${maxError.toFixed(4)}。`;
+        }
+
+        function animate() {
+            if (!animationActive) return;
+            let value = parseInt(sliceSlider.value, 10);
+            value = Math.min(value + Math.max(1, Math.floor(value / 15)), 400);
+            sliceSlider.value = value;
+            drawRiemann();
+            if (value < 400) {
+                animationFrame = requestAnimationFrame(animate);
+            } else {
+                animationActive = false;
+                toggleAnimation.textContent = '启动动画';
+            }
+        }
+
+        function reset() {
+            sliceSlider.value = 20;
+            mode = 'left';
+            modeGroup.querySelectorAll('button').forEach(btn => btn.classList.toggle('active', btn.dataset.mode === mode));
+            currentSamples = [];
+            animationActive = false;
+            cancelAnimationFrame(animationFrame);
+            toggleAnimation.textContent = '启动动画';
+            drawRiemann();
+        }
+
+        sliceSlider.addEventListener('input', () => {
+            drawRiemann();
+        });
+
+        modeGroup.addEventListener('click', event => {
+            if (!event.target.dataset.mode) return;
+            modeGroup.querySelectorAll('button').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            mode = event.target.dataset.mode;
+            drawRiemann();
+        });
+
+        toggleAnimation.addEventListener('click', () => {
+            animationActive = !animationActive;
+            if (animationActive) {
+                toggleAnimation.textContent = '暂停动画';
+                animate();
+            } else {
+                toggleAnimation.textContent = '启动动画';
+                cancelAnimationFrame(animationFrame);
+            }
+        });
+
+        resetView.addEventListener('click', reset);
+
+        window.addEventListener('resize', () => {
+            drawRiemann();
+        });
+
+        navButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                switchPage(btn.dataset.section);
+            });
+        });
+
+        switchPage('concept');
+
+        drawRiemann();
+        renderMath();
+    </script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+

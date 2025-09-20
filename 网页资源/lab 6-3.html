@@ -1,0 +1,441 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>定积分换元与分部积分实验室</title>
+
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']] },
+            options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre'] }
+        };
+    </script>
+    <script defer src="../common-assets/js/mathjax-3.2.2-tex-svg.min.js"></script>
+    <style>
+    :root {
+        --primary: #4f46e5;
+        --primary-dark: #3730a3;
+        --primary-light: #6366f1;
+        --success: #10b981;
+        --warning: #f59e0b;
+        --danger: #ef4444;
+        --gray-50: #f9fafb;
+        --gray-100: #f3f4f6;
+        --gray-200: #e5e7eb;
+        --gray-300: #d1d5db;
+        --gray-500: #6b7280;
+        --gray-600: #4b5563;
+        --gray-700: #1f2937;
+        --white: #ffffff;
+        --light: #ffffff;
+        --border: #e5e7eb;
+        --h1-size: 22px;
+        --h3-size: 18px;
+        --text-size: 16px;
+        --formula-size: 20px;
+    }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        *::-webkit-scrollbar { width: 0; background: transparent; }
+        * { scrollbar-width: none; -ms-overflow-style: none; }
+
+            body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
+        font-size: var(--text-size);
+        line-height: 1.5;
+        background: var(--gray-50);
+        color: var(--gray-700);
+    }
+
+            .container {
+        width: 100%;
+        max-width: 1400px;
+        height: min(100vh, 700px);
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        background: var(--white);
+    }
+
+            .header {
+        height: 40px;
+        background: var(--primary);
+        color: var(--white);
+        display: flex;
+        align-items: center;
+        padding: 0 20px;
+    }
+
+            .main { flex: 1; display: flex; overflow: hidden; }
+
+            .sidebar {
+        width: 120px;
+        background: var(--gray-50);
+        border-right: 1px solid var(--border);
+        padding: 10px 8px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+            .nav-btn {
+        width: 100%;
+        padding: 8px;
+        background: transparent;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: var(--text-size);
+        color: var(--gray-600);
+        text-align: left;
+        transition: background 0.2s ease, color 0.2s ease;
+    }
+
+            .nav-btn.active { background: var(--primary); color: var(--white); }
+            .nav-btn:hover { background: var(--gray-100); }
+
+                        .content {
+        flex: 1;
+        position: relative;
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 18px;
+        padding: 16px;
+        overflow: hidden;
+    }
+            .column { display: flex; flex-direction: column; gap: 16px; overflow-y: auto; padding-right: 4px; }
+
+            .card { background: var(--white); border: 1px solid var(--border); border-radius: 12px; padding: 12px; display: flex; flex-direction: column; gap: 10px; }
+
+        .card-scroll { overflow-y: auto; }
+        .card h3 { font-size: var(--h3-size); color: var(--primary-dark); }
+        .card p { line-height: 1.5; }
+
+        .tag-list { display: flex; gap: 8px; flex-wrap: wrap; }
+        .tag { font-size: 13px; padding: 4px 10px; border-radius: 999px; background: var(--gray-100); color: var(--gray-500); }
+
+        .info-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 12px; }
+        .info-item { background: var(--gray-50); border: 1px solid var(--gray-200); border-radius: 10px; padding: 10px; font-size: 15px; }
+        .info-item strong { color: var(--primary-dark); display: block; margin-bottom: 6px; }
+
+        .controls { display: flex; flex-direction: column; gap: 10px; background: var(--gray-50); border: 1px solid var(--gray-200); border-radius: 10px; padding: 10px; }
+        .control-row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+        .control-row label { font-weight: 600; }
+        select { flex: 1; padding: 6px 8px; border-radius: 8px; border: 1px solid var(--gray-300); font-size: 15px; }
+        button.action { background: var(--primary); color: var(--white); border: none; border-radius: 8px; padding: 8px 12px; font-size: var(--text-size); cursor: pointer; transition: transform 0.2s ease; }
+        button.action.secondary { background: var(--white); color: var(--primary); border: 1px solid var(--primary); }
+        button.action:hover { transform: translateY(-2px); }
+
+        .step-panel { border: 1px solid var(--gray-200); border-radius: 12px; background: var(--gray-50); padding: 12px; display: flex; flex-direction: column; gap: 12px; }
+        .step-card { border: 1px solid var(--gray-200); border-radius: 10px; padding: 10px; background: var(--white); transition: border 0.2s ease, transform 0.2s ease; }
+        .step-card.active { border-color: var(--primary); box-shadow: 0 0 0 2px rgba(79,70,229,0.15); transform: translateX(4px); }
+        .step-card.success { border-color: var(--success); }
+        .step-card.error { border-color: var(--danger); background: rgba(239,68,68,0.07); }
+
+        .input-box { background: var(--white); border: 1px dashed var(--gray-300); border-radius: 10px; padding: 10px; display: flex; flex-direction: column; gap: 6px; }
+        .input-box input { border: 1px solid var(--gray-300); border-radius: 8px; padding: 6px 8px; font-size: 15px; }
+        .input-box .hint { font-size: 14px; color: var(--gray-500); }
+        .hint.success { color: var(--success); }
+        .hint.error { color: var(--danger); }
+
+        .status-box { background: #eef2ff; border-radius: 10px; padding: 10px; font-size: 14px; color: var(--primary-dark); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>定积分换元与分部积分实验室</h1>
+            <div>牢记“换限”“分部”两个关键技巧</div>
+        </header>
+        <div class="main">
+            <nav class="sidebar">
+                <button class="nav-btn active" data-section="substitution">换元法（定限）</button>
+                <button class="nav-btn" data-section="parts">分部积分法</button>
+            </nav>
+            <section class="content">
+                <div class="column">
+                    <div class="card card-scroll">
+                        <h3>学习指引</h3>
+                        <p>换元法：确定变量替换并同步变换积分限。分部积分：选择合适的 $u, dv$，最后记得带入上下限。</p>
+                        <div class="tag-list">
+                            <span class="tag">换限</span>
+                            <span class="tag">变量替换</span>
+                            <span class="tag">分部公式</span>
+                            <span class="tag">结果校验</span>
+                        </div>
+                        <div class="status-box" id="summaryBox">当前练习：换元法示例 $\int_0^{\pi/2} 2\sin(2x)\,dx$。</div>
+                    </div>
+
+                    <div class="card">
+                        <h3>技巧速记</h3>
+                        <div class="info-grid">
+                            <div class="info-item"><strong>换元三步</strong> 设 $u$、换 $du$、换积分限，之后全程使用 $u$。</div>
+                            <div class="info-item"><strong>分部选择</strong> 遵循 LIATE（对数-反三角-代数-三角-指数）策略。</div>
+                            <div class="info-item"><strong>结果核对</strong> 计算答案后可用数值积分验证。</div>
+                            <div class="info-item"><strong>定积分版</strong> 分部后代入上下限，不再加常数 $C$。</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="column">
+                    <div class="card">
+                        <h3>分步训练</h3>
+                        <div class="controls">
+                            <div class="control-row">
+                                <label>选择练习</label>
+                                <select id="caseSelector"></select>
+                                <button class="action secondary" id="showHint">提示</button>
+                            </div>
+                        </div>
+                        <div class="step-panel" id="stepPanel"></div>
+                        <div class="status-box" id="stepStatus">按照提示填写每个阶段的结果。</div>
+                    </div>
+
+                    <div class="card">
+                        <h3>结果验证</h3>
+                        <div class="controls">
+                            <div class="control-row">
+                                <label>填写最终数值：</label>
+                                <input type="text" id="finalValue" style="flex:1; padding:6px 8px; border-radius:8px; border:1px solid var(--gray-300);">
+                                <button class="action" id="checkResult">检查</button>
+                            </div>
+                        </div>
+                        <div class="status-box" id="resultStatus">输入积分结果后点击检查，系统会使用数值积分进行核对。</div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <script>
+        function renderMath() {
+            if (window.MathJax && window.MathJax.typesetPromise) {
+                MathJax.typesetPromise();
+            }
+        }
+
+        const substitutionCases = [
+            {
+                label: '$\int_0^{\pi/2} 2\sin(2x)\\,dx$，设 $u=2x$。',
+                steps: [
+                    { prompt: '设定换元：填写 $u=...$：', answer: '2x' },
+                    { prompt: '写出 $du$：', answer: '2 dx' },
+                    { prompt: '新的积分下限 $u(a)$：', answer: '0' },
+                    { prompt: '新的积分上限 $u(b)$：', answer: '\pi' },
+                    { prompt: '换元后的积分表达式：', answer: '∫_0^π sin(u) du' }
+                ],
+                finalValue: 2,
+                interval: [0, Math.PI / 2],\n                integrand: x => 2 * Math.sin(2 * x)
+            },
+            {
+                label: '$\int_1^e \frac{2x}{x^2}\,dx$，设 $u=x^2$。',
+                steps: [
+                    { prompt: '设定换元：', answer: 'x^2' },
+                    { prompt: '写出 $du$：', answer: '2x dx' },
+                    { prompt: '新的积分下限：', answer: '1' },
+                    { prompt: '新的积分上限：', answer: 'e^2' },
+                    { prompt: '换元后的积分表达式：', answer: '∫_1^{e^2} \frac{1}{u} du' }
+                ],
+                finalValue: Math.log(Math.E ** 2) - Math.log(1),
+                interval: [1, Math.E],\n                integrand: x => (2 * x) / (x * x)
+            }
+        ];
+
+        const partsCases = [
+            {
+                label: '$\int_0^1 x e^x dx$，令 $u=x$，$dv=e^x dx$。',
+                steps: [
+                    { prompt: '选择 $u$：', answer: 'x' },
+                    { prompt: '选择 $dv$：', answer: 'e^x dx' },
+                    { prompt: '计算 $du$：', answer: 'dx' },
+                    { prompt: '计算 $v$：', answer: 'e^x' },
+                    { prompt: '代入公式后表达式：', answer: '[x e^x]_0^1 - ∫_0^1 e^x dx' }
+                ],
+                finalValue: Math.E - 2,
+                interval: [0, 1],\n                integrand: x => x * Math.exp(x)
+            },
+            {
+                label: '$\int_0^{\pi/2} x \cos x dx$，令 $u=x$，$dv=\cos x dx$。',
+                steps: [
+                    { prompt: '选择 $u$：', answer: 'x' },
+                    { prompt: '选择 $dv$：', answer: 'cos x dx' },
+                    { prompt: '计算 $du$：', answer: 'dx' },
+                    { prompt: '计算 $v$：', answer: 'sin x' },
+                    { prompt: '代入公式后表达式：', answer: '[x sin x]_0^{π/2} - ∫_0^{π/2} sin x dx' }
+                ],
+                finalValue: 1,
+                interval: [0, Math.PI / 2],\n                integrand: x => x * Math.cos(x)
+            }
+        ];
+
+        const navButtons = document.querySelectorAll('.nav-btn');
+        const caseSelector = document.getElementById('caseSelector');
+        const showHintBtn = document.getElementById('showHint');
+        const stepPanel = document.getElementById('stepPanel');
+        const stepStatus = document.getElementById('stepStatus');
+        const summaryBox = document.getElementById('summaryBox');
+        const finalValueInput = document.getElementById('finalValue');
+        const checkResultBtn = document.getElementById('checkResult');
+
+        let currentSection = 'substitution';
+        let currentCaseIndex = 0;
+
+        function getCurrentList() {
+            return currentSection === 'substitution' ? substitutionCases : partsCases;
+        }
+
+        function populateCaseSelector() {
+            const list = getCurrentList();
+            caseSelector.innerHTML = '';
+            list.forEach((item, index) => {
+                const option = document.createElement('option');
+                option.value = index;
+                option.innerHTML = item.label;
+                caseSelector.appendChild(option);
+            });
+            caseSelector.value = currentCaseIndex;
+            summaryBox.textContent = `当前练习：${list[currentCaseIndex].label}`;
+            renderMath();
+        }
+
+        function buildSteps() {
+            const data = getCurrentList()[currentCaseIndex];
+            stepPanel.innerHTML = '';
+            data.steps.forEach((step, index) => {
+                const card = document.createElement('div');
+                card.className = 'step-card';
+                card.dataset.index = index;
+                card.innerHTML = `
+                    <strong>${index + 1}. ${step.prompt}</strong>
+                    <div class="input-box">
+                        <input type="text" placeholder="填写表达式" data-answer="${step.answer}">
+                        <div style="display:flex; gap:8px;">
+                            <button class="action secondary check-btn">检查</button>
+                            <button class="action secondary hint-btn">提示</button>
+                        </div>
+                        <span class="hint">表达式可简写，如 sinx、lnu。</span>
+                    </div>
+                `;
+                stepPanel.appendChild(card);
+            });
+            stepStatus.textContent = currentSection === 'substitution' ? '注意同步换限并写出新的积分形式。' : '填写 u/dv 及结果表达式。';
+            renderMath();
+        }
+
+        function normalize(str) {
+            return (str || '')
+                .replace(/\\frac/g, 'frac')
+                .replace(/\\sin/g, 'sin')
+                .replace(/\\cos/g, 'cos')
+                .replace(/\\pi/g, 'π')
+                .replace(/[{}()\[\]\s]/g, '')
+                .toLowerCase();
+        }
+
+        function attachEvents() {
+            navButtons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    navButtons.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    currentSection = btn.dataset.section;
+                    currentCaseIndex = 0;
+                    populateCaseSelector();
+                    buildSteps();
+                });
+            });
+
+            caseSelector.addEventListener('change', () => {
+                currentCaseIndex = parseInt(caseSelector.value, 10);
+                summaryBox.textContent = `当前练习：${getCurrentList()[currentCaseIndex].label}`;
+                buildSteps();
+            });
+
+            showHintBtn.addEventListener('click', () => {
+                const card = stepPanel.querySelector('.step-card.active');
+                if (!card) return;
+                const hint = card.querySelector('.hint');
+                const answer = card.querySelector('input').dataset.answer;
+                hint.textContent = `参考：${answer}`;
+                hint.classList.add('success');
+            });
+
+            stepPanel.addEventListener('click', event => {
+                const card = event.target.closest('.step-card');
+                if (!card) return;
+                const input = card.querySelector('input');
+                const hint = card.querySelector('.hint');
+                if (event.target.classList.contains('check-btn')) {
+                    const user = normalize(input.value);
+                    const answer = normalize(input.dataset.answer);
+                    if (!user) {
+                        hint.textContent = '先填写答案。';
+                        hint.classList.remove('success', 'error');
+                        return;
+                    }
+                    if (user === answer) {
+                        hint.textContent = '正确！';
+                        hint.classList.add('success');
+                        card.classList.add('success');
+                    } else {
+                        hint.textContent = `再检查符号或常数，参考：${input.dataset.answer}`;
+                        hint.classList.add('error');
+                        card.classList.add('error');
+                    }
+                }
+                if (event.target.classList.contains('hint-btn')) {
+                    hint.textContent = `提示：${input.dataset.answer}`;
+                    hint.classList.add('success');
+                }
+            });
+
+            checkResultBtn.addEventListener('click', () => {
+                const data = getCurrentList()[currentCaseIndex];
+                const userValue = parseFloat(finalValueInput.value);
+                if (!Number.isFinite(userValue)) {
+                    resultStatus.textContent = '请填写数值结果。';
+                    return;
+                }
+                const numeric = definiteIntegral(data.integrand, currentSection === 'substitution' ? data.interval?.[0] || 0 : 0, currentSection === 'substitution' ? data.interval?.[1] || 1 : 1, 600);
+                const target = data.finalValue;
+                if (Math.abs(userValue - target) < 1e-3) {
+                    resultStatus.textContent = '成功！结果与理论值匹配。';
+                } else {
+                    resultStatus.textContent = `与正确值相差 ${Math.abs(userValue - target).toFixed(4)}，请再核对。`;
+                }
+            });
+        }
+
+        function definiteIntegral(fn, a, b, n) {
+            if (a === undefined || b === undefined) {
+                const data = getCurrentList()[currentCaseIndex];
+                [a, b] = currentSection === 'substitution' ? data.interval : [0, 1];
+            }
+            const dx = (b - a) / n;
+            let sum = 0;
+            for (let i = 0; i < n; i++) {
+                const x1 = a + i * dx;
+                const x2 = x1 + dx;
+                sum += 0.5 * (fn(x1) + fn(x2)) * dx;
+            }
+            return sum;
+        }
+
+        populateCaseSelector();
+        buildSteps();
+        attachEvents();
+        renderMath();
+    </script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+

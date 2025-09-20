@@ -1,0 +1,1439 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>对数求导实验室</title>
+
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true,
+                processEnvironments: true
+            },
+            options: {
+                skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+            },
+            startup: {
+                pageReady: () => {
+                    return MathJax.startup.defaultPageReady().then(() => {
+                        console.log('MathJax 初始化完成');
+                    }).catch((error) => {
+                        console.error('MathJax 初始化错误:', error);
+                    });
+                }
+            }
+        };
+    </script>
+    <script defer src="../common-assets/js/mathjax-3.2.2-tex-svg.min.js"></script>
+
+    <style>
+    :root {
+        --primary: #4f46e5;
+        --primary-dark: #3730a3;
+        --primary-light: #6366f1;
+        --success: #10b981;
+        --warning: #f59e0b;
+        --danger: #ef4444;
+        --gray-50: #f9fafb;
+        --gray-100: #f3f4f6;
+        --gray-200: #e5e7eb;
+        --gray-300: #d1d5db;
+        --gray-500: #6b7280;
+        --gray-600: #4b5563;
+        --gray-700: #1f2937;
+        --white: #ffffff;
+        --light: #ffffff;
+        --border: #e5e7eb;
+        --h1-size: 22px;
+        --h3-size: 18px;
+        --text-size: 16px;
+        --formula-size: 20px;
+    }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        *::-webkit-scrollbar { width: 0; background: transparent; }
+        * { scrollbar-width: none; -ms-overflow-style: none; }
+
+            body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
+        font-size: var(--text-size);
+        line-height: 1.5;
+        background: var(--gray-50);
+        color: var(--gray-700);
+    }
+
+            .container {
+        width: 100%;
+        max-width: 1400px;
+        height: min(100vh, 700px);
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        background: var(--white);
+    }
+
+            .header {
+        height: 40px;
+        background: var(--primary);
+        color: var(--white);
+        display: flex;
+        align-items: center;
+        padding: 0 20px;
+    }
+
+            .header h1 { font-size: var(--h1-size); margin: 0; }
+
+            .main { flex: 1; display: flex; overflow: hidden; }
+
+            .sidebar {
+        width: 120px;
+        background: var(--gray-50);
+        border-right: 1px solid var(--border);
+        padding: 10px 8px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+            .nav-btn {
+        width: 100%;
+        padding: 8px;
+        background: transparent;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: var(--text-size);
+        color: var(--gray-600);
+        text-align: left;
+        transition: background 0.2s ease, color 0.2s ease;
+    }
+
+            .nav-btn.active { background: var(--primary); color: var(--white); }
+            .nav-btn:hover { background: var(--gray-100); }
+        .nav-btn:active { transform: translateY(0); }
+
+            .content {
+        flex: 1;
+        position: relative;
+        overflow: hidden;
+        padding: 0;
+    }
+            .page-content {
+        display: none;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 18px;
+        height: 100%;
+        padding: 16px;
+    }
+
+    .page-content.active {
+        display: grid;
+    }
+
+            .column { display: flex; flex-direction: column; gap: 16px; overflow-y: auto; padding-right: 4px; }
+
+            .card { background: var(--white); border: 1px solid var(--border); border-radius: 12px; padding: 12px; display: flex; flex-direction: column; gap: 10px; }
+
+        .card h3 { font-size: var(--h3-size); color: var(--primary-dark); }
+        .card p { line-height: 1.5; }
+        .card-scroll { overflow-y: auto; }
+
+        .tag-list { display: flex; gap: 8px; flex-wrap: wrap; }
+        .tag { font-size: 13px; padding: 4px 10px; border-radius: 999px; background: var(--gray-100); color: var(--gray-500); }
+
+        table { width: 100%; border-collapse: collapse; font-size: 15px; }
+        th, td { border: 1px solid var(--gray-200); padding: 8px; text-align: center; }
+        thead { background: var(--gray-100); }
+
+        .controls { display: flex; flex-direction: column; gap: 10px; background: var(--gray-50); border-radius: 10px; padding: 10px; border: 1px solid var(--gray-200); }
+        .control-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+        .control-row label { font-weight: 600; }
+        .control-row span { color: var(--primary-dark); font-weight: 600; }
+        input[type="range"] { flex: 1; }
+        select { flex: 1; padding: 6px 8px; border-radius: 8px; border: 1px solid var(--gray-300); font-size: 15px; }
+
+        .canvas-container { flex: 1; border: 1px solid var(--gray-200); border-radius: 12px; background: var(--gray-50); display: flex; align-items: center; justify-content: center; min-height: 280px; }
+        canvas { width: 100%; height: 100%; border-radius: 10px; }
+
+        .legend { display: flex; gap: 12px; flex-wrap: wrap; font-size: 14px; color: var(--gray-600); }
+        .legend i { width: 14px; height: 14px; border-radius: 4px; display: inline-block; }
+
+        .btn-group { display: flex; gap: 10px; }
+        button.action { flex: 1; background: var(--primary); color: var(--white); border: none; border-radius: 8px; padding: 10px 12px; font-size: var(--text-size); cursor: pointer; transition: transform 0.2s ease; }
+        button.action.secondary { background: var(--white); color: var(--primary); border: 1px solid var(--primary); }
+        button.action:hover { transform: translateY(-2px); }
+        button.action:active { transform: translateY(0); }
+
+        .analysis-box { background: #eef2ff; border: 1px dashed var(--primary-light); padding: 10px; border-radius: 10px; font-size: 15px; line-height: 1.5; }
+        .info-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+        .info-item { padding: 10px; border-radius: 10px; background: var(--gray-50); border: 1px solid var(--gray-200); }
+        .info-item strong { color: var(--primary-dark); display: block; margin-bottom: 6px; }
+        .status-hint { font-size: 14px; color: var(--danger); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>对数求导实验室</h1>
+            <div>用 $\\ln y$ 化简幂指函数的导数</div>
+        </header>
+        <div class="main">
+            <nav class="sidebar">
+                <button class="nav-btn active" data-section="对数求导">对数求导</button>
+                <button class="nav-btn" data-section="幂指函数">幂指函数</button>
+                <button class="nav-btn" data-section="动态演示">动态演示</button>
+                <button class="nav-btn" data-section="常见模型">常见模型</button>
+            </nav>
+            <section class="content">
+                <!-- 对数求导页面 -->
+                <div class="page-content active" id="page-对数求导">
+                    <div class="column">
+                    <div class="card card-scroll">
+                        <h3>学习指引</h3>
+                        <p>对数求导适用于“底数与指数同时含变量”的函数。先取对数化简，再对两边求导，就能轻松求出导数。本实验通过图像、表格和计算，帮助你掌握“先取 $\\ln$，再求导”的关键步骤。</p>
+                        <div class="tag-list">
+                            <span class="tag">幂指函数</span>
+                            <span class="tag">对数求导</span>
+                            <span class="tag">切线</span>
+                            <span class="tag">动态观察</span>
+                        </div>
+                        <div class="analysis-box" id="methodHint">步骤提示：1) 两边取 $\\ln$；2) 使用乘积法则求导；3) 将结果乘回原函数，得到 $y'$。</div>
+                    </div>
+
+                    <div class="card card-scroll">
+                        <h3>典型公式速查</h3>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>函数</th>
+                                    <th>取对数后的形式</th>
+                                    <th>导数 $y'$</th>
+                                </tr>
+                            </thead>
+                            <tbody id="logTable"></tbody>
+                        </table>
+                    </div>
+
+                    <div class="card">
+                        <h3>结论速记</h3>
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <strong>核心公式</strong>
+                                $y = f(x)^{g(x)}$ 时，$\\dfrac{dy}{dx} = y \cdot (g'(x)\\ln f(x) + g(x)\\cdot f'(x)/f(x))$。
+                            </div>
+                            <div class="info-item">
+                                <strong>指数函数</strong>
+                                $y = a^{g(x)}$，则 $\\dfrac{dy}{dx} = y \cdot g'(x)\\ln a$。
+                            </div>
+                            <div class="info-item">
+                                <strong>底数含变量</strong>
+                                $y = f(x)^{k}$ 时，可写成 $k f(x)^{k-1} f'(x)$，也能通过对数求导回到熟悉结果。
+                            </div>
+                            <div class="info-item">
+                                <strong>实际意义</strong>
+                                幂指模型常用于复利、传染和材料强度模型，对数求导可快速获得增长速度。
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="column">
+                    <div class="card">
+                        <h3>动态函数与切线</h3>
+                        <div class="canvas-container">
+                            <canvas id="logCanvas"></canvas>
+                        </div>
+                        <div class="legend">
+                            <span><i style="background:#2563eb"></i> 函数图像</span>
+                            <span><i style="background:#10b981"></i> 选定点</span>
+                            <span><i style="background:#f59e0b"></i> 切线</span>
+                        </div>
+                        <div class="controls">
+                            <div class="control-row">
+                                <label>选择函数</label>
+                                <select id="functionSelector"></select>
+                            </div>
+                            <div class="control-row">
+                                <label id="paramLabel">参数 a</label>
+                                <input type="range" id="paramSlider" min="1.2" max="3" step="0.1" value="2">
+                                <span id="paramValue">2.0</span>
+                            </div>
+                            <div class="control-row">
+                                <label>自变量 x</label>
+                                <input type="range" id="xSlider" min="0.5" max="4" step="0.05" value="1.50">
+                                <span id="xValue">1.50</span>
+                            </div>
+                            <div class="btn-group">
+                                <button class="action" id="playLog">启动动画</button>
+                                <button class="action secondary" id="resetLog">重置参数</button>
+                            </div>
+                            <div class="status-hint" id="logStatus"></div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h3>数值分析</h3>
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <strong>函数值</strong>
+                                <span id="valueInfo">$y = 0$</span>
+                            </div>
+                            <div class="info-item">
+                                <strong>导数值</strong>
+                                <span id="derivativeInfo">$\\dfrac{dy}{dx} = 0$</span>
+                            </div>
+                            <div class="info-item">
+                                <strong>对数步骤</strong>
+                                <span id="stepInfo">$\\ln y = x\\ln a$</span>
+                            </div>
+                            <div class="info-item">
+                                <strong>语言解读</strong>
+                                <span id="interpretInfo">当 x 增大时，函数的增长速度与 ln a 成正比。</span>
+                            </div>
+                        </div>
+                        <div class="analysis-box" id="summaryBox">拖动参数和 x，观察幂指函数的形状和切线如何随对数求导结果同步变化。</div>
+                    </div>
+                    </div>
+                </div>
+
+                <!-- 幂指函数页面 -->
+                <div class="page-content" id="page-幂指函数" style="display: none;">
+                    <div class="column">
+                        <div class="card card-scroll">
+                            <h3>幂指函数理论基础</h3>
+                            <p>幂指函数 $y = f(x)^{g(x)}$ 的导数通过取对数化简：$\\ln y = g(x)\\ln f(x)$，然后求导。</p>
+                            <div class="tag-list">
+                                <span class="tag">幂指函数</span>
+                                <span class="tag">对数求导</span>
+                                <span class="tag">复合函数</span>
+                                <span class="tag">链式法则</span>
+                            </div>
+                            <div class="analysis-box">
+                                <strong>对数求导步骤：</strong><br>
+                                1. 两边取自然对数：$\\ln y = g(x)\\ln f(x)$<br>
+                                2. 对两边关于 $x$ 求导：$\\frac{y'}{y} = g'(x)\\ln f(x) + g(x)\\frac{f'(x)}{f(x)}$<br>
+                                3. 解出 $y'$：$y' = y\\left[g'(x)\\ln f(x) + g(x)\\frac{f'(x)}{f(x)}\\right]$
+                            </div>
+                        </div>
+
+                        <div class="card card-scroll">
+                            <h3>典型幂指函数类型</h3>
+                            <div class="info-grid">
+                                <div class="info-item">
+                                    <strong>$y = x^x$</strong>
+                                    底数和指数都含变量，导数为 $y' = x^x(\\ln x + 1)$
+                                </div>
+                                <div class="info-item">
+                                    <strong>$y = x^{g(x)}$</strong>
+                                    底数含变量，导数为 $y' = x^{g(x)}\\left[g'(x)\\ln x + \\frac{g(x)}{x}\\right]$
+                                </div>
+                                <div class="info-item">
+                                    <strong>$y = f(x)^x$</strong>
+                                    指数含变量，导数为 $y' = f(x)^x\\left[\\ln f(x) + \\frac{x f'(x)}{f(x)}\\right]$
+                                </div>
+                                <div class="info-item">
+                                    <strong>$y = (f(x))^{g(x)}$</strong>
+                                    底数和指数都含变量，最一般的形式
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card card-scroll">
+                            <h3>特殊情况分析</h3>
+                            <div class="info-grid">
+                                <div class="info-item">
+                                    <strong>常数底数</strong>
+                                    $y = a^{g(x)}$，导数为 $y' = a^{g(x)} g'(x)\\ln a$
+                                </div>
+                                <div class="info-item">
+                                    <strong>常数指数</strong>
+                                    $y = f(x)^k$，导数为 $y' = k f(x)^{k-1} f'(x)$
+                                </div>
+                                <div class="info-item">
+                                    <strong>复合底数</strong>
+                                    $y = (u(x))^{g(x)}$，需要应用对数求导法
+                                </div>
+                                <div class="info-item">
+                                    <strong>多层复合</strong>
+                                    $y = f(g(x))^{h(x)}$，需要多次应用链式法则
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <h3>计算技巧与方法</h3>
+                            <div class="info-grid">
+                                <div class="info-item">
+                                    <strong>对数恒等式</strong>
+                                    利用 $\\ln(a^b) = b\\ln a$ 简化计算
+                                </div>
+                                <div class="info-item">
+                                    <strong>乘积法则</strong>
+                                    对 $g(x)\\ln f(x)$ 应用乘积法则求导
+                                </div>
+                                <div class="info-item">
+                                    <strong>链式法则</strong>
+                                    处理复合函数时注意链式法则的应用
+                                </div>
+                                <div class="info-item">
+                                    <strong>化简技巧</strong>
+                                    最终结果要化简到最简形式
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="column">
+                        <div class="card">
+                            <h3>幂指函数可视化</h3>
+                            <div class="canvas-container">
+                                <canvas id="powerFunctionCanvas"></canvas>
+                            </div>
+                            <div class="legend">
+                                <span><i style="background:#2563eb"></i> $y = x^x$</span>
+                                <span><i style="background:#10b981"></i> $y = x^{2x}$</span>
+                                <span><i style="background:#f59e0b"></i> $y = x^{x^2}$</span>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <h3>实际应用案例</h3>
+                            <div class="info-grid">
+                                <div class="info-item">
+                                    <strong>复利计算</strong>
+                                    复利公式 $A = P(1+r)^t$ 中，$t$ 为时间变量
+                                </div>
+                                <div class="info-item">
+                                    <strong>人口增长</strong>
+                                    指数增长模型 $P(t) = P_0 e^{rt}$ 的变形
+                                </div>
+                                <div class="info-item">
+                                    <strong>化学反应</strong>
+                                    反应速率与浓度的幂指关系
+                                </div>
+                                <div class="info-item">
+                                    <strong>经济学</strong>
+                                    效用函数和生产函数的幂指形式
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 动态演示页面 -->
+                <div class="page-content" id="page-动态演示" style="display: none;">
+                    <div class="column">
+                        <div class="card card-scroll">
+                            <h3>交互式演示系统</h3>
+                            <p>拖动参数观察不同幂指函数的形状变化，理解对数求导在实际函数中的应用。</p>
+                            <div class="tag-list">
+                                <span class="tag">交互式</span>
+                                <span class="tag">参数控制</span>
+                                <span class="tag">实时计算</span>
+                                <span class="tag">可视化</span>
+                            </div>
+                            <div class="analysis-box">
+                                <strong>演示目标：</strong><br>
+                                • 观察不同参数下函数的形状变化<br>
+                                • 理解对数求导的计算过程<br>
+                                • 分析导数的几何意义<br>
+                                • 掌握幂指函数的性质
+                            </div>
+                        </div>
+
+                        <div class="card card-scroll">
+                            <h3>演示模式选择</h3>
+                            <div class="info-grid">
+                                <div class="info-item">
+                                    <strong>基础模式</strong>
+                                    观察 $y = x^a$ 中参数 $a$ 的变化对函数形状的影响
+                                </div>
+                                <div class="info-item">
+                                    <strong>复合模式</strong>
+                                    观察 $y = a^x$ 中底数 $a$ 的变化对增长速率的影响
+                                </div>
+                                <div class="info-item">
+                                    <strong>幂指模式</strong>
+                                    观察 $y = x^x$ 等复杂幂指函数的特性
+                                </div>
+                                <div class="info-item">
+                                    <strong>对比模式</strong>
+                                    同时显示多个函数进行对比分析
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <h3>实时计算显示</h3>
+                            <div class="info-grid">
+                                <div class="info-item">
+                                    <strong>函数值</strong>
+                                    <span id="functionValue">$f(x) = $</span>
+                                </div>
+                                <div class="info-item">
+                                    <strong>导数值</strong>
+                                    <span id="derivativeValue">$f'(x) = $</span>
+                                </div>
+                                <div class="info-item">
+                                    <strong>对数形式</strong>
+                                    <span id="logForm">$\\ln f(x) = $</span>
+                                </div>
+                                <div class="info-item">
+                                    <strong>计算步骤</strong>
+                                    <span id="calculationSteps">显示详细计算过程</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="column">
+                        <div class="card">
+                            <h3>参数控制面板</h3>
+                            <div class="controls">
+                                <div class="control-row">
+                                    <label>函数类型</label>
+                                    <select id="functionType">
+                                        <option value="power">$y = x^a$</option>
+                                        <option value="exponential">$y = a^x$</option>
+                                        <option value="powerExponential">$y = x^x$</option>
+                                        <option value="complex">$y = x^{ax}$</option>
+                                    </select>
+                                </div>
+                                <div class="control-row">
+                                    <label>参数 $a$</label>
+                                    <input type="range" min="0.5" max="3" step="0.1" value="2" id="parameterA">
+                                    <span id="parameterAValue">2.0</span>
+                                </div>
+                                <div class="control-row">
+                                    <label>观察点 $x$</label>
+                                    <input type="range" min="0.5" max="3" step="0.05" value="1.5" id="observationX">
+                                    <span id="observationXValue">1.5</span>
+                                </div>
+                                <div class="btn-group">
+                                    <button class="action" id="animateDemo">动画演示</button>
+                                    <button class="action secondary" id="resetDemo">重置</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <h3>图形特征分析</h3>
+                            <div class="info-grid">
+                                <div class="info-item">
+                                    <strong>定义域</strong>
+                                    <span id="domain">函数的定义域范围</span>
+                                </div>
+                                <div class="info-item">
+                                    <strong>值域</strong>
+                                    <span id="range">函数的值域范围</span>
+                                </div>
+                                <div class="info-item">
+                                    <strong>单调性</strong>
+                                    <span id="monotonicity">函数的单调性分析</span>
+                                </div>
+                                <div class="info-item">
+                                    <strong>极值点</strong>
+                                    <span id="extrema">函数的极值点位置</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 常见模型页面 -->
+                <div class="page-content" id="page-常见模型" style="display: none;">
+                    <div class="column">
+                        <div class="card card-scroll">
+                            <h3>经济学模型</h3>
+                            <p>指数函数、幂函数、复合函数都可以通过对数求导法快速计算导数，适用于复杂函数。</p>
+                            <div class="tag-list">
+                                <span class="tag">经济学</span>
+                                <span class="tag">效用函数</span>
+                                <span class="tag">生产函数</span>
+                                <span class="tag">成本函数</span>
+                            </div>
+                            <div class="analysis-box">
+                                <strong>常用经济函数：</strong><br>
+                                • 柯布-道格拉斯生产函数：$Y = A K^\\alpha L^\\beta$<br>
+                                • CES效用函数：$U = (\\alpha x_1^\\rho + \\beta x_2^\\rho)^{1/\\rho}$<br>
+                                • 幂效用函数：$U(x) = x^\\alpha$<br>
+                                • 指数效用函数：$U(x) = -e^{-\\alpha x}$
+                            </div>
+                        </div>
+
+                        <div class="card card-scroll">
+                            <h3>物理学模型</h3>
+                            <div class="info-grid">
+                                <div class="info-item">
+                                    <strong>指数衰减</strong>
+                                    $N(t) = N_0 e^{-\\lambda t}$，放射性衰变模型
+                                </div>
+                                <div class="info-item">
+                                    <strong>指数增长</strong>
+                                    $P(t) = P_0 e^{rt}$，人口增长模型
+                                </div>
+                                <div class="info-item">
+                                    <strong>幂律分布</strong>
+                                    $f(x) = ax^{-\\alpha}$，自然界中的幂律现象
+                                </div>
+                                <div class="info-item">
+                                    <strong>复合增长</strong>
+                                    $A(t) = A_0(1+r)^t$，复利增长模型
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card card-scroll">
+                            <h3>生物学模型</h3>
+                            <div class="info-grid">
+                                <div class="info-item">
+                                    <strong>Logistic增长</strong>
+                                    $P(t) = \\frac{K}{1+ae^{-rt}}$，种群增长模型
+                                </div>
+                                <div class="info-item">
+                                    <strong>药物浓度</strong>
+                                    $C(t) = C_0 e^{-kt}$，药物在体内的浓度变化
+                                </div>
+                                <div class="info-item">
+                                    <strong>酶反应</strong>
+                                    $v = \\frac{V_{max}[S]}{K_m + [S]}$，米氏方程
+                                </div>
+                                <div class="info-item">
+                                    <strong>基因表达</strong>
+                                    $E(t) = E_0 e^{\\lambda t}$，基因表达水平变化
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <h3>工程学模型</h3>
+                            <div class="info-grid">
+                                <div class="info-item">
+                                    <strong>可靠性分析</strong>
+                                    $R(t) = e^{-\\lambda t}$，系统可靠性随时间变化
+                                </div>
+                                <div class="info-item">
+                                    <strong>材料强度</strong>
+                                    $\\sigma = \\sigma_0 e^{-\\alpha T}$，温度对材料强度的影响
+                                </div>
+                                <div class="info-item">
+                                    <strong>信号处理</strong>
+                                    $y(t) = A e^{-\\alpha t} \\sin(\\omega t)$，阻尼振荡信号
+                                </div>
+                                <div class="info-item">
+                                    <strong>热传导</strong>
+                                    $T(x) = T_0 e^{-\\alpha x}$，一维热传导温度分布
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="column">
+                        <div class="card">
+                            <h3>模型比较分析</h3>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>模型类型</th>
+                                        <th>函数形式</th>
+                                        <th>增长特性</th>
+                                        <th>应用领域</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>指数增长</td>
+                                        <td>$y = ae^{rt}$</td>
+                                        <td>无限增长</td>
+                                        <td>人口、投资</td>
+                                    </tr>
+                                    <tr>
+                                        <td>幂律增长</td>
+                                        <td>$y = ax^b$</td>
+                                        <td>多项式增长</td>
+                                        <td>物理、经济</td>
+                                    </tr>
+                                    <tr>
+                                        <td>对数增长</td>
+                                        <td>$y = a\\ln(x)$</td>
+                                        <td>缓慢增长</td>
+                                        <td>信息论</td>
+                                    </tr>
+                                    <tr>
+                                        <td>复合增长</td>
+                                        <td>$y = a(1+r)^x$</td>
+                                        <td>离散增长</td>
+                                        <td>金融</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="card">
+                            <h3>参数估计方法</h3>
+                            <div class="info-grid">
+                                <div class="info-item">
+                                    <strong>最小二乘法</strong>
+                                    通过线性化处理，使用最小二乘法估计参数
+                                </div>
+                                <div class="info-item">
+                                    <strong>最大似然估计</strong>
+                                    基于概率分布的参数估计方法
+                                </div>
+                                <div class="info-item">
+                                    <strong>非线性回归</strong>
+                                    直接对非线性函数进行参数估计
+                                </div>
+                                <div class="info-item">
+                                    <strong>贝叶斯估计</strong>
+                                    结合先验信息的参数估计方法
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <h3>模型验证与诊断</h3>
+                            <div class="info-grid">
+                                <div class="info-item">
+                                    <strong>残差分析</strong>
+                                    检查模型拟合的残差分布和模式
+                                </div>
+                                <div class="info-item">
+                                    <strong>拟合优度</strong>
+                                    计算 $R^2$、AIC、BIC等指标评估模型
+                                </div>
+                                <div class="info-item">
+                                    <strong>预测能力</strong>
+                                    使用交叉验证等方法评估模型预测能力
+                                </div>
+                                <div class="info-item">
+                                    <strong>模型选择</strong>
+                                    比较不同模型的优劣，选择最佳模型
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <script>
+        function renderMath() {
+            if (window.MathJax && window.MathJax.typesetPromise) {
+                MathJax.typesetPromise()
+                    .then(() => {
+                        console.log('MathJax 公式渲染完成');
+                    })
+                    .catch(err => {
+                        console.error('MathJax 渲染错误:', err);
+                        setTimeout(() => {
+                            MathJax.typesetPromise().catch(e => console.error('重试失败:', e));
+                        }, 200);
+                    });
+            } else if (window.MathJax && window.MathJax.typeset) {
+                try {
+                    MathJax.typeset();
+                } catch (err) {
+                    console.error('MathJax 渲染错误:', err);
+                    setTimeout(() => {
+                        try { MathJax.typeset(); } catch(e) { console.error('重试失败:', e); }
+                    }, 200);
+                }
+            } else {
+                setTimeout(renderMath, 100);
+            }
+        }
+
+        function forceRenderMath() {
+            // 强制重新渲染所有数学公式
+            setTimeout(() => {
+                if (window.MathJax) {
+                    // 清除之前的渲染
+                    const mathElements = document.querySelectorAll('.MathJax, [data-math]');
+                    mathElements.forEach(el => {
+                        if (el.classList.contains('MathJax')) {
+                            el.outerHTML = el.innerHTML;
+                        }
+                    });
+                    
+                    // 重新渲染
+                    if (window.MathJax.typesetPromise) {
+                        MathJax.typesetPromise().then(() => {
+                            console.log('强制MathJax渲染完成');
+                        }).catch(err => {
+                            console.error('强制MathJax渲染错误:', err);
+                        });
+                    }
+                }
+            }, 50);
+        }
+
+        function setupCanvas(canvas) {
+            const ctx = canvas.getContext('2d');
+            const rect = canvas.getBoundingClientRect();
+            const dpr = window.devicePixelRatio || 1;
+            canvas.width = rect.width * dpr;
+            canvas.height = rect.height * dpr;
+            canvas.style.width = rect.width + 'px';
+            canvas.style.height = rect.height + 'px';
+            ctx.scale(dpr, dpr);
+            return { ctx, width: rect.width, height: rect.height };
+        }
+
+        function drawAxes(ctx, width, height) {
+            const padding = 40;
+            ctx.save();
+            ctx.strokeStyle = '#dbeafe';
+            ctx.lineWidth = 1;
+            for (let i = 0; i <= 8; i++) {
+                const x = padding + i * (width - 2 * padding) / 8;
+                ctx.beginPath();
+                ctx.moveTo(x, padding);
+                ctx.lineTo(x, height - padding);
+                ctx.stroke();
+
+                const y = padding + i * (height - 2 * padding) / 8;
+                ctx.beginPath();
+                ctx.moveTo(padding, y);
+                ctx.lineTo(width - padding, y);
+                ctx.stroke();
+            }
+
+            ctx.strokeStyle = '#1f2937';
+            ctx.lineWidth = 1.5;
+            ctx.beginPath();
+            ctx.moveTo(padding, height / 2);
+            ctx.lineTo(width - padding, height / 2);
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.moveTo(width / 2, padding);
+            ctx.lineTo(width / 2, height - padding);
+            ctx.stroke();
+            ctx.restore();
+        }
+
+        function mathToCanvas(x, y, width, height, xRange, yRange, padding = 40) {
+            const plotWidth = width - 2 * padding;
+            const plotHeight = height - 2 * padding;
+            const cx = padding + (x - xRange[0]) / (xRange[1] - xRange[0]) * plotWidth;
+            const cy = height - padding - (y - yRange[0]) / (yRange[1] - yRange[0]) * plotHeight;
+            return { x: cx, y: cy };
+        }
+
+        const logFunctions = {
+            expBase: {
+                label: '指数函数 $y = a^x$',
+                paramLabel: '底数 a',
+                paramRange: [1.2, 3.5],
+                domain: [-2, 4],
+                compute: (x, a) => Math.pow(a, x),
+                derivative: (x, a) => Math.pow(a, x) * Math.log(a),
+                logStep: (x, a) => `$\\ln y = x\\ln ${a.toFixed(2)}`,
+                interpret: a => `底数 $a=${a.toFixed(2)}$ 时，导数始终是函数值乘以 $\\ln a$，说明底数越大增长越快。`
+            },
+            powerVar: {
+                label: '幂函数 $y = x^a$',
+                paramLabel: '指数 a',
+                paramRange: [0.5, 4],
+                domain: [0.4, 6],
+                compute: (x, a) => Math.pow(x, a),
+                derivative: (x, a) => a * Math.pow(x, a - 1),
+                logStep: (x, a) => `$\\ln y = ${a.toFixed(2)}\\ln x$`,
+                interpret: a => `指数 $a=${a.toFixed(2)}$ 时，导数为 $a x^{a-1}$，当 $a>1$ 时曲线越来越陡。`
+            },
+            xx: {
+                label: '幂指函数 $y = x^x$',
+                paramLabel: '参数无',
+                paramRange: [1, 1],
+                domain: [0.4, 5],
+                compute: (x) => Math.pow(x, x),
+                derivative: (x) => Math.pow(x, x) * (Math.log(x) + 1),
+                logStep: (x) => `$\\ln y = x\\ln x$`,
+                interpret: () => '同时含底数与指数的幂指函数，导数比值 $\\ln x + 1$ 决定斜率变化。'
+            },
+            axx: {
+                label: '复合幂指 $y = x^{a x}$',
+                paramLabel: '系数 a',
+                paramRange: [0.5, 2.5],
+                domain: [0.6, 3.5],
+                compute: (x, a) => Math.pow(x, a * x),
+                derivative: (x, a) => Math.pow(x, a * x) * a * (Math.log(x) + 1),
+                logStep: (x, a) => `$\\ln y = ${a.toFixed(2)}x\\ln x$`,
+                interpret: a => `指数含 x 时，导数是原函数乘以 ${a.toFixed(2)}(\\ln x + 1)$，增长速度更敏感。`
+            }
+        };
+
+                                        const tableData = [
+            { func: '$y = x^x$', logForm: '$\\ln y = x\\ln x$', derivative: '$\\dfrac{dy}{dx} = x^x(\\ln x + 1)$' },
+            { func: '$y = x^{k x}$', logForm: '$\\ln y = kx\\ln x$', derivative: '$\\dfrac{dy}{dx} = x^{kx}\\cdot k(\\ln x + 1)$' },
+            { func: '$y = a^{g(x)}$', logForm: '$\\ln y = g(x)\\ln a$', derivative: '$\\dfrac{dy}{dx} = a^{g(x)} \\cdot \\dfrac{dg(x)}{dx}\\ln a$' },
+            { func: '$y = (f(x))^{g(x)}$', logForm: '$\\ln y = g(x)\\ln f(x)$', derivative: '$\\dfrac{dy}{dx} = (f(x))^{g(x)}\\left[\\dfrac{dg(x)}{dx}\\ln f(x) + g(x)\\cdot \\dfrac{df(x)}{dx}\\cdot \\dfrac{1}{f(x)}\\right]$' }
+        ];
+
+                const navButtons = document.querySelectorAll('.nav-btn');
+                const pages = document.querySelectorAll('.page-content');
+                const logCanvas = document.getElementById('logCanvas');
+        const functionSelector = document.getElementById('functionSelector');
+        const paramSlider = document.getElementById('paramSlider');
+        const paramLabel = document.getElementById('paramLabel');
+        const paramValue = document.getElementById('paramValue');
+        const xSlider = document.getElementById('xSlider');
+        const xValue = document.getElementById('xValue');
+        const playLog = document.getElementById('playLog');
+        const resetLog = document.getElementById('resetLog');
+        const logStatus = document.getElementById('logStatus');
+
+        const valueInfo = document.getElementById('valueInfo');
+        const derivativeInfo = document.getElementById('derivativeInfo');
+        const stepInfo = document.getElementById('stepInfo');
+        const interpretInfo = document.getElementById('interpretInfo');
+        const summaryBox = document.getElementById('summaryBox');
+        const methodHint = document.getElementById('methodHint');
+
+        let animationId = null;
+        let animationActive = false;
+
+        function populateTable() {
+            const tbody = document.getElementById('logTable');
+            tbody.innerHTML = tableData.map(row => `
+                <tr>
+                    <td>${row.func}</td>
+                    <td>${row.logForm}</td>
+                    <td>${row.derivative}</td>
+                </tr>
+            `).join('');
+            renderMath();
+        }
+
+        function populateSelector() {
+            Object.entries(logFunctions).forEach(([key, item]) => {
+                const option = document.createElement('option');
+                option.value = key;
+                option.innerHTML = item.label;
+                functionSelector.appendChild(option);
+            });
+        }
+
+        function configureControls() {
+            const item = logFunctions[functionSelector.value];
+            paramLabel.textContent = item.paramLabel;
+            paramSlider.min = item.paramRange[0];
+            paramSlider.max = item.paramRange[1];
+            const defaultParam = (item.paramRange[0] + item.paramRange[1]) / 2;
+            paramSlider.value = defaultParam.toFixed(2);
+            paramSlider.disabled = item.paramRange[0] === item.paramRange[1];
+            paramValue.textContent = parseFloat(paramSlider.value).toFixed(1);
+
+            xSlider.min = item.domain[0];
+            xSlider.max = item.domain[1];
+            const defaultX = (item.domain[0] + item.domain[1]) / 2;
+            xSlider.value = defaultX.toFixed(2);
+            xValue.textContent = parseFloat(xSlider.value).toFixed(2);
+        }
+
+        function computeRange(item, param) {
+            const steps = 400;
+            let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+            for (let i = 0; i <= steps; i++) {
+                const x = item.domain[0] + (i / steps) * (item.domain[1] - item.domain[0]);
+                const y = item.compute(x, param);
+                if (!Number.isFinite(y)) continue;
+                if (x < minX) minX = x;
+                if (x > maxX) maxX = x;
+                if (y < minY) minY = y;
+                if (y > maxY) maxY = y;
+            }
+            if (!Number.isFinite(minX)) {
+                minX = item.domain[0];
+                maxX = item.domain[1];
+            }
+            if (!Number.isFinite(minY)) {
+                minY = -1;
+                maxY = 3;
+            }
+            const padX = (maxX - minX) * 0.12 || 0.5;
+            const padY = (maxY - minY) * 0.15 || 0.5;
+            return {
+                xRange: [minX - padX, maxX + padX],
+                yRange: [minY - padY, maxY + padY]
+            };
+        }
+
+        function drawFunction(ctx, width, height, item, param, xRange, yRange) {
+            ctx.save();
+            ctx.strokeStyle = '#2563eb';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            const steps = 600;
+            for (let i = 0; i <= steps; i++) {
+                const x = item.domain[0] + (i / steps) * (item.domain[1] - item.domain[0]);
+                let y = item.compute(x, param);
+                if (!Number.isFinite(y) || yRange[0] === yRange[1]) continue;
+                y = Math.max(yRange[0], Math.min(yRange[1], y));
+                const { x: cx, y: cy } = mathToCanvas(x, y, width, height, xRange, yRange);
+                if (i === 0) ctx.moveTo(cx, cy);
+                else ctx.lineTo(cx, cy);
+            }
+            ctx.stroke();
+            ctx.restore();
+        }
+
+        function drawTangent(ctx, width, height, point, slope, xRange, yRange) {
+            ctx.save();
+            ctx.strokeStyle = '#f59e0b';
+            ctx.lineWidth = 2;
+            if (!Number.isFinite(slope)) {
+                const top = mathToCanvas(point.x, yRange[1], width, height, xRange, yRange);
+                const bottom = mathToCanvas(point.x, yRange[0], width, height, xRange, yRange);
+                ctx.beginPath();
+                ctx.moveTo(top.x, top.y);
+                ctx.lineTo(bottom.x, bottom.y);
+            } else {
+                const span = (xRange[1] - xRange[0]) * 0.2;
+                const x1 = point.x - span;
+                const x2 = point.x + span;
+                const y1 = point.y + slope * (x1 - point.x);
+                const y2 = point.y + slope * (x2 - point.x);
+                const p1 = mathToCanvas(x1, y1, width, height, xRange, yRange);
+                const p2 = mathToCanvas(x2, y2, width, height, xRange, yRange);
+                ctx.beginPath();
+                ctx.moveTo(p1.x, p1.y);
+                ctx.lineTo(p2.x, p2.y);
+            }
+            ctx.stroke();
+            ctx.restore();
+        }
+
+        function updateCanvas() {
+            const { ctx, width, height } = setupCanvas(logCanvas);
+            ctx.clearRect(0, 0, width, height);
+            const item = logFunctions[functionSelector.value];
+            const param = parseFloat(paramSlider.value);
+            const x = parseFloat(xSlider.value);
+
+            if (x <= 0 && (functionSelector.value === 'xx' || functionSelector.value === 'axx' || functionSelector.value === 'powerVar')) {
+                logStatus.textContent = 'x 必须大于 0 才能取对数，请调整滑块。';
+                return;
+            }
+            logStatus.textContent = '';
+
+            const { xRange, yRange } = computeRange(item, param);
+            drawAxes(ctx, width, height);
+            drawFunction(ctx, width, height, item, param, xRange, yRange);
+
+            const y = item.compute(x, param);
+            const slope = item.derivative(x, param);
+            const point = mathToCanvas(x, y, width, height, xRange, yRange);
+
+            ctx.fillStyle = '#10b981';
+            ctx.beginPath();
+            ctx.arc(point.x, point.y, 6, 0, Math.PI * 2);
+            ctx.fill();
+
+            drawTangent(ctx, width, height, { x, y }, slope, xRange, yRange);
+            updateInfoPanel(item, x, y, slope, param);
+            renderMath();
+        }
+
+        function updateInfoPanel(item, x, y, slope, param) {
+            valueInfo.innerHTML = `$y = ${y.toFixed(4)}`;
+            derivativeInfo.innerHTML = Number.isFinite(slope) ? `$\\dfrac{dy}{dx} = ${slope.toFixed(4)}` : '$\\dfrac{dy}{dx} = \\infty$';
+            const step = item.logStep(x, param);
+            stepInfo.innerHTML = step;
+            interpretInfo.innerHTML = typeof item.interpret === 'function' ? item.interpret(param) : item.interpret();
+            summaryBox.innerHTML = `在 $x=${x.toFixed(2)}$ 处，切线斜率与对数求导公式保持一致，说明 $\\ln$ 化简后的求导结果准确描述函数的瞬时变化。`;
+            methodHint.innerHTML = '记住“先取对数”这个技巧：遇到底数和指数都含变量的函数，一定先化成 $\\ln y$ 再求导。';
+            renderMath();
+        }
+
+        function resetAnimation() {
+            animationActive = false;
+            playLog.textContent = '启动动画';
+            if (animationId) cancelAnimationFrame(animationId);
+        }
+
+        function animateX() {
+            if (!animationActive) return;
+            const item = logFunctions[functionSelector.value];
+            let x = parseFloat(xSlider.value);
+            const step = (item.domain[1] - item.domain[0]) / 300;
+            x += step;
+            if (x > item.domain[1]) x = item.domain[0];
+            xSlider.value = x;
+            xValue.textContent = x.toFixed(2);
+            updateCanvas();
+            animationId = requestAnimationFrame(animateX);
+        }
+
+        function resetView() {
+            resetAnimation();
+            functionSelector.value = 'expBase';
+            configureControls();
+            updateCanvas();
+        }
+
+        function switchPage(section) {
+            pages.forEach(page => {
+                page.classList.toggle('active', page.id === `page-${section}`);
+            });
+            navButtons.forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.section === section);
+            });
+
+            switch (section) {
+                case '对数求导':
+                    methodHint.innerHTML = "步骤提示：1) 两边取 $\ln$；2) 使用乘积法则求导；3) 将结果乘回原函数，得到 $y'$。";
+                    break;
+                case '幂指函数':
+                    methodHint.innerHTML = "幂指函数 $y = f(x)^{g(x)}$ 的导数通过取对数化简：$\ln y = g(x)\ln f(x)$，然后求导。";
+                    break;
+                case '动态演示':
+                    methodHint.innerHTML = "拖动参数观察不同幂指函数的形状变化，理解对数求导在实际函数中的应用。";
+                    break;
+                case '常见模型':
+                    methodHint.innerHTML = "指数函数、幂函数、复合函数都可以通过对数求导法快速计算导数，适用于复杂函数。";
+                    break;
+            }
+
+            setTimeout(() => {
+                renderMath();
+                forceRenderMath();
+            }, 100);
+        }
+
+        function initEvents() {
+            // 为导航按钮添加事件监听器
+            navButtons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    switchPage(btn.dataset.section);
+                });
+            });
+            
+            functionSelector.addEventListener('change', () => {
+                configureControls();
+                resetAnimation();
+                updateCanvas();
+            });
+
+            paramSlider.addEventListener('input', () => {
+                paramValue.textContent = parseFloat(paramSlider.value).toFixed(1);
+                updateCanvas();
+            });
+
+            xSlider.addEventListener('input', () => {
+                xValue.textContent = parseFloat(xSlider.value).toFixed(2);
+                updateCanvas();
+            });
+
+            playLog.addEventListener('click', () => {
+                animationActive = !animationActive;
+                playLog.textContent = animationActive ? '暂停动画' : '启动动画';
+                if (animationActive) animateX();
+                else resetAnimation();
+            });
+
+            resetLog.addEventListener('click', resetView);
+
+            // 动态演示页面的交互功能
+            const functionType = document.getElementById('functionType');
+            const parameterA = document.getElementById('parameterA');
+            const parameterAValue = document.getElementById('parameterAValue');
+            const observationX = document.getElementById('observationX');
+            const observationXValue = document.getElementById('observationXValue');
+            const animateDemo = document.getElementById('animateDemo');
+            const resetDemo = document.getElementById('resetDemo');
+            
+            if (functionType) {
+                functionType.addEventListener('change', (e) => {
+                    console.log('函数类型改变:', e.target.value);
+                    updatePowerFunctionCanvas();
+                    updateFunctionAnalysis();
+                });
+            }
+            
+            if (parameterA && parameterAValue) {
+                parameterA.addEventListener('input', (e) => {
+                    parameterAValue.textContent = parseFloat(e.target.value).toFixed(1);
+                    updatePowerFunctionCanvas();
+                    updateFunctionAnalysis();
+                });
+            }
+            
+            if (observationX && observationXValue) {
+                observationX.addEventListener('input', (e) => {
+                    observationXValue.textContent = parseFloat(e.target.value).toFixed(2);
+                    updatePowerFunctionCanvas();
+                    updateFunctionAnalysis();
+                });
+            }
+            
+            if (animateDemo) {
+                animateDemo.addEventListener('click', () => {
+                    console.log('开始动画演示');
+                    animatePowerFunctionDemo();
+                });
+            }
+            
+            if (resetDemo) {
+                resetDemo.addEventListener('click', () => {
+                    console.log('重置演示');
+                    resetPowerFunctionDemo();
+                });
+            }
+        }
+
+        // 幂指函数Canvas绘制函数
+        function updatePowerFunctionCanvas() {
+            const canvas = document.getElementById('powerFunctionCanvas');
+            if (!canvas) return;
+            
+            const ctx = canvas.getContext('2d');
+            const width = canvas.width = 400;
+            const height = canvas.height = 300;
+            
+            ctx.clearRect(0, 0, width, height);
+            
+            // 绘制坐标轴
+            ctx.strokeStyle = '#666';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(width/2, 0);
+            ctx.lineTo(width/2, height);
+            ctx.moveTo(0, height/2);
+            ctx.lineTo(width, height/2);
+            ctx.stroke();
+            
+            const functionType = document.getElementById('functionType')?.value || 'power';
+            const parameterA = parseFloat(document.getElementById('parameterA')?.value || 2);
+            const observationX = parseFloat(document.getElementById('observationX')?.value || 1.5);
+            
+            // 绘制函数曲线
+            ctx.strokeStyle = '#2563eb';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            
+            const scale = 50;
+            const centerX = width/2;
+            const centerY = height/2;
+            
+            for (let x = 0.1; x <= 3; x += 0.05) {
+                let y;
+                switch (functionType) {
+                    case 'power':
+                        y = Math.pow(x, parameterA);
+                        break;
+                    case 'exponential':
+                        y = Math.pow(parameterA, x);
+                        break;
+                    case 'powerExponential':
+                        y = Math.pow(x, x);
+                        break;
+                    case 'complex':
+                        y = Math.pow(x, parameterA * x);
+                        break;
+                }
+                
+                if (y > 0 && y < 10) { // 限制显示范围
+                    const plotX = centerX + (x - 1.5) * scale;
+                    const plotY = centerY - (y - 1) * scale;
+                    
+                    if (x === 0.1) ctx.moveTo(plotX, plotY);
+                    else ctx.lineTo(plotX, plotY);
+                }
+            }
+            ctx.stroke();
+            
+            // 绘制观察点
+            let yValue;
+            switch (functionType) {
+                case 'power':
+                    yValue = Math.pow(observationX, parameterA);
+                    break;
+                case 'exponential':
+                    yValue = Math.pow(parameterA, observationX);
+                    break;
+                case 'powerExponential':
+                    yValue = Math.pow(observationX, observationX);
+                    break;
+                case 'complex':
+                    yValue = Math.pow(observationX, parameterA * observationX);
+                    break;
+            }
+            
+            const pointX = centerX + (observationX - 1.5) * scale;
+            const pointY = centerY - (yValue - 1) * scale;
+            
+            ctx.fillStyle = '#10b981';
+            ctx.beginPath();
+            ctx.arc(pointX, pointY, 4, 0, 2 * Math.PI);
+            ctx.fill();
+            
+            // 绘制切线
+            let derivative;
+            switch (functionType) {
+                case 'power':
+                    derivative = parameterA * Math.pow(observationX, parameterA - 1);
+                    break;
+                case 'exponential':
+                    derivative = Math.pow(parameterA, observationX) * Math.log(parameterA);
+                    break;
+                case 'powerExponential':
+                    derivative = Math.pow(observationX, observationX) * (Math.log(observationX) + 1);
+                    break;
+                case 'complex':
+                    derivative = Math.pow(observationX, parameterA * observationX) * parameterA * (Math.log(observationX) + 1);
+                    break;
+            }
+            
+            const tangentLength = 30;
+            const dx = tangentLength / Math.sqrt(1 + derivative * derivative);
+            const dy = derivative * dx;
+            
+            ctx.strokeStyle = '#f59e0b';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(pointX - dx, pointY - dy);
+            ctx.lineTo(pointX + dx, pointY + dy);
+            ctx.stroke();
+        }
+
+        // 幂指函数演示动画
+        let powerAnimationId = null;
+        let powerAnimationTime = 0;
+
+        function animatePowerFunctionDemo() {
+            if (powerAnimationId) {
+                cancelAnimationFrame(powerAnimationId);
+            }
+            
+            function animate() {
+                powerAnimationTime += 0.02;
+                
+                // 更新参数
+                const parameterA = document.getElementById('parameterA');
+                if (parameterA) {
+                    const newValue = 1.5 + 0.5 * Math.sin(powerAnimationTime);
+                    parameterA.value = newValue;
+                    document.getElementById('parameterAValue').textContent = newValue.toFixed(1);
+                }
+                
+                updatePowerFunctionCanvas();
+                updateFunctionAnalysis();
+                
+                powerAnimationId = requestAnimationFrame(animate);
+            }
+            
+            animate();
+        }
+
+        function resetPowerFunctionDemo() {
+            if (powerAnimationId) {
+                cancelAnimationFrame(powerAnimationId);
+                powerAnimationId = null;
+            }
+            powerAnimationTime = 0;
+            
+            // 重置参数
+            const parameterA = document.getElementById('parameterA');
+            if (parameterA) {
+                parameterA.value = 2;
+                document.getElementById('parameterAValue').textContent = '2.0';
+            }
+            
+            updatePowerFunctionCanvas();
+            updateFunctionAnalysis();
+        }
+
+        function updateFunctionAnalysis() {
+            const functionType = document.getElementById('functionType')?.value || 'power';
+            const parameterA = parseFloat(document.getElementById('parameterA')?.value || 2);
+            const observationX = parseFloat(document.getElementById('observationX')?.value || 1.5);
+            
+            const functionValue = document.getElementById('functionValue');
+            const derivativeValue = document.getElementById('derivativeValue');
+            const logForm = document.getElementById('logForm');
+            const calculationSteps = document.getElementById('calculationSteps');
+            
+            let funcValue, derivValue, logExpression, steps;
+            
+            switch (functionType) {
+                case 'power':
+                    funcValue = Math.pow(observationX, parameterA);
+                    derivValue = parameterA * Math.pow(observationX, parameterA - 1);
+                    logExpression = `${parameterA} \\ln(${observationX})`;
+                    steps = `y = x^{${parameterA}}, y' = ${parameterA}x^{${parameterA-1}}`;
+                    break;
+                case 'exponential':
+                    funcValue = Math.pow(parameterA, observationX);
+                    derivValue = Math.pow(parameterA, observationX) * Math.log(parameterA);
+                    logExpression = `${observationX} \\ln(${parameterA})`;
+                    steps = `y = ${parameterA}^x, y' = ${parameterA}^x \\ln(${parameterA})`;
+                    break;
+                case 'powerExponential':
+                    funcValue = Math.pow(observationX, observationX);
+                    derivValue = Math.pow(observationX, observationX) * (Math.log(observationX) + 1);
+                    logExpression = `${observationX} \\ln(${observationX})`;
+                    steps = `y = x^x, \\ln y = x \\ln x, \\frac{y'}{y} = \\ln x + 1`;
+                    break;
+                case 'complex':
+                    funcValue = Math.pow(observationX, parameterA * observationX);
+                    derivValue = Math.pow(observationX, parameterA * observationX) * parameterA * (Math.log(observationX) + 1);
+                    logExpression = `${parameterA} \\cdot ${observationX} \\ln(${observationX})`;
+                    steps = `y = x^{${parameterA}x}, \\ln y = ${parameterA}x \\ln x`;
+                    break;
+            }
+            
+            if (functionValue) {
+                functionValue.textContent = `$f(${observationX}) = ${funcValue.toFixed(3)}$`;
+            }
+            if (derivativeValue) {
+                derivativeValue.textContent = `$f'(${observationX}) = ${derivValue.toFixed(3)}$`;
+            }
+            if (logForm) {
+                logForm.textContent = `$\\ln f(x) = ${logExpression}$`;
+            }
+            if (calculationSteps) {
+                calculationSteps.textContent = steps;
+            }
+            
+            renderMath();
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            populateTable();
+            populateSelector();
+            functionSelector.value = 'expBase';
+            configureControls();
+            initEvents();
+            updateCanvas();
+            const firstButton = document.querySelector('.nav-btn');
+            if (firstButton) {
+                switchPage(firstButton.dataset.section);
+            }
+            renderMath();
+            
+            // 初始化幂指函数Canvas
+            setTimeout(() => {
+                updatePowerFunctionCanvas();
+                updateFunctionAnalysis();
+            }, 100);
+        });
+    </script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+

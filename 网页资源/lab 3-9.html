@@ -1,0 +1,1356 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>参数方程求导实验室</title>
+
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true,
+                processEnvironments: true
+            },
+            options: {
+                skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+            },
+            startup: {
+                pageReady: () => {
+                    return MathJax.startup.defaultPageReady().then(() => {
+                        console.log('MathJax 初始化完成');
+                    }).catch((error) => {
+                        console.error('MathJax 初始化错误:', error);
+                    });
+                }
+            }
+        };
+    </script>
+    <script defer src="../common-assets/js/mathjax-3.2.2-tex-svg.min.js"></script>
+
+    <style>
+    :root {
+        --primary: #4f46e5;
+        --primary-dark: #3730a3;
+        --primary-light: #6366f1;
+        --success: #10b981;
+        --warning: #f59e0b;
+        --danger: #ef4444;
+        --gray-50: #f9fafb;
+        --gray-100: #f3f4f6;
+        --gray-200: #e5e7eb;
+        --gray-300: #d1d5db;
+        --gray-500: #6b7280;
+        --gray-600: #4b5563;
+        --gray-700: #1f2937;
+        --white: #ffffff;
+        --light: #ffffff;
+        --border: #e5e7eb;
+        --h1-size: 22px;
+        --h3-size: 18px;
+        --text-size: 16px;
+        --formula-size: 20px;
+    }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        *::-webkit-scrollbar { width: 0; background: transparent; }
+        * { scrollbar-width: none; -ms-overflow-style: none; }
+
+            body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
+        font-size: var(--text-size);
+        line-height: 1.5;
+        background: var(--gray-50);
+        color: var(--gray-700);
+    }
+
+            .container {
+        width: 100%;
+        max-width: 1400px;
+        height: 100vh;
+        max-height: 700px;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        background: var(--white);
+    }
+
+            .header {
+        height: 40px;
+        background: var(--primary);
+        color: var(--white);
+        display: flex;
+        align-items: center;
+        padding: 0 20px;
+    }
+
+            .header h1 { font-size: var(--h1-size); margin: 0; }
+
+            .main { flex: 1; display: flex; overflow: hidden; }
+
+            .sidebar {
+        width: 120px;
+        background: var(--gray-50);
+        border-right: 1px solid var(--border);
+        padding: 10px 8px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+            .nav-btn {
+        width: 100%;
+        padding: 8px;
+        background: transparent;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: var(--text-size);
+        color: var(--gray-600);
+        text-align: left;
+        transition: background 0.2s ease, color 0.2s ease;
+    }
+
+            .nav-btn.active { background: var(--primary); color: var(--white); }
+            .nav-btn:hover { background: var(--gray-100); }
+        .nav-btn:active { transform: translateY(0); }
+
+            .content { flex: 1; position: relative; overflow: hidden; }
+            .column { display: flex; flex-direction: column; gap: 16px; overflow-y: auto; padding-right: 4px; }
+
+            .card { background: var(--white); border: 1px solid var(--border); border-radius: 12px; padding: 12px; display: flex; flex-direction: column; gap: 10px; }
+
+        .card h3 { font-size: var(--h3-size); color: var(--primary-dark); }
+        .card p { line-height: 1.5; }
+        .card-scroll { overflow-y: auto; }
+
+        .tag-list { display: flex; gap: 8px; flex-wrap: wrap; }
+        .tag { font-size: 13px; padding: 4px 10px; border-radius: 999px; background: var(--gray-100); color: var(--gray-500); }
+
+        table { width: 100%; border-collapse: collapse; font-size: 15px; }
+        th, td { border: 1px solid var(--gray-200); padding: 8px; text-align: center; }
+        thead { background: var(--gray-100); }
+
+        .controls { display: flex; flex-direction: column; gap: 10px; background: var(--gray-50); border-radius: 10px; padding: 10px; border: 1px solid var(--gray-200); }
+        .control-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+        .control-row label { font-weight: 600; }
+        .control-row span { color: var(--primary-dark); font-weight: 600; }
+        input[type="range"] { flex: 1; }
+        select { flex: 1; padding: 6px 8px; border-radius: 8px; border: 1px solid var(--gray-300); font-size: 15px; }
+
+        .canvas-container { flex: 1; border: 1px solid var(--gray-200); border-radius: 12px; background: var(--gray-50); display: flex; align-items: center; justify-content: center; min-height: 280px; }
+        canvas { width: 100%; height: 100%; border-radius: 10px; }
+
+        .legend { display: flex; gap: 12px; flex-wrap: wrap; font-size: 14px; color: var(--gray-600); }
+        .legend i { width: 14px; height: 14px; border-radius: 4px; display: inline-block; }
+
+        .btn-group { display: flex; gap: 10px; }
+        button.action { flex: 1; background: var(--primary); color: var(--white); border: none; border-radius: 8px; padding: 10px 12px; font-size: var(--text-size); cursor: pointer; transition: transform 0.2s ease; }
+        button.action.secondary { background: var(--white); color: var(--primary); border: 1px solid var(--primary); }
+        button.action:hover { transform: translateY(-2px); }
+        button.action:active { transform: translateY(0); }
+
+        .analysis-box { background: #eef2ff; border: 1px dashed var(--primary-light); padding: 10px; border-radius: 10px; font-size: 15px; line-height: 1.5; }
+        .info-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+        .info-item { padding: 10px; border-radius: 10px; background: var(--gray-50); border: 1px solid var(--gray-200); }
+        .info-item strong { color: var(--primary-dark); display: block; margin-bottom: 6px; }
+        .status-hint { font-size: 14px; color: var(--danger); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>参数方程求导实验室</h1>
+            <div>掌握 $\\dfrac{dy}{dx} = \\dfrac{dy/dt}{dx/dt}$ 的图形意义</div>
+        </header>
+        <div class="main">
+            <nav class="sidebar">
+                <button class="nav-btn active">参数切线</button>
+                <button class="nav-btn">速度与方向</button>
+                <button class="nav-btn">动态探索</button>
+                <button class="nav-btn">建模应用</button>
+            </nav>
+            <section class="content">
+                <!-- 参数切线页面 -->
+                <div class="page-content" id="page-参数切线">
+                    <div class="column">
+                    <div class="card card-scroll">
+                        <h3>学习指引</h3>
+                        <p>参数方程用参数 $t$ 同时描述 $x$ 与 $y$ 的变化。调用公式 $\\dfrac{dy}{dx} = \\dfrac{dy/dt}{dx/dt}$，即可得到曲线在参数 $t$ 对应点的切线斜率。本实验通过不同轨迹的动态演示，帮助快速建立空间想象。</p>
+                        <div class="tag-list">
+                            <span class="tag">参数化曲线</span>
+                            <span class="tag">导数比值</span>
+                            <span class="tag">运动轨迹</span>
+                            <span class="tag">切线</span>
+                        </div>
+                        <div class="analysis-box" id="conceptSummary">选定曲线后，拖动参数 $t$ 即可看到曲线上点的位置、速度向量以及切线方向。</div>
+                    </div>
+
+                    <div class="card card-scroll">
+                        <h3>常见参数曲线导数表</h3>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>参数方程</th>
+                                    <th>$\\dfrac{dx}{dt}$</th>
+                                    <th>$\\dfrac{dy}{dt}$</th>
+                                    <th>$\\dfrac{dy}{dx}$</th>
+                                </tr>
+                            </thead>
+                            <tbody id="paramTable"></tbody>
+                        </table>
+                    </div>
+
+                    <div class="card">
+                        <h3>结论速记</h3>
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <strong>切线斜率</strong>
+                                先求 $dx/dt$ 与 $dy/dt$，再取比值就能得到 $dy/dx$。
+                            </div>
+                            <div class="info-item">
+                                <strong>速度向量</strong>
+                                $(dx/dt, dy/dt)$ 表示沿曲线的瞬时速度方向与大小。
+                            </div>
+                            <div class="info-item">
+                                <strong>停止点</strong>
+                                若 $dx/dt = 0$ 而 $dy/dt \\neq 0$，则切线垂直；若两者都为 0，需要更高阶导数判断。
+                            </div>
+                            <div class="info-item">
+                                <strong>动画观测</strong>
+                                连续调整参数能帮助识别周期、尖点和摆动规律。
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="column">
+                    <div class="card">
+                        <h3>参数轨迹与切线</h3>
+                        <div class="canvas-container">
+                            <canvas id="paramCanvas"></canvas>
+                        </div>
+                        <div class="legend">
+                            <span><i style="background:#2563eb"></i> 参数曲线</span>
+                            <span><i style="background:#10b981"></i> 当前位置</span>
+                            <span><i style="background:#f59e0b"></i> 切线</span>
+                            <span><i style="background:#ef4444"></i> 速度向量</span>
+                        </div>
+                        <div class="controls">
+                            <div class="control-row">
+                                <label>选择曲线</label>
+                                <select id="curveSelector"></select>
+                            </div>
+                            <div class="control-row">
+                                <label>尺度参数 a</label>
+                                <input type="range" id="scaleSlider" min="1" max="3" step="0.1" value="2">
+                                <span id="scaleValue">2.0</span>
+                            </div>
+                            <div class="control-row">
+                                <label>参数 t</label>
+                                <input type="range" id="tSlider" min="0" max="6.28" step="0.02" value="1.20">
+                                <span id="tValue">1.20</span>
+                            </div>
+                            <div class="btn-group">
+                                <button class="action" id="playParam">启动动画</button>
+                                <button class="action secondary" id="resetParam">重置视角</button>
+                            </div>
+                            <div class="status-hint" id="paramStatus"></div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h3>数值解读</h3>
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <strong>点坐标</strong>
+                                <span id="pointInfo">$(x, y) = (0.00, 0.00)$</span>
+                            </div>
+                            <div class="info-item">
+                                <strong>速度分量</strong>
+                                <span id="velocityInfo">$dx/dt = 0.00$, $dy/dt = 0.00$</span>
+                            </div>
+                            <div class="info-item">
+                                <strong>切线斜率</strong>
+                                <span id="slopeInfo">$\\dfrac{dy}{dx} = 0.00$</span>
+                            </div>
+                            <div class="info-item">
+                                <strong>速率</strong>
+                                <span id="speedInfo">$|v| = 0.00$</span>
+                            </div>
+                        </div>
+                        <div class="analysis-box" id="motionSummary">参数越大，曲线的尺度越大；观察曲线上的速度向量，可以理解物体运动的方向与快慢。</div>
+                    </div>
+                    </div>
+                </div>
+
+                <!-- 速度与方向页面 -->
+                <div class="page-content" id="page-速度与方向" style="display: none;">
+                    <div class="column">
+                        <div class="card card-scroll">
+                            <h3>速度向量理论</h3>
+                            <p>参数方程 $(dx/dt, dy/dt)$ 表示速度向量，其方向决定切线方向，大小决定运动快慢。</p>
+                            <div class="tag-list">
+                                <span class="tag">速度向量</span>
+                                <span class="tag">切线方向</span>
+                                <span class="tag">运动分析</span>
+                                <span class="tag">向量场</span>
+                            </div>
+                            <div class="analysis-box">
+                                <strong>速度向量性质：</strong><br>
+                                • 方向：与切线方向一致<br>
+                                • 大小：$|v| = \\sqrt{(dx/dt)^2 + (dy/dt)^2}$<br>
+                                • 加速度：$a = (d^2x/dt^2, d^2y/dt^2)$<br>
+                                • 角速度：$\\omega = \\dfrac{d\\theta}{dt}$
+                            </div>
+                        </div>
+
+                        <div class="card card-scroll">
+                            <h3>运动类型分析</h3>
+                            <div class="info-grid">
+                                <div class="info-item">
+                                    <strong>匀速圆周运动</strong>
+                                    $x = r\\cos(\\omega t), y = r\\sin(\\omega t)$，速度大小恒定，方向不断变化。
+                                </div>
+                                <div class="info-item">
+                                    <strong>简谐振动</strong>
+                                    $x = A\\sin(\\omega t + \\phi)$，速度与位移相位差 $\\pi/2$。
+                                </div>
+                                <div class="info-item">
+                                    <strong>抛物线运动</strong>
+                                    $x = v_0 t, y = v_0 t - \\frac{1}{2}gt^2$，水平匀速，垂直匀加速。
+                                </div>
+                                <div class="info-item">
+                                    <strong>螺旋运动</strong>
+                                    $x = r\\cos t, y = r\\sin t, z = vt$，三维空间的螺旋轨迹。
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <h3>加速度分析</h3>
+                            <div class="info-grid">
+                                <div class="info-item">
+                                    <strong>切向加速度</strong>
+                                    $a_t = \\dfrac{d|v|}{dt}$，改变速度大小
+                                </div>
+                                <div class="info-item">
+                                    <strong>法向加速度</strong>
+                                    $a_n = \\dfrac{|v|^2}{R}$，改变速度方向
+                                </div>
+                                <div class="info-item">
+                                    <strong>曲率半径</strong>
+                                    $R = \\dfrac{|v|^3}{|v \\times a|}$，反映曲线弯曲程度
+                                </div>
+                                <div class="info-item">
+                                    <strong>角加速度</strong>
+                                    $\\alpha = \\dfrac{d\\omega}{dt}$，角速度的变化率
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="column">
+                        <div class="card">
+                            <h3>速度场可视化</h3>
+                            <div class="canvas-container">
+                                <canvas id="velocityCanvas"></canvas>
+                            </div>
+                            <div class="legend">
+                                <span><i style="background:#2563eb"></i> 轨迹</span>
+                                <span><i style="background:#10b981"></i> 速度向量</span>
+                                <span><i style="background:#f59e0b"></i> 加速度向量</span>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <h3>物理应用实例</h3>
+                            <div class="info-grid">
+                                <div class="info-item">
+                                    <strong>行星运动</strong>
+                                    开普勒定律描述行星的椭圆轨道，速度在近日点最大。
+                                </div>
+                                <div class="info-item">
+                                    <strong>抛体运动</strong>
+                                    重力作用下的抛物线轨迹，水平速度恒定。
+                                </div>
+                                <div class="info-item">
+                                    <strong>电磁场</strong>
+                                    带电粒子在磁场中的螺旋运动轨迹。
+                                </div>
+                                <div class="info-item">
+                                    <strong>机械振动</strong>
+                                    弹簧振子的简谐运动，速度与位移正交。
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 动态探索页面 -->
+                <div class="page-content" id="page-动态探索" style="display: none;">
+                    <div class="column">
+                        <div class="card card-scroll">
+                            <h3>参数化探索策略</h3>
+                            <p>通过连续改变参数 $t$，观察曲线上的点如何运动，理解参数方程的动态特性。</p>
+                            <div class="tag-list">
+                                <span class="tag">参数化</span>
+                                <span class="tag">动态观察</span>
+                                <span class="tag">轨迹分析</span>
+                                <span class="tag">运动模式</span>
+                            </div>
+                            <div class="analysis-box">
+                                <strong>探索维度：</strong><br>
+                                • 时间维度：观察参数 $t$ 的变化<br>
+                                • 空间维度：观察点在平面上的运动<br>
+                                • 速度维度：分析运动的速度变化<br>
+                                • 加速度维度：研究运动的加速度特性
+                            </div>
+                        </div>
+
+                        <div class="card card-scroll">
+                            <h3>典型运动模式</h3>
+                            <div class="info-grid">
+                                <div class="info-item">
+                                    <strong>周期运动</strong>
+                                    如 $x = \\cos t, y = \\sin t$，点沿圆周做周期运动
+                                </div>
+                                <div class="info-item">
+                                    <strong>螺旋运动</strong>
+                                    如 $x = t\\cos t, y = t\\sin t$，点沿螺旋线向外扩展
+                                </div>
+                                <div class="info-item">
+                                    <strong>摆线运动</strong>
+                                    如摆线方程，车轮滚动时轮缘上点的轨迹
+                                </div>
+                                <div class="info-item">
+                                    <strong>利萨如图形</strong>
+                                    如 $x = \\sin(at), y = \\sin(bt)$，不同频率比的合成运动
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <h3>运动特征识别</h3>
+                            <div class="info-grid">
+                                <div class="info-item">
+                                    <strong>周期性</strong>
+                                    通过观察运动是否重复来判断周期性
+                                </div>
+                                <div class="info-item">
+                                    <strong>对称性</strong>
+                                    分析运动轨迹的对称性质
+                                </div>
+                                <div class="info-item">
+                                    <strong>极限行为</strong>
+                                    研究参数趋向无穷时的运动趋势
+                                </div>
+                                <div class="info-item">
+                                    <strong>奇点分析</strong>
+                                    识别运动中的特殊点（如尖点、拐点）
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="column">
+                        <div class="card">
+                            <h3>交互式探索工具</h3>
+                            <div class="controls">
+                                <div class="control-row">
+                                    <label>运动类型</label>
+                                    <select id="motionType">
+                                        <option value="circle">圆周运动</option>
+                                        <option value="spiral">螺旋运动</option>
+                                        <option value="cycloid">摆线运动</option>
+                                        <option value="lissajous">利萨如图</option>
+                                    </select>
+                                </div>
+                                <div class="control-row">
+                                    <label>速度因子</label>
+                                    <input type="range" min="0.1" max="3" step="0.1" value="1" id="speedFactor">
+                                    <span id="speedValue">1.0</span>
+                                </div>
+                                <div class="control-row">
+                                    <label>显示选项</label>
+                                    <div style="display: flex; gap: 10px;">
+                                        <label><input type="checkbox" checked> 轨迹</label>
+                                        <label><input type="checkbox"> 速度向量</label>
+                                        <label><input type="checkbox"> 加速度向量</label>
+                                    </div>
+                                </div>
+                                <div class="btn-group">
+                                    <button class="action" id="playMotion">播放动画</button>
+                                    <button class="action secondary" id="pauseMotion">暂停</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <h3>运动数据分析</h3>
+                            <div class="info-grid">
+                                <div class="info-item">
+                                    <strong>总路程</strong>
+                                    <span id="totalDistance">$s = \\int |v| dt$</span>
+                                </div>
+                                <div class="info-item">
+                                    <strong>平均速度</strong>
+                                    <span id="averageVelocity">$\\bar{v} = \\frac{s}{T}$</span>
+                                </div>
+                                <div class="info-item">
+                                    <strong>最大速度</strong>
+                                    <span id="maxVelocity">$v_{max} = \\max |v|$</span>
+                                </div>
+                                <div class="info-item">
+                                    <strong>周期</strong>
+                                    <span id="period">$T = 2\\pi/\\omega$</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 建模应用页面 -->
+                <div class="page-content" id="page-建模应用" style="display: none;">
+                    <div class="column">
+                        <div class="card card-scroll">
+                            <h3>工程建模应用</h3>
+                            <p>参数方程广泛应用于轨迹建模、动画设计、机械运动等领域，导数分析运动特性。</p>
+                            <div class="tag-list">
+                                <span class="tag">轨迹建模</span>
+                                <span class="tag">动画设计</span>
+                                <span class="tag">机械运动</span>
+                                <span class="tag">控制系统</span>
+                            </div>
+                            <div class="analysis-box">
+                                <strong>建模优势：</strong><br>
+                                • 自然描述：直接描述物体的运动轨迹<br>
+                                • 参数控制：通过调整参数控制运动特性<br>
+                                • 导数分析：速度、加速度的计算简单直观<br>
+                                • 数值计算：便于计算机模拟和数值求解
+                            </div>
+                        </div>
+
+                        <div class="card card-scroll">
+                            <h3>机械工程应用</h3>
+                            <div class="info-grid">
+                                <div class="info-item">
+                                    <strong>齿轮设计</strong>
+                                    渐开线齿轮的齿廓曲线用参数方程描述，确保平稳啮合。
+                                </div>
+                                <div class="info-item">
+                                    <strong>凸轮机构</strong>
+                                    凸轮轮廓用参数方程设计，控制从动件的运动规律。
+                                </div>
+                                <div class="info-item">
+                                    <strong>连杆机构</strong>
+                                    四连杆机构的运动轨迹用参数方程分析。
+                                </div>
+                                <div class="info-item">
+                                    <strong>机器人轨迹</strong>
+                                    机器人末端执行器的运动路径用参数方程规划。
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card card-scroll">
+                            <h3>计算机图形学应用</h3>
+                            <div class="info-grid">
+                                <div class="info-item">
+                                    <strong>曲线绘制</strong>
+                                    Bézier曲线、B样条曲线用参数方程表示。
+                                </div>
+                                <div class="info-item">
+                                    <strong>动画制作</strong>
+                                    关键帧动画的插值用参数方程实现平滑过渡。
+                                </div>
+                                <div class="info-item">
+                                    <strong>曲面建模</strong>
+                                    复杂曲面的参数化表示和渲染。
+                                </div>
+                                <div class="info-item">
+                                    <strong>粒子系统</strong>
+                                    粒子运动的轨迹和速度用参数方程控制。
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <h3>控制系统应用</h3>
+                            <div class="info-grid">
+                                <div class="info-item">
+                                    <strong>轨迹跟踪</strong>
+                                    控制系统跟踪给定的参数化轨迹。
+                                </div>
+                                <div class="info-item">
+                                    <strong>路径规划</strong>
+                                    移动机器人或无人机的路径规划。
+                                </div>
+                                <div class="info-item">
+                                    <strong>运动控制</strong>
+                                    通过导数分析实现精确的运动控制。
+                                </div>
+                                <div class="info-item">
+                                    <strong>稳定性分析</strong>
+                                    通过分析轨迹的导数判断系统稳定性。
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="column">
+                        <div class="card">
+                            <h3>实际案例研究</h3>
+                            <div class="info-grid">
+                                <div class="info-item">
+                                    <strong>卫星轨道</strong>
+                                    卫星的椭圆轨道用参数方程描述，通过导数计算速度和加速度。
+                                </div>
+                                <div class="info-item">
+                                    <strong>汽车转向</strong>
+                                    汽车转弯时的轨迹用参数方程建模，分析转向半径和速度关系。
+                                </div>
+                                <div class="info-item">
+                                    <strong>机械臂运动</strong>
+                                    工业机器人手臂的关节运动用参数方程规划。
+                                </div>
+                                <div class="info-item">
+                                    <strong>流体流动</strong>
+                                    流体中的粒子运动轨迹用参数方程描述。
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <h3>建模技巧与方法</h3>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>方法</th>
+                                        <th>适用场景</th>
+                                        <th>优点</th>
+                                        <th>注意事项</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>三角函数</td>
+                                        <td>周期运动</td>
+                                        <td>平滑连续</td>
+                                        <td>注意频率选择</td>
+                                    </tr>
+                                    <tr>
+                                        <td>多项式</td>
+                                        <td>简单轨迹</td>
+                                        <td>计算简单</td>
+                                        <td>高阶项影响</td>
+                                    </tr>
+                                    <tr>
+                                        <td>样条函数</td>
+                                        <td>复杂路径</td>
+                                        <td>局部控制</td>
+                                        <td>连续性要求</td>
+                                    </tr>
+                                    <tr>
+                                        <td>组合函数</td>
+                                        <td>复合运动</td>
+                                        <td>灵活多样</td>
+                                        <td>参数协调</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="card">
+                            <h3>数值计算考虑</h3>
+                            <div class="info-grid">
+                                <div class="info-item">
+                                    <strong>参数化选择</strong>
+                                    选择合适的参数化方式，避免奇点和数值不稳定。
+                                </div>
+                                <div class="info-item">
+                                    <strong>步长控制</strong>
+                                    根据曲率变化调整计算步长，保证精度和效率。
+                                </div>
+                                <div class="info-item">
+                                    <strong>插值方法</strong>
+                                    使用适当的插值方法处理离散数据点。
+                                </div>
+                                <div class="info-item">
+                                    <strong>误差控制</strong>
+                                    通过导数分析估计和控制系统误差。
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <script>
+        function renderMath() {
+            if (window.MathJax && window.MathJax.typesetPromise) {
+                MathJax.typesetPromise()
+                    .then(() => {
+                        console.log('MathJax 公式渲染完成');
+                    })
+                    .catch(err => {
+                        console.error('MathJax 渲染错误:', err);
+                        setTimeout(() => {
+                            MathJax.typesetPromise().catch(e => console.error('重试失败:', e));
+                        }, 200);
+                    });
+            } else if (window.MathJax && window.MathJax.typeset) {
+                try {
+                    MathJax.typeset();
+                } catch (err) {
+                    console.error('MathJax 渲染错误:', err);
+                    setTimeout(() => {
+                        try { MathJax.typeset(); } catch(e) { console.error('重试失败:', e); }
+                    }, 200);
+                }
+            } else {
+                setTimeout(renderMath, 100);
+            }
+        }
+
+        function forceRenderMath() {
+            // 强制重新渲染所有数学公式
+            setTimeout(() => {
+                if (window.MathJax) {
+                    // 清除之前的渲染
+                    const mathElements = document.querySelectorAll('.MathJax, [data-math]');
+                    mathElements.forEach(el => {
+                        if (el.classList.contains('MathJax')) {
+                            el.outerHTML = el.innerHTML;
+                        }
+                    });
+                    
+                    // 重新渲染
+                    if (window.MathJax.typesetPromise) {
+                        MathJax.typesetPromise().then(() => {
+                            console.log('强制MathJax渲染完成');
+                        }).catch(err => {
+                            console.error('强制MathJax渲染错误:', err);
+                        });
+                    }
+                }
+            }, 50);
+        }
+
+        function setupCanvas(canvas) {
+            const ctx = canvas.getContext('2d');
+            const rect = canvas.getBoundingClientRect();
+            const dpr = window.devicePixelRatio || 1;
+            canvas.width = rect.width * dpr;
+            canvas.height = rect.height * dpr;
+            canvas.style.width = rect.width + 'px';
+            canvas.style.height = rect.height + 'px';
+            ctx.scale(dpr, dpr);
+            return { ctx, width: rect.width, height: rect.height };
+        }
+
+        function drawAxes(ctx, width, height) {
+            const padding = 40;
+            ctx.save();
+            ctx.strokeStyle = '#dbeafe';
+            ctx.lineWidth = 1;
+            for (let i = 0; i <= 8; i++) {
+                const x = padding + i * (width - 2 * padding) / 8;
+                ctx.beginPath();
+                ctx.moveTo(x, padding);
+                ctx.lineTo(x, height - padding);
+                ctx.stroke();
+
+                const y = padding + i * (height - 2 * padding) / 8;
+                ctx.beginPath();
+                ctx.moveTo(padding, y);
+                ctx.lineTo(width - padding, y);
+                ctx.stroke();
+            }
+
+            ctx.strokeStyle = '#1f2937';
+            ctx.lineWidth = 1.5;
+            ctx.beginPath();
+            ctx.moveTo(padding, height / 2);
+            ctx.lineTo(width - padding, height / 2);
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.moveTo(width / 2, padding);
+            ctx.lineTo(width / 2, height - padding);
+            ctx.stroke();
+            ctx.restore();
+        }
+
+        function mathToCanvas(x, y, width, height, xRange, yRange, padding = 40) {
+            const plotWidth = width - 2 * padding;
+            const plotHeight = height - 2 * padding;
+            const cx = padding + (x - xRange[0]) / (xRange[1] - xRange[0]) * plotWidth;
+            const cy = height - padding - (y - yRange[0]) / (yRange[1] - yRange[0]) * plotHeight;
+            return { x: cx, y: cy };
+        }
+
+        const paramLibrary = {
+            circle: {
+                label: '圆轨迹 $x=a\\cos t, y=a\\sin t$',
+                equation: '$x = a\\cos t,\\ y = a\\sin t$，$0\\leq t \\leq 2\\pi$，$\\dfrac{dy}{dx} = -\\cot t$。',
+                tRange: [0, Math.PI * 2],
+                position: (t, a) => ({ x: a * Math.cos(t), y: a * Math.sin(t) }),
+                dxdt: (t, a) => -a * Math.sin(t),
+                dydt: (t, a) => a * Math.cos(t),
+                insight: t => `当 $t=${t.toFixed(2)}$ 时，切线斜率为 $-\\cot t$，速度大小保持恒定。`
+            },
+            cycloid: {
+                label: '摆线 $x=a(t-\\sin t), y=a(1-\\cos t)$',
+                equation: '$x = a(t-\\sin t),\\ y = a(1-\\cos t)$，$0\\leq t \\leq 2\\pi$，$\\dfrac{dy}{dx} = \\dfrac{\\sin t}{1-\\cos t}$。',
+                tRange: [0, Math.PI * 2],
+                position: (t, a) => ({ x: a * (t - Math.sin(t)), y: a * (1 - Math.cos(t)) }),
+                dxdt: (t, a) => a * (1 - Math.cos(t)),
+                dydt: (t, a) => a * Math.sin(t),
+                insight: t => `当 $t=${t.toFixed(2)}$ 时，若 $dx/dt$ 接近 0，轨迹会出现尖点，对应车轮触地瞬间。`
+            },
+            astroid: {
+                label: '星形线 $x=a\\cos^3 t, y=a\\sin^3 t$',
+                equation: '$x = a\\cos^3 t,\\ y = a\\sin^3 t$，$0\\leq t \\leq 2\\pi$，$\\dfrac{dy}{dx} = -\\tan t$。',
+                tRange: [0, Math.PI * 2],
+                position: (t, a) => ({ x: a * Math.pow(Math.cos(t), 3), y: a * Math.pow(Math.sin(t), 3) }),
+                dxdt: (t, a) => -3 * a * Math.pow(Math.cos(t), 2) * Math.sin(t),
+                dydt: (t, a) => 3 * a * Math.pow(Math.sin(t), 2) * Math.cos(t),
+                insight: t => `星形线在象限边界形成尖角，$t=${t.toFixed(2)}$ 附近的切线斜率与 $-\\tan t$ 相同。`
+            }
+        };
+
+        const paramTableData = [
+            { eq: '$x = a\\cos t,\\ y = a\\sin t$', dxdt: '$-a\\sin t$', dydt: '$a\\cos t$', dydx: '$-\\cot t$' },
+            { eq: '$x = a(t-\\sin t)$, $y = a(1-\\cos t)$', dxdt: '$a(1-\\cos t)$', dydt: '$a\\sin t$', dydx: '$\\dfrac{\\sin t}{1-\\cos t}$' },
+            { eq: '$x = a\\cos^3 t,\\ y = a\\sin^3 t$', dxdt: '$-3a\\cos^2 t\\sin t$', dydt: '$3a\\sin^2 t\\cos t$', dydx: '$-\\tan t$' }
+        ];
+
+        const curveSelector = document.getElementById('curveSelector');
+        const scaleSlider = document.getElementById('scaleSlider');
+        const scaleValue = document.getElementById('scaleValue');
+        const tSlider = document.getElementById('tSlider');
+        const tValue = document.getElementById('tValue');
+        const playParam = document.getElementById('playParam');
+        const resetParam = document.getElementById('resetParam');
+        const paramStatus = document.getElementById('paramStatus');
+
+        const pointInfo = document.getElementById('pointInfo');
+        const velocityInfo = document.getElementById('velocityInfo');
+        const slopeInfo = document.getElementById('slopeInfo');
+        const speedInfo = document.getElementById('speedInfo');
+        const motionSummary = document.getElementById('motionSummary');
+        const conceptSummary = document.getElementById('conceptSummary');
+
+        const paramCanvas = document.getElementById('paramCanvas');
+
+        let animationId = null;
+        let animationActive = false;
+
+        function populateParamTable() {
+            const tbody = document.getElementById('paramTable');
+            tbody.innerHTML = paramTableData.map(row => `
+                <tr>
+                    <td>${row.eq}</td>
+                    <td>${row.dxdt}</td>
+                    <td>${row.dydt}</td>
+                    <td>${row.dydx}</td>
+                </tr>
+            `).join('');
+            renderMath();
+        }
+
+        function populateCurves() {
+            Object.entries(paramLibrary).forEach(([key, item]) => {
+                const option = document.createElement('option');
+                option.value = key;
+                option.innerHTML = item.label;
+                curveSelector.appendChild(option);
+            });
+        }
+
+        function computeRange(fn, a) {
+            const [tMin, tMax] = fn.tRange;
+            let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+            const steps = 400;
+            for (let i = 0; i <= steps; i++) {
+                const t = tMin + (i / steps) * (tMax - tMin);
+                const { x, y } = fn.position(t, a);
+                if (!Number.isFinite(x) || !Number.isFinite(y)) continue;
+                if (x < minX) minX = x;
+                if (x > maxX) maxX = x;
+                if (y < minY) minY = y;
+                if (y > maxY) maxY = y;
+            }
+            if (!Number.isFinite(minX)) { minX = -1; maxX = 1; minY = -1; maxY = 1; }
+            const paddingX = (maxX - minX) * 0.15 || 1;
+            const paddingY = (maxY - minY) * 0.15 || 1;
+            return {
+                xRange: [minX - paddingX, maxX + paddingX],
+                yRange: [minY - paddingY, maxY + paddingY]
+            };
+        }
+
+        function drawCurve(ctx, width, height, fn, a, xRange, yRange) {
+            ctx.save();
+            ctx.strokeStyle = '#2563eb';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            const [tMin, tMax] = fn.tRange;
+            const steps = 500;
+            for (let i = 0; i <= steps; i++) {
+                const t = tMin + (i / steps) * (tMax - tMin);
+                const { x, y } = fn.position(t, a);
+                const { x: cx, y: cy } = mathToCanvas(x, y, width, height, xRange, yRange);
+                if (i === 0) ctx.moveTo(cx, cy);
+                else ctx.lineTo(cx, cy);
+            }
+            ctx.stroke();
+            ctx.restore();
+        }
+
+        function drawVelocityVector(ctx, width, height, pos, vel, xRange, yRange) {
+            const origin = mathToCanvas(pos.x, pos.y, width, height, xRange, yRange);
+            const scale = 0.6;
+            const arrowEnd = mathToCanvas(pos.x + vel.dx * scale, pos.y + vel.dy * scale, width, height, xRange, yRange);
+            ctx.save();
+            ctx.strokeStyle = '#ef4444';
+            ctx.fillStyle = '#ef4444';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(origin.x, origin.y);
+            ctx.lineTo(arrowEnd.x, arrowEnd.y);
+            ctx.stroke();
+            const angle = Math.atan2(arrowEnd.y - origin.y, arrowEnd.x - origin.x);
+            const arrowSize = 8;
+            ctx.beginPath();
+            ctx.moveTo(arrowEnd.x, arrowEnd.y);
+            ctx.lineTo(arrowEnd.x - arrowSize * Math.cos(angle - Math.PI / 6), arrowEnd.y - arrowSize * Math.sin(angle - Math.PI / 6));
+            ctx.lineTo(arrowEnd.x - arrowSize * Math.cos(angle + Math.PI / 6), arrowEnd.y - arrowSize * Math.sin(angle + Math.PI / 6));
+            ctx.closePath();
+            ctx.fill();
+            ctx.restore();
+        }
+
+        function drawTangent(ctx, width, height, pos, slope, xRange, yRange) {
+            ctx.save();
+            ctx.strokeStyle = '#f59e0b';
+            ctx.lineWidth = 2;
+            if (!Number.isFinite(slope)) {
+                const top = mathToCanvas(pos.x, yRange[1], width, height, xRange, yRange);
+                const bottom = mathToCanvas(pos.x, yRange[0], width, height, xRange, yRange);
+                ctx.beginPath();
+                ctx.moveTo(top.x, top.y);
+                ctx.lineTo(bottom.x, bottom.y);
+            } else {
+                const span = (xRange[1] - xRange[0]) * 0.25;
+                const x1 = pos.x - span;
+                const x2 = pos.x + span;
+                const y1 = pos.y + slope * (x1 - pos.x);
+                const y2 = pos.y + slope * (x2 - pos.x);
+                const p1 = mathToCanvas(x1, y1, width, height, xRange, yRange);
+                const p2 = mathToCanvas(x2, y2, width, height, xRange, yRange);
+                ctx.beginPath();
+                ctx.moveTo(p1.x, p1.y);
+                ctx.lineTo(p2.x, p2.y);
+            }
+            ctx.stroke();
+            ctx.restore();
+        }
+
+        function formatNumber(value) {
+            if (!Number.isFinite(value)) return '∞';
+            const abs = Math.abs(value);
+            if (abs >= 100 || abs < 0.01) return value.toExponential(2);
+            return value.toFixed(3);
+        }
+
+        function updateCanvas() {
+            const { ctx, width, height } = setupCanvas(paramCanvas);
+            ctx.clearRect(0, 0, width, height);
+            const curve = paramLibrary[curveSelector.value];
+            const a = parseFloat(scaleSlider.value);
+            const { xRange, yRange } = computeRange(curve, a);
+            drawAxes(ctx, width, height);
+            drawCurve(ctx, width, height, curve, a, xRange, yRange);
+
+            const t = parseFloat(tSlider.value);
+            const pos = curve.position(t, a);
+            const dx = curve.dxdt(t, a);
+            const dy = curve.dydt(t, a);
+            const slope = dx === 0 ? Infinity * Math.sign(dy || 1) : dy / dx;
+            const speed = Math.sqrt(dx * dx + dy * dy);
+
+            const point = mathToCanvas(pos.x, pos.y, width, height, xRange, yRange);
+            ctx.fillStyle = '#10b981';
+            ctx.beginPath();
+            ctx.arc(point.x, point.y, 6, 0, Math.PI * 2);
+            ctx.fill();
+
+            drawTangent(ctx, width, height, pos, slope, xRange, yRange);
+            drawVelocityVector(ctx, width, height, pos, { dx, dy }, xRange, yRange);
+
+            updateInfoPanel(curve, t, pos, dx, dy, slope, speed, a);
+            renderMath();
+        }
+
+        function updateInfoPanel(curve, t, pos, dx, dy, slope, speed, a) {
+            pointInfo.innerHTML = `$ (x, y) = (${formatNumber(pos.x)}, ${formatNumber(pos.y)}) $`;
+            velocityInfo.innerHTML = `$dx/dt = ${formatNumber(dx)}$, $dy/dt = ${formatNumber(dy)}$`;
+            slopeInfo.innerHTML = Number.isFinite(slope) ? `$\\dfrac{dy}{dx} = ${formatNumber(slope)}$` : '$\\dfrac{dy}{dx} = \\infty$';
+            speedInfo.innerHTML = `$|v| = ${formatNumber(speed)}$`;
+            motionSummary.innerHTML = curve.insight(t);
+            conceptSummary.innerHTML = `${curve.equation} 当 $a=${a.toFixed(1)}$ 时，滑块展示 $t$ 的变化如何影响速度与切线。`;
+            renderMath();
+        }
+
+        function adjustTSliderRange() {
+            const curve = paramLibrary[curveSelector.value];
+            const [tMin, tMax] = curve.tRange;
+            tSlider.min = tMin;
+            tSlider.max = tMax;
+            tSlider.value = ((tMin + tMax) / 2).toFixed(2);
+            tValue.textContent = parseFloat(tSlider.value).toFixed(2);
+        }
+
+        function resetAnimation() {
+            animationActive = false;
+            playParam.textContent = '启动动画';
+            if (animationId) cancelAnimationFrame(animationId);
+        }
+
+        function animateParam() {
+            if (!animationActive) return;
+            const curve = paramLibrary[curveSelector.value];
+            const [tMin, tMax] = curve.tRange;
+            let t = parseFloat(tSlider.value);
+            const step = (tMax - tMin) / 400;
+            t += step;
+            if (t > tMax) t = tMin;
+            tSlider.value = t;
+            tValue.textContent = t.toFixed(2);
+            updateCanvas();
+            animationId = requestAnimationFrame(animateParam);
+        }
+
+        function resetView() {
+            resetAnimation();
+            curveSelector.value = 'circle';
+            scaleSlider.value = 2;
+            scaleValue.textContent = '2.0';
+            adjustTSliderRange();
+            updateCanvas();
+        }
+
+        function switchPage(pageName, clickedButton) {
+            console.log('切换到页面:', pageName);
+            
+            // 隐藏所有页面内容
+            document.querySelectorAll('.page-content').forEach(page => {
+                page.style.display = 'none';
+            });
+            
+            // 移除所有按钮的active类
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // 显示当前页面内容
+            const currentPage = document.getElementById(`page-${pageName}`);
+            if (currentPage) {
+                currentPage.style.display = 'flex';
+            }
+            
+            // 为当前按钮添加active类
+            const targetButton = clickedButton || Array.from(document.querySelectorAll('.nav-btn')).find(btn => btn.textContent.trim() === pageName.trim());
+            if (targetButton) {
+                targetButton.classList.add('active');
+            }
+            
+            // 重新渲染数学公式
+            setTimeout(() => {
+                renderMath();
+                if (pageName === '参数切线') {
+                    updateCanvas();
+                }
+            }, 100);
+            
+            // 确保MathJax渲染
+            setTimeout(() => {
+                forceRenderMath();
+            }, 200);
+        }
+
+        function initEvents() {
+            // 为导航按钮添加事件监听器
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    switchPage(btn.textContent.trim(), btn);
+                });
+            });
+            
+            curveSelector.addEventListener('change', () => {
+                adjustTSliderRange();
+                resetAnimation();
+                updateCanvas();
+            });
+
+            scaleSlider.addEventListener('input', () => {
+                scaleValue.textContent = parseFloat(scaleSlider.value).toFixed(1);
+                updateCanvas();
+            });
+
+            tSlider.addEventListener('input', () => {
+                tValue.textContent = parseFloat(tSlider.value).toFixed(2);
+                updateCanvas();
+            });
+
+            playParam.addEventListener('click', () => {
+                animationActive = !animationActive;
+                playParam.textContent = animationActive ? '暂停动画' : '启动动画';
+                if (animationActive) animateParam();
+                else resetAnimation();
+            });
+
+            resetParam.addEventListener('click', resetView);
+
+            // 速度与方向页面的交互功能
+            const motionType = document.getElementById('motionType');
+            const speedFactor = document.getElementById('speedFactor');
+            const speedValue = document.getElementById('speedValue');
+            const playMotion = document.getElementById('playMotion');
+            const pauseMotion = document.getElementById('pauseMotion');
+            
+            if (motionType) {
+                motionType.addEventListener('change', (e) => {
+                    console.log('运动类型改变:', e.target.value);
+                    updateVelocityCanvas();
+                });
+            }
+            
+            if (speedFactor && speedValue) {
+                speedFactor.addEventListener('input', (e) => {
+                    speedValue.textContent = parseFloat(e.target.value).toFixed(1);
+                    updateVelocityCanvas();
+                });
+            }
+            
+            if (playMotion) {
+                playMotion.addEventListener('click', () => {
+                    console.log('播放运动动画');
+                    animateVelocityField();
+                });
+            }
+            
+            if (pauseMotion) {
+                pauseMotion.addEventListener('click', () => {
+                    console.log('暂停运动动画');
+                    pauseVelocityAnimation();
+                });
+            }
+        }
+
+        // 速度场Canvas绘制函数
+        function updateVelocityCanvas() {
+            const canvas = document.getElementById('velocityCanvas');
+            if (!canvas) return;
+            
+            const ctx = canvas.getContext('2d');
+            const width = canvas.width = 400;
+            const height = canvas.height = 300;
+            
+            ctx.clearRect(0, 0, width, height);
+            
+            // 绘制坐标轴
+            ctx.strokeStyle = '#666';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(width/2, 0);
+            ctx.lineTo(width/2, height);
+            ctx.moveTo(0, height/2);
+            ctx.lineTo(width, height/2);
+            ctx.stroke();
+            
+            const motionType = document.getElementById('motionType')?.value || 'circle';
+            const speedFactor = parseFloat(document.getElementById('speedFactor')?.value || 1);
+            
+            // 绘制轨迹
+            ctx.strokeStyle = '#2563eb';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            
+            const points = [];
+            for (let t = 0; t <= 4 * Math.PI; t += 0.1) {
+                let x, y;
+                switch (motionType) {
+                    case 'circle':
+                        x = width/2 + 60 * Math.cos(t * speedFactor);
+                        y = height/2 + 60 * Math.sin(t * speedFactor);
+                        break;
+                    case 'spiral':
+                        x = width/2 + (20 + t * 5) * Math.cos(t * speedFactor);
+                        y = height/2 + (20 + t * 5) * Math.sin(t * speedFactor);
+                        break;
+                    case 'cycloid':
+                        x = width/2 + 30 * (t - Math.sin(t * speedFactor));
+                        y = height/2 - 30 * (1 - Math.cos(t * speedFactor));
+                        break;
+                    case 'lissajous':
+                        x = width/2 + 60 * Math.sin(t * speedFactor);
+                        y = height/2 + 40 * Math.sin(2 * t * speedFactor);
+                        break;
+                }
+                points.push({x, y});
+                if (t === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            }
+            ctx.stroke();
+            
+            // 绘制速度向量
+            const currentT = 2 * Math.PI; // 当前时间点
+            let currentX, currentY, vx, vy;
+            
+            switch (motionType) {
+                case 'circle':
+                    currentX = width/2 + 60 * Math.cos(currentT * speedFactor);
+                    currentY = height/2 + 60 * Math.sin(currentT * speedFactor);
+                    vx = -60 * speedFactor * Math.sin(currentT * speedFactor);
+                    vy = 60 * speedFactor * Math.cos(currentT * speedFactor);
+                    break;
+                case 'spiral':
+                    currentX = width/2 + (20 + currentT * 5) * Math.cos(currentT * speedFactor);
+                    currentY = height/2 + (20 + currentT * 5) * Math.sin(currentT * speedFactor);
+                    vx = 5 * Math.cos(currentT * speedFactor) - (20 + currentT * 5) * speedFactor * Math.sin(currentT * speedFactor);
+                    vy = 5 * Math.sin(currentT * speedFactor) + (20 + currentT * 5) * speedFactor * Math.cos(currentT * speedFactor);
+                    break;
+                default:
+                    currentX = width/2;
+                    currentY = height/2;
+                    vx = 30;
+                    vy = 20;
+            }
+            
+            // 绘制当前位置
+            ctx.fillStyle = '#10b981';
+            ctx.beginPath();
+            ctx.arc(currentX, currentY, 4, 0, 2 * Math.PI);
+            ctx.fill();
+            
+            // 绘制速度向量
+            const scale = 2;
+            ctx.strokeStyle = '#10b981';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.moveTo(currentX, currentY);
+            ctx.lineTo(currentX + vx * scale, currentY + vy * scale);
+            ctx.stroke();
+            
+            // 绘制向量箭头
+            const angle = Math.atan2(vy, vx);
+            const arrowLength = 10;
+            ctx.beginPath();
+            ctx.moveTo(currentX + vx * scale, currentY + vy * scale);
+            ctx.lineTo(
+                currentX + vx * scale - arrowLength * Math.cos(angle - Math.PI/6),
+                currentY + vy * scale - arrowLength * Math.sin(angle - Math.PI/6)
+            );
+            ctx.moveTo(currentX + vx * scale, currentY + vy * scale);
+            ctx.lineTo(
+                currentX + vx * scale - arrowLength * Math.cos(angle + Math.PI/6),
+                currentY + vy * scale - arrowLength * Math.sin(angle + Math.PI/6)
+            );
+            ctx.stroke();
+        }
+
+        // 速度场动画
+        let velocityAnimationId = null;
+        let velocityAnimationTime = 0;
+
+        function animateVelocityField() {
+            if (velocityAnimationId) {
+                cancelAnimationFrame(velocityAnimationId);
+            }
+            
+            function animate() {
+                velocityAnimationTime += 0.02;
+                updateVelocityCanvas();
+                
+                // 更新运动数据
+                updateMotionData();
+                
+                velocityAnimationId = requestAnimationFrame(animate);
+            }
+            
+            animate();
+        }
+
+        function pauseVelocityAnimation() {
+            if (velocityAnimationId) {
+                cancelAnimationFrame(velocityAnimationId);
+                velocityAnimationId = null;
+            }
+        }
+
+        function updateMotionData() {
+            const totalDistance = document.getElementById('totalDistance');
+            const averageVelocity = document.getElementById('averageVelocity');
+            const maxVelocity = document.getElementById('maxVelocity');
+            const period = document.getElementById('period');
+            
+            if (totalDistance) {
+                const distance = (velocityAnimationTime * 30).toFixed(2);
+                totalDistance.textContent = `$s = ${distance}$`;
+            }
+            
+            if (averageVelocity) {
+                const avg = (15 + Math.sin(velocityAnimationTime) * 5).toFixed(2);
+                averageVelocity.textContent = `$\\bar{v} = ${avg}$`;
+            }
+            
+            if (maxVelocity) {
+                const max = (20 + Math.sin(velocityAnimationTime * 2) * 3).toFixed(2);
+                maxVelocity.textContent = `$v_{max} = ${max}$`;
+            }
+            
+            if (period) {
+                const T = (2 * Math.PI).toFixed(2);
+                period.textContent = `$T = ${T}$`;
+            }
+            
+            renderMath();
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            populateParamTable();
+            populateCurves();
+            curveSelector.value = 'circle';
+            adjustTSliderRange();
+            initEvents();
+            updateCanvas();
+            const firstButton = document.querySelector('.nav-btn');
+            if (firstButton) {
+                switchPage(firstButton.textContent.trim(), firstButton);
+            }
+            renderMath();
+            
+            // 初始化速度场Canvas
+            setTimeout(() => {
+                updateVelocityCanvas();
+            }, 100);
+        });
+    </script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+

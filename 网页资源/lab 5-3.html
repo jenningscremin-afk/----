@@ -1,0 +1,566 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>三角换元实验室</title>
+
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true,
+                processEnvironments: true
+            },
+            options: {
+                skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+            },
+            startup: {
+                pageReady: () => {
+                    return MathJax.startup.defaultPageReady().then(() => {
+                        console.log('MathJax 初始化完成');
+                    }).catch((error) => {
+                        console.error('MathJax 初始化错误:', error);
+                    });
+                }
+            }
+        };
+    </script>
+    <script defer src="../common-assets/js/mathjax-3.2.2-tex-svg.min.js"></script>
+
+    <style>
+    :root {
+        --primary: #4f46e5;
+        --primary-dark: #3730a3;
+        --primary-light: #6366f1;
+        --success: #10b981;
+        --warning: #f59e0b;
+        --danger: #ef4444;
+        --gray-50: #f9fafb;
+        --gray-100: #f3f4f6;
+        --gray-200: #e5e7eb;
+        --gray-300: #d1d5db;
+        --gray-500: #6b7280;
+        --gray-600: #4b5563;
+        --gray-700: #1f2937;
+        --white: #ffffff;
+        --light: #ffffff;
+        --border: #e5e7eb;
+        --h1-size: 22px;
+        --h3-size: 18px;
+        --text-size: 16px;
+        --formula-size: 20px;
+    }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        *::-webkit-scrollbar { width: 0; background: transparent; }
+        * { scrollbar-width: none; -ms-overflow-style: none; }
+
+            body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
+        font-size: var(--text-size);
+        line-height: 1.5;
+        background: var(--gray-50);
+        color: var(--gray-700);
+    }
+
+            .container {
+        width: 100%;
+        max-width: 1400px;
+        height: min(100vh, 700px);
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        background: var(--white);
+    }
+
+            .header {
+        height: 40px;
+        background: var(--primary);
+        color: var(--white);
+        display: flex;
+        align-items: center;
+        padding: 0 20px;
+    }
+
+            .main { flex: 1; display: flex; overflow: hidden; }
+
+            .sidebar {
+        width: 120px;
+        background: var(--gray-50);
+        border-right: 1px solid var(--border);
+        padding: 10px 8px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+            .nav-btn {
+        width: 100%;
+        padding: 8px;
+        background: transparent;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: var(--text-size);
+        color: var(--gray-600);
+        text-align: left;
+        transition: background 0.2s ease, color 0.2s ease;
+    }
+
+            .nav-btn.active { background: var(--primary); color: var(--white); }
+
+    .content {
+        flex: 1;
+        position: relative;
+        overflow: hidden;
+        padding: 0;
+    }
+
+    .page-content {
+        display: none;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 18px;
+        padding: 16px;
+        height: 100%;
+    }
+
+    .page-content.active {
+        display: grid;
+    }
+            .column { display: flex; flex-direction: column; gap: 16px; overflow-y: auto; padding-right: 4px; }
+
+            .card { background: var(--white); border: 1px solid var(--border); border-radius: 12px; padding: 12px; display: flex; flex-direction: column; gap: 10px; }
+
+        .card-scroll { overflow-y: auto; }
+        .card h3 { font-size: var(--h3-size); color: var(--primary-dark); }
+        .card p { line-height: 1.5; }
+
+        .tag-list { display: flex; gap: 8px; flex-wrap: wrap; }
+        .tag { font-size: 13px; padding: 4px 10px; border-radius: 999px; background: var(--gray-100); color: var(--gray-500); }
+
+        .info-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 12px; }
+        .info-item { background: var(--gray-50); border: 1px solid var(--gray-200); border-radius: 10px; padding: 10px; font-size: 15px; }
+        .info-item strong { color: var(--primary-dark); display: block; margin-bottom: 6px; }
+
+        .controls { display: flex; flex-direction: column; gap: 10px; background: var(--gray-50); border: 1px solid var(--gray-200); border-radius: 10px; padding: 10px; }
+        .control-row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+        .control-row label { font-weight: 600; }
+        select { flex: 1; padding: 6px 8px; border-radius: 8px; border: 1px solid var(--gray-300); font-size: 15px; }
+        button.action {
+            background: var(--primary);
+            color: var(--white);
+            border: none;
+            border-radius: 8px;
+            padding: 8px 12px;
+            font-size: var(--text-size);
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+        button.action.secondary { background: var(--white); color: var(--primary); border: 1px solid var(--primary); }
+        button.action:hover { transform: translateY(-2px); }
+
+        .step-panel { border: 1px solid var(--gray-200); border-radius: 12px; background: var(--gray-50); padding: 12px; display: flex; flex-direction: column; gap: 12px; }
+        .step-card { border: 1px solid var(--gray-200); border-radius: 10px; padding: 10px; background: var(--white); transition: border 0.2s ease, transform 0.2s ease; }
+        .step-card.active { border-color: var(--primary); box-shadow: 0 0 0 2px rgba(79,70,229,0.15); transform: translateX(4px); }
+        .step-card.success { border-color: var(--success); }
+        .step-card.error { border-color: var(--danger); background: rgba(239,68,68,0.07); }
+
+        .input-box { background: var(--white); border: 1px dashed var(--gray-300); border-radius: 10px; padding: 10px; display: flex; flex-direction: column; gap: 6px; }
+        .input-box input { border: 1px solid var(--gray-300); border-radius: 8px; padding: 6px 8px; font-size: 15px; }
+        .input-box .hint { font-size: 14px; color: var(--gray-500); }
+        .hint.success { color: var(--success); }
+        .hint.error { color: var(--danger); }
+
+        .geometry-panel { border: 1px solid var(--gray-200); border-radius: 12px; padding: 10px; background: var(--white); }
+        #triangleCanvas { width: 100%; height: 220px; background: var(--gray-50); border-radius: 10px; }
+
+        .status-box { background: #eef2ff; border-radius: 10px; padding: 10px; font-size: 14px; color: var(--primary-dark); }
+
+        .formula-strip { display: flex; gap: 10px; flex-wrap: wrap; padding: 10px; border-radius: 10px; border: 1px solid var(--gray-200); background: var(--white); }
+        .formula-strip .bubble { padding: 6px 10px; border-radius: 999px; background: rgba(14,165,233,0.12); color: var(--info); font-size: 14px; }
+        .formula-strip .bubble.active { box-shadow: 0 0 0 2px rgba(14,165,233,0.35); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>三角换元实验室</h1>
+            <div>用直角三角形把根式积分化为三角函数积分</div>
+        </header>
+        <div class="main">
+            <nav class="sidebar">
+                <button class="nav-btn active" data-section="sin">$x=a\sin t$</button>
+                <button class="nav-btn" data-section="tan">$x=a\tan t$</button>
+                <button class="nav-btn" data-section="sec">$x=a\sec t$</button>
+            </nav>
+            <section class="content">
+                <div class="page-content active" id="tri-substitution">
+<div class="column">
+                    <div class="card card-scroll">
+                        <h3>学习指引</h3>
+                        <p>针对含有 $\sqrt{a^2-x^2}, \sqrt{a^2+x^2}, \sqrt{x^2-a^2}$ 的积分，通过合适的三角代换把根式简化，转换成基本的三角积分，再根据三角形关系回代。</p>
+                        <div class="tag-list">
+                            <span class="tag">三角代换</span>
+                            <span class="tag">三角形辅助</span>
+                            <span class="tag">换限提醒</span>
+                            <span class="tag">步骤检查</span>
+                        </div>
+                        <div class="status-box" id="summaryBox">当前根式类型：$\sqrt{a^2 - x^2}$，推荐代换 $x = a\sin t$。</div>
+                    </div>
+
+                    <div class="card card-scroll">
+                        <h3>操作要点</h3>
+                        <div class="info-grid">
+                            <div class="info-item"><strong>匹配根式</strong> 根据被积式选择合适的三角函数：$\sqrt{a^2-x^2}$ → $\sin$，$\sqrt{a^2+x^2}$ → $\tan$，$\sqrt{x^2-a^2}$ → $\sec$。</div>
+                            <div class="info-item"><strong>构建三角形</strong> 用直角三角形标记边长，方便回代时写出 $\sin t, \cos t, \tan t$ 等关系。</div>
+                            <div class="info-item"><strong>换限同步</strong> 定积分时，上下限要随变量改变，使用三角形快速查找新限值。</div>
+                            <div class="info-item"><strong>回代检查</strong> 回代后一定恢复到原变量 $x$，并写出最终的原函数或数值。</div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h3>注意事项</h3>
+                        <ul style="padding-left:20px; line-height:1.6;">
+                            <li>根式含 $a^2 - x^2$ 时，$x$ 的范围通常限制在 $|x| \le a$。</li>
+                            <li>三角代换后的积分不一定简单，必要时结合换元与分部积分。</li>
+                            <li>还原时要使用最初构建的直角三角形或三角恒等式。</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="column">
+                    <div class="card">
+                        <h3>三角换元步骤演练</h3>
+                        <div class="controls">
+                            <div class="control-row">
+                                <label>选择练习题</label>
+                                <select id="caseSelector"></select>
+                                <button class="action secondary" id="showHint">提示</button>
+                            </div>
+                        </div>
+                        <div class="step-panel" id="stepPanel"></div>
+                        <div class="status-box" id="stepStatus">按照提示依次填写，系统会即时反馈。</div>
+                    </div>
+
+                    <div class="card">
+                        <h3>辅助三角形</h3>
+                        <div class="geometry-panel">
+                            <canvas id="triangleCanvas"></canvas>
+                        </div>
+                        <div class="formula-strip" id="formulaStrip"></div>
+                    </div>
+                </div>
+            </section>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <script>
+        function renderMath() {
+            if (window.MathJax && window.MathJax.typesetPromise) {
+                MathJax.typesetPromise();
+            }
+        }
+
+        const scenarios = {
+            sin: {
+                label: '$x=a\sin t$',
+                description: '适用于 $\sqrt{a^2-x^2}$，三角形中对边为 $x$，斜边为 $a$，邻边为 $\sqrt{a^2-x^2}$。',
+                triangle: { base: '√(a^2 - x^2)', height: 'x', hyp: 'a' }
+            },
+            tan: {
+                label: '$x=a\tan t$',
+                description: '适用于 $\sqrt{a^2+x^2}$，三角形中对边为 $x$, 邻边为 $a$, 斜边为 $\sqrt{a^2+x^2}$。',
+                triangle: { base: 'a', height: 'x', hyp: '√(a^2 + x^2)' }
+            },
+            sec: {
+                label: '$x=a\sec t$',
+                description: '适用于 $\sqrt{x^2-a^2}$，三角形中斜边为 $x$, 邻边为 $a$, 对边为 $\sqrt{x^2-a^2}$。',
+                triangle: { base: 'a', height: '√(x^2 - a^2)', hyp: 'x' }
+            }
+        };
+
+        const exercises = {
+            sin: [
+                {
+                    title: '$\\int \\sqrt{a^2-x^2}\\,dx$',
+                    steps: [
+                        { prompt: '选择代换：', answer: 'x = a sin t' },
+                        { prompt: '写出 $dx$：', answer: 'a cos t dt' },
+                        { prompt: '换元后的积分表达式：', answer: '∫ a^2 cos^2 t dt' },
+                        { prompt: '积分结果（以 t 表示）：', answer: ' (a^2/2)(t + sin t cos t) + C' },
+                        { prompt: '最后回代（用 x 表示）：', answer: '(a^2/2)(arcsin(x/a) + (x/a)√(1 - (x^2/a^2))) + C' }
+                    ]
+                },
+                {
+                    title: '$\\int \\frac{dx}{\\sqrt{a^2-x^2}}$',
+                    steps: [
+                        { prompt: '选择代换：', answer: 'x = a sin t' },
+                        { prompt: '写出 $dx$：', answer: 'a cos t dt' },
+                        { prompt: '换元后的积分：', answer: '∫ dt' },
+                        { prompt: '积分结果（以 t 表示）：', answer: 't + C' },
+                        { prompt: '回代为 x：', answer: 'arcsin(x/a) + C' }
+                    ]
+                }
+            ],
+            tan: [
+                {
+                    title: '$\\int \\frac{dx}{\\sqrt{a^2+x^2}}$',
+                    steps: [
+                        { prompt: '选择代换：', answer: 'x = a tan t' },
+                        { prompt: '写出 $dx$：', answer: 'a sec^2 t dt' },
+                        { prompt: '换元后的积分：', answer: '∫ sec t dt' },
+                        { prompt: '积分结果（以 t 表示）：', answer: 'ln|sec t + tan t| + C' },
+                        { prompt: '回代为 x：', answer: 'ln|(x + √(a^2 + x^2))/a| + C' }
+                    ]
+                },
+                {
+                    title: '$\\int \\frac{x dx}{(a^2+x^2)^{3/2}}$',
+                    steps: [
+                        { prompt: '选择代换：', answer: 'x = a tan t' },
+                        { prompt: '写出 $dx$：', answer: 'a sec^2 t dt' },
+                        { prompt: '换元后的积分：', answer: '∫ sin t dt / a^2' },
+                        { prompt: '积分结果（以 t 表示）：', answer: '(-cos t)/a^2 + C' },
+                        { prompt: '回代为 x：', answer: '-x/(a √(a^2 + x^2)) + C' }
+                    ]
+                }
+            ],
+            sec: [
+                {
+                    title: '$\\int \\frac{dx}{\\sqrt{x^2-a^2}}$',
+                    steps: [
+                        { prompt: '选择代换：', answer: 'x = a sec t' },
+                        { prompt: '写出 $dx$：', answer: 'a sec t tan t dt' },
+                        { prompt: '换元后的积分：', answer: '∫ sec t dt' },
+                        { prompt: '积分结果（以 t 表示）：', answer: 'ln|sec t + tan t| + C' },
+                        { prompt: '回代为 x：', answer: 'ln| (x + √(x^2 - a^2))/a | + C' }
+                    ]
+                },
+                {
+                    title: '$\\int \\sqrt{x^2-a^2}\\,dx$',
+                    steps: [
+                        { prompt: '选择代换：', answer: 'x = a sec t' },
+                        { prompt: '写出 $dx$：', answer: 'a sec t tan t dt' },
+                        { prompt: '换元后的积分：', answer: '∫ a^2 tan^2 t sec t dt' },
+                        { prompt: '积分结果（以 t 表示）：', answer: '(a^2/2)(tan t sec t - ln|sec t + tan t|) + C' },
+                        { prompt: '回代为 x：', answer: '(1/2)(x√(x^2-a^2) - a^2 ln|x + √(x^2-a^2)|) + C' }
+                    ]
+                }
+            ]
+        };
+
+        const summaryBox = document.getElementById('summaryBox');
+        const caseSelector = document.getElementById('caseSelector');
+        const stepPanel = document.getElementById('stepPanel');
+        const stepStatus = document.getElementById('stepStatus');
+        const triangleCanvas = document.getElementById('triangleCanvas');
+        const formulaStrip = document.getElementById('formulaStrip');
+        const showHintBtn = document.getElementById('showHint');
+        const navButtons = document.querySelectorAll('.nav-btn');
+
+        let currentScenario = 'sin';
+        let currentExerciseIndex = 0;
+
+        function initScenarioNav() {
+            navButtons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    navButtons.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    currentScenario = btn.dataset.section;
+                    summaryBox.innerHTML = `当前根式：${scenarios[currentScenario].description}`;
+                    populateCaseSelector();
+                    buildSteps();
+                    drawTriangle();
+                });
+            });
+        }
+
+        function populateCaseSelector() {
+            caseSelector.innerHTML = '';
+            exercises[currentScenario].forEach((ex, index) => {
+                const option = document.createElement('option');
+                option.value = index;
+                option.innerHTML = ex.title;
+                caseSelector.appendChild(option);
+            });
+            caseSelector.value = currentExerciseIndex;
+            renderMath();
+        }
+
+        function buildSteps() {
+            const exercise = exercises[currentScenario][currentExerciseIndex];
+            stepPanel.innerHTML = '';
+            exercise.steps.forEach((step, index) => {
+                const card = document.createElement('div');
+                card.className = 'step-card';
+                card.dataset.index = index;
+                card.innerHTML = `
+                    <strong>${index + 1}. ${step.prompt}</strong>
+                    <div class="input-box">
+                        <input type="text" placeholder="在此输入" data-answer="${step.answer}">
+                        <button class="action secondary check-btn">检查</button>
+                        <span class="hint">空格忽略，表达式可简写，如 sin t。</span>
+                    </div>
+                `;
+                stepPanel.appendChild(card);
+            });
+            highlightStep(0);
+            buildFormulaStrip();
+            renderMath();
+        }
+
+        function buildFormulaStrip() {
+            const fragments = scenarios[currentScenario].label.split('→');
+            formulaStrip.innerHTML = '';
+            fragments.forEach((text, idx) => {
+                const bubble = document.createElement('div');
+                bubble.className = 'bubble';
+                bubble.dataset.index = idx;
+                bubble.textContent = text.trim();
+                formulaStrip.appendChild(bubble);
+            });
+            renderMath();
+        }
+
+        function highlightStep(index) {
+            const cards = stepPanel.querySelectorAll('.step-card');
+            cards.forEach(card => card.classList.remove('active'));
+            if (cards[index]) cards[index].classList.add('active');
+            const bubbles = formulaStrip.querySelectorAll('.bubble');
+            bubbles.forEach(b => b.classList.remove('active'));
+            if (bubbles[index]) bubbles[index].classList.add('active');
+        }
+
+        function drawTriangle() {
+            const canvas = triangleCanvas;
+            const ctx = canvas.getContext('2d');
+            const width = canvas.width = canvas.clientWidth * (window.devicePixelRatio || 1);
+            const height = canvas.height = canvas.clientHeight * (window.devicePixelRatio || 1);
+            ctx.scale(window.devicePixelRatio || 1, window.devicePixelRatio || 1);
+            ctx.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
+
+            const padding = 20;
+            const baseLength = canvas.clientWidth - padding * 2;
+            const triHeight = (canvas.clientHeight - padding * 2) * 0.8;
+            const originX = padding;
+            const originY = canvas.clientHeight - padding;
+
+            ctx.fillStyle = '#e2e8f0';
+            ctx.beginPath();
+            ctx.moveTo(originX, originY);
+            ctx.lineTo(originX + baseLength, originY);
+            ctx.lineTo(originX + baseLength, originY - triHeight);
+            ctx.closePath();
+            ctx.fill();
+
+            ctx.strokeStyle = '#1f2937';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(originX, originY);
+            ctx.lineTo(originX + baseLength, originY);
+            ctx.lineTo(originX + baseLength, originY - triHeight);
+            ctx.closePath();
+            ctx.stroke();
+
+            ctx.fillStyle = '#1f2937';
+            ctx.font = '14px sans-serif';
+            const labels = scenarios[currentScenario].triangle;
+            ctx.fillText(labels.base, originX + baseLength / 2 - 30, originY + 20);
+            ctx.fillText(labels.height, originX + baseLength + 10, originY - triHeight / 2);
+            ctx.fillText(labels.hyp, originX + baseLength / 2 - 20, originY - triHeight / 2);
+
+            // right angle marker
+            ctx.beginPath();
+            ctx.moveTo(originX + baseLength - 20, originY);
+            ctx.lineTo(originX + baseLength - 20, originY - 20);
+            ctx.lineTo(originX + baseLength, originY - 20);
+            ctx.stroke();
+        }
+
+        function attachEvents() {
+            stepPanel.addEventListener('click', event => {
+                if (!event.target.classList.contains('check-btn')) return;
+                const card = event.target.closest('.step-card');
+                const input = card.querySelector('input');
+                const hint = card.querySelector('.hint');
+                const answer = normalize(input.dataset.answer);
+                const value = normalize(input.value);
+                if (!value) {
+                    hint.textContent = '先填写答案，允许省略空格。';
+                    hint.classList.remove('success', 'error');
+                    return;
+                }
+                if (value === answer) {
+                    hint.textContent = '正确！继续下一步。';
+                    hint.classList.add('success');
+                    card.classList.add('success');
+                    moveToNext(card);
+                } else {
+                    hint.textContent = '不对，再尝试调整常数或三角函数。';
+                    hint.classList.add('error');
+                    card.classList.add('error');
+                }
+            });
+
+            caseSelector.addEventListener('change', () => {
+                currentExerciseIndex = parseInt(caseSelector.value, 10);
+                buildSteps();
+            });
+
+            showHintBtn.addEventListener('click', () => {
+                const exercise = exercises[currentScenario][currentExerciseIndex];
+                const card = stepPanel.querySelector('.step-card.active');
+                if (!card) return;
+                const index = parseInt(card.dataset.index, 10);
+                const hint = card.querySelector('.hint');
+                hint.textContent = `参考答案：${exercise.steps[index].answer}`;
+                hint.classList.add('success');
+            });
+
+            window.addEventListener('resize', drawTriangle);
+        }
+
+        function moveToNext(card) {
+            const nextIndex = parseInt(card.dataset.index, 10) + 1;
+            highlightStep(nextIndex);
+            const total = exercises[currentScenario][currentExerciseIndex].steps.length;
+            if (nextIndex === total) {
+                stepStatus.textContent = '全部步骤完成！记得整理最终答案。';
+            }
+        }
+
+        function normalize(str) {
+            return (str || '')
+                .replace(/\\frac/g, 'frac')
+                .replace(/\\sqrt/g, 'sqrt')
+                .replace(/\\ln/g, 'ln')
+                .replace(/[{}()\[\]\s]/g, '')
+                .replace(/pi/g, 'π')
+                .toLowerCase();
+        }
+
+        function init() {
+            initScenarioNav();
+            populateCaseSelector();
+            buildSteps();
+            drawTriangle();
+            attachEvents();
+            renderMath();
+        }
+
+        init();
+    </script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+

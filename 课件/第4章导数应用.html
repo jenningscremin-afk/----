@@ -1,0 +1,2290 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>第四章：导数应用 (交互式课件)</title>
+    <script src="../common-assets/js/d3-7.8.5.min.js"></script>
+    <!-- 使用统一的MathJax配置文件，避免配置冲突 -->
+    <script src="../common-assets/js/mathjax-config.js"></script>
+      <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true,
+                processEnvironments: true
+            },
+            svg: {
+                fontCache: 'global'
+            },
+            startup: {
+                pageReady: () => {
+                    return window.MathJax.startup.defaultPageReady().then(() => {
+                        console.log('MathJax is ready!');
+                    });
+                }
+            }
+        };
+    </script>
+    <script type="text/javascript" id="MathJax-script" async
+            src="../common-assets/js/mathjax-3.2.2-tex-svg.min.js">
+    </script>
+
+
+    <style>
+        @import url('../common-assets/css/fonts.css');
+
+        :root {
+            --chalkboard-bg: transparent;
+            --chalk-text: #ecf0f1;
+            --visualization-bg: #fdfdfd00;
+            --primary-color: #3498db;
+            --accent-color: #e67e22;
+            --success-color: #2ecc71;
+            --danger-color: #e74c3c;
+            --warning-color: #f39c12;
+            --info-color: #9b59b6;
+            --text-color: #34495e;
+            --heading-font: 'Noto Serif SC', serif;
+            --handwriting-font: 'Noto Serif SC', serif;
+        }
+
+        body {
+            font-family: var(--heading-font);
+            background-image: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            overflow: auto;
+            height: 100vh;
+            width: 100vw;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+        }
+
+        #presentation-container {
+            width: 100vw;
+            height: 100vh;
+            max-width: 100vw;
+            aspect-ratio: 16 / 9;
+            position: relative;
+            background: rgba(255, 255, 255, 0);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            overflow: auto;
+        }
+
+        .slide {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            visibility: hidden;
+            display: flex;
+            transition: opacity 0.6s ease-in-out;
+        }
+
+        .slide.active {
+            opacity: 1;
+            visibility: visible;
+            z-index: 10;
+        }
+
+        .chalkboard {
+            flex: 0 0 35%;
+            background-color: #2c3e50 !important;
+            background-image: url('../common-assets/images/black-felt.png');
+            border: 10px solid #8B4513;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.5), inset 0 0 15px rgba(0,0,0,0.7);
+            color: var(--chalk-text, #f0f0f0);
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            overflow-y: auto;
+            box-sizing: border-box;
+        }
+
+        .chalkboard h2 {
+            font-family: var(--handwriting-font);
+            font-size: 2.2rem;
+            color: #f1c40f;
+            border-bottom: 2px solid rgba(241, 196, 15, 0.5);
+            padding-bottom: 2px;
+            margin-bottom: 3px;
+        }
+
+        .chalkboard h3 {
+            font-family: var(--handwriting-font);
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            margin-top: 5px;
+            margin-bottom: 5px;
+        }
+
+        .chalkboard p, .chalkboard li {
+            font-size: 1.1rem;
+            line-height: 1.7;
+            margin-bottom: 15px;
+        }
+
+        .chalkboard ol {
+            padding-left: 25px;
+        }
+
+        .chalkboard ul {
+            list-style-type: '→ ';
+            padding-left: 20px;
+        }
+
+        .math-formula {
+            font-size: 1.3rem;
+            color: #1abc9c;
+            background: rgba(0,0,0,0.2);
+            padding: 15px;
+            border-radius: 5px;
+            text-align: center;
+            margin: 15px 0;
+            line-height: 1.5;
+        }
+
+        .highlight {
+            color: var(--warning-color);
+            font-weight: bold;
+        }
+
+        .visualization {
+            flex: 1;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: auto;
+            position: relative;
+            box-sizing: border-box;
+        }
+
+        .visualization.full-width {
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+        }
+
+        .visualization.white-bg {
+            background: white;
+        }
+
+        .value-display {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            min-width: 200px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .value-item {
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .value-label {
+            font-size: 12px;
+            color: #ccc;
+            margin-right: 10px;
+        }
+
+        .value-number {
+            font-size: 14px;
+            font-weight: bold;
+            color: #fff;
+            text-align: right;
+        }
+
+        .formula-rule {
+            font-size: 1.2rem;
+            color: #16a085;
+            background: rgba(0,0,0,0.15);
+            padding: 12px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+
+        /* 导航按钮样式 */
+        .nav-buttons {
+            position: absolute;
+            top: 60px;
+            right: 20px;
+            display: flex;
+            gap: 5px;
+            z-index: 100;
+        }
+
+        .nav-btn {
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 15px;
+            font-size: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            user-select: none;
+            min-width: 30px;
+            text-align: center;
+        }
+
+        .nav-btn:hover {
+            background: rgba(0, 0, 0, 0.8);
+            border-color: rgba(255, 255, 255, 0.6);
+            transform: translateY(-1px);
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .page-indicator {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        /* 全局动画控制面板 */
+        .global-animation-controls {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            display: flex;
+            gap: 8px;
+            z-index: 1000;
+        }
+
+        .global-control-btn {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: rgba(255, 255, 255, 0.8);
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: normal;
+            transition: all 0.2s ease;
+            backdrop-filter: blur(5px);
+            min-width: 50px;
+            text-align: center;
+        }
+
+        .global-control-btn:hover {
+            background: rgba(0, 0, 0, 0.5);
+            color: rgba(255, 255, 255, 1);
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+
+        /* 交互式滑块样式 */
+        .slider-container {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            min-width: 300px;
+        }
+
+        .slider {
+            width: 100%;
+            -webkit-appearance: none;
+            height: 8px;
+            border-radius: 5px;
+            background: linear-gradient(to right, #3498db 0%, #e74c3c 100%);
+            outline: none;
+            opacity: 0.8;
+            transition: opacity 0.2s;
+        }
+
+        .slider:hover {
+            opacity: 1;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            background: white;
+            cursor: pointer;
+            border: 3px solid var(--primary-color);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+        }
+
+        .slider::-moz-range-thumb {
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            background: white;
+            cursor: pointer;
+            border: 3px solid var(--primary-color);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+        }
+
+        /* 动画关键帧 */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.2); opacity: 0.8; }
+        }
+
+        .pulse {
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes slideInFromLeft {
+            from { transform: translateX(-100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes slideInFromRight {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        /* 实际应用案例样式 */
+        .case-box {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin: 20px;
+            animation: fadeIn 1s ease-out;
+        }
+
+        .case-title {
+            color: var(--primary-color);
+            font-size: 1.4rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .case-content {
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        /* 首页导航按钮样式 */
+        .home-nav-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 40px;
+            flex-wrap: wrap;
+        }
+
+        .home-nav-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 15px 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 15px;
+            text-decoration: none;
+            color: white;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            min-width: 120px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .home-nav-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.5);
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn-icon {
+            font-size: 1.2rem;
+            margin-bottom: 8px;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        .btn-text {
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+
+        /* 浮动菜单样式 */
+        #floating-menu {
+            position: fixed;
+            bottom: 20px;
+            right: 200px;
+            z-index: 9999;
+            font-family: var(--heading-font);
+        }
+
+        .menu-toggle {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: rgba(255, 255, 255, 0.8);
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: normal;
+            transition: all 0.2s ease;
+            backdrop-filter: blur(5px);
+            min-width: 50px;
+            text-align: center;
+        }
+
+        .menu-toggle:hover {
+            background: rgba(0, 0, 0, 0.5);
+            color: rgba(255, 255, 255, 1);
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+
+        .menu-content {
+            position: absolute;
+            bottom: 50px;
+            right: 0;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 10px 0;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(20px);
+            transition: all 0.3s ease;
+            min-width: 220px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .menu-content.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 15px;
+            text-decoration: none;
+            color: #333;
+            transition: all 0.3s ease;
+            border-radius: 10px;
+            margin: 0 8px;
+        }
+
+        .menu-item:hover {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            transform: translateX(5px);
+        }
+
+        .menu-icon {
+            font-size: 12px;
+            margin-right: 10px;
+            width: 40px;
+            text-align: center;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+        }
+
+        .menu-text {
+            font-size: 14px;
+            font-weight: 500;
+        }
+    </style>
+
+    <style>
+        .return-home-panel {
+            position: fixed;
+            top: 16px;
+            left: 16px;
+            display: flex;
+            gap: 10px;
+            z-index: 9999;
+            flex-wrap: wrap;
+        }
+        .return-home-panel .return-link {
+            padding: 8px 14px;
+            border-radius: 999px;
+            background: rgba(15, 23, 42, 0.8);
+            color: #f8fafc;
+            font-size: 14px;
+            text-decoration: none;
+            box-shadow: 0 6px 20px rgba(15, 23, 42, 0.25);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .return-home-panel .return-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 24px rgba(15, 23, 42, 0.35);
+        }
+        .return-home-panel .return-link.return-main {
+            background: rgba(79, 70, 229, 0.85);
+        }
+        @media (max-width: 640px) {
+            .return-home-panel {
+                top: 12px;
+                left: 12px;
+                right: 12px;
+                justify-content: center;
+            }
+            .return-home-panel .return-link {
+                width: 100%;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="return-home-panel">
+        <a class="return-link return-sub" href="index.html">← 返回目录</a>
+        <a class="return-link return-main" href="../index.html">⌂ 返回主站</a>
+    </div>
+
+<div id="presentation-container">
+
+    <!-- 第1页：标题页 -->
+    <div class="slide active">
+        <div class="chalkboard" style="flex: 1; text-align: center;">
+            <h2 style="font-size: 4rem; border: none;">第四章</h2>
+            <p style="font-size: 2.5rem; color: white;">导数应用</p>
+            
+            <!-- 导航按钮组 -->
+            <div class="home-nav-buttons">
+                <a href="../index.html" class="home-nav-btn">
+                    <span class="btn-icon">HOME</span>
+                    <span class="btn-text">主页</span>
+                </a>
+                <a href="../故事书/index.html" class="home-nav-btn">
+                    <span class="btn-icon">STORY</span>
+                    <span class="btn-text">故事书</span>
+                </a>
+                <a href="../习题/index.html" class="home-nav-btn">
+                    <span class="btn-icon">EXERCISE</span>
+                    <span class="btn-text">习题</span>
+                </a>
+                <a href="../网页资源/index.html" class="home-nav-btn">
+                    <span class="btn-icon">RESOURCE</span>
+                    <span class="btn-text">网页资源</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第2页：目录 -->
+    <div class="slide">
+        <div class="chalkboard" style="flex: 1; text-align: center; overflow-y: auto; align-items: flex-start; justify-content: flex-start;">
+            <div style="writing-mode: vertical-rl; text-orientation: mixed; font-size: 3rem; border: none; margin-bottom: 1.5rem; height: 8rem; display: flex; align-items: flex-start; justify-content: center;">
+                目录
+            </div>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1.5rem; margin: 0 auto; max-width: 1400px; text-align: left;">
+                <div style="background: rgba(255,255,255,0.1); padding: 0.8rem; border-radius: 10px; backdrop-filter: blur(10px);">
+                    <h3 style="color: #e74c3c; font-size: 1.3rem; margin-bottom: 0.5rem; border-bottom: 2px solid #e74c3c; padding-bottom: 0.2rem;">1. 导数的几何意义</h3>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; font-size: 1rem; line-height: 1.3;">
+                        <div>• 切线斜率</div>
+                        <div>• 瞬时变化率</div>
+                        <div>• 图像特征</div>
+                        <div></div>
+                    </div>
+                </div>
+                
+                <div style="background: rgba(255,255,255,0.1); padding: 0.8rem; border-radius: 10px; backdrop-filter: blur(10px);">
+                    <h3 style="color: #e74c3c; font-size: 1.3rem; margin-bottom: 0.5rem; border-bottom: 2px solid #e74c3c; padding-bottom: 0.2rem;">2. 函数的单调性</h3>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; font-size: 1rem; line-height: 1.3;">
+                        <div>• 增函数判定</div>
+                        <div>• 减函数判定</div>
+                        <div>• 单调区间</div>
+                        <div></div>
+                    </div>
+                </div>
+                
+                <div style="background: rgba(255,255,255,0.1); padding: 0.8rem; border-radius: 10px; backdrop-filter: blur(10px);">
+                    <h3 style="color: #e74c3c; font-size: 1.3rem; margin-bottom: 0.5rem; border-bottom: 2px solid #e74c3c; padding-bottom: 0.2rem;">3. 极值与最值</h3>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; font-size: 1rem; line-height: 1.3;">
+                        <div>• 极大值极小值</div>
+                        <div>• 最值求法</div>
+                        <div>• 驻点判断</div>
+                        <div></div>
+                    </div>
+                </div>
+                
+                <div style="background: rgba(255,255,255,0.1); padding: 0.8rem; border-radius: 10px; backdrop-filter: blur(10px);">
+                    <h3 style="color: #e74c3c; font-size: 1.3rem; margin-bottom: 0.5rem; border-bottom: 2px solid #e74c3c; padding-bottom: 0.2rem;">4. 实际优化问题</h3>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; font-size: 1rem; line-height: 1.3;">
+                        <div>• 成本最小化</div>
+                        <div>• 利润最大化</div>
+                        <div>• 面积体积优化</div>
+                        <div></div>
+                    </div>
+                </div>
+                
+                <div style="background: rgba(255,255,255,0.1); padding: 0.8rem; border-radius: 10px; backdrop-filter: blur(10px);">
+                    <h3 style="color: #e74c3c; font-size: 1.3rem; margin-bottom: 0.5rem; border-bottom: 2px solid #e74c3c; padding-bottom: 0.2rem;">5. 函数图像描绘</h3>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; font-size: 1rem; line-height: 1.3;">
+                        <div>• 凹凸性判断</div>
+                        <div>• 拐点求解</div>
+                        <div>• 渐近线分析</div>
+                        <div></div>
+                    </div>
+                </div>
+                
+                <div style="background: rgba(255,255,255,0.1); padding: 0.8rem; border-radius: 10px; backdrop-filter: blur(10px);">
+                    <h3 style="color: #e74c3c; font-size: 1.3rem; margin-bottom: 0.5rem; border-bottom: 2px solid #e74c3c; padding-bottom: 0.2rem;">6. 经济学应用</h3>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; font-size: 1rem; line-height: 1.3;">
+                        <div>• 边际成本</div>
+                        <div>• 边际收益</div>
+                        <div>• 弹性分析</div>
+                        <div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 第3页：导数直观理解 -->
+    <div class="slide">
+        <div class="chalkboard">
+            <h2>导数是什么？</h2>
+            <h3>瞬时变化率</h3>
+            <p>导数就是函数在某一点的<span class="highlight">瞬时变化率</span>。</p>
+            <ul>
+                <li>速度是位置的变化率</li>
+                <li>加速度是速度的变化率</li>
+                <li>成本变化率告诉我们增产的代价</li>
+            </ul>
+            <div class="math-formula">
+                $f'(x) = \lim\limits_{\Delta x \to 0} \frac{f(x+\Delta x) - f(x)}{\Delta x}$
+            </div>
+            <p>通俗地说：导数告诉我们函数在某一点变化的<span class="highlight">快慢</span>和<span class="highlight">方向</span>。</p>
+        </div>
+        <div class="visualization" id="vis-derivative-intro"></div>
+    </div>
+
+    <!-- 第4页：切线的几何意义 -->
+    <div class="slide">
+        <div class="chalkboard">
+            <h2>导数的几何意义</h2>
+            <p>导数 $f'(x_0)$ 是曲线 $y=f(x)$ 在点 $(x_0, f(x_0))$ 处的<span class="highlight">切线斜率</span>。</p>
+            <div class="math-formula">
+                切线方程：$y - f(x_0) = f'(x_0)(x - x_0)$
+            </div>
+            <h3>斜率与函数行为</h3>
+            <ul>
+                <li>$f'(x) > 0$：切线向上倾斜，函数上升</li>
+                <li>$f'(x) < 0$：切线向下倾斜，函数下降</li>
+                <li>$f'(x) = 0$：切线水平，可能是极值点</li>
+            </ul>
+        </div>
+        <div class="visualization" id="vis-tangent-line"></div>
+    </div>
+
+    <!-- 第5页：导数与单调性 -->
+    <div class="slide">
+        <div class="chalkboard">
+            <h2>用导数判断单调性</h2>
+            <p>导数的符号决定了函数的<span class="highlight">增减性</span>：</p>
+            <div class="formula-rule">
+                <p>若 $f'(x) > 0$，则 $f(x)$ 在该区间<span class="highlight">单调递增 ↗</span></p>
+                <p>若 $f'(x) < 0$，则 $f(x)$ 在该区间<span class="highlight">单调递减 ↘</span></p>
+            </div>
+            <h3>判断步骤</h3>
+            <ol>
+                <li>求导数 $f'(x)$</li>
+                <li>解不等式 $f'(x) > 0$ 或 $f'(x) < 0$</li>
+                <li>确定单调区间</li>
+            </ol>
+        </div>
+        <div class="visualization" id="vis-monotonicity"></div>
+    </div>
+
+    <!-- 第6页：单调性实例 -->
+    <div class="slide">
+        <div class="chalkboard">
+            <h2>单调性判断实例</h2>
+            <p>例：判断 $f(x) = x^3 - 3x$ 的单调性</p>
+            <h3>解题步骤</h3>
+            <p>1. 求导：$f'(x) = 3x^2 - 3 = 3(x^2 - 1)$</p>
+            <p>2. 令 $f'(x) = 0$：$x = \pm 1$</p>
+            <p>3. 判断符号：</p>
+            <ul>
+                <li>$x < -1$ 时，$f'(x) > 0$，递增</li>
+                <li>$-1 < x < 1$ 时，$f'(x) < 0$，递减</li>
+                <li>$x > 1$ 时，$f'(x) > 0$，递增</li>
+            </ul>
+        </div>
+        <div class="visualization" id="vis-monotonicity-example"></div>
+    </div>
+
+    <!-- 第7页：极值的概念 -->
+    <div class="slide">
+        <div class="chalkboard">
+            <h2>极值</h2>
+            <h3>什么是极值？</h3>
+            <p><span class="highlight">极值</span>是函数在局部范围内的最大值或最小值。</p>
+            <ul>
+                <li><strong>极大值</strong>：比周围所有点都大</li>
+                <li><strong>极小值</strong>：比周围所有点都小</li>
+            </ul>
+            <div class="formula-rule">
+                极值点处：$f'(x) = 0$ 或 $f'(x)$ 不存在
+            </div>
+            <p>注意：$f'(x) = 0$ 的点不一定是极值点！</p>
+        </div>
+        <div class="visualization" id="vis-extremum-concept"></div>
+    </div>
+
+    <!-- 第8页：极值判断方法 -->
+    <div class="slide">
+        <div class="chalkboard">
+            <h2>极值判断方法</h2>
+            <h3>第一判别法（导数符号法）</h3>
+            <p>在 $x = x_0$ 处，如果：</p>
+            <ul>
+                <li>$f'(x)$ 由正变负 → <span class="highlight">极大值</span></li>
+                <li>$f'(x)$ 由负变正 → <span class="highlight">极小值</span></li>
+                <li>$f'(x)$ 不变号 → 无极值</li>
+            </ul>
+            <h3>步骤</h3>
+            <ol>
+                <li>求 $f'(x) = 0$ 的点</li>
+                <li>判断这些点两侧导数符号</li>
+                <li>确定极值点和极值</li>
+            </ol>
+        </div>
+        <div class="visualization" id="vis-extremum-test"></div>
+    </div>
+
+    <!-- 第9页：最值问题 -->
+    <div class="slide">
+        <div class="chalkboard">
+            <h2>最大值与最小值</h2>
+            <p>在闭区间 $[a, b]$ 上，连续函数必有<span class="highlight">最大值</span>和<span class="highlight">最小值</span>。</p>
+            <h3>最值可能出现在：</h3>
+            <ul>
+                <li>区间内的极值点</li>
+                <li>区间端点</li>
+            </ul>
+            <h3>求最值步骤</h3>
+            <ol>
+                <li>求出所有极值点</li>
+                <li>计算极值点和端点的函数值</li>
+                <li>比较大小，确定最值</li>
+            </ol>
+        </div>
+        <div class="visualization" id="vis-max-min"></div>
+    </div>
+
+    <!-- 第10页：实际应用-成本最小化 -->
+    <div class="slide">
+        <div class="chalkboard">
+            <h2>应用：成本最小化</h2>
+            <h3>问题</h3>
+            <p>某工厂生产成本函数为：</p>
+            <div class="math-formula">
+                $C(x) = x^2 - 10x + 100$
+            </div>
+            <p>其中 $x$ 是产量（百件），$C$ 是成本（万元）。</p>
+            <p>求：最小成本是多少？对应产量是多少？</p>
+            <h3>解答</h3>
+            <p>1. 求导：$C'(x) = 2x - 10$</p>
+            <p>2. 令 $C'(x) = 0$：$x = 5$</p>
+            <p>3. 最小成本：$C(5) = 75$ 万元</p>
+        </div>
+        <div class="visualization" id="vis-cost-optimization"></div>
+    </div>
+
+    <!-- 第11页：实际应用-利润最大化 -->
+    <div class="slide">
+        <div class="chalkboard">
+            <h2>应用：利润最大化</h2>
+            <h3>问题</h3>
+            <p>某产品的利润函数为：</p>
+            <div class="math-formula">
+                $P(x) = -x^2 + 12x - 20$
+            </div>
+            <p>其中 $x$ 是销售量（千件），$P$ 是利润（万元）。</p>
+            <p>求：最大利润是多少？</p>
+            <h3>解答</h3>
+            <p>1. 求导：$P'(x) = -2x + 12$</p>
+            <p>2. 令 $P'(x) = 0$：$x = 6$</p>
+            <p>3. 最大利润：$P(6) = 16$ 万元</p>
+        </div>
+        <div class="visualization" id="vis-profit-optimization"></div>
+    </div>
+
+    <!-- 第12页：实际应用-容器设计 -->
+    <div class="slide">
+        <div class="chalkboard">
+            <h2>应用：容器设计</h2>
+            <h3>问题</h3>
+            <p>用一张边长为 20cm 的正方形铁皮，四角各剪去相同的小正方形，做成无盖容器。</p>
+            <p>问：剪去多大的正方形，容器容积最大？</p>
+            <h3>解答</h3>
+            <p>设剪去边长为 $x$ cm，则：</p>
+            <p>容积 $V(x) = x(20-2x)^2$</p>
+            <p>求导后得：$x = \frac{10}{3}$ cm</p>
+            <p>最大容积：$V(\frac{10}{3}) \approx 592.6$ cm³</p>
+        </div>
+        <div class="visualization" id="vis-container-design"></div>
+    </div>
+
+    <!-- 第13页：曲线的凹凸性 -->
+    <div class="slide">
+        <div class="chalkboard">
+            <h2>曲线的凹凸性</h2>
+            <p>二阶导数 $f''(x)$ 决定曲线的<span class="highlight">弯曲方向</span>：</p>
+            <div class="formula-rule">
+                <p>$f''(x) > 0$：曲线<span class="highlight">凹向上 ∪</span></p>
+                <p>$f''(x) < 0$：曲线<span class="highlight">凹向下 ∩</span></p>
+            </div>
+            <h3>拐点</h3>
+            <p>凹凸性改变的点叫<span class="highlight">拐点</span>。</p>
+            <p>在拐点处：$f''(x) = 0$ 或不存在</p>
+        </div>
+        <div class="visualization" id="vis-concavity"></div>
+    </div>
+
+    <!-- 第14页：函数图像描绘 -->
+    <div class="slide">
+        <div class="chalkboard">
+            <h2>函数图像描绘步骤</h2>
+            <ol>
+                <li><strong>定义域</strong>：确定函数存在的范围</li>
+                <li><strong>关键点</strong>：
+                    <ul>
+                        <li>与坐标轴的交点</li>
+                        <li>$f'(x) = 0$ 的点（可能极值）</li>
+                        <li>$f''(x) = 0$ 的点（可能拐点）</li>
+                    </ul>
+                </li>
+                <li><strong>单调性</strong>：根据 $f'(x)$ 的符号</li>
+                <li><strong>凹凸性</strong>：根据 $f''(x)$ 的符号</li>
+                <li><strong>渐近线</strong>：水平、垂直渐近线</li>
+            </ol>
+        </div>
+        <div class="visualization" id="vis-curve-sketching"></div>
+    </div>
+
+    <!-- 第15页：总结 -->
+    <div class="slide">
+        <div class="chalkboard" style="flex: 1; text-align: center; border: none;">
+            <h2 style="font-size: 3rem; border: none;">总结</h2>
+            <div style="text-align: left; max-width: 800px; margin: 0 auto;">
+                <h3>导数应用要点</h3>
+                <ul style="font-size: 1.3rem; line-height: 2;">
+                    <li>导数 = 变化率 = 切线斜率</li>
+                    <li>$f'(x) > 0$ → 递增；$f'(x) < 0$ → 递减</li>
+                    <li>极值点：$f'(x) = 0$ 且符号改变</li>
+                    <li>最值 = 比较极值和端点值</li>
+                    <li>实际问题：建模 → 求导 → 求极值</li>
+                </ul>
+                <div style="margin-top: 30px; padding: 20px; background: rgba(255,255,255,0.1); border-radius: 10px;">
+                    <p style="font-size: 1.2rem; color: #f39c12;">记住：导数是理解函数变化的<span class="highlight">关键工具</span>！</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 翻页按钮 -->
+    <div class="nav-buttons">
+        <button class="nav-btn" id="prev-btn" onclick="previousSlide()" title="上一页 (←)">‹</button>
+        <button class="nav-btn" id="next-btn" onclick="nextSlide()" title="下一页 (→)">›</button>
+    </div>
+
+    <div class="page-indicator" id="page-indicator">1 / 15</div>
+
+    <!-- 全局动画控制面板 -->
+    <div class="global-animation-controls" id="globalAnimationControls">
+        <button class="global-control-btn" id="globalPlayPauseBtn">暂停</button>
+        <button class="global-control-btn" id="globalSpeedBtn">1.0x</button>
+    </div>
+
+    <!-- 浮动菜单 -->
+    <div id="floating-menu">
+        <div id="menu-toggle" class="menu-toggle">
+            <span class="menu-icon">☰</span>
+        </div>
+        <div id="menu-content" class="menu-content">
+            <a href="../网页资源/lab-4-1.html" target="_blank" class="menu-item">
+                <span class="menu-icon">LAB</span>
+                <span class="menu-text">导数几何意义实验</span>
+            </a>
+            <a href="../网页资源/lab-4-2.html" target="_blank" class="menu-item">
+                <span class="menu-icon">LAB</span>
+                <span class="menu-text">单调性判断实验</span>
+            </a>
+            <a href="../网页资源/lab-4-3.html" target="_blank" class="menu-item">
+                <span class="menu-icon">LAB</span>
+                <span class="menu-text">极值最值实验</span>
+            </a>
+            <a href="../网页资源/lab-4-4.html" target="_blank" class="menu-item">
+                <span class="menu-icon">LAB</span>
+                <span class="menu-text">优化问题实验</span>
+            </a>
+            <a href="../网页资源/lab-4-5.html" target="_blank" class="menu-item">
+                <span class="menu-icon">GAME</span>
+                <span class="menu-text">导数应用游戏</span>
+            </a>
+            <a href="../习题/assets/derivative-app.html" target="_blank" class="menu-item">
+                <span class="menu-icon">EXER</span>
+                <span class="menu-text">习题练习</span>
+            </a>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    let slides, totalSlides, counter, currentSlide = 0;
+    let currentAnimation;
+    let globalAnimationPlaying = true;
+    let globalAnimationSpeed = 1.0;
+
+    // 初始化
+    document.addEventListener('DOMContentLoaded', function() {
+        slides = document.querySelectorAll('.slide');
+        totalSlides = slides.length;
+        counter = document.getElementById('page-indicator');
+        
+        initGlobalAnimationControls();
+        initFloatingMenu();
+        showSlide(0);
+
+        // 键盘导航
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
+                e.preventDefault();
+                nextSlide();
+            } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+                e.preventDefault();
+                previousSlide();
+            } else if (e.key === 'Home') {
+                e.preventDefault();
+                showSlide(0);
+            } else if (e.key === 'End') {
+                e.preventDefault();
+                showSlide(totalSlides - 1);
+            }
+        });
+
+        // 鼠标滚轮导航
+        document.addEventListener('wheel', (e) => {
+            e.preventDefault();
+            if (e.deltaY > 0) {
+                nextSlide();
+            } else {
+                previousSlide();
+            }
+        }, { passive: false });
+    });
+
+    // 全局动画控制
+    function initGlobalAnimationControls() {
+        const playPauseBtn = document.getElementById('globalPlayPauseBtn');
+        const speedBtn = document.getElementById('globalSpeedBtn');
+        
+        const speedOptions = [0.5, 1, 1.5, 2, 3];
+        let currentSpeedIndex = 1;
+
+        playPauseBtn.addEventListener('click', () => {
+            globalAnimationPlaying = !globalAnimationPlaying;
+            playPauseBtn.textContent = globalAnimationPlaying ? '暂停' : '播放';
+            playPauseBtn.className = globalAnimationPlaying ? 'global-control-btn' : 'global-control-btn pause';
+        });
+
+        speedBtn.addEventListener('click', () => {
+            currentSpeedIndex = (currentSpeedIndex + 1) % speedOptions.length;
+            globalAnimationSpeed = speedOptions[currentSpeedIndex];
+            speedBtn.textContent = globalAnimationSpeed.toFixed(1) + 'x';
+        });
+    }
+
+    // 浮动菜单初始化
+    function initFloatingMenu() {
+        const menuToggle = document.getElementById('menu-toggle');
+        const menuContent = document.getElementById('menu-content');
+        
+        if (menuToggle && menuContent) {
+            menuToggle.addEventListener('click', function(e) {
+                e.stopPropagation();
+                menuToggle.classList.toggle('active');
+                menuContent.classList.toggle('active');
+            });
+            
+            // 点击页面其他地方关闭菜单
+            document.addEventListener('click', function(e) {
+                if (!menuToggle.contains(e.target) && !menuContent.contains(e.target)) {
+                    menuToggle.classList.remove('active');
+                    menuContent.classList.remove('active');
+                }
+            });
+            
+            menuContent.addEventListener('click', function(e) {
+                e.stopPropagation();
+            });
+        }
+    }
+
+    // 翻页功能
+    function nextSlide() {
+        currentSlide = (currentSlide + 1) % totalSlides;
+        showSlide(currentSlide);
+    }
+
+    function previousSlide() {
+        currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
+        showSlide(currentSlide);
+    }
+
+    function showSlide(index) {
+        slides.forEach(slide => slide.classList.remove('active'));
+        currentSlide = index;
+        slides[currentSlide].classList.add('active');
+        counter.textContent = `${currentSlide + 1} / ${totalSlides}`;
+        updateNavButtons();
+        runVisualization(currentSlide);
+        
+        // 渲染MathJax
+        if (window.MathJax && window.MathJax.typesetPromise) {
+            window.MathJax.typesetPromise([slides[currentSlide]]);
+        }
+    }
+
+    function updateNavButtons() {
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        
+        if (prevBtn && nextBtn) {
+            prevBtn.disabled = (currentSlide === 0);
+            nextBtn.disabled = (currentSlide === totalSlides - 1);
+        }
+    }
+
+    // D3.js 辅助函数
+    function setupD3(containerId, margins = {top: 40, right: 40, bottom: 40, left: 40}) {
+        const container = d3.select(`#${containerId}`);
+        if (container.empty()) return null;
+        
+        container.html('');
+        
+        const bounds = container.node().getBoundingClientRect();
+        if (bounds.width === 0 || bounds.height === 0) return null;
+        
+        const svg = container.append('svg')
+            .attr('width', bounds.width)
+            .attr('height', bounds.height);
+        
+        const width = bounds.width - margins.left - margins.right;
+        const height = bounds.height - margins.top - margins.bottom;
+        
+        const g = svg.append('g')
+            .attr('transform', `translate(${margins.left}, ${margins.top})`);
+        
+        return { container, svg, g, width, height };
+    }
+
+    function drawAxes(g, xScale, yScale, width, height) {
+        // X轴
+        g.append('g')
+            .attr('transform', `translate(0, ${yScale(0)})`)
+            .call(d3.axisBottom(xScale).ticks(10))
+            .call(g => g.select(".domain").attr("stroke-width", 1.5).attr("stroke", "#333"));
+
+        // Y轴
+        g.append('g')
+            .attr('transform', `translate(${xScale(0)}, 0)`)
+            .call(d3.axisLeft(yScale).ticks(10))
+            .call(g => g.select(".domain").attr("stroke-width", 1.5).attr("stroke", "#333"));
+            
+        // 添加网格线
+        g.append('g')
+            .attr('class', 'grid')
+            .attr('transform', `translate(0, ${height})`)
+            .call(d3.axisBottom(xScale).ticks(10).tickSize(-height).tickFormat(''))
+            .style('stroke-dasharray', '3,3')
+            .style('opacity', 0.3);
+            
+        g.append('g')
+            .attr('class', 'grid')
+            .call(d3.axisLeft(yScale).ticks(10).tickSize(-width).tickFormat(''))
+            .style('stroke-dasharray', '3,3')
+            .style('opacity', 0.3);
+    }
+
+    // 运行可视化
+    function runVisualization(slideIndex) {
+        // 清理之前的动画
+        if (currentAnimation && typeof currentAnimation === 'function') {
+            currentAnimation();
+        }
+        
+        switch(slideIndex) {
+            case 2: visualizeDerivativeIntro('vis-derivative-intro'); break;
+            case 3: visualizeTangentLine('vis-tangent-line'); break;
+            case 4: visualizeMonotonicity('vis-monotonicity'); break;
+            case 5: visualizeMonotonicityExample('vis-monotonicity-example'); break;
+            case 6: visualizeExtremumConcept('vis-extremum-concept'); break;
+            case 7: visualizeExtremumTest('vis-extremum-test'); break;
+            case 8: visualizeMaxMin('vis-max-min'); break;
+            case 9: visualizeCostOptimization('vis-cost-optimization'); break;
+            case 10: visualizeProfitOptimization('vis-profit-optimization'); break;
+            case 11: visualizeContainerDesign('vis-container-design'); break;
+            case 12: visualizeConcavity('vis-concavity'); break;
+            case 13: visualizeCurveSketching('vis-curve-sketching'); break;
+        }
+    }
+
+    // 第3页：导数直观理解
+    function visualizeDerivativeIntro(containerId) {
+        const setup = setupD3(containerId);
+        if (!setup) return;
+        const { container, g, width, height } = setup;
+        
+        const xScale = d3.scaleLinear().domain([0, 10]).range([0, width]);
+        const yScale = d3.scaleLinear().domain([0, 100]).range([height, 0]);
+        
+        drawAxes(g, xScale, yScale, width, height);
+        
+        // 位置函数 s(t) = t²
+        const data = d3.range(0, 10.1, 0.1).map(t => ({t: t, s: t * t}));
+        const line = d3.line().x(d => xScale(d.t)).y(d => yScale(d.s));
+        
+        g.append('path')
+            .datum(data)
+            .attr('d', line)
+            .attr('fill', 'none')
+            .attr('stroke', '#3498db')
+            .attr('stroke-width', 3);
+        
+        // 标签
+        g.append('text')
+            .attr('x', xScale(8))
+            .attr('y', yScale(70))
+            .text('s(t) = t²')
+            .style('font-size', '18px')
+            .style('fill', '#3498db')
+            .style('font-weight', 'bold');
+        
+        // 动画小球
+        const ball = g.append('circle')
+            .attr('r', 8)
+            .attr('fill', '#e74c3c')
+            .attr('cx', xScale(0))
+            .attr('cy', yScale(0));
+        
+        // 速度显示
+        const speedDisplay = container.append('div')
+            .attr('class', 'value-display')
+            .html(`
+                <div class="value-item">
+                    <span class="value-label">时间 t：</span>
+                    <span class="value-number" id="time-value">0.00</span>
+                </div>
+                <div class="value-item">
+                    <span class="value-label">位置 s：</span>
+                    <span class="value-number" id="position-value">0.00</span>
+                </div>
+                <div class="value-item">
+                    <span class="value-label">速度 v：</span>
+                    <span class="value-number" id="speed-value">0.00</span>
+                </div>
+            `);
+        
+        let t = 0;
+        let animationId;
+        function animate() {
+            t += 0.02 / globalAnimationSpeed;
+            if (t > 10) t = 0;
+            
+            const s = t * t;
+            const v = 2 * t; // 导数
+            
+            ball.attr('cx', xScale(t))
+                .attr('cy', yScale(s));
+            
+            container.select('#time-value').text(t.toFixed(2));
+            container.select('#position-value').text(s.toFixed(2));
+            container.select('#speed-value').text(v.toFixed(2));
+            
+            if (globalAnimationPlaying) {
+                animationId = requestAnimationFrame(animate);
+            }
+        }
+        animate();
+        
+        // 返回清理函数
+        return () => {
+            if (animationId) cancelAnimationFrame(animationId);
+        };
+    }
+
+    // 第4页：切线动画
+    function visualizeTangentLine(containerId) {
+        const setup = setupD3(containerId);
+        if (!setup) return;
+        const { container, g, width, height } = setup;
+        
+        const xScale = d3.scaleLinear().domain([-3, 3]).range([0, width]);
+        const yScale = d3.scaleLinear().domain([-2, 10]).range([height, 0]);
+        
+        drawAxes(g, xScale, yScale, width, height);
+        
+        // 函数 f(x) = x²
+        const data = d3.range(-3, 3.1, 0.1).map(x => ({x: x, y: x * x}));
+        const line = d3.line().x(d => xScale(d.x)).y(d => yScale(d.y));
+        
+        g.append('path')
+            .datum(data)
+            .attr('d', line)
+            .attr('fill', 'none')
+            .attr('stroke', '#3498db')
+            .attr('stroke-width', 3);
+        
+        // 切线
+        const tangentLine = g.append('line')
+            .attr('stroke', '#e74c3c')
+            .attr('stroke-width', 2);
+        
+        // 切点
+        const tangentPoint = g.append('circle')
+            .attr('r', 6)
+            .attr('fill', '#e74c3c');
+        
+        // 斜率显示
+        const slopeText = g.append('text')
+            .style('font-size', '16px')
+            .style('fill', '#e74c3c')
+            .style('font-weight', 'bold');
+        
+        // 信息显示
+        const infoDisplay = container.append('div')
+            .attr('class', 'value-display')
+            .html(`
+                <div class="value-item">
+                    <span class="value-label">点 x：</span>
+                    <span class="value-number" id="x-value">0.00</span>
+                </div>
+                <div class="value-item">
+                    <span class="value-label">函数值 f(x)：</span>
+                    <span class="value-number" id="fx-value">0.00</span>
+                </div>
+                <div class="value-item">
+                    <span class="value-label">导数 f'(x)：</span>
+                    <span class="value-number" id="fprime-value">0.00</span>
+                </div>
+            `);
+        
+        let x0 = -2;
+        let animationId;
+        
+        function updateTangent() {
+            const y0 = x0 * x0;
+            const slope = 2 * x0;
+            
+            tangentPoint
+                .attr('cx', xScale(x0))
+                .attr('cy', yScale(y0));
+            
+            // 切线方程：y - y0 = slope * (x - x0)
+            const x1 = -3, x2 = 3;
+            const y1 = y0 + slope * (x1 - x0);
+            const y2 = y0 + slope * (x2 - x0);
+            
+            tangentLine
+                .attr('x1', xScale(x1))
+                .attr('y1', yScale(y1))
+                .attr('x2', xScale(x2))
+                .attr('y2', yScale(y2));
+            
+            slopeText
+                .attr('x', xScale(x0) + 10)
+                .attr('y', yScale(y0) - 10)
+                .text(`斜率 = ${slope.toFixed(1)}`);
+            
+            // 更新信息
+            container.select('#x-value').text(x0.toFixed(2));
+            container.select('#fx-value').text(y0.toFixed(2));
+            container.select('#fprime-value').text(slope.toFixed(2));
+        }
+        
+        function animate() {
+            x0 += 0.01 / globalAnimationSpeed;
+            if (x0 > 2) x0 = -2;
+            updateTangent();
+            
+            if (globalAnimationPlaying) {
+                animationId = requestAnimationFrame(animate);
+            }
+        }
+        animate();
+        
+        return () => {
+            if (animationId) cancelAnimationFrame(animationId);
+        };
+    }
+
+    // 第5页：单调性可视化
+    function visualizeMonotonicity(containerId) {
+        const setup = setupD3(containerId);
+        if (!setup) return;
+        const { g, width, height } = setup;
+        
+        const xScale = d3.scaleLinear().domain([-3, 3]).range([0, width]);
+        const yScale = d3.scaleLinear().domain([-5, 5]).range([height, 0]);
+        
+        drawAxes(g, xScale, yScale, width, height);
+        
+        // 函数 f(x) = x³ - 3x
+        const data = d3.range(-3, 3.1, 0.05).map(x => ({
+            x: x, 
+            y: x * x * x - 3 * x,
+            derivative: 3 * x * x - 3
+        }));
+        
+        const line = d3.line().x(d => xScale(d.x)).y(d => yScale(d.y));
+        
+        // 递增区间背景
+        g.append('rect')
+            .attr('x', 0)
+            .attr('y', 0)
+            .attr('width', xScale(-1))
+            .attr('height', height)
+            .attr('fill', '#2ecc71')
+            .attr('opacity', 0.1);
+        
+        g.append('rect')
+            .attr('x', xScale(1))
+            .attr('y', 0)
+            .attr('width', width - xScale(1))
+            .attr('height', height)
+            .attr('fill', '#2ecc71')
+            .attr('opacity', 0.1);
+        
+        // 递减区间背景
+        g.append('rect')
+            .attr('x', xScale(-1))
+            .attr('y', 0)
+            .attr('width', xScale(1) - xScale(-1))
+            .attr('height', height)
+            .attr('fill', '#e74c3c')
+            .attr('opacity', 0.1);
+        
+        // 函数曲线
+        const path = g.append('path')
+            .datum(data)
+            .attr('d', line)
+            .attr('fill', 'none')
+            .attr('stroke', '#3498db')
+            .attr('stroke-width', 3);
+        
+        // 动画绘制
+        const totalLength = path.node().getTotalLength();
+        path
+            .attr('stroke-dasharray', totalLength + ' ' + totalLength)
+            .attr('stroke-dashoffset', totalLength)
+            .transition()
+            .duration(2000)
+            .attr('stroke-dashoffset', 0);
+        
+        // 标记极值点
+        setTimeout(() => {
+            g.append('circle')
+                .attr('cx', xScale(-1))
+                .attr('cy', yScale(2))
+                .attr('r', 0)
+                .attr('fill', '#f39c12')
+                .transition()
+                .duration(500)
+                .attr('r', 8);
+            
+            g.append('circle')
+                .attr('cx', xScale(1))
+                .attr('cy', yScale(-2))
+                .attr('r', 0)
+                .attr('fill', '#f39c12')
+                .transition()
+                .duration(500)
+                .attr('r', 8);
+        }, 2000);
+        
+        // 添加标签
+        setTimeout(() => {
+            g.append('text')
+                .attr('x', xScale(-2))
+                .attr('y', 30)
+                .text('递增 ↗')
+                .style('font-size', '16px')
+                .style('fill', '#2ecc71')
+                .style('font-weight', 'bold')
+                .style('opacity', 0)
+                .transition()
+                .duration(500)
+                .style('opacity', 1);
+            
+            g.append('text')
+                .attr('x', xScale(0))
+                .attr('y', 30)
+                .text('递减 ↘')
+                .style('font-size', '16px')
+                .style('fill', '#e74c3c')
+                .style('font-weight', 'bold')
+                .style('text-anchor', 'middle')
+                .style('opacity', 0)
+                .transition()
+                .duration(500)
+                .style('opacity', 1);
+            
+            g.append('text')
+                .attr('x', xScale(2))
+                .attr('y', 30)
+                .text('递增 ↗')
+                .style('font-size', '16px')
+                .style('fill', '#2ecc71')
+                .style('font-weight', 'bold')
+                .style('text-anchor', 'end')
+                .style('opacity', 0)
+                .transition()
+                .duration(500)
+                .style('opacity', 1);
+        }, 2500);
+    }
+
+    // 第6页：单调性实例
+    function visualizeMonotonicityExample(containerId) {
+        const setup = setupD3(containerId);
+        if (!setup) return;
+        const { container, g, width, height } = setup;
+        
+        const xScale = d3.scaleLinear().domain([-3, 3]).range([0, width]);
+        const yScale = d3.scaleLinear().domain([-5, 5]).range([height, 0]);
+        
+        drawAxes(g, xScale, yScale, width, height);
+        
+        // f(x) = x³ - 3x
+        const f = x => x * x * x - 3 * x;
+        const fPrime = x => 3 * x * x - 3;
+        
+        // 绘制函数
+        const data = d3.range(-3, 3.1, 0.05).map(x => ({x: x, y: f(x)}));
+        const line = d3.line().x(d => xScale(d.x)).y(d => yScale(d.y));
+        
+        g.append('path')
+            .datum(data)
+            .attr('d', line)
+            .attr('fill', 'none')
+            .attr('stroke', '#3498db')
+            .attr('stroke-width', 3);
+        
+        // 绘制导数
+        const derivativeData = d3.range(-3, 3.1, 0.05).map(x => ({x: x, y: fPrime(x)}));
+        const derivativeLine = d3.line().x(d => xScale(d.x)).y(d => yScale(d.y));
+        
+        g.append('path')
+            .datum(derivativeData)
+            .attr('d', derivativeLine)
+            .attr('fill', 'none')
+            .attr('stroke', '#9b59b6')
+            .attr('stroke-width', 2)
+            .attr('stroke-dasharray', '5,5');
+        
+        // 标记关键点
+        [-1, 1].forEach((x, i) => {
+            setTimeout(() => {
+                g.append('circle')
+                    .attr('cx', xScale(x))
+                    .attr('cy', yScale(f(x)))
+                    .attr('r', 0)
+                    .attr('fill', '#e74c3c')
+                    .attr('class', 'pulse')
+                    .transition()
+                    .duration(500)
+                    .attr('r', 8);
+                
+                g.append('line')
+                    .attr('x1', xScale(x))
+                    .attr('y1', yScale(-5))
+                    .attr('x2', xScale(x))
+                    .attr('y2', yScale(5))
+                    .attr('stroke', '#e74c3c')
+                    .attr('stroke-width', 1)
+                    .attr('stroke-dasharray', '3,3')
+                    .attr('opacity', 0)
+                    .transition()
+                    .duration(500)
+                    .attr('opacity', 0.5);
+                
+                g.append('text')
+                    .attr('x', xScale(x))
+                    .attr('y', yScale(f(x)) + (x === -1 ? -20 : 30))
+                    .text(x === -1 ? '极大值' : '极小值')
+                    .style('font-size', '14px')
+                    .style('font-weight', 'bold')
+                    .style('text-anchor', 'middle')
+                    .style('fill', '#e74c3c')
+                    .style('opacity', 0)
+                    .transition()
+                    .duration(500)
+                    .style('opacity', 1);
+            }, 1000 + i * 500);
+        });
+        
+        // 图例
+        const legend = g.append('g')
+            .attr('transform', `translate(${width - 120}, 20)`);
+        
+        legend.append('line')
+            .attr('x1', 0).attr('y1', 0)
+            .attr('x2', 30).attr('y2', 0)
+            .attr('stroke', '#3498db')
+            .attr('stroke-width', 3);
+        legend.append('text')
+            .attr('x', 35).attr('y', 5)
+            .text('f(x)')
+            .style('font-size', '14px');
+        
+        legend.append('line')
+            .attr('x1', 0).attr('y1', 20)
+            .attr('x2', 30).attr('y2', 20)
+            .attr('stroke', '#9b59b6')
+            .attr('stroke-width', 2)
+            .attr('stroke-dasharray', '5,5');
+        legend.append('text')
+            .attr('x', 35).attr('y', 25)
+            .text("f'(x)")
+            .style('font-size', '14px');
+    }
+
+    // 第7页：极值概念
+    function visualizeExtremumConcept(containerId) {
+        const setup = setupD3(containerId);
+        if (!setup) return;
+        const { g, width, height } = setup;
+        
+        const xScale = d3.scaleLinear().domain([-3, 3]).range([0, width]);
+        const yScale = d3.scaleLinear().domain([-4, 4]).range([height, 0]);
+        
+        drawAxes(g, xScale, yScale, width, height);
+        
+        // 函数 f(x) = x⁴ - 2x²
+        const f = x => Math.pow(x, 4) - 2 * x * x;
+        const data = d3.range(-2.5, 2.5, 0.05).map(x => ({x: x, y: f(x)}));
+        const line = d3.line().x(d => xScale(d.x)).y(d => yScale(d.y));
+        
+        const path = g.append('path')
+            .datum(data)
+            .attr('d', line)
+            .attr('fill', 'none')
+            .attr('stroke', '#3498db')
+            .attr('stroke-width', 3);
+        
+        // 渐进绘制动画
+        const totalLength = path.node().getTotalLength();
+        path
+            .attr('stroke-dasharray', totalLength + ' ' + totalLength)
+            .attr('stroke-dashoffset', totalLength)
+            .transition()
+            .duration(2000)
+            .attr('stroke-dashoffset', 0);
+        
+        // 标记极值点
+        const extrema = [
+            {x: -1, y: f(-1), type: '极小值', color: '#2ecc71'},
+            {x: 0, y: f(0), type: '极大值', color: '#e74c3c'},
+            {x: 1, y: f(1), type: '极小值', color: '#2ecc71'}
+        ];
+        
+        extrema.forEach((point, i) => {
+            setTimeout(() => {
+                // 极值点
+                g.append('circle')
+                    .attr('cx', xScale(point.x))
+                    .attr('cy', yScale(point.y))
+                    .attr('r', 0)
+                    .attr('fill', point.color)
+                    .attr('class', 'pulse')
+                    .transition()
+                    .duration(500)
+                    .attr('r', 8);
+                
+                // 标签
+                g.append('text')
+                    .attr('x', xScale(point.x))
+                    .attr('y', yScale(point.y) + (point.type === '极大值' ? -20 : 30))
+                    .text(point.type)
+                    .style('font-size', '14px')
+                    .style('font-weight', 'bold')
+                    .style('text-anchor', 'middle')
+                    .style('fill', point.color)
+                    .style('opacity', 0)
+                    .transition()
+                    .duration(500)
+                    .style('opacity', 1);
+                
+                // 水平切线
+                g.append('line')
+                    .attr('x1', xScale(point.x) - 30)
+                    .attr('x2', xScale(point.x) + 30)
+                    .attr('y1', yScale(point.y))
+                    .attr('y2', yScale(point.y))
+                    .attr('stroke', '#f39c12')
+                    .attr('stroke-width', 2)
+                    .attr('stroke-dasharray', '3,3')
+                    .attr('opacity', 0)
+                    .transition()
+                    .duration(500)
+                    .attr('opacity', 0.7);
+            }, 2500 + i * 500);
+        });
+    }
+
+    // 第8页：极值判断
+    function visualizeExtremumTest(containerId) {
+        const setup = setupD3(containerId);
+        if (!setup) return;
+        const { container, g, width, height } = setup;
+        
+        const xScale = d3.scaleLinear().domain([-3, 3]).range([0, width]);
+        const yScale = d3.scaleLinear().domain([-5, 5]).range([height, 0]);
+        
+        drawAxes(g, xScale, yScale, width, height);
+        
+        // 函数和导数
+        const f = x => x * x * x - 3 * x;
+        const fPrime = x => 3 * x * x - 3;
+        
+        const data = d3.range(-3, 3.1, 0.05).map(x => ({x: x, y: f(x)}));
+        const line = d3.line().x(d => xScale(d.x)).y(d => yScale(d.y));
+        
+        g.append('path')
+            .datum(data)
+            .attr('d', line)
+            .attr('fill', 'none')
+            .attr('stroke', '#3498db')
+            .attr('stroke-width', 3);
+        
+        // 标记符号变化
+        const criticalPoints = [-1, 1];
+        
+        criticalPoints.forEach((x0, i) => {
+            const leftSign = fPrime(x0 - 0.1) > 0 ? '+' : '-';
+            const rightSign = fPrime(x0 + 0.1) > 0 ? '+' : '-';
+            
+            setTimeout(() => {
+                // 极值点
+                g.append('circle')
+                    .attr('cx', xScale(x0))
+                    .attr('cy', yScale(f(x0)))
+                    .attr('r', 0)
+                    .attr('fill', leftSign === '+' && rightSign === '-' ? '#e74c3c' : '#2ecc71')
+                    .transition()
+                    .duration(500)
+                    .attr('r', 8);
+                
+                // 导数符号
+                g.append('text')
+                    .attr('x', xScale(x0 - 0.5))
+                    .attr('y', height - 10)
+                    .text(leftSign)
+                    .style('font-size', '20px')
+                    .style('font-weight', 'bold')
+                    .style('fill', leftSign === '+' ? '#2ecc71' : '#e74c3c')
+                    .style('opacity', 0)
+                    .transition()
+                    .duration(500)
+                    .style('opacity', 1);
+                
+                g.append('text')
+                    .attr('x', xScale(x0 + 0.5))
+                    .attr('y', height - 10)
+                    .text(rightSign)
+                    .style('font-size', '20px')
+                    .style('font-weight', 'bold')
+                    .style('fill', rightSign === '+' ? '#2ecc71' : '#e74c3c')
+                    .style('opacity', 0)
+                    .transition()
+                    .duration(500)
+                    .style('opacity', 1);
+                
+                // 箭头表示变化
+                const arrow = g.append('text')
+                    .attr('x', xScale(x0))
+                    .attr('y', height - 10)
+                    .style('font-size', '20px')
+                    .style('text-anchor', 'middle')
+                    .style('opacity', 0);
+                
+                if (leftSign === '+' && rightSign === '-') {
+                    arrow.text('↘').style('fill', '#e74c3c');
+                } else {
+                    arrow.text('↗').style('fill', '#2ecc71');
+                }
+                
+                arrow.transition()
+                    .duration(500)
+                    .style('opacity', 1);
+            }, 1000 + i * 1000);
+        });
+    }
+
+    // 第9页：最值问题
+    function visualizeMaxMin(containerId) {
+        const setup = setupD3(containerId);
+        if (!setup) return;
+        const { g, width, height } = setup;
+        
+        const xScale = d3.scaleLinear().domain([-1, 4]).range([0, width]);
+        const yScale = d3.scaleLinear().domain([-5, 10]).range([height, 0]);
+        
+        drawAxes(g, xScale, yScale, width, height);
+        
+        // 在区间[0, 3]上的函数
+        const f = x => x * x * x - 6 * x * x + 9 * x;
+        const interval = [0, 3];
+        
+        // 绘制函数
+        const data = d3.range(interval[0], interval[1] + 0.01, 0.05).map(x => ({x: x, y: f(x)}));
+        const line = d3.line().x(d => xScale(d.x)).y(d => yScale(d.y));
+        
+        g.append('path')
+            .datum(data)
+            .attr('d', line)
+            .attr('fill', 'none')
+            .attr('stroke', '#3498db')
+            .attr('stroke-width', 3);
+        
+        // 区间端点
+        [interval[0], interval[1]].forEach(x => {
+            g.append('line')
+                .attr('x1', xScale(x))
+                .attr('y1', yScale(-5))
+                .attr('x2', xScale(x))
+                .attr('y2', yScale(10))
+                .attr('stroke', '#95a5a6')
+                .attr('stroke-width', 2)
+                .attr('stroke-dasharray', '5,5')
+                .attr('opacity', 0)
+                .transition()
+                .duration(500)
+                .attr('opacity', 0.5);
+        });
+        
+        // 标记关键点
+        const points = [
+            {x: 0, y: f(0), type: '端点'},
+            {x: 1, y: f(1), type: '极大值'},
+            {x: 3, y: f(3), type: '端点'}
+        ];
+        
+        const maxPoint = points.reduce((max, p) => p.y > max.y ? p : max);
+        const minPoint = points.reduce((min, p) => p.y < min.y ? p : min);
+        
+        points.forEach((point, i) => {
+            setTimeout(() => {
+                const isMax = point === maxPoint;
+                const isMin = point === minPoint;
+                
+                g.append('circle')
+                    .attr('cx', xScale(point.x))
+                    .attr('cy', yScale(point.y))
+                    .attr('r', 0)
+                    .attr('fill', isMax ? '#e74c3c' : (isMin ? '#2ecc71' : '#f39c12'))
+                    .attr('class', isMax || isMin ? 'pulse' : '')
+                    .transition()
+                    .duration(500)
+                    .attr('r', 8);
+                
+                g.append('text')
+                    .attr('x', xScale(point.x))
+                    .attr('y', yScale(point.y) - 15)
+                    .text(isMax ? '最大值' : (isMin ? '最小值' : point.type))
+                    .style('font-size', '12px')
+                    .style('text-anchor', 'middle')
+                    .style('font-weight', 'bold')
+                    .style('fill', isMax ? '#e74c3c' : (isMin ? '#2ecc71' : '#f39c12'))
+                    .style('opacity', 0)
+                    .transition()
+                    .duration(500)
+                    .style('opacity', 1);
+            }, 1000 + i * 500);
+        });
+    }
+
+    // 第10页：成本优化
+    function visualizeCostOptimization(containerId) {
+        const setup = setupD3(containerId);
+        if (!setup) return;
+        const { container, g, width, height } = setup;
+        
+        const xScale = d3.scaleLinear().domain([0, 12]).range([0, width]);
+        const yScale = d3.scaleLinear().domain([70, 120]).range([height, 0]);
+        
+        drawAxes(g, xScale, yScale, width, height);
+        
+        // 成本函数 C(x) = x² - 10x + 100
+        const C = x => x * x - 10 * x + 100;
+        
+        const data = d3.range(0, 12, 0.1).map(x => ({x: x, y: C(x)}));
+        const line = d3.line().x(d => xScale(d.x)).y(d => yScale(d.y));
+        
+        const path = g.append('path')
+            .datum(data)
+            .attr('d', line)
+            .attr('fill', 'none')
+            .attr('stroke', '#3498db')
+            .attr('stroke-width', 3);
+        
+        // 动画绘制
+        const totalLength = path.node().getTotalLength();
+        path
+            .attr('stroke-dasharray', totalLength + ' ' + totalLength)
+            .attr('stroke-dashoffset', totalLength)
+            .transition()
+            .duration(2000)
+            .attr('stroke-dashoffset', 0);
+        
+        // 最小值点
+        const minX = 5;
+        const minY = C(minX);
+        
+        setTimeout(() => {
+            g.append('circle')
+                .attr('cx', xScale(minX))
+                .attr('cy', yScale(minY))
+                .attr('r', 0)
+                .attr('fill', '#2ecc71')
+                .attr('class', 'pulse')
+                .transition()
+                .duration(500)
+                .attr('r', 10);
+            
+            // 标注
+            g.append('text')
+                .attr('x', xScale(minX))
+                .attr('y', yScale(minY) - 20)
+                .text(`最小成本: ${minY}万元`)
+                .style('font-size', '16px')
+                .style('font-weight', 'bold')
+                .style('text-anchor', 'middle')
+                .style('fill', '#2ecc71')
+                .style('opacity', 0)
+                .transition()
+                .duration(500)
+                .style('opacity', 1);
+            
+            g.append('text')
+                .attr('x', xScale(minX))
+                .attr('y', yScale(minY) + 30)
+                .text(`产量: ${minX}百件`)
+                .style('font-size', '14px')
+                .style('text-anchor', 'middle')
+                .style('fill', '#34495e')
+                .style('opacity', 0)
+                .transition()
+                .duration(500)
+                .style('opacity', 1);
+        }, 2500);
+        
+        // 坐标轴标签
+        g.append('text')
+            .attr('x', width / 2)
+            .attr('y', height + 35)
+            .text('产量（百件）')
+            .style('font-size', '14px')
+            .style('text-anchor', 'middle');
+        
+        g.append('text')
+            .attr('x', -height / 2)
+            .attr('y', -25)
+            .attr('transform', 'rotate(-90)')
+            .text('成本（万元）')
+            .style('font-size', '14px')
+            .style('text-anchor', 'middle');
+    }
+
+    // 第11页：利润优化
+    function visualizeProfitOptimization(containerId) {
+        const setup = setupD3(containerId);
+        if (!setup) return;
+        const { g, width, height } = setup;
+        
+        const xScale = d3.scaleLinear().domain([0, 10]).range([0, width]);
+        const yScale = d3.scaleLinear().domain([-25, 20]).range([height, 0]);
+        
+        drawAxes(g, xScale, yScale, width, height);
+        
+        // 利润函数 P(x) = -x² + 12x - 20
+        const P = x => -x * x + 12 * x - 20;
+        
+        const data = d3.range(0, 10, 0.1).map(x => ({x: x, y: P(x)}));
+        const line = d3.line().x(d => xScale(d.x)).y(d => yScale(d.y));
+        
+        const path = g.append('path')
+            .datum(data)
+            .attr('d', line)
+            .attr('fill', 'none')
+            .attr('stroke', '#e74c3c')
+            .attr('stroke-width', 3);
+        
+        // 动画绘制
+        const totalLength = path.node().getTotalLength();
+        path
+            .attr('stroke-dasharray', totalLength + ' ' + totalLength)
+            .attr('stroke-dashoffset', totalLength)
+            .transition()
+            .duration(2000)
+            .attr('stroke-dashoffset', 0);
+        
+        // 最大值点
+        const maxX = 6;
+        const maxY = P(maxX);
+        
+        setTimeout(() => {
+            g.append('circle')
+                .attr('cx', xScale(maxX))
+                .attr('cy', yScale(maxY))
+                .attr('r', 0)
+                .attr('fill', '#f39c12')
+                .attr('class', 'pulse')
+                .transition()
+                .duration(500)
+                .attr('r', 10);
+            
+            // 盈亏平衡点
+            const breakEven1 = 2;
+            const breakEven2 = 10;
+            
+            [breakEven1, breakEven2].forEach(x => {
+                g.append('circle')
+                    .attr('cx', xScale(x))
+                    .attr('cy', yScale(0))
+                    .attr('r', 0)
+                    .attr('fill', '#95a5a6')
+                    .transition()
+                    .duration(500)
+                    .attr('r', 6);
+            });
+            
+            // 标注
+            g.append('text')
+                .attr('x', xScale(maxX))
+                .attr('y', yScale(maxY) - 20)
+                .text(`最大利润: ${maxY}万元`)
+                .style('font-size', '16px')
+                .style('font-weight', 'bold')
+                .style('text-anchor', 'middle')
+                .style('fill', '#f39c12')
+                .style('opacity', 0)
+                .transition()
+                .duration(500)
+                .style('opacity', 1);
+        }, 2500);
+    }
+
+    // 第12页：容器设计
+    function visualizeContainerDesign(containerId) {
+        const setup = setupD3(containerId);
+        if (!setup) return;
+        const { container, g, width, height } = setup;
+        
+        // 创建滑块控制
+        const sliderContainer = container.append('div')
+            .attr('class', 'slider-container');
+        
+        sliderContainer.append('label')
+            .text('剪去正方形边长: ')
+            .style('font-weight', 'bold');
+        
+        const valueDisplay = sliderContainer.append('span')
+            .text('3.33 cm')
+            .style('margin-left', '10px')
+            .style('color', '#3498db');
+        
+        const slider = sliderContainer.append('input')
+            .attr('type', 'range')
+            .attr('min', '0')
+            .attr('max', '10')
+            .attr('step', '0.1')
+            .attr('value', '3.33')
+            .attr('class', 'slider')
+            .style('margin-top', '10px');
+        
+        const xScale = d3.scaleLinear().domain([0, 10]).range([0, width]);
+        const yScale = d3.scaleLinear().domain([0, 700]).range([height, 0]);
+        
+        drawAxes(g, xScale, yScale, width, height);
+        
+        // 容积函数 V(x) = x(20-2x)²
+        const V = x => x * Math.pow(20 - 2 * x, 2);
+        
+        const data = d3.range(0.1, 10, 0.1).map(x => ({x: x, y: V(x)}));
+        const line = d3.line().x(d => xScale(d.x)).y(d => yScale(d.y));
+        
+        const path = g.append('path')
+            .datum(data)
+            .attr('d', line)
+            .attr('fill', 'none')
+            .attr('stroke', '#3498db')
+            .attr('stroke-width', 3);
+        
+        const point = g.append('circle')
+            .attr('r', 8)
+            .attr('fill', '#e74c3c')
+            .attr('class', 'pulse');
+        
+        const volumeText = g.append('text')
+            .style('font-size', '16px')
+            .style('font-weight', 'bold')
+            .style('fill', '#e74c3c');
+        
+        // 更新函数
+        function update(x) {
+            const volume = V(x);
+            
+            point
+                .attr('cx', xScale(x))
+                .attr('cy', yScale(volume));
+            
+            volumeText
+                .attr('x', xScale(x))
+                .attr('y', yScale(volume) - 15)
+                .text(`V = ${volume.toFixed(1)} cm³`)
+                .style('text-anchor', 'middle');
+            
+            valueDisplay.text(`${x} cm`);
+        }
+        
+        // 初始显示最优点
+        update(10/3);
+        
+        // 滑块事件
+        slider.on('input', function() {
+            update(+this.value);
+        });
+        
+        // 标注最优点
+        g.append('line')
+            .attr('x1', xScale(10/3))
+            .attr('y1', yScale(0))
+            .attr('x2', xScale(10/3))
+            .attr('y2', yScale(V(10/3)))
+            .attr('stroke', '#e74c3c')
+            .attr('stroke-width', 1)
+            .attr('stroke-dasharray', '3,3')
+            .attr('opacity', 0.5);
+    }
+
+    // 第13页：凹凸性
+    function visualizeConcavity(containerId) {
+        const setup = setupD3(containerId);
+        if (!setup) return;
+        const { g, width, height } = setup;
+        
+        const xScale = d3.scaleLinear().domain([-3, 3]).range([0, width]);
+        const yScale = d3.scaleLinear().domain([-2, 10]).range([height, 0]);
+        
+        drawAxes(g, xScale, yScale, width, height);
+        
+        // 函数 f(x) = x³ - 3x²
+        const f = x => x * x * x - 3 * x * x;
+        
+        const data = d3.range(-2, 3, 0.05).map(x => ({x: x, y: f(x)}));
+        const line = d3.line().x(d => xScale(d.x)).y(d => yScale(d.y));
+        
+        // 凹向下区域
+        g.append('rect')
+            .attr('x', 0)
+            .attr('y', 0)
+            .attr('width', xScale(1))
+            .attr('height', height)
+            .attr('fill', '#3498db')
+            .attr('opacity', 0.1);
+        
+        // 凹向上区域
+        g.append('rect')
+            .attr('x', xScale(1))
+            .attr('y', 0)
+            .attr('width', width - xScale(1))
+            .attr('height', height)
+            .attr('fill', '#e74c3c')
+            .attr('opacity', 0.1);
+        
+        // 函数曲线
+        const path = g.append('path')
+            .datum(data)
+            .attr('d', line)
+            .attr('fill', 'none')
+            .attr('stroke', '#9b59b6')
+            .attr('stroke-width', 3);
+        
+        // 动画绘制
+        const totalLength = path.node().getTotalLength();
+        path
+            .attr('stroke-dasharray', totalLength + ' ' + totalLength)
+            .attr('stroke-dashoffset', totalLength)
+            .transition()
+            .duration(2000)
+            .attr('stroke-dashoffset', 0);
+        
+        // 拐点
+        const inflectionX = 1;
+        
+        setTimeout(() => {
+            g.append('circle')
+                .attr('cx', xScale(inflectionX))
+                .attr('cy', yScale(f(inflectionX)))
+                .attr('r', 0)
+                .attr('fill', '#f39c12')
+                .transition()
+                .duration(500)
+                .attr('r', 8);
+            
+            g.append('text')
+                .attr('x', xScale(inflectionX))
+                .attr('y', yScale(f(inflectionX)) - 15)
+                .text('拐点')
+                .style('font-size', '14px')
+                .style('font-weight', 'bold')
+                .style('text-anchor', 'middle')
+                .style('fill', '#f39c12')
+                .style('opacity', 0)
+                .transition()
+                .duration(500)
+                .style('opacity', 1);
+        }, 2500);
+        
+        // 标签
+        setTimeout(() => {
+            g.append('text')
+                .attr('x', xScale(-1))
+                .attr('y', 30)
+                .text('凹向下 ∩')
+                .style('font-size', '16px')
+                .style('fill', '#3498db')
+                .style('font-weight', 'bold')
+                .style('text-anchor', 'middle')
+                .style('opacity', 0)
+                .transition()
+                .duration(500)
+                .style('opacity', 1);
+            
+            g.append('text')
+                .attr('x', xScale(2))
+                .attr('y', 30)
+                .text('凹向上 ∪')
+                .style('font-size', '16px')
+                .style('fill', '#e74c3c')
+                .style('font-weight', 'bold')
+                .style('text-anchor', 'middle')
+                .style('opacity', 0)
+                .transition()
+                .duration(500)
+                .style('opacity', 1);
+        }, 3000);
+    }
+
+    // 第14页：曲线描绘
+    function visualizeCurveSketching(containerId) {
+        const setup = setupD3(containerId);
+        if (!setup) return;
+        const { g, width, height } = setup;
+        
+        const xScale = d3.scaleLinear().domain([-4, 4]).range([0, width]);
+        const yScale = d3.scaleLinear().domain([-5, 5]).range([height, 0]);
+        
+        drawAxes(g, xScale, yScale, width, height);
+        
+        // 综合函数 f(x) = x³ - 3x
+        const f = x => x * x * x - 3 * x;
+        
+        const data = d3.range(-3, 3, 0.05).map(x => ({x: x, y: f(x)}));
+        const line = d3.line().x(d => xScale(d.x)).y(d => yScale(d.y));
+        
+        // 动画绘制曲线
+        const path = g.append('path')
+            .datum(data)
+            .attr('d', line)
+            .attr('fill', 'none')
+            .attr('stroke', '#3498db')
+            .attr('stroke-width', 3);
+        
+        const totalLength = path.node().getTotalLength();
+        
+        path
+            .attr('stroke-dasharray', totalLength + ' ' + totalLength)
+            .attr('stroke-dashoffset', totalLength)
+            .transition()
+            .duration(3000)
+            .attr('stroke-dashoffset', 0);
+        
+        // 依次标记关键点
+        const keyPoints = [
+            {x: -1, y: 2, type: '极大值', color: '#e74c3c', delay: 1000},
+            {x: 1, y: -2, type: '极小值', color: '#2ecc71', delay: 1500},
+            {x: 0, y: 0, type: '拐点', color: '#f39c12', delay: 2000}
+        ];
+        
+        keyPoints.forEach(point => {
+            setTimeout(() => {
+                g.append('circle')
+                    .attr('cx', xScale(point.x))
+                    .attr('cy', yScale(point.y))
+                    .attr('r', 0)
+                    .attr('fill', point.color)
+                    .transition()
+                    .duration(500)
+                    .attr('r', 6);
+                
+                g.append('text')
+                    .attr('x', xScale(point.x))
+                    .attr('y', yScale(point.y) + (point.type === '极大值' ? -15 : 25))
+                    .text(point.type)
+                    .style('font-size', '12px')
+                    .style('text-anchor', 'middle')
+                    .style('fill', point.color)
+                    .style('font-weight', 'bold')
+                    .style('opacity', 0)
+                    .transition()
+                    .duration(500)
+                    .style('opacity', 1);
+            }, 3000 + point.delay);
+        });
+    }
+</script>
+
+</body>
+</html>
