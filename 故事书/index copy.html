@@ -3,28 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>数学故事书 - 星空之旅</title>
+    <title>数学故事书 - 智慧之火</title>
     <style>
-        /* 优化版设计系统 */
+        /* 全新的炉火暖色主题 */
         :root {
-            --primary: #4f46e5;
-            --primary-dark: #4338ca;
-            --primary-light: #6366f1;
-            --secondary: #7c3aed;
-            --accent: #06ffa5;
-            --accent-warm: #ff6b6b;
-            --dark: #0f172a;
-            --dark-surface: #1e293b;
-            --light: #ffffff;
-            --border: #334155;
-            --text: #e2e8f0;
-            --text-muted: #94a3b8;
-            --glass: rgba(255, 255, 255, 0.1);
-            --glass-border: rgba(255, 255, 255, 0.2);
-            --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.3), 0 2px 4px -2px rgb(0 0 0 / 0.3);
-            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.4), 0 4px 6px -4px rgb(0 0 0 / 0.4);
-            --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.5), 0 8px 10px -6px rgb(0 0 0 / 0.5);
-            --glow: 0 0 20px rgba(6, 255, 165, 0.3);
+            --primary: #ea580c; /* Orange-600 */
+            --primary-dark: #c2410c; /* Orange-700 */
+            --accent: #f59e0b; /* Amber-500 */
+            --background-dark: #422006;
+            --surface: #7f1d1d; /* Red-900 */
+            --text-primary: #fff7ed; /* Orange-50 */
+            --text-secondary: #fed7aa; /* Orange-200 */
+            --glass-bg: rgba(127, 29, 29, 0.2); 
+            --glass-border: rgba(253, 186, 116, 0.3); /* Orange-300 with opacity */
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.3), 0 4px 6px -4px rgb(0 0 0 / 0.3);
+            --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.4), 0 8px 10px -6px rgb(0 0 0 / 0.4);
         }
 
         * {
@@ -43,57 +36,46 @@
         body {
             font-family: 'Iansui-Regular', serif;
             font-size: 18px;
-            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #312e81 100%);
+            background: radial-gradient(ellipse at bottom, #7f1d1d 0%, #422006 100%);
             width: 100vw;
             min-height: 100vh;
             margin: 0;
             padding: 0;
             position: relative;
-            color: var(--text);
+            color: var(--text-primary);
+            overflow: hidden;
         }
 
-        /* 简化版星空背景 */
-        #starry-sky {
+        /* 炉火背景 Canvas */
+        #fire-canvas {
             position: fixed;
-            top: 0;
+            bottom: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: -1;
-        }
-
-        /* 数字碎片背景动效 */
-        #glitchCanvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
             pointer-events: none;
-            opacity: 0.15;
+            z-index: 0;
         }
 
         /* 主内容区 */
         .main-content {
             width: 100vw;
-            min-height: 100vh;
+            height: 100vh;
             position: relative;
+            z-index: 1;
         }
 
-        /* 优化版欢迎页 */
+        /* 欢迎页 */
         .welcome-page {
             width: 100%;
-            min-height: 100vh;
+            height: 100vh;
             display: flex;
             align-items: flex-start;
             justify-content: center;
-            color: white;
-            padding: 40px 20px 40px 20px;
+            padding: 40px 20px;
             box-sizing: border-box;
             overflow-y: auto;
             position: relative;
-            background: transparent;
         }
 
         .welcome-content {
@@ -105,33 +87,26 @@
             align-items: center;
             position: relative;
             z-index: 2;
-            background: transparent;
-            padding: 10px 40px 20px 40px;
-            min-height: auto;
+            padding: 10px 40px 20px;
         }
 
         .welcome-title-section {
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 20px;
+            gap: 10px;
             width: 100%;
-            margin-bottom: 15px;
-            position: relative;
-            z-index: 3;
-            flex-wrap: wrap;
+            margin-bottom: 25px;
+            text-align: center;
         }
-
+        
         .welcome-items-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
+            gap: 25px;
             width: 100%;
             max-width: 1200px;
-            position: relative;
-            z-index: 3;
-            justify-content: center;
-            align-items: stretch;
         }
 
         .welcome-title {
@@ -140,42 +115,46 @@
             font-weight: 400;
             margin: 0;
             letter-spacing: 3px;
-            background: linear-gradient(135deg, var(--accent), #67e8f9, var(--accent-warm));
+            background: linear-gradient(135deg, #f59e0b, #fbbf24, #fff7ed);
             -webkit-background-clip: text;
             background-clip: text;
-            line-height: 1.1;
+            line-height: 1.2;
             -webkit-text-fill-color: transparent;
-            filter: drop-shadow(0 0 10px rgba(6, 255, 165, 0.3));
+            text-shadow: 0 0 20px rgba(234, 88, 12, 0.5);
         }
 
         .welcome-subtitle {
             font-family: 'Iansui-Regular', serif;
-            font-size: 20px;
-            opacity: 0.95;
+            font-size: 18px;
             margin: 0;
             line-height: 1.6;
             font-weight: 400;
-            color: var(--text);
-            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+            color: var(--text-secondary);
         }
 
         .welcome-item {
             display: flex;
+            flex-direction: column; /* 让图标和文字垂直排列 */
             align-items: center;
-            gap: 18px;
-            padding: 20px 25px;
-            background: transparent;
+            justify-content: center;
+            gap: 10px;
+            padding: 20px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
             transition: all 0.3s ease;
-            flex-shrink: 0;
             cursor: pointer;
-            position: relative;
-            will-change: transform;
-            min-height: 80px;
-            height: auto;
+            box-shadow: var(--shadow-lg);
+            text-align: center;
         }
 
         .welcome-item:hover {
-            transform: translateX(8px) translateY(-3px);
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: var(--shadow-xl);
+            border-color: rgba(253, 230, 138, 0.5);
+            background: rgba(127, 29, 29, 0.5);
         }
 
         .welcome-item-icon {
@@ -187,7 +166,6 @@
             justify-content: center;
             transition: transform 0.3s ease;
             color: var(--accent);
-            background: transparent;
         }
 
         .welcome-item-icon svg {
@@ -197,43 +175,18 @@
 
         .welcome-item:hover .welcome-item-icon {
             transform: scale(1.1) rotate(5deg);
+            color: #fef08a; /* Yellow-200 */
         }
 
         .welcome-item-text {
             font-family: 'Iansui-Regular', serif;
-            font-size: 16px;
+            font-size: 18px;
             font-weight: 400;
             letter-spacing: 0.5px;
-            color: var(--text);
-            transition: color 0.3s ease;
+            color: var(--text-primary);
         }
 
-        .welcome-item:hover .welcome-item-text {
-            color: #ffffff;
-        }
-
-        /* 内容显示区域 */
-        .content-display {
-            width: 100%;
-            height: 100vh;
-            display: none;
-            position: relative;
-            background: var(--dark);
-        }
-
-        .content-display.active {
-            display: block;
-        }
-
-        .content-iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
-            background: var(--dark);
-        }
-
-
-        /* 简化版右下角导航栏 */
+        /* 右下角导航栏 */
         .floating-nav-sidebar {
             position: fixed;
             right: 25px;
@@ -243,217 +196,58 @@
             align-items: center;
             gap: 15px;
             z-index: 1000;
-            transition: all 0.3s ease;
         }
 
-        .nav-btn, .sidebar-action-btn, .nav-collapse-btn {
+        .nav-btn {
             width: 55px;
             height: 55px;
             border-radius: 20px;
-            border: 2px solid var(--glass-border);
+            border: 1px solid var(--glass-border);
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 12px;
-            font-weight: 700;
             box-shadow: var(--shadow-lg);
             transition: all 0.3s ease;
-            background: linear-gradient(135deg, 
-                rgba(15, 23, 42, 0.8) 0%, 
-                rgba(30, 41, 59, 0.7) 100%);
+            background: var(--glass-bg);
             backdrop-filter: blur(10px);
-            color: var(--text-muted);
-            position: relative;
-            will-change: transform;
+            color: var(--text-secondary);
         }
 
-        .nav-btn:hover, .sidebar-action-btn:hover, .nav-collapse-btn:hover {
+        .nav-btn:hover {
             transform: translateY(-3px) scale(1.05);
-            box-shadow: var(--glow), var(--shadow-xl);
-            border-color: var(--accent);
+            box-shadow: 0 0 15px rgba(245, 158, 11, 0.5), var(--shadow-xl);
             color: var(--accent);
+            border-color: var(--accent);
         }
 
-        .nav-btn svg {
-            width: 24px;
-            height: 24px;
-            transition: all 0.3s ease;
-        }
-
-        .nav-collapse-btn {
-            font-size: 18px;
-            transition: transform 0.3s ease;
-        }
-
-        .nav-collapse-btn svg {
-            width: 20px;
-            height: 20px;
-        }
-
-        .keyboard-hint {
-            font-size: 11px;
-            color: var(--text-muted);
-            background: linear-gradient(135deg, 
-                rgba(0, 0, 0, 0.8) 0%, 
-                rgba(30, 41, 59, 0.9) 100%);
-            padding: 8px 15px;
-            border-radius: 15px;
-            white-space: nowrap;
-            text-align: center;
-            box-shadow: var(--shadow);
-            transition: all 0.3s ease;
-            backdrop-filter: blur(10px);
-            border: 1px solid var(--glass-border);
-        }
-
-        .keyboard-hint.hidden {
-            opacity: 0;
-            transform: translateY(10px);
-            pointer-events: none;
-        }
-
-        .floating-nav-sidebar.collapsed > *:not(.nav-collapse-btn) {
-            opacity: 0;
-            transform: scale(0.1) translateY(20px);
-            pointer-events: none;
-        }
-
-        .floating-nav-sidebar.collapsed .nav-collapse-btn {
-            transform: rotate(180deg);
-        }
-
-        .nav-divider {
-            width: 35px;
-            height: 2px;
-            background: linear-gradient(90deg, 
-                transparent, 
-                var(--glass-border), 
-                transparent);
-            margin: 8px 0;
-            border-radius: 1px;
-        }
-
-        /* 平板优化 */
-        @media (max-width: 1024px) and (min-width: 769px) {
-            .welcome-content {
-                max-width: 100%;
-                padding: 40px 30px 50px 30px;
-            }
-            
-            .welcome-items-grid {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 20px;
-                max-width: 100%;
-            }
-            
-            .welcome-title {
-                font-size: 42px;
-            }
-        }
-
+        .nav-btn svg { width: 24px; height: 24px; }
+       
         /* 移动端优化 */
         @media (max-width: 768px) {
-            .welcome-page { 
-                padding: 20px 15px 40px 15px; 
-                min-height: 100vh; 
-                overflow-y: auto; 
-            }
-            
-            .welcome-content { 
-                gap: 15px; 
-                max-width: 100%; 
-                padding: 5px 25px 20px 25px; 
-                min-height: auto;
-            }
-            
-            .welcome-items-grid { 
-                grid-template-columns: 1fr; 
-                gap: 12px; 
-                max-width: 100%;
-            }
-            
-            .welcome-title { 
-                font-size: 36px; 
-                letter-spacing: 2px; 
-            }
-            
-            .welcome-title-section {
-                flex-direction: column;
-                gap: 10px;
-            }
-            
-            .welcome-subtitle {
-                font-size: 16px;
-            }
-            
-            .welcome-item { 
-                padding: 18px 20px; 
-            }
-            
-            .welcome-item:hover { 
-                transform: translateX(5px) scale(1.02); 
-            }
-            
-            .welcome-item-text { 
-                font-size: 15px; 
-            }
-            
-            .floating-topbar { 
-                top: 15px; 
-                font-size: 16px; 
-                padding: 15px 30px; 
-                width: 90%; 
-            }
-            
-            .floating-nav-sidebar { 
-                right: 15px; 
-                bottom: 15px; 
-                gap: 12px; 
-            }
-            
-            .nav-btn, .sidebar-action-btn, .nav-collapse-btn { 
-                width: 50px; 
-                height: 50px; 
-            }
+            .welcome-page { padding: 20px 15px; }
+            .welcome-content { padding: 5px 15px; }
+            .welcome-items-grid { grid-template-columns: 1fr; gap: 20px; }
+            .welcome-title { font-size: 36px; }
+            .welcome-subtitle { font-size: 16px; }
+            .welcome-item-text { font-size: 16px; }
+            .floating-nav-sidebar { right: 15px; bottom: 15px; gap: 12px; }
+            .nav-btn { width: 50px; height: 50px; }
         }
 
         /* 滚动条样式 */
-        * {
-            scroll-behavior: smooth;
-        }
-        
-        /* 美化滚动条 */
-        *::-webkit-scrollbar {
-            width: 8px;
-        }
-        *::-webkit-scrollbar-track {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 4px;
-        }
-        *::-webkit-scrollbar-thumb {
-            background: rgba(6, 255, 165, 0.6);
-            border-radius: 4px;
-        }
-        *::-webkit-scrollbar-thumb:hover {
-            background: rgba(6, 255, 165, 0.8);
-        }
+        *::-webkit-scrollbar { width: 8px; }
+        *::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.2); border-radius: 4px; }
+        *::-webkit-scrollbar-thumb { background: rgba(234, 88, 12, 0.6); border-radius: 4px; }
+        *::-webkit-scrollbar-thumb:hover { background: rgba(234, 88, 12, 0.8); }
 
-        /* 简化版加载动画 */
+        /* 加载动画 */
         .welcome-item {
             opacity: 0;
             transform: translateY(20px);
             animation: fadeInUp 0.6s ease-out forwards;
         }
-
-        @keyframes fadeInUp {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* 为每个项目添加少量延迟 */
+        @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
         .welcome-item:nth-child(1) { animation-delay: 0.05s; }
         .welcome-item:nth-child(2) { animation-delay: 0.1s; }
         .welcome-item:nth-child(3) { animation-delay: 0.15s; }
@@ -470,179 +264,111 @@
     </style>
 </head>
 <body>
-<!-- 优化版星空背景 -->
-<canvas id="starry-sky"></canvas>
-
-<!-- 数字碎片背景动效 -->
-<canvas id="glitchCanvas"></canvas>
+<!-- 炉火背景 -->
+<canvas id="fire-canvas"></canvas>
 
 <!-- 主内容区 -->
 <div class="main-content">
-    <!-- 欢迎页 -->
     <div class="welcome-page" id="welcomePage">
         <div class="welcome-content">
             <div class="welcome-title-section">
                 <div class="welcome-title">数学故事书</div>
-                <div class="welcome-subtitle">✨ 星空之旅 - 数学的浪漫传说 ✨</div>
+                <div class="welcome-subtitle">🔥 智慧之火 - 聆听数学的古老传说 🔥</div>
             </div>
             <div class="welcome-items-grid">
                 <div class="welcome-item" onclick="showChapter(0)">
                     <span class="welcome-item-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/>
-                        </svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/></svg>
                     </span>
                     <span class="welcome-item-text">代数故事</span>
                 </div>
                 <div class="welcome-item" onclick="showChapter(1)">
                     <span class="welcome-item-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.94-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
-                        </svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.94-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
                     </span>
                     <span class="welcome-item-text">与幽灵共舞</span>
                 </div>
                 <div class="welcome-item" onclick="showChapter(2)">
                     <span class="welcome-item-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/>
-                        </svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>
                     </span>
                     <span class="welcome-item-text">双子星的诞生</span>
                 </div>
                 <div class="welcome-item" onclick="showChapter(3)">
                     <span class="welcome-item-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                        </svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
                     </span>
                     <span class="welcome-item-text">侯爵的交易</span>
                 </div>
                 <div class="welcome-item" onclick="showChapter(4)">
                     <span class="welcome-item-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
-                        </svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
                     </span>
                     <span class="welcome-item-text">酒桶里的秘密宇宙</span>
                 </div>
                 <div class="welcome-item" onclick="showChapter(5)">
                     <span class="welcome-item-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/>
-                        </svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>
                     </span>
                     <span class="welcome-item-text">尼莫的海洋</span>
                 </div>
                 <div class="welcome-item" onclick="showChapter(6)">
                     <span class="welcome-item-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M3 3h18v2H3V3zm0 4h18v2H3V7zm0 4h18v2H3v-2zm0 4h18v2H3v-2zm0 4h18v2H3v-2z"/>
-                        </svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M3 3h18v2H3V3zm0 4h18v2H3V7zm0 4h18v2H3v-2zm0 4h18v2H3v-2zm0 4h18v2H3v-2z"/></svg>
                     </span>
                     <span class="welcome-item-text">猎物与捕食者的舞蹈</span>
                 </div>
                 <div class="welcome-item" onclick="showChapter(7)">
                     <span class="welcome-item-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                        </svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
                     </span>
                     <span class="welcome-item-text">通往产量山巅的路径</span>
                 </div>
                 <div class="welcome-item" onclick="showChapter(8)">
                     <span class="welcome-item-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/>
-                        </svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>
                     </span>
                     <span class="welcome-item-text">上帝的语言</span>
                 </div>
                 <div class="welcome-item" onclick="showChapter(9)">
                     <span class="welcome-item-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M3 3h18v2H3V3zm0 4h18v2H3V7zm0 4h18v2H3v-2zm0 4h18v2H3v-2zm0 4h18v2H3v-2z"/>
-                        </svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M3 3h18v2H3V3zm0 4h18v2H3V7zm0 4h18v2H3v-2zm0 4h18v2H3v-2zm0 4h18v2H3v-2z"/></svg>
                     </span>
                     <span class="welcome-item-text">看透人心的特征脸</span>
                 </div>
                 <div class="welcome-item" onclick="showChapter(10)">
                     <span class="welcome-item-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                        </svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
                     </span>
                     <span class="welcome-item-text">聆听宇宙的谐波</span>
                 </div>
                 <div class="welcome-item" onclick="showChapter(11)">
                     <span class="welcome-item-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/>
-                        </svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>
                     </span>
                     <span class="welcome-item-text">游戏世界的光影魔法师</span>
                 </div>
                 <div class="welcome-item" onclick="showChapter(12)">
                     <span class="welcome-item-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/>
-                        </svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>
                     </span>
                     <span class="welcome-item-text">幽灵地图与死亡水泵</span>
                 </div>
             </div>
         </div>
     </div>
-
-    <!-- 内容显示区域 -->
-    <div class="content-display" id="contentDisplay">
-        <iframe class="content-iframe" id="contentFrame"></iframe>
-    </div>
 </div>
 
-
-<!-- 键盘提示 -->
-<div class="keyboard-hint hidden" id="keyboardHint">
-    使用 ← → 键导航，Home 键返回目录，End 键回主站
-</div>
-
-<!-- 优化版右下角导航栏 -->
+<!-- 右下角导航栏 -->
 <div class="floating-nav-sidebar" id="navSidebar">
-    <button class="nav-btn" onclick="goPrev()" title="上一章">
-        <svg viewBox="0 0 24 24" fill="currentColor">
-            <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
-        </svg>
-    </button>
-    <button class="nav-btn" onclick="goHome()" title="返回目录">
-        <svg viewBox="0 0 24 24" fill="currentColor">
-            <path d="M4 6h16v2H4V6zm0 5h16v2H4v-2zm0 5h16v2H4v-2z"/>
-        </svg>
-    </button>
-    <button class="nav-btn" onclick="goMainSite()" title="返回主站">
-        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="currentColor">
-            <path d="M0 0h24v24H0V0z" fill="none"/>
-            <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8h5z"/>
-        </svg>
-    </button>
-    <button class="nav-btn" onclick="goNext()" title="下一章">
-        <svg viewBox="0 0 24 24" fill="currentColor">
-            <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
-        </svg>
-    </button>
-    <div class="nav-divider"></div>
-    <button class="sidebar-action-btn" id="quickNavBtn" onclick="showQuickNav()" title="跳转">
-        跳转
-    </button>
-    <button class="nav-collapse-btn" id="navCollapseBtn" onclick="toggleNavSidebar()" title="收缩">
-        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="currentColor">
-            <path d="M0 0h24v24H0V0z" fill="none"/>
-            <path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6 1.41 1.41z"/>
-        </svg>
-    </button>
+    <button class="nav-btn" onclick="goPrev()" title="上一章"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg></button>
+    <button class="nav-btn" onclick="goHome()" title="返回目录"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 6h16v2H4V6zm0 5h16v2H4v-2zm0 5h16v2H4v-2z"/></svg></button>
+    <button class="nav-btn" onclick="goMainSite()" title="返回主站"><svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8h5z"/></svg></button>
+    <button class="nav-btn" onclick="goNext()" title="下一章"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg></button>
 </div>
 
 <script>
-    // 章节数据
+    // --- 章节导航逻辑 ---
     const chapters = {
         0: { title: '第1章 代数故事', url: '第一章/代数故事.html' },
         1: { title: '第2章 与幽灵共舞', url: '第二章/与幽灵共舞.html' },
@@ -659,373 +385,133 @@
         12: { title: '第13章 幽灵地图与死亡水泵', url: '第13章/幽灵地图与死亡水泵.html' }
     };
 
-    // 全局变量
-    let currentUrl = '';
-    let currentIndex = -1;
-    let currentOpenChapter = -1;
+    function showChapter(categoryId) {
+        const chapter = chapters[categoryId];
+        if (chapter) {
+            window.location.href = chapter.url;
+        }
+    }
 
-    // 优化版星空背景
-    let canvas, ctx, stars = [], animationId;
+    function goMainSite() {
+        window.location.href = '../index.html';
+    }
+    
+    // 禁用左右导航和Home键，因为这是主目录
+    function goPrev() { /* no-op */ }
+    function goNext() { /* no-op */ }
+    function goHome() { /* no-op */ }
+
+    // --- 炉火动画逻辑 ---
+    const canvas = document.getElementById('fire-canvas');
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+    const particleCount = 150;
+    const mouse = { x: undefined, y: undefined, radius: 150 };
+
+    window.addEventListener('mousemove', (event) => { 
+        mouse.x = event.x; 
+        mouse.y = event.y; 
+    });
+    window.addEventListener('mouseout', () => { 
+        mouse.x = undefined; 
+        mouse.y = undefined; 
+    });
+    window.addEventListener('resize', () => { 
+        setCanvasSize(); 
+        initFireParticles(); 
+    });
 
     function setCanvasSize() {
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
     }
 
-    function createStars() {
-        stars = [];
-        // 减少星星数量以提高性能
-        const numStars = Math.min(150, Math.floor((canvas.width * canvas.height) / 12000));
-        for (let i = 0; i < numStars; i++) {
-            stars.push({
-                x: Math.random() * canvas.width,
-                y: Math.random() * canvas.height,
-                radius: Math.random() * 1.5 + 0.5,
-                vx: (Math.random() - 0.5) * 0.2,
-                vy: (Math.random() - 0.5) * 0.2,
-                opacity: Math.random() * 0.8 + 0.2,
-                twinkle: Math.random() * 0.01 + 0.005
-            });
+    class Particle {
+        constructor(x, y) {
+            this.x = x || Math.random() * canvas.width;
+            this.y = y || canvas.height + Math.random() * 100;
+            this.size = Math.random() * 3 + 1;
+            this.baseSpeedY = (Math.random() * 1 + 1.5) * -1;
+            this.speedY = this.baseSpeedY;
+            this.speedX = Math.random() * 2 - 1;
+            this.life = Math.random() * 150 + 50;
+            this.maxLife = this.life;
+            this.hue = Math.random() * 20 + 25; // Orange-Yellow range
+            this.opacity = 1;
         }
-    }
 
-    function draw() {
-        // 简化背景渐变
-        const gradient = ctx.createRadialGradient(
-            canvas.width/2, canvas.height/2, 0,
-            canvas.width/2, canvas.height/2, Math.max(canvas.width, canvas.height)/2
-        );
-        gradient.addColorStop(0, 'rgba(30, 27, 75, 0.6)');
-        gradient.addColorStop(1, 'rgba(15, 23, 42, 0.9)');
-        
-        ctx.fillStyle = gradient;
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        
-        // 绘制星星（移除复杂光晕效果）
-        stars.forEach(star => {
+        update() {
+            this.life -= 1;
+            if (this.life <= 0) {
+                this.reset();
+            }
+
+            // Mouse interaction
+            if (mouse.x !== undefined && mouse.y !== undefined) {
+                const dx = this.x - mouse.x;
+                const dy = this.y - mouse.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                if (distance < mouse.radius) {
+                    const force = (mouse.radius - distance) / mouse.radius;
+                    this.x += dx / distance * force * 2;
+                    this.y += dy / distance * force * 2;
+                    this.speedY *= 0.95;
+                }
+            } else {
+                 this.speedY = this.baseSpeedY;
+            }
+
+            this.y += this.speedY;
+            this.x += this.speedX + (Math.sin(this.life * 0.1)); // Wobble
+            
+            this.opacity = (this.life / this.maxLife) * 0.8;
+        }
+
+        draw() {
             ctx.beginPath();
-            ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
-            ctx.fillStyle = `rgba(255, 255, 255, ${star.opacity})`;
+            ctx.fillStyle = `hsla(${this.hue}, 100%, 50%, ${this.opacity})`;
+            ctx.shadowColor = `hsla(${this.hue}, 100%, 50%, 1)`;
+            ctx.shadowBlur = this.size * 2;
+            
+            const r = this.size * (this.life / this.maxLife);
+            ctx.moveTo(this.x, this.y - r);
+            ctx.quadraticCurveTo(this.x - r, this.y, this.x, this.y + r);
+            ctx.quadraticCurveTo(this.x + r, this.y, this.x, this.y - r);
+
             ctx.fill();
-        });
-    }
-
-    function update() {
-        // 简化星星更新逻辑
-        stars.forEach(star => {
-            star.x += star.vx;
-            star.y += star.vy;
-            
-            // 简化闪烁效果
-            star.opacity += star.twinkle * (Math.random() - 0.5);
-            star.opacity = Math.max(0.2, Math.min(1, star.opacity));
-            
-            // 边界检查
-            if (star.x < 0) star.x = canvas.width;
-            if (star.x > canvas.width) star.x = 0;
-            if (star.y < 0) star.y = canvas.height;
-            if (star.y > canvas.height) star.y = 0;
-        });
-    }
-
-    function tick() {
-        update();
-        draw();
-        animationId = requestAnimationFrame(tick);
-    }
-
-    function loadContent(url, title) {
-        const frame = document.getElementById('contentFrame');
-        const welcome = document.getElementById('welcomePage');
-        const contentDisplay = document.getElementById('contentDisplay');
-        const topbar = document.getElementById('topbar');
-        const keyboardHint = document.getElementById('keyboardHint');
-
-        frame.src = url;
-        contentDisplay.classList.add('active');
-        welcome.style.display = 'none';
-        keyboardHint.classList.remove('hidden');
-
-        currentUrl = url;
-        const displayTitle = title || getChineseTitle(url);
-        topbar.textContent = displayTitle;
-
-        currentIndex = Object.values(chapters).findIndex(ch => ch.url === url);
-    }
-
-    function getChineseTitle(url) {
-        for (let chapter of Object.values(chapters)) {
-            if (chapter.url === url) {
-                return chapter.title;
-            }
         }
-        return url;
-    }
-
-    function showChapter(categoryId) {
-        const chapter = chapters[categoryId];
-        if (!chapter) return;
-
-        // 目录点击：整页跳转
-        window.location.href = chapter.url;
-    }
-
-    function goPrev() {
-        if (currentIndex > 0) {
-            currentIndex--;
-            const chapter = Object.values(chapters)[currentIndex];
-            loadContent(chapter.url, chapter.title);
-        }
-    }
-
-    function goNext() {
-        if (currentIndex < Object.keys(chapters).length - 1) {
-            currentIndex++;
-            const chapter = Object.values(chapters)[currentIndex];
-            loadContent(chapter.url, chapter.title);
-        }
-    }
-
-    function goHome() {
-        const welcome = document.getElementById('welcomePage');
-        const contentDisplay = document.getElementById('contentDisplay');
-        const keyboardHint = document.getElementById('keyboardHint');
         
-        welcome.style.display = 'flex';
-        contentDisplay.classList.remove('active');
-        keyboardHint.classList.add('hidden');
-        
-        currentIndex = -1;
-        currentUrl = '';
+        reset() {
+            this.x = Math.random() * canvas.width;
+            this.y = canvas.height + Math.random() * 50;
+            this.life = Math.random() * 150 + 50;
+            this.maxLife = this.life;
+            this.opacity = 1;
+        }
     }
 
-    function goMainSite() {
-        window.location.href = '../index.html';
+    function initFireParticles() {
+        particles = [];
+        for (let i = 0; i < particleCount; i++) {
+            particles.push(new Particle());
+        }
     }
 
-    function showQuickNav() {
-        if (currentUrl) window.open(currentUrl, '_blank');
-    }
-
-    function toggleNavSidebar() {
-        const navSidebar = document.getElementById('navSidebar');
-        navSidebar.classList.toggle('collapsed');
-    }
-
-    function initKeyboardNavigation() {
-        document.addEventListener('keydown', function(event) {
-            const activeElement = document.activeElement;
-            if (activeElement && (activeElement.tagName === 'INPUT' || activeElement.tagName === 'TEXTAREA' || activeElement.isContentEditable)) return;
-
-            switch(event.key) {
-                case 'ArrowLeft':
-                    event.preventDefault();
-                    goPrev();
-                    break;
-                case 'ArrowRight':
-                    event.preventDefault();
-                    goNext();
-                    break;
-                case 'Home':
-                    event.preventDefault();
-                    goHome();
-                    break;
-                case 'End':
-                    event.preventDefault();
-                    goMainSite();
-                    break;
-            }
+    function animateFire() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        particles.forEach(p => {
+            p.update();
+            p.draw();
         });
+        requestAnimationFrame(animateFire);
     }
 
     // 初始化
     document.addEventListener('DOMContentLoaded', function() {
-        canvas = document.getElementById('starry-sky');
-        ctx = canvas.getContext('2d');
-        
         setCanvasSize();
-        createStars();
-        tick();
-        
-        initKeyboardNavigation();
-        
-        // 窗口大小改变时重新设置画布
-        window.addEventListener('resize', function() {
-            setCanvasSize();
-            createStars();
-        });
+        initFireParticles();
+        animateFire();
     });
-
-    // --- 数字碎片动画配置 ---
-    const CONFIG = {
-        PARTICLE_COUNT: 1500,    // 碎片数量（增加以更激烈）
-        PARTICLE_SIZE: 1.5,      // 碎片大小（增大）
-        GLOW_CHANCE: 0.08,       // 发光几率（增加）
-        GLITCH_CHANCE: 0.15,     // 故障效果几率（增加）
-        
-        // 颜色配置 (与主题协调)
-        COLORS: ['#06ffa5', '#7c3aed', '#4f46e5', '#ff6b6b', '#ffffff'],
-        
-        // 动画阶段时长 (帧) - 更快更激烈
-        DURATION_SCATTER: 80,    // 混沌散乱（更快）
-        DURATION_ASSEMBLE: 30,   // 汇集重组（更快）
-        DURATION_HOLD: 20,       // 完美瞬间（更短）
-        DURATION_GLITCH: 40,     // 故障崩溃（更快）
-    };
-
-    const glitchCanvas = document.getElementById('glitchCanvas');
-    const glitchCtx = glitchCanvas.getContext('2d');
-
-    let glitchWidth, glitchHeight, glitchCenterX, glitchCenterY;
-    let glitchParticles = [];
-    let glitchShapeIndex = 0;
-    let glitchFrame = 0;
-
-    // --- 数学函数定义的形状 ---
-    const SHAPES = [
-        { name: "心形线", scale: 100, func: t => ({ x: (1 - Math.sin(t)) * Math.cos(t), y: -(1 - Math.sin(t)) * Math.sin(t) }) },
-        { name: "四叶玫瑰线", scale: 180, func: t => ({ x: Math.sin(2 * t) * Math.cos(t), y: -Math.sin(2 * t) * Math.sin(t) }) },
-        { name: "蝴蝶曲线", scale: 50, func: t => { const r = Math.exp(Math.sin(t)) - 2 * Math.cos(4 * t) + Math.pow(Math.sin((2 * t - Math.PI) / 24), 5); return { x: r * Math.cos(t), y: -r * Math.sin(t) }; } },
-        { name: "螺旋线", scale: 15, func: t => ({ x: (0.5 * t) * Math.cos(t), y: -(0.5 * t) * Math.sin(t) }) }
-    ];
-
-    // --- 碎片类 ---
-    class GlitchParticle {
-        constructor() {
-            this.reset();
-        }
-
-        reset() {
-            this.x = (Math.random() - 0.5) * glitchWidth * 1.5;
-            this.y = (Math.random() - 0.5) * glitchHeight * 1.5;
-            this.vx = (Math.random() - 0.5) * 0.8;  // 增加速度
-            this.vy = (Math.random() - 0.5) * 0.8;  // 增加速度
-            
-            this.targetX = 0;
-            this.targetY = 0;
-
-            this.color = CONFIG.COLORS[Math.floor(Math.random() * CONFIG.COLORS.length)];
-            this.size = CONFIG.PARTICLE_SIZE + Math.random() * 0.8;  // 增大尺寸变化
-        }
-        
-        setTarget(shape) {
-            const angle = Math.random() * Math.PI * (shape.name === "螺旋线" ? 6 : 2);
-            const targetPos = shape.func(angle);
-            this.targetX = targetPos.x * shape.scale;
-            this.targetY = targetPos.y * shape.scale;
-        }
-
-        update(phase) {
-            if (phase === 'scatter') {
-                this.x += this.vx;
-                this.y += this.vy;
-                if (this.x > glitchWidth / 2 || this.x < -glitchWidth / 2) this.vx *= -1;
-                if (this.y > glitchHeight / 2 || this.y < -glitchHeight / 2) this.vy *= -1;
-            } else if (phase === 'assemble') {
-                const ax = (this.targetX - this.x) * 0.15;  // 增加汇集速度
-                const ay = (this.targetY - this.y) * 0.15;  // 增加汇集速度
-                this.x += ax;
-                this.y += ay;
-            } else if (phase === 'glitch') {
-                if (Math.random() < CONFIG.GLITCH_CHANCE) {
-                    this.x += (Math.random() - 0.5) * 20;  // 增加故障位移
-                    this.y += (Math.random() - 0.5) * 20;  // 增加故障位移
-                }
-            }
-        }
-
-        draw(ctx, phase) {
-            ctx.fillStyle = this.color;
-
-            const drawX = this.x + glitchCenterX;
-            const drawY = this.y + glitchCenterY;
-
-            // 故障效果：色彩分离
-            if (phase === 'glitch' && Math.random() < CONFIG.GLITCH_CHANCE / 8) {
-                ctx.fillStyle = '#FF0000';
-                ctx.fillRect(drawX - 2, drawY, this.size, this.size);
-                ctx.fillStyle = '#00FF00';
-                ctx.fillRect(drawX, drawY - 2, this.size, this.size);
-                ctx.fillStyle = '#0000FF';
-                ctx.fillRect(drawX + 2, drawY, this.size, this.size);
-            } else {
-                ctx.fillRect(drawX, drawY, this.size, this.size);
-            }
-
-            // 发光效果
-            if (phase === 'hold' || (phase === 'assemble' && Math.random() < CONFIG.GLOW_CHANCE)) {
-                ctx.shadowColor = this.color;
-                ctx.shadowBlur = 12;  // 增加发光强度
-                ctx.fillRect(drawX, drawY, this.size, this.size);
-                ctx.shadowBlur = 0;
-            }
-        }
-    }
-    
-    // --- 数字碎片动画控制函数 ---
-    function setupGlitchAnimation() {
-        const dpr = window.devicePixelRatio || 1;
-        glitchWidth = window.innerWidth;
-        glitchHeight = window.innerHeight;
-        glitchCanvas.width = glitchWidth * dpr;
-        glitchCanvas.height = glitchHeight * dpr;
-        glitchCanvas.style.width = `${glitchWidth}px`;
-        glitchCanvas.style.height = `${glitchHeight}px`;
-        glitchCtx.scale(dpr, dpr);
-        glitchCenterX = glitchWidth / 2;
-        glitchCenterY = glitchHeight / 2;
-
-        glitchParticles = [];
-        for (let i = 0; i < CONFIG.PARTICLE_COUNT; i++) {
-            glitchParticles.push(new GlitchParticle());
-        }
-        startNewGlitchCycle();
-    }
-
-    function startNewGlitchCycle() {
-        glitchShapeIndex = (glitchShapeIndex + 1) % SHAPES.length;
-        const currentShape = SHAPES[glitchShapeIndex];
-        glitchParticles.forEach(p => p.setTarget(currentShape));
-    }
-
-    // --- 数字碎片动画循环 ---
-    function animateGlitch() {
-        glitchFrame++;
-        
-        glitchCtx.fillStyle = 'rgba(0, 0, 0, 0.02)'; // 更淡的背景制造拖尾效果
-        glitchCtx.fillRect(0, 0, glitchWidth, glitchHeight);
-
-        const totalCycle = CONFIG.DURATION_SCATTER + CONFIG.DURATION_ASSEMBLE + CONFIG.DURATION_HOLD + CONFIG.DURATION_GLITCH;
-        const currentPhaseTime = glitchFrame % totalCycle;
-        
-        let phase = 'scatter';
-        if (currentPhaseTime < CONFIG.DURATION_SCATTER) {
-            phase = 'scatter';
-        } else if (currentPhaseTime < CONFIG.DURATION_SCATTER + CONFIG.DURATION_ASSEMBLE) {
-            phase = 'assemble';
-        } else if (currentPhaseTime < CONFIG.DURATION_SCATTER + CONFIG.DURATION_ASSEMBLE + CONFIG.DURATION_HOLD) {
-            phase = 'hold';
-        } else {
-            phase = 'glitch';
-        }
-
-        glitchParticles.forEach(p => {
-            p.update(phase);
-            p.draw(glitchCtx, phase);
-        });
-        
-        if (currentPhaseTime === 0 && glitchFrame > 0) {
-            glitchParticles.forEach(p => p.reset());
-            startNewGlitchCycle();
-        }
-
-        requestAnimationFrame(animateGlitch);
-    }
-
-    // 初始化数字碎片动画
-    window.addEventListener('resize', setupGlitchAnimation);
-    setupGlitchAnimation();
-    animateGlitch();
 </script>
 </body>
 </html>
