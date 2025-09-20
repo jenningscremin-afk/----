@@ -125,68 +125,12 @@
             margin-bottom: 40px;
         }
 
-        .welcome-items-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 25px;
-            width: 100%;
-        }
 
-        .welcome-item {
-            display: flex;
-            align-items: center;
-            gap: 18px;
-            padding: 20px 25px;
-            background: var(--glass);
-            border: 1px solid var(--glass-border);
-            border-radius: 12px;
-            transition: all 0.3s ease;
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
-            backdrop-filter: blur(5px);
-        }
 
-        .welcome-item:hover {
-            transform: translateY(-5px);
-            background: rgba(0, 255, 0, 0.1);
-            border-color: var(--primary);
-            box-shadow: var(--glow-hover);
-        }
 
-        .welcome-item-icon {
-            width: 50px;
-            height: 50px;
-            flex-shrink: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: transform 0.3s ease;
-            color: var(--accent);
-            background: rgba(0, 255, 255, 0.1);
-            border-radius: 10px;
-            border: 1px solid rgba(0, 255, 255, 0.3);
-        }
 
-        .welcome-item-icon svg {
-            width: 28px;
-            height: 28px;
-            fill: var(--secondary);
-        }
 
-        .welcome-item:hover .welcome-item-icon {
-            transform: scale(1.1) rotate(-5deg);
-        }
 
-        .welcome-item-text {
-            font-size: 18px;
-            font-weight: 500;
-            color: var(--text);
-        }
-
-        .welcome-item-text:hover {
-            color: var(--primary-light);
-        }
 
         /* 内容显示区域 - 全屏预览 */
         .content-display {
@@ -259,100 +203,39 @@
             position: fixed;
             left: 50%;
             top: 50%;
-            transform: translate(-50%, -50%) scale(0.8);
-            width: 95%;
-            max-width: 800px;
-            max-height: 85vh;
-            background: linear-gradient(135deg, rgba(10, 15, 25, 0.95), rgba(20, 30, 45, 0.9));
+            transform: translate(-50%, -50%);
+            width: 90%;
+            max-width: 1000px;
+            max-height: 80vh;
+            background: rgba(0, 0, 0, 0.95);
             backdrop-filter: blur(20px);
-            border-radius: 25px;
-            box-shadow: 
-                0 25px 50px -12px rgba(0, 0, 0, 0.8),
-                0 0 0 1px rgba(0, 255, 0, 0.1),
-                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            box-shadow: 0 0 50px rgba(0, 255, 0, 0.5);
             padding: 0;
             display: none;
-            overflow: hidden;
-            z-index: 1001;
+            overflow: visible;
+            z-index: 99999;
             opacity: 0;
-            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transition: all 0.3s ease;
+            border: 3px solid #00ff00;
         }
 
         .floating-chapter-panel.active {
-            display: block;
+            display: block !important;
             opacity: 1;
-            transform: translate(-50%, -50%) scale(1);
-        }
-
-        .panel-header {
-            background: linear-gradient(90deg, rgba(0, 255, 0, 0.1), rgba(0, 255, 255, 0.1));
-            padding: 20px 30px;
-            border-bottom: 1px solid rgba(0, 255, 0, 0.2);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .panel-header::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-            animation: shimmer 3s infinite;
-        }
-
-        @keyframes shimmer {
-            0% { left: -100%; }
-            100% { left: 100%; }
-        }
-
-        .panel-title {
-            font-size: 24px;
-            font-weight: 700;
-            color: var(--primary-light);
-            text-align: center;
-            margin: 0;
-            text-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
-            letter-spacing: 2px;
-        }
-
-        .panel-close {
-            position: absolute;
-            top: 15px;
-            right: 20px;
-            width: 35px;
-            height: 35px;
-            border: none;
-            background: rgba(255, 0, 0, 0.2);
-            color: #ff6b6b;
-            border-radius: 50%;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 18px;
-            transition: all 0.3s ease;
-            backdrop-filter: blur(10px);
-        }
-
-        .panel-close:hover {
-            background: rgba(255, 0, 0, 0.4);
-            transform: scale(1.1) rotate(90deg);
-            box-shadow: 0 0 15px rgba(255, 0, 0, 0.5);
+            transform: translate(-50%, -50%);
         }
 
         .panel-content {
-            padding: 30px;
-            max-height: calc(85vh - 100px);
+            padding: 20px;
+            max-height: 80vh;
             overflow-y: auto;
         }
         
         #chapterList {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
             padding: 10px 0;
         }
 
@@ -364,12 +247,13 @@
             display: flex;
             align-items: center;
             gap: 18px;
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02));
-            border: 1px solid rgba(0, 255, 0, 0.1);
+            background: linear-gradient(135deg, rgba(0, 255, 0, 0.1), rgba(0, 255, 255, 0.05));
+            border: 1px solid rgba(0, 255, 0, 0.3);
             font-size: 16px;
             position: relative;
             overflow: hidden;
             backdrop-filter: blur(10px);
+            color: var(--text);
         }
 
         .chapter-item::before {
@@ -549,6 +433,67 @@
             color: var(--text-muted);
         }
 
+        #quickNavBtn {
+            font-size: 11px;
+        }
+
+        #feedbackBtn {
+            font-size: 11px;
+            position: relative;
+        }
+
+        .nav-collapse-btn {
+            font-size: 16px;
+            transition: transform 0.3s ease;
+        }
+        .nav-collapse-btn svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        .keyboard-hint {
+            font-size: 10px;
+            color: var(--text-muted);
+            background: rgba(0, 0, 0, 0.7);
+            padding: 2px 8px;
+            border-radius: 10px;
+            white-space: nowrap;
+            text-align: center;
+            box-shadow: var(--shadow);
+            transition: opacity 0.3s;
+        }
+
+        .keyboard-hint.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .feedback-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #ef4444;
+            color: white;
+            font-size: 10px;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .floating-nav-sidebar.collapsed > *:not(.nav-collapse-btn) {
+            opacity: 0;
+            transform: scale(0.1);
+            pointer-events: none;
+        }
+
+        .floating-nav-sidebar.collapsed .nav-collapse-btn {
+            transform: rotate(180deg);
+        }
+
         /* 章节面板进入动画 */
         @keyframes panelSlideIn {
             0% {
@@ -605,7 +550,6 @@
             .welcome-page { padding: 60px 10px 10px 10px; }
             .welcome-title { font-size: 32px; }
             .welcome-subtitle { font-size: 16px; margin-bottom: 20px;}
-            .welcome-items-grid { grid-template-columns: 1fr; gap: 15px; }
             .content-display { padding: 80px 15px 100px 15px; }
             .chapter-content { padding: 20px; }
             .floating-topbar { width: calc(100% - 40px); }
@@ -653,6 +597,49 @@
             background: var(--border);
             margin: 4px 0;
         }
+
+        /* 快速菜单样式 */
+        .quick-menu {
+            position: fixed;
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            box-shadow: var(--shadow-xl);
+            padding: 8px;
+            display: none;
+            z-index: 2001;
+            border: 1px solid var(--border);
+            min-width: 140px;
+            will-change: transform, opacity;
+        }
+
+        .quick-menu.active {
+            display: block;
+            animation: menuPop 0.2s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        @keyframes menuPop {
+            from { opacity: 0; transform: scale(0.8) translateY(10px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        .menu-item {
+            padding: 10px 14px;
+            margin: 4px 0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 13px;
+            color: var(--text);
+            text-align: center;
+            will-change: transform;
+        }
+
+        .menu-item:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateX(3px);
+        }
     </style>
 </head>
 <body>
@@ -662,91 +649,21 @@
 <!-- 扫描线 -->
 <div class="scan-line"></div>
 
+
 <!-- 主内容区 -->
 <div class="main-content">
     <!-- 欢迎页 -->
     <div class="welcome-page" id="welcomePage">
         <div class="welcome-content">
            
-            <div class="welcome-items-grid">
-                <div class="welcome-item" onclick="showChapter(0)">
-                    <span class="welcome-item-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/></svg>
+            <!-- 章节目录按钮 - 移到右上角 -->
+            <div style="position: fixed; top: 20px; right: 20px; z-index: 999999; background: var(--glass); border: 1px solid var(--glass-border); border-radius: 15px; padding: 15px 25px; cursor: pointer; backdrop-filter: blur(5px); transition: all 0.3s ease;" onclick="showChapterList()" onmouseover="this.style.background='rgba(0, 255, 0, 0.1)'; this.style.transform='translateY(-2px)'" onmouseout="this.style.background='var(--glass)'; this.style.transform='translateY(0)'">
+                <span style="display: flex; align-items: center; gap: 10px; color: var(--text); font-size: 16px; font-weight: 500;">
+                    <span style="width: 30px; height: 30px; background: rgba(0, 255, 255, 0.1); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: var(--accent);">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" style="width: 18px; height: 18px;"><path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/></svg>
                     </span>
-                    <span class="welcome-item-text">代数基础</span>
-                </div>
-                <div class="welcome-item" onclick="showChapter(1)">
-                    <span class="welcome-item-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.94-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
-                    </span>
-                    <span class="welcome-item-text">极限与连续</span>
-                </div>
-                <div class="welcome-item" onclick="showChapter(2)">
-                    <span class="welcome-item-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>
-                    </span>
-                    <span class="welcome-item-text">导数与微分</span>
-            </div>
-                <div class="welcome-item" onclick="showChapter(3)">
-                    <span class="welcome-item-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-                    </span>
-                    <span class="welcome-item-text">导数应用</span>
-            </div>
-                <div class="welcome-item" onclick="showChapter(4)">
-                    <span class="welcome-item-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
-                    </span>
-                    <span class="welcome-item-text">不定积分</span>
-            </div>
-                <div class="welcome-item" onclick="showChapter(5)">
-                    <span class="welcome-item-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>
-                    </span>
-                    <span class="welcome-item-text">定积分</span>
-            </div>
-                <div class="welcome-item" onclick="showChapter(6)">
-                    <span class="welcome-item-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M3 3h18v2H3V3zm0 4h18v2H3V7zm0 4h18v2H3v-2zm0 4h18v2H3v-2zm0 4h18v2H3v-2z"/></svg>
-                    </span>
-                    <span class="welcome-item-text">常微分方程</span>
-            </div>
-                <div class="welcome-item" onclick="showChapter(7)">
-                    <span class="welcome-item-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-                    </span>
-                    <span class="welcome-item-text">多元函数微分学</span>
-            </div>
-                <div class="welcome-item" onclick="showChapter(8)">
-                    <span class="welcome-item-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>
-                    </span>
-                    <span class="welcome-item-text">多元函数积分学</span>
-            </div>
-                <div class="welcome-item" onclick="showChapter(9)">
-                    <span class="welcome-item-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M3 3h18v2H3V3zm0 4h18v2H3V7zm0 4h18v2H3v-2zm0 4h18v2H3v-2zm0 4h18v2H3v-2z"/></svg>
-                    </span>
-                    <span class="welcome-item-text">线性代数</span>
-            </div>
-                <div class="welcome-item" onclick="showChapter(10)">
-                    <span class="welcome-item-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-                    </span>
-                    <span class="welcome-item-text">无穷级数</span>
-            </div>
-                <div class="welcome-item" onclick="showChapter(11)">
-                    <span class="welcome-item-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>
-                    </span>
-                    <span class="welcome-item-text">向量与空间几何</span>
-            </div>
-                <div class="welcome-item" onclick="showChapter(12)">
-                    <span class="welcome-item-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>
-                    </span>
-                    <span class="welcome-item-text">概率与统计</span>
-            </div>
+                    目录
+                </span>
             </div>
             </div>
         </div>
@@ -769,10 +686,6 @@
 
 <!-- 悬浮章节面板 -->
 <div class="floating-chapter-panel" id="chapterPanel">
-    <div class="panel-header">
-        <h2 class="panel-title">📚 章节导航</h2>
-        <button class="panel-close" onclick="closeAllPanels()">×</button>
-    </div>
     <div class="panel-content">
         <div id="chapterList"></div>
     </div>
@@ -783,26 +696,39 @@
 
 <!-- 极简右下角导航栏 -->
 <div class="floating-nav-sidebar" id="navSidebar">
-    <button class="nav-btn" onclick="goPrev()" title="上一章">
+
+    <button class="nav-btn" onclick="goPrev()" title="上一页">
+
         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+
     </button>
-    <button class="nav-btn" onclick="goHome()" title="返回目录">
-        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="currentColor"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8h5z"/></svg>
-    </button>
+
+
     <button class="nav-btn" onclick="goMainSite()" title="返回主站">
+
         <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="currentColor"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8h5z"/></svg>
+
     </button>
-    <button class="nav-btn" onclick="goNext()" title="下一章">
+
+    <button class="nav-btn" onclick="goNext()" title="下一页">
+
         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
+
     </button>
+
     <div class="nav-divider"></div>
-    <button class="sidebar-action-btn" id="quickNavBtn" onclick="showChapterList()" title="章节列表">
-        章节
+
+   <button class="sidebar-action-btn" id="quickNavBtn" onclick="showQuickNav()" title="跳转">
+        跳转
+    </button>
+    <button class="sidebar-action-btn" id="feedbackBtn" onclick="showFeedback()" title="反馈">
+        反馈
+        <span class="feedback-badge" id="feedbackBadge" style="display: none;">0</span>
     </button>
     <button class="nav-collapse-btn" id="navCollapseBtn" onclick="toggleNavSidebar()" title="收缩">
         <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="currentColor"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6 1.41 1.41z"/></svg>
     </button>
-    </div>
+</div>
 
     <script>
 // 矩阵数字雨背景
@@ -895,6 +821,7 @@ const chapters = {
 let currentUrl = '';
 let currentIndex = -1;
 let currentOpenChapter = -1;
+let pageIssues = {};
 
 function loadContent(url, title) {
     const frame = document.getElementById('contentFrame');
@@ -978,38 +905,136 @@ function showChapter(categoryId) {
 }
 
 function showChapterList() {
-    const panel = document.getElementById('chapterPanel');
     
-    if (panel.classList.contains('active')) {
-        panel.classList.remove('active');
-        currentOpenChapter = -1;
+    // 直接创建一个新的目录面板，确保不被遮挡
+    let chapterMenu = document.getElementById('chapterMenu');
+    if (chapterMenu) {
+        chapterMenu.remove();
         return;
     }
-
-    const list = document.getElementById('chapterList');
-    list.innerHTML = '';
-
-    // 创建所有章节项目
+    
+    chapterMenu = document.createElement('div');
+    chapterMenu.id = 'chapterMenu';
+    chapterMenu.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: rgba(0, 0, 0, 0.9);
+        z-index: 999999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        backdrop-filter: blur(10px);
+    `;
+    
+    // 创建内容容器
+    const content = document.createElement('div');
+    content.style.cssText = `
+        background: linear-gradient(135deg, rgba(0, 255, 0, 0.1), rgba(0, 255, 255, 0.05));
+        border: 2px solid #00ff00;
+        border-radius: 20px;
+        padding: 30px;
+        max-width: 90%;
+        max-height: 80%;
+        overflow-y: auto;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
+    `;
+    
+    // 添加关闭按钮
+    const closeBtn = document.createElement('div');
+    closeBtn.style.cssText = `
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        width: 40px;
+        height: 40px;
+        background: rgba(255, 0, 0, 0.8);
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        font-size: 20px;
+        font-weight: bold;
+        transition: all 0.3s ease;
+    `;
+    closeBtn.innerHTML = '×';
+    closeBtn.onclick = () => chapterMenu.remove();
+    closeBtn.onmouseover = () => {
+        closeBtn.style.background = 'rgba(255, 0, 0, 1)';
+        closeBtn.style.transform = 'scale(1.1)';
+    };
+    closeBtn.onmouseout = () => {
+        closeBtn.style.background = 'rgba(255, 0, 0, 0.8)';
+        closeBtn.style.transform = 'scale(1)';
+    };
+    
+    // 添加章节标题
+    const title = document.createElement('div');
+    title.style.cssText = `
+        grid-column: 1 / -1;
+        text-align: center;
+        color: #00ff00;
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 20px;
+        padding-bottom: 15px;
+        border-bottom: 2px solid rgba(0, 255, 0, 0.3);
+    `;
+    title.innerHTML = '';
+    
+    // 添加章节项目
     Object.entries(chapters).forEach(([id, chapter]) => {
-        const div = document.createElement('div');
-        div.className = 'chapter-item';
-        div.innerHTML = `
-            <div class="chapter-icon">${parseInt(id) + 1}</div>
-            <span class="chapter-text">${chapter.title}</span>
+        const item = document.createElement('div');
+        item.style.cssText = `
+            background: rgba(0, 255, 0, 0.1);
+            border: 1px solid rgba(0, 255, 0, 0.3);
+            border-radius: 15px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            color: #00ff00;
+            font-size: 16px;
         `;
-        div.onclick = () => {
-            // 直接跳转到章节文件
+        item.innerHTML = `
+            <div style="width: 30px; height: 30px; background: #00ff00; color: black; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold;">${parseInt(id) + 1}</div>
+            <span>${chapter.title}</span>
+        `;
+        item.onclick = () => {
             window.location.href = chapter.url;
         };
-        list.appendChild(div);
+        item.onmouseover = () => {
+            item.style.background = 'rgba(0, 255, 0, 0.2)';
+            item.style.transform = 'translateY(-5px)';
+            item.style.boxShadow = '0 10px 20px rgba(0, 255, 0, 0.3)';
+        };
+        item.onmouseout = () => {
+            item.style.background = 'rgba(0, 255, 0, 0.1)';
+            item.style.transform = 'translateY(0)';
+            item.style.boxShadow = 'none';
+        };
+        content.appendChild(item);
     });
-
-    panel.classList.add('active');
-    currentOpenChapter = -1; // 特殊标记表示显示所有章节
+    
+    chapterMenu.appendChild(closeBtn);
+    chapterMenu.appendChild(title);
+    chapterMenu.appendChild(content);
+    document.body.appendChild(chapterMenu);
+    
+    currentOpenChapter = -1;
 }
 
 function closeAllPanels() {
     document.getElementById('chapterPanel')?.classList.remove('active');
+    document.getElementById('feedbackMenu')?.classList.remove('active');
     currentOpenChapter = -1;
 }
 
@@ -1084,13 +1109,97 @@ function showQuickNav() {
     if (currentUrl) window.open(currentUrl, '_blank');
 }
 
+function showFeedback() {
+    const btn = document.getElementById('feedbackBtn');
+    const btnRect = btn.getBoundingClientRect();
+    
+    // 创建反馈菜单
+    let feedbackMenu = document.getElementById('feedbackMenu');
+    if (!feedbackMenu) {
+        feedbackMenu = document.createElement('div');
+        feedbackMenu.id = 'feedbackMenu';
+        feedbackMenu.className = 'quick-menu';
+        feedbackMenu.innerHTML = `
+            <div class="menu-item" onclick="reportIssue('performance')">性能问题</div>
+            <div class="menu-item" onclick="reportIssue('display')">显示问题</div>
+            <div class="menu-item" onclick="reportIssue('function')">功能问题</div>
+            <div class="menu-item" onclick="exportIssues()">导出反馈(JSON)</div>
+            <div class="menu-item" onclick="clearIssues()">清空记录</div>
+        `;
+        document.body.appendChild(feedbackMenu);
+    }
+    
+    feedbackMenu.style.bottom = (window.innerHeight - btnRect.bottom) + 'px';
+    feedbackMenu.style.right = (window.innerWidth - btnRect.left + 10) + 'px';
+    feedbackMenu.style.left = 'auto';
+    feedbackMenu.style.top = 'auto';
+
+    feedbackMenu.classList.toggle('active');
+}
+
+function reportIssue(type) {
+    if (!currentUrl) return;
+    if (!pageIssues) pageIssues = {};
+    if (!pageIssues[currentUrl]) pageIssues[currentUrl] = [];
+    pageIssues[currentUrl].push({ type: type, time: new Date().toLocaleString() });
+    localStorage.setItem('mathLabIssues', JSON.stringify(pageIssues));
+    updateFeedbackBadge();
+    closeAllPanels();
+}
+
+function clearIssues() {
+    pageIssues = {};
+    localStorage.removeItem('mathLabIssues');
+    updateFeedbackBadge();
+    closeAllPanels();
+}
+
+function exportIssues() {
+    try {
+        let data = (pageIssues && Object.keys(pageIssues).length > 0)
+            ? pageIssues
+            : JSON.parse(localStorage.getItem('mathLabIssues') || '{}');
+        if (!data || Object.keys(data).length === 0) {
+            closeAllPanels();
+            return;
+        }
+        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        const ts = new Date();
+        const pad = n => String(n).padStart(2, '0');
+        const filename = `math-lab-feedback-${ts.getFullYear()}${pad(ts.getMonth()+1)}${pad(ts.getDate())}-${pad(ts.getHours())}${pad(ts.getMinutes())}${pad(ts.getSeconds())}.json`;
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        closeAllPanels();
+    } catch (e) {
+        console.error('导出失败:', e);
+    }
+}
+
+function updateFeedbackBadge() {
+    const badge = document.getElementById('feedbackBadge');
+    if (!badge) return;
+    const count = Object.values(pageIssues || {}).reduce((acc, val) => acc + val.length, 0);
+    badge.textContent = count;
+    badge.style.display = count > 0 ? 'flex' : 'none';
+}
+
 document.addEventListener('click', (e) => {
-    // 只有在点击章节面板外部时才关闭面板，但保持侧边栏按钮可用
-    if (!e.target.closest('.floating-chapter-panel, .sidebar-action-btn')) {
+    // 只有在点击面板外部时才关闭面板，但保持侧边栏按钮可用
+    if (!e.target.closest('.floating-chapter-panel, .sidebar-action-btn, .quick-menu')) {
         const panel = document.getElementById('chapterPanel');
+        const feedbackMenu = document.getElementById('feedbackMenu');
         if (panel && panel.classList.contains('active')) {
             panel.classList.remove('active');
             currentOpenChapter = -1;
+        }
+        if (feedbackMenu && feedbackMenu.classList.contains('active')) {
+            feedbackMenu.classList.remove('active');
         }
     }
 });
@@ -1140,6 +1249,17 @@ function initKeyboardNavigation() {
 
 window.addEventListener('DOMContentLoaded', () => {
     initKeyboardNavigation();
+    
+    // 加载保存的问题反馈
+    const saved = localStorage.getItem('mathLabIssues');
+    if (saved) {
+        try {
+            pageIssues = JSON.parse(saved);
+            updateFeedbackBadge();
+        } catch (e) { 
+            console.error('加载反馈数据失败:', e); 
+        }
+    }
 });
     </script>
 </body>
