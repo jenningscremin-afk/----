@@ -257,7 +257,7 @@
         .content-iframe {
             width: 100% !important;
             height: calc(100% - 60px) !important; /* 为顶部导航留出空间 */
-            border: 2px solid #00ff00 !important; /* 临时边框用于调试 */
+            border: none;
             background: var(--dark);
             position: absolute;
             top: 60px; /* 从顶部导航下方开始 */
@@ -1130,7 +1130,12 @@ function previewContent(url, title) {
 
     currentUrl = url;
     const displayTitle = title || getChineseTitle(url);
-    topbar.textContent = displayTitle;
+    
+    // 更新顶部导航栏标题
+    const navBrandH1 = document.querySelector('.nav-brand h1');
+    if (navBrandH1) {
+        navBrandH1.textContent = displayTitle;
+    }
     
     console.log('预览内容已加载:', displayTitle);
     
@@ -1176,6 +1181,12 @@ function closePreview() {
         contentDisplay.classList.remove('active');
         welcome.style.display = 'block';
         keyboardHint.classList.remove('hidden');
+        
+        // 恢复原始标题
+        const navBrandH1 = document.querySelector('.nav-brand h1');
+        if (navBrandH1) {
+            navBrandH1.textContent = '课程中心';
+        }
     }
 }
 

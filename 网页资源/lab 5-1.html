@@ -1,0 +1,869 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>不定积分原函数实验室</title>
+
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true,
+                processEnvironments: true
+            },
+            options: {
+                skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+            },
+            startup: {
+                pageReady: () => {
+                    return MathJax.startup.defaultPageReady().then(() => {
+                        console.log('MathJax 初始化完成');
+                    }).catch((error) => {
+                        console.error('MathJax 初始化错误:', error);
+                    });
+                }
+            }
+        };
+    </script>
+    <script defer src="../common-assets/js/mathjax-3.2.2-tex-svg.min.js"></script>
+
+    <style>
+    :root {
+        --primary: #4f46e5;
+        --primary-dark: #3730a3;
+        --primary-light: #6366f1;
+        --success: #10b981;
+        --warning: #f59e0b;
+        --danger: #ef4444;
+        --gray-50: #f9fafb;
+        --gray-100: #f3f4f6;
+        --gray-200: #e5e7eb;
+        --gray-300: #d1d5db;
+        --gray-500: #6b7280;
+        --gray-600: #4b5563;
+        --gray-700: #1f2937;
+        --white: #ffffff;
+        --light: #ffffff;
+        --border: #e5e7eb;
+        --h1-size: 22px;
+        --h3-size: 18px;
+        --text-size: 16px;
+        --formula-size: 20px;
+    }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        *::-webkit-scrollbar { width: 0; background: transparent; }
+        * { scrollbar-width: none; -ms-overflow-style: none; }
+
+            body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
+        font-size: var(--text-size);
+        line-height: 1.5;
+        background: var(--gray-50);
+        color: var(--gray-700);
+    }
+
+            .container {
+        width: 100%;
+        max-width: 1400px;
+        height: min(100vh, 700px);
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        background: var(--white);
+    }
+
+            .header {
+        height: 40px;
+        background: var(--primary);
+        color: var(--white);
+        display: flex;
+        align-items: center;
+        padding: 0 20px;
+    }
+
+            .header h1 { font-size: var(--h1-size); margin: 0; }
+
+            .main { flex: 1; display: flex; overflow: hidden; }
+
+            .sidebar {
+        width: 120px;
+        background: var(--gray-50);
+        border-right: 1px solid var(--border);
+        padding: 10px 8px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+            .nav-btn {
+        width: 100%;
+        padding: 8px;
+        background: transparent;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: var(--text-size);
+        color: var(--gray-600);
+        text-align: left;
+        transition: background 0.2s ease, color 0.2s ease;
+    }
+
+            .nav-btn.active { background: var(--primary); color: var(--white); }
+
+            .nav-btn:hover { background: var(--gray-100); }
+
+                        .content {
+        flex: 1;
+        position: relative;
+        overflow: hidden;
+        padding: 0;
+    }
+
+    .page-content {
+        display: none;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 18px;
+        height: 100%;
+        padding: 16px;
+    }
+
+    .page-content.active {
+        display: grid;
+    }
+            .column { display: flex; flex-direction: column; gap: 16px; overflow-y: auto; padding-right: 4px; }
+
+            .card { background: var(--white); border: 1px solid var(--border); border-radius: 12px; padding: 12px; display: flex; flex-direction: column; gap: 10px; }
+
+        .card-scroll { overflow-y: auto; }
+        .card h3 { font-size: var(--h3-size); color: var(--primary-dark); }
+        .card p { line-height: 1.5; }
+
+        .tag-list { display: flex; gap: 8px; flex-wrap: wrap; }
+        .tag { font-size: 13px; padding: 4px 10px; border-radius: 999px; background: var(--gray-100); color: var(--gray-500); }
+
+        .controls { display: flex; flex-direction: column; gap: 10px; background: var(--gray-50); border: 1px solid var(--gray-200); border-radius: 10px; padding: 10px; }
+        .control-row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+        .control-row label { font-weight: 600; }
+        .control-row span { color: var(--primary-dark); font-weight: 600; }
+        select { flex: 1; padding: 6px 8px; border-radius: 8px; border: 1px solid var(--gray-300); font-size: 15px; }
+        input[type="range"] { flex: 1; }
+
+        .btn-group { display: flex; gap: 10px; }
+        button.action {
+            flex: 1;
+            background: var(--primary);
+            color: var(--white);
+            border: none;
+            border-radius: 8px;
+            padding: 10px 12px;
+            font-size: var(--text-size);
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+        button.action.secondary { background: var(--white); color: var(--primary); border: 1px solid var(--primary); }
+        button.action:hover { transform: translateY(-2px); }
+
+        .canvas-wrapper {
+            border: 1px solid var(--gray-200);
+            border-radius: 12px;
+            background: var(--gray-50);
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        canvas {
+            width: 100%;
+            height: 260px;
+            border-radius: 10px;
+            background: var(--white);
+        }
+
+        .legend { display: flex; gap: 12px; flex-wrap: wrap; font-size: 14px; color: var(--gray-600); }
+        .legend span { display: flex; align-items: center; gap: 6px; }
+        .legend i { width: 14px; height: 14px; border-radius: 4px; display: inline-block; }
+
+        .info-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 12px; }
+        .info-item { background: var(--gray-50); border: 1px solid var(--gray-200); border-radius: 10px; padding: 10px; font-size: 15px; }
+        .info-item strong { color: var(--primary-dark); display: block; margin-bottom: 6px; }
+
+        table { width: 100%; border-collapse: collapse; font-size: 15px; }
+        th, td { border: 1px solid var(--gray-200); padding: 8px; text-align: center; }
+        thead { background: var(--gray-100); }
+
+        .matching-container { display: flex; gap: 12px; }
+        .matching-column { flex: 1; display: flex; flex-direction: column; gap: 8px; }
+        .match-card {
+            border: 1px solid var(--gray-200);
+            border-radius: 10px;
+            padding: 10px;
+            background: var(--white);
+            cursor: pointer;
+            transition: border 0.2s ease, transform 0.2s ease;
+        }
+        .match-card.selected { border-color: var(--primary); box-shadow: 0 0 0 2px rgba(79,70,229,0.2); transform: translateY(-2px); }
+        .match-card.correct { border-color: var(--success); background: rgba(16,185,129,0.15); }
+        .match-card.wrong { border-color: var(--danger); background: rgba(239,68,68,0.12); }
+
+        .status-box { background: #eef2ff; border-radius: 10px; padding: 10px; font-size: 14px; color: var(--primary-dark); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>不定积分原函数实验室</h1>
+            <div>观察原函数族 $F(x) = \int f(x)\,dx$ 的几何特征</div>
+        </header>
+        <div class="main">
+            <nav class="sidebar">
+                <button class="nav-btn active" data-section="concept">概念演示</button>
+                <button class="nav-btn" data-section="practice">公式训练</button>
+            </nav>
+            <section class="content">
+                <div class="page-content active" id="concept">
+                    <div class="column">
+                        <div class="card card-scroll">
+                            <h3>学习指引</h3>
+                            <p>不定积分代表一族互相平移的曲线：若 $F(x)$ 是 $f(x)$ 的一个原函数，则 $F(x)+C$ 也是。通过参数滑块和动画，我们可以直观看到“斜率来自 $f(x)$，形状来自 $F(x)$”这一联系。</p>
+                            <div class="tag-list">
+                                <span class="tag">原函数家族</span>
+                                <span class="tag">常数 C 滑块</span>
+                                <span class="tag">切线动画</span>
+                                <span class="tag">配对练习</span>
+                            </div>
+                            <div class="status-box" id="summaryBox">当前选择函数：$f(x)=2x$，原函数为 $F(x)=x^2+C$。常数 $C$ 控制曲线的垂直平移。</div>
+                        </div>
+
+                        <div class="card card-scroll">
+                            <h3>原函数族观测小结</h3>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>操作</th>
+                                        <th>结果描述</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>拖动常数 $C$</td>
+                                        <td>曲线整体上下平移，切线斜率保持不变，说明导数只与形状有关。</td>
+                                    </tr>
+                                    <tr>
+                                        <td>切换 $f(x)$</td>
+                                        <td>不同 $f(x)$ 决定了原函数的弯曲程度：线性函数给出抛物线，三角函数给出波动曲线。</td>
+                                    </tr>
+                                    <tr>
+                                        <td>启动动画</td>
+                                        <td>移动点的瞬时斜率同步显示 $f(x)$ 的数值，实现 $F'(x)=f(x)$ 的即时验证。</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="card">
+                            <h3>结论速记</h3>
+                            <div class="info-grid">
+                                <div class="info-item">
+                                    <strong>定义回顾</strong>
+                                    若 $F'(x)=f(x)$，则 $F(x)$ 为 $f(x)$ 的原函数；$F(x)+C$ 构成全体不定积分。
+                                </div>
+                                <div class="info-item">
+                                    <strong>几何含义</strong>
+                                    $f(x)$ 给出切线斜率，控制原函数的倾斜；常数 $C$ 决定曲线经过的高度。
+                                </div>
+                                <div class="info-item">
+                                    <strong>求原函数策略</strong>
+                                    先记住基本积分公式，再通过线性结合、换元、分部等方法扩展。
+                                </div>
+                                <div class="info-item">
+                                    <strong>常见错误</strong>
+                                    忘记写常数 $C$ 或误以为不同 $C$ 会影响导数，动画可以帮助纠正这一误区。
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="column">
+                        <div class="card">
+                            <h3>原函数家族可视化</h3>
+                            <div class="controls">
+                                <div class="control-row">
+                                    <label>选择函数 $f(x)$</label>
+                                    <select id="functionSelector"></select>
+                                </div>
+                                <div class="control-row">
+                                    <label>调节常数 $C$</label>
+                                    <input type="range" id="constantSlider" min="-5" max="5" step="0.1" value="0">
+                                    <span id="constantValue">0.0</span>
+                                </div>
+                                <div class="control-row">
+                                    <label>动画控制</label>
+                                    <div class="btn-group">
+                                        <button class="action" id="toggleAnimation">启动演示</button>
+                                        <button class="action secondary" id="resetView">重置视角</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="canvas-wrapper">
+                                <canvas id="familyCanvas"></canvas>
+                                <div class="legend">
+                                    <span><i style="background:#2563eb"></i> $y=f(x)$</span>
+                                    <span><i style="background:#10b981"></i> $y=F(x)+C$</span>
+                                    <span><i style="background:#94a3b8"></i> 其他 $C$ 的原函数</span>
+                                </div>
+                            </div>
+                            <div class="info-grid">
+                                <div class="info-item"><strong>当前位置</strong><span id="pointInfo">$x=0.00$，$F(x)=0.000$</span></div>
+                                <div class="info-item"><strong>斜率验证</strong><span id="slopeInfo">$F'(x)=f(x)=0.000$</span></div>
+                                <div class="info-item"><strong>曲线说明</strong><span id="curveInfo">曲线是一族互相平移的抛物线。</span></div>
+                                <div class="info-item"><strong>动画提示</strong><span id="hintInfo">点击“启动演示”观察切线沿曲线滑动的斜率。</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="page-content" id="practice">
+                    <div class="column">
+                        <div class="card">
+                            <h3>练习任务</h3>
+                            <p>先浏览右侧的配对练习，再尝试独立完成。每次配对成功后，系统会给出即时反馈，并在全部完成后刷新新的题目。</p>
+                            <p>建议步骤：<br>1) 先在脑中回忆对应的不定积分公式；<br>2) 点击左侧函数和右侧原函数进行配对；<br>3) 注意常数 $C$ 的存在以及常见的符号差异。</p>
+                        </div>
+
+                        <div class="card card-scroll">
+                            <h3>基础公式速查</h3>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>$f(x)$</th>
+                                        <th>$\displaystyle \int f(x)\,dx$</th>
+                                        <th>记忆提示</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>$2x$</td>
+                                        <td>$x^2 + C$</td>
+                                        <td>幂函数指数加一再除以新指数。</td>
+                                    </tr>
+                                    <tr>
+                                        <td>$\cos x$</td>
+                                        <td>$\sin x + C$</td>
+                                        <td>导数互为正负，注意正号。</td>
+                                    </tr>
+                                    <tr>
+                                        <td>$e^x$</td>
+                                        <td>$e^x + C$</td>
+                                        <td>指数函数积分自身。</td>
+                                    </tr>
+                                    <tr>
+                                        <td>$\dfrac{1}{1+x^2}$</td>
+                                        <td>$\arctan x + C$</td>
+                                        <td>识别反三角函数积分。</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="column">
+                        <div class="card">
+                            <h3>原函数公式匹配练习</h3>
+                            <p>点击左侧的被积函数，再点击右侧的积分结果，完成三对配对。系统会提示正误，并自动刷新练习。</p>
+                            <div class="matching-container">
+                                <div class="matching-column" id="functionList"></div>
+                                <div class="matching-column" id="integralList"></div>
+                            </div>
+                            <div class="status-box" id="matchStatus">请选择一对进行配对。</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <script>
+        function renderMath() {
+            if (window.MathJax && window.MathJax.typesetPromise) {
+                MathJax.typesetPromise();
+            }
+        }
+
+        function setupCanvas(canvas) {
+            const ctx = canvas.getContext('2d');
+            const rect = canvas.getBoundingClientRect();
+            const dpr = window.devicePixelRatio || 1;
+            canvas.width = rect.width * dpr;
+            canvas.height = rect.height * dpr;
+            canvas.style.width = rect.width + 'px';
+            canvas.style.height = rect.height + 'px';
+            ctx.scale(dpr, dpr);
+            return { ctx, width: rect.width, height: rect.height };
+        }
+
+        function drawAxes(ctx, width, height) {
+            const padding = 40;
+            ctx.save();
+            ctx.strokeStyle = '#e2e8f0';
+            ctx.lineWidth = 1;
+            for (let i = 0; i <= 8; i++) {
+                const x = padding + i * (width - 2 * padding) / 8;
+                ctx.beginPath();
+                ctx.moveTo(x, padding);
+                ctx.lineTo(x, height - padding);
+                ctx.stroke();
+                const y = padding + i * (height - 2 * padding) / 8;
+                ctx.beginPath();
+                ctx.moveTo(padding, y);
+                ctx.lineTo(width - padding, y);
+                ctx.stroke();
+            }
+            ctx.strokeStyle = '#1f2937';
+            ctx.lineWidth = 1.5;
+            ctx.beginPath();
+            ctx.moveTo(padding, height / 2);
+            ctx.lineTo(width - padding, height / 2);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(width / 2, padding);
+            ctx.lineTo(width / 2, height - padding);
+            ctx.stroke();
+            ctx.restore();
+        }
+
+        function mathToCanvas(x, y, width, height, xRange, yRange, padding = 40) {
+            const plotWidth = width - 2 * padding;
+            const plotHeight = height - 2 * padding;
+            const cx = padding + (x - xRange[0]) / (xRange[1] - xRange[0]) * plotWidth;
+            const cy = height - padding - (y - yRange[0]) / (yRange[1] - yRange[0]) * plotHeight;
+            return { x: cx, y: cy };
+        }
+
+        const functionLibrary = {
+            quadratic: {
+                name: '$f(x) = 2x$ → $F(x) = x^2 + C$',
+                domain: [-4, 4],
+                rangeGuess: [-16, 16],
+                f(x) { return 2 * x; },
+                F(x, C) { return x * x + C; },
+                description: '线性函数的原函数是一族互相平移的抛物线。'
+            },
+            cosine: {
+                name: '$f(x) = \cos x$ → $F(x) = \sin x + C$',
+                domain: [-Math.PI * 2, Math.PI * 2],
+                rangeGuess: [-1.8, 1.8],
+                f(x) { return Math.cos(x); },
+                F(x, C) { return Math.sin(x) + C; },
+                description: '余弦函数的原函数是正弦波，相位相同，只是高度平移。'
+            },
+            exponential: {
+                name: '$f(x) = e^x$ → $F(x) = e^x + C$',
+                domain: [-3, 3],
+                rangeGuess: [-1, 15],
+                f(x) { return Math.exp(x); },
+                F(x, C) { return Math.exp(x) + C; },
+                description: '指数函数的原函数与自身同形，体现“自导自积分”的特性。'
+            }
+        };
+
+        const matchingPairs = [
+            { id: 'p1', func: '$\\int 3x^2\,dx$', integral: '$x^3 + C$' },
+            { id: 'p2', func: '$\\int e^x\,dx$', integral: '$e^x + C$' },
+            { id: 'p3', func: '$\\int \\cos x\,dx$', integral: '$\\sin x + C$' },
+            { id: 'p4', func: '$\\int \\frac{1}{x}\,dx$', integral: '$\\ln|x| + C$' },
+            { id: 'p5', func: '$\\int 2\\cos(2x)\,dx$', integral: '$\\sin(2x) + C$' }
+        ];
+
+        const functionSelector = document.getElementById('functionSelector');
+        const constantSlider = document.getElementById('constantSlider');
+        const constantValue = document.getElementById('constantValue');
+        const toggleAnimation = document.getElementById('toggleAnimation');
+        const resetView = document.getElementById('resetView');
+        const navButtons = document.querySelectorAll('.nav-btn');
+        const pages = document.querySelectorAll('.page-content');
+        const summaryBox = document.getElementById('summaryBox');
+        const pointInfo = document.getElementById('pointInfo');
+        const slopeInfo = document.getElementById('slopeInfo');
+        const curveInfo = document.getElementById('curveInfo');
+        const hintInfo = document.getElementById('hintInfo');
+        const familyCanvas = document.getElementById('familyCanvas');
+
+        const functionList = document.getElementById('functionList');
+        const integralList = document.getElementById('integralList');
+        const matchStatus = document.getElementById('matchStatus');
+
+        let currentKey = 'quadratic';
+        let animationActive = false;
+        let animationX = -4;
+        let animationDirection = 1;
+        let animationFrame = null;
+
+        let selectedLeft = null;
+        let selectedRight = null;
+        let matchedIds = new Set();
+
+        function switchPage(section) {
+            pages.forEach(page => {
+                page.classList.toggle('active', page.id === section);
+            });
+            navButtons.forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.section === section);
+            });
+
+            if (section === 'concept') {
+                drawFamily();
+            } else {
+                if (animationActive) {
+                    animationActive = false;
+                    toggleAnimation.textContent = '启动演示';
+                }
+                if (animationFrame) {
+                    cancelAnimationFrame(animationFrame);
+                    animationFrame = null;
+                }
+            }
+
+            setTimeout(renderMath, 40);
+        }
+
+        function populateFunctionSelector() {
+            Object.entries(functionLibrary).forEach(([key, item]) => {
+                const option = document.createElement('option');
+                option.value = key;
+                option.innerHTML = item.name;
+                functionSelector.appendChild(option);
+            });
+            functionSelector.value = currentKey;
+            renderMath();
+        }
+
+        function updateSummary() {
+            const item = functionLibrary[currentKey];
+            summaryBox.innerHTML = `当前选择函数：${item.name}，常数 C 控制原函数曲线的平移。`;
+            curveInfo.textContent = item.description;
+            renderMath();
+        }
+
+        function computeRange(fn, domain) {
+            const [minX, maxX] = domain;
+            const samples = 400;
+            let minY = Infinity;
+            let maxY = -Infinity;
+            for (let i = 0; i <= samples; i++) {
+                const x = minX + (i / samples) * (maxX - minX);
+                const y = fn(x);
+                if (!Number.isFinite(y)) continue;
+                minY = Math.min(minY, y);
+                maxY = Math.max(maxY, y);
+            }
+            if (!Number.isFinite(minY) || !Number.isFinite(maxY)) {
+                return [-10, 10];
+            }
+            const pad = (maxY - minY) * 0.2 || 2;
+            return [minY - pad, maxY + pad];
+        }
+
+        function drawFamily() {
+            const { ctx, width, height } = setupCanvas(familyCanvas);
+            ctx.clearRect(0, 0, width, height);
+            const item = functionLibrary[currentKey];
+            const domain = item.domain;
+            const baseRange = computeRange(x => item.F(x, 0), domain);
+            const fRange = computeRange(item.f, domain);
+            const yRange = [Math.min(baseRange[0], fRange[0]), Math.max(baseRange[1], fRange[1])];
+
+            drawAxes(ctx, width, height);
+            const steps = 400;
+
+            // draw faint family lines for C offsets
+            const C = parseFloat(constantSlider.value);
+            const offsets = [-2, -1, 1, 2];
+            ctx.save();
+            ctx.strokeStyle = '#cbd5f5';
+            ctx.lineWidth = 1;
+            offsets.forEach(offset => {
+                const cValue = C + offset;
+                ctx.beginPath();
+                let started = false;
+                for (let i = 0; i <= steps; i++) {
+                    const x = domain[0] + (i / steps) * (domain[1] - domain[0]);
+                    const y = item.F(x, cValue);
+                    if (!Number.isFinite(y)) continue;
+                    const { x: cx, y: cy } = mathToCanvas(x, y, width, height, domain, yRange);
+                    if (!started) { ctx.moveTo(cx, cy); started = true; }
+                    else ctx.lineTo(cx, cy);
+                }
+                ctx.stroke();
+            });
+            ctx.restore();
+
+            // draw main antiderivative with selected C
+            ctx.save();
+            ctx.strokeStyle = '#10b981';
+            ctx.lineWidth = 2.5;
+            ctx.beginPath();
+            let started = false;
+            for (let i = 0; i <= steps; i++) {
+                const x = domain[0] + (i / steps) * (domain[1] - domain[0]);
+                const y = item.F(x, C);
+                if (!Number.isFinite(y)) continue;
+                const { x: cx, y: cy } = mathToCanvas(x, y, width, height, domain, yRange);
+                if (!started) { ctx.moveTo(cx, cy); started = true; }
+                else ctx.lineTo(cx, cy);
+            }
+            ctx.stroke();
+            ctx.restore();
+
+            // draw original function f(x)
+            ctx.save();
+            ctx.strokeStyle = '#2563eb';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            let fStarted = false;
+            for (let i = 0; i <= steps; i++) {
+                const x = domain[0] + (i / steps) * (domain[1] - domain[0]);
+                const y = item.f(x);
+                if (!Number.isFinite(y)) continue;
+                const { x: cx, y: cy } = mathToCanvas(x, y, width, height, domain, yRange);
+                if (!fStarted) { ctx.moveTo(cx, cy); fStarted = true; }
+                else ctx.lineTo(cx, cy);
+            }
+            ctx.stroke();
+            ctx.restore();
+
+            // draw animation point and tangent
+            const currentX = Math.max(domain[0], Math.min(domain[1], animationX));
+            const fxValue = item.f(currentX);
+            const FValue = item.F(currentX, C);
+            const center = mathToCanvas(currentX, FValue, width, height, domain, yRange);
+
+            ctx.save();
+            ctx.fillStyle = '#f59e0b';
+            ctx.beginPath();
+            ctx.arc(center.x, center.y, 6, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+
+            // tangent line
+            const tangentLength = (domain[1] - domain[0]) / 4;
+            const x1 = currentX - tangentLength;
+            const y1 = FValue - fxValue * tangentLength;
+            const x2 = currentX + tangentLength;
+            const y2 = FValue + fxValue * tangentLength;
+            const p1 = mathToCanvas(x1, y1, width, height, domain, yRange);
+            const p2 = mathToCanvas(x2, y2, width, height, domain, yRange);
+            ctx.save();
+            ctx.strokeStyle = '#f59e0b';
+            ctx.setLineDash([6, 6]);
+            ctx.lineWidth = 1.8;
+            ctx.beginPath();
+            ctx.moveTo(p1.x, p1.y);
+            ctx.lineTo(p2.x, p2.y);
+            ctx.stroke();
+            ctx.restore();
+
+            pointInfo.innerHTML = `$x=${currentX.toFixed(2)}$，$F(x)=${FValue.toFixed(3)}$`;
+            slopeInfo.innerHTML = `$F'(x)=f(x)=${fxValue.toFixed(3)}$`;
+            hintInfo.textContent = animationActive ? '动画进行中，可随时暂停。' : '点击“启动演示”让切点沿曲线运动。';
+            renderMath();
+        }
+
+        function stepAnimation() {
+            if (!animationActive) return;
+            const item = functionLibrary[currentKey];
+            const [minX, maxX] = item.domain;
+            const speed = (maxX - minX) / 240;
+            animationX += animationDirection * speed;
+            if (animationX >= maxX || animationX <= minX) {
+                animationDirection *= -1;
+                animationX = Math.max(minX, Math.min(maxX, animationX));
+            }
+            drawFamily();
+            animationFrame = requestAnimationFrame(stepAnimation);
+        }
+
+        function toggleAnimationState() {
+            animationActive = !animationActive;
+            toggleAnimation.textContent = animationActive ? '暂停演示' : '启动演示';
+            if (animationActive) {
+                stepAnimation();
+            } else {
+                if (animationFrame) cancelAnimationFrame(animationFrame);
+            }
+        }
+
+        function resetViewState() {
+            const item = functionLibrary[currentKey];
+            constantSlider.value = 0;
+            constantValue.textContent = '0.0';
+            animationX = item.domain[0];
+            animationDirection = 1;
+            animationActive = false;
+            toggleAnimation.textContent = '启动演示';
+            if (animationFrame) cancelAnimationFrame(animationFrame);
+            drawFamily();
+        }
+
+        function shuffle(array) {
+            const result = [...array];
+            for (let i = result.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [result[i], result[j]] = [result[j], result[i]];
+            }
+            return result;
+        }
+
+        function renderMatchingLists() {
+            functionList.innerHTML = '';
+            integralList.innerHTML = '';
+            matchedIds.clear();
+            selectedLeft = null;
+            selectedRight = null;
+            matchStatus.textContent = '请选择一对进行配对。';
+
+            const shuffled = shuffle(matchingPairs).slice(0, 3);
+            const leftItems = shuffle(shuffled);
+            const rightItems = shuffle(shuffled);
+
+            leftItems.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'match-card';
+                div.dataset.id = item.id;
+                div.innerHTML = item.func;
+                div.addEventListener('click', () => selectLeft(div));
+                functionList.appendChild(div);
+            });
+
+            rightItems.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'match-card';
+                div.dataset.id = item.id;
+                div.innerHTML = item.integral;
+                div.addEventListener('click', () => selectRight(div));
+                integralList.appendChild(div);
+            });
+
+            renderMath();
+        }
+
+        function clearSelections() {
+            if (selectedLeft) selectedLeft.classList.remove('selected');
+            if (selectedRight) selectedRight.classList.remove('selected');
+            selectedLeft = null;
+            selectedRight = null;
+        }
+
+        function selectLeft(element) {
+            if (matchedIds.has(element.dataset.id)) return;
+            if (selectedLeft === element) {
+                element.classList.remove('selected');
+                selectedLeft = null;
+            } else {
+                if (selectedLeft) selectedLeft.classList.remove('selected');
+                element.classList.add('selected');
+                selectedLeft = element;
+            }
+            attemptMatch();
+        }
+
+        function selectRight(element) {
+            if (matchedIds.has(element.dataset.id)) return;
+            if (selectedRight === element) {
+                element.classList.remove('selected');
+                selectedRight = null;
+            } else {
+                if (selectedRight) selectedRight.classList.remove('selected');
+                element.classList.add('selected');
+                selectedRight = element;
+            }
+            attemptMatch();
+        }
+
+        function attemptMatch() {
+            if (!selectedLeft || !selectedRight) return;
+            const leftId = selectedLeft.dataset.id;
+            const rightId = selectedRight.dataset.id;
+            if (leftId === rightId) {
+                matchedIds.add(leftId);
+                selectedLeft.classList.add('correct');
+                selectedRight.classList.add('correct');
+                matchStatus.textContent = '配对正确！继续完成剩余的项目。';
+            } else {
+                selectedLeft.classList.add('wrong');
+                selectedRight.classList.add('wrong');
+                matchStatus.textContent = '这对不匹配，再尝试别的组合。';
+                setTimeout(() => {
+                    selectedLeft.classList.remove('selected', 'wrong');
+                    selectedRight.classList.remove('selected', 'wrong');
+                }, 600);
+            }
+            selectedLeft = null;
+            selectedRight = null;
+
+            if (matchedIds.size === 3) {
+                matchStatus.textContent = '恭喜完成全部配对！将自动刷新新一轮练习。';
+                setTimeout(renderMatchingLists, 1500);
+            }
+        }
+
+        function init() {
+            populateFunctionSelector();
+            renderMatchingLists();
+            updateSummary();
+            drawFamily();
+            renderMath();
+        }
+
+        functionSelector.addEventListener('change', () => {
+            currentKey = functionSelector.value;
+            const item = functionLibrary[currentKey];
+            constantSlider.value = 0;
+            constantValue.textContent = '0.0';
+            animationX = item.domain[0];
+            animationDirection = 1;
+            animationActive = false;
+            if (animationFrame) cancelAnimationFrame(animationFrame);
+            toggleAnimation.textContent = '启动演示';
+            updateSummary();
+            drawFamily();
+        });
+
+        constantSlider.addEventListener('input', () => {
+            constantValue.textContent = parseFloat(constantSlider.value).toFixed(1);
+            drawFamily();
+        });
+
+        toggleAnimation.addEventListener('click', toggleAnimationState);
+        resetView.addEventListener('click', resetViewState);
+
+        navButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                switchPage(btn.dataset.section);
+            });
+        });
+
+        if (navButtons.length) {
+            switchPage(navButtons[0].dataset.section);
+        }
+
+        window.addEventListener('resize', () => {
+            drawFamily();
+        });
+
+        init();
+    </script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+

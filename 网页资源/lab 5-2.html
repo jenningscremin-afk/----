@@ -1,0 +1,831 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>换元法技巧实验室</title>
+
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true,
+                processEnvironments: true
+            },
+            options: {
+                skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+            },
+            startup: {
+                pageReady: () => {
+                    return MathJax.startup.defaultPageReady().then(() => {
+                        console.log('MathJax 初始化完成');
+                    }).catch((error) => {
+                        console.error('MathJax 初始化错误:', error);
+                    });
+                }
+            }
+        };
+    </script>
+    <script defer src="../common-assets/js/mathjax-3.2.2-tex-svg.min.js"></script>
+
+    <style>
+    :root {
+        --primary: #4f46e5;
+        --primary-dark: #3730a3;
+        --primary-light: #6366f1;
+        --success: #10b981;
+        --warning: #f59e0b;
+        --danger: #ef4444;
+        --gray-50: #f9fafb;
+        --gray-100: #f3f4f6;
+        --gray-200: #e5e7eb;
+        --gray-300: #d1d5db;
+        --gray-500: #6b7280;
+        --gray-600: #4b5563;
+        --gray-700: #1f2937;
+        --white: #ffffff;
+        --light: #ffffff;
+        --border: #e5e7eb;
+        --h1-size: 22px;
+        --h3-size: 18px;
+        --text-size: 16px;
+        --formula-size: 20px;
+    }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        *::-webkit-scrollbar { width: 0; background: transparent; }
+        * { scrollbar-width: none; -ms-overflow-style: none; }
+
+            body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
+        font-size: var(--text-size);
+        line-height: 1.5;
+        background: var(--gray-50);
+        color: var(--gray-700);
+    }
+
+            .container {
+        width: 100%;
+        max-width: 1400px;
+        height: min(100vh, 700px);
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        background: var(--white);
+    }
+
+            .header {
+        height: 40px;
+        background: var(--primary);
+        color: var(--white);
+        display: flex;
+        align-items: center;
+        padding: 0 20px;
+    }
+
+            .header h1 { font-size: var(--h1-size); margin: 0; }
+
+            .main { flex: 1; display: flex; overflow: hidden; }
+
+            .sidebar {
+        width: 120px;
+        background: var(--gray-50);
+        border-right: 1px solid var(--border);
+        padding: 10px 8px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+            .nav-btn {
+        width: 100%;
+        padding: 8px;
+        background: transparent;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: var(--text-size);
+        color: var(--gray-600);
+        text-align: left;
+        transition: background 0.2s ease, color 0.2s ease;
+    }
+
+            .nav-btn.active { background: var(--primary); color: var(--white); }
+
+            .nav-btn:hover { background: var(--gray-100); }    .content {
+        flex: 1;
+        position: relative;
+        overflow: hidden;
+        padding: 0;
+    }
+            .column { display: flex; flex-direction: column; gap: 16px; overflow-y: auto; padding-right: 4px; }
+
+            .card { background: var(--white); border: 1px solid var(--border); border-radius: 12px; padding: 12px; display: flex; flex-direction: column; gap: 10px; }
+
+        .card-scroll { overflow-y: auto; }
+        .card h3 { font-size: var(--h3-size); color: var(--primary-dark); }
+        .card p { line-height: 1.5; }
+
+        .tag-list { display: flex; gap: 8px; flex-wrap: wrap; }
+        .tag { font-size: 13px; padding: 4px 10px; border-radius: 999px; background: var(--gray-100); color: var(--gray-500); }
+
+        .info-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 12px; }
+        .info-item { background: var(--gray-50); border: 1px solid var(--gray-200); border-radius: 10px; padding: 10px; font-size: 15px; }
+        .info-item strong { color: var(--primary-dark); display: block; margin-bottom: 6px; }
+
+        .controls { display: flex; flex-direction: column; gap: 10px; background: var(--gray-50); border: 1px solid var(--gray-200); border-radius: 10px; padding: 10px; }
+        .control-row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+        .control-row label { font-weight: 600; }
+        select { flex: 1; padding: 6px 8px; border-radius: 8px; border: 1px solid var(--gray-300); font-size: 15px; }
+        button.action {
+            background: var(--primary);
+            color: var(--white);
+            border: none;
+            border-radius: 8px;
+            padding: 8px 12px;
+            font-size: var(--text-size);
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+        button.action.secondary { background: var(--white); color: var(--primary); border: 1px solid var(--primary); }
+        button.action:hover { transform: translateY(-2px); }
+
+        .step-panel {
+            border: 1px solid var(--gray-200);
+            border-radius: 12px;
+            background: var(--gray-50);
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .step-card {
+            border: 1px solid var(--gray-200);
+            border-radius: 10px;
+            padding: 10px;
+            background: var(--white);
+            transition: border 0.2s ease, transform 0.2s ease;
+        }
+
+        .step-card.active { border-color: var(--primary); box-shadow: 0 0 0 2px rgba(79,70,229,0.15); transform: translateX(4px); }
+        .step-card.success { border-color: var(--success); }
+        .step-card.error { border-color: var(--danger); background: rgba(239,68,68,0.07); }
+
+        .input-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; }
+        .input-box {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            background: var(--white);
+            border: 1px dashed var(--gray-300);
+            border-radius: 10px;
+            padding: 10px;
+        }
+        .input-box label { font-weight: 600; color: var(--primary-dark); font-size: 14px; }
+        .input-box input, .input-box textarea {
+            border: 1px solid var(--gray-300);
+            border-radius: 8px;
+            padding: 6px 8px;
+            font-size: 15px;
+        }
+        .input-box textarea { min-height: 70px; resize: vertical; }
+
+        .status-box { background: #eef2ff; border-radius: 10px; padding: 10px; font-size: 14px; color: var(--primary-dark); }
+
+        .formula-strip {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            padding: 10px;
+            border-radius: 10px;
+            background: var(--white);
+            border: 1px solid var(--gray-200);
+            min-height: 60px;
+        }
+
+        .formula-strip .bubble {
+            padding: 6px 10px;
+            border-radius: 999px;
+            background: rgba(79, 70, 229, 0.15);
+            color: var(--primary-dark);
+            font-size: 14px;
+        }
+
+        .animate-highlight {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(79,70,229,0.3); }
+            70% { box-shadow: 0 0 0 12px rgba(79,70,229,0); }
+            100% { box-shadow: 0 0 0 0 rgba(79,70,229,0); }
+        }
+
+        .hint { color: var(--gray-500); font-size: 14px; }
+        .hint.success { color: var(--success); }
+        .hint.error { color: var(--danger); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>换元法技巧实验室</h1>
+            <div>把 $\int f(g(x))g'(x)\,dx$ 变成易求的基本积分</div>
+        </header>
+        <div class="main">
+            <nav class="sidebar">
+                <button class="nav-btn active" data-section="principle">凑微分原理</button>
+                <button class="nav-btn" data-section="guided">分步练习</button>
+                <button class="nav-btn" data-section="exam">综合测验</button>
+            </nav>
+            <section class="content">
+                <div class="page-content active" id="principle">
+                    <div class="column">
+                        <div class="card card-scroll">
+                            <h3>学习指引</h3>
+                            <p>换元法的核心是寻找一个恰当的变量替换，使被积式匹配基本积分公式。本实验将“凑微分”拆解成可操作的步骤：识别内层函数、补齐导数、完成代换、回到原变量。</p>
+                            <div class="tag-list">
+                                <span class="tag">凑微分</span>
+                                <span class="tag">变量替换</span>
+                                <span class="tag">分步校验</span>
+                                <span class="tag">互动动画</span>
+                            </div>
+                            <div class="status-box" id="summaryBox">请选择一个题型开始。系统会展示 $u$ 的选择、$du$ 的补齐以及换限思路。</div>
+                        </div>
+
+                        <div class="card card-scroll">
+                            <h3>解题关键点</h3>
+                            <div class="info-grid">
+                                <div class="info-item">
+                                    <strong>1. 找内层函数 $u$</strong>
+                                    优先观察复合结构（如幂、指数、三角组合），将复杂部分设为 $u$。
+                                </div>
+                                <div class="info-item">
+                                    <strong>2. 补齐 $du$</strong>
+                                    $du = g'(x)dx$，如果缺少常数或简单函数，可通过“乘除常数”方式补齐。
+                                </div>
+                                <div class="info-item">
+                                    <strong>3. 代换后积分</strong>
+                                    将 $x$ 全部换成 $u$，变成基础积分，再积分得到 $U(u)+C$。
+                                </div>
+                                <div class="info-item">
+                                    <strong>4. 回代</strong>
+                                    把 $u=g(x)$ 代回，恢复原变量；若是定积分，别忘了同步换上下限。
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <h3>常见问题提示</h3>
+                            <ul style="padding-left: 20px; line-height: 1.6;">
+                                <li>忘记补齐导数：可通过动画查看未补齐时的提示。</li>
+                                <li>代换后仍含 $x$：说明 $u$ 选择不当，或 $x$ 未完全替换。</li>
+                                <li>定积分忘记换限：测验区会强制填写新上下限。</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="column">
+                        <div class="card">
+                            <h3>凑微分互动面板</h3>
+                            <div class="controls">
+                                <div class="control-row">
+                                    <label>题型选择</label>
+                                    <select id="caseSelector"></select>
+                                    <button class="action secondary" id="autoPlay">观看动画</button>
+                                </div>
+                            </div>
+                            <div class="step-panel" id="stepPanel"></div>
+                            <div class="status-box" id="stepHint">按照提示完成每一步，系统会即时判定。</div>
+                        </div>
+
+                        <div class="card">
+                            <h3>换元公式演示条</h3>
+                            <div class="formula-strip" id="formulaStrip"></div>
+                            <div class="hint" id="formulaHint">公式条展示换元的整体流程。</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="page-content" id="guided">
+                    <div class="column">
+                        <div class="card card-scroll">
+                            <h3>分步练习任务</h3>
+                            <p>按照“识别 → 补齐 → 代换 → 回代”的顺序完成下列练习。建议先在纸上写出每一步，再回到互动面板验证。</p>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>题目</th>
+                                        <th>提示</th>
+                                        <th>目标</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>$\int x\sqrt{1+x^2}\,dx$</td>
+                                        <td>设 $u=1+x^2$，补齐 $du$。</td>
+                                        <td>写出换元后的积分并计算。</td>
+                                    </tr>
+                                    <tr>
+                                        <td>$\int \frac{e^{2x}}{1+e^{2x}}dx$</td>
+                                        <td>观察分子是否是分母的导数。</td>
+                                        <td>得到 $\ln|1+e^{2x}|+C$。</td>
+                                    </tr>
+                                    <tr>
+                                        <td>$\int \sin^3 x\cos x\,dx$</td>
+                                        <td>拆成 $\sin^2 x\cdot \sin x\cos x$。</td>
+                                        <td>记得把 $\sin^2 x$ 转成 $1-\cos^2 x$。</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="card">
+                            <h3>练习建议</h3>
+                            <p>做题时养成“口头描述每一步”的习惯。例如：</p>
+                            <ul style="padding-left: 20px; line-height: 1.6;">
+                                <li>“我选择 $u=$… 因为 …”；</li>
+                                <li>“缺少 $g'(x)dx$，需要乘一个 …”；</li>
+                                <li>“积分后得到 …，回代是 …”；</li>
+                                <li>“定积分时上下限随 $x$ 变化成 …”。</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="column">
+                        <div class="card">
+                            <h3>巩固小测</h3>
+                            <p>在纸上完成以下填空，随后切换回“凑微分原理”页用互动面板自查。</p>
+                            <div class="step-panel">
+                                <div class="step-card">
+                                    <strong>题目 A</strong>
+                                    <div>$\int \frac{2x}{x^2+5}\,dx$</div>
+                                    <div class="hint">填空：$u=\_\_\_\_\_\_$；结果：$\_\_\_\_\_\_$</div>
+                                </div>
+                                <div class="step-card">
+                                    <strong>题目 B</strong>
+                                    <div>$\int_0^1 \frac{1}{\sqrt{1-x^2}}dx$</div>
+                                    <div class="hint">考虑三角代换，换限要同步。</div>
+                                </div>
+                                <div class="step-card">
+                                    <strong>题目 C</strong>
+                                    <div>$\int x e^{-x^2}dx$</div>
+                                    <div class="hint">答案中会出现 $-\tfrac{1}{2}e^{-x^2}$。</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="page-content" id="exam">
+                    <div class="column">
+                        <div class="card card-scroll">
+                            <h3>测验流程</h3>
+                            <ol style="padding-left: 20px; line-height: 1.6;">
+                                <li>选择题型后，系统会随机生成积分题。</li>
+                                <li>必须先填写 $u$ 与 $du$，才可进入积分与回代步骤。</li>
+                                <li>所有输入正确后才能进入下一题，数据会记录在“成绩面板”。</li>
+                            </ol>
+                            <div class="status-box">当前为示意内容，可根据教学需要替换为真实测验接口。</div>
+                        </div>
+
+                        <div class="card">
+                            <h3>成绩面板（示例）</h3>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>题号</th>
+                                        <th>完成时间</th>
+                                        <th>评价</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>1</td>
+                                        <td>01:12</td>
+                                        <td>正确且解释清晰</td>
+                                    </tr>
+                                    <tr>
+                                        <td>2</td>
+                                        <td>02:05</td>
+                                        <td>补齐 $du$ 花费时间</td>
+                                    </tr>
+                                    <tr>
+                                        <td>3</td>
+                                        <td>—</td>
+                                        <td>等待完成</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="column">
+                        <div class="card">
+                            <h3>误差自检</h3>
+                            <p>完成每道题后，用以下问题自检：</p>
+                            <ul style="padding-left: 20px; line-height: 1.6;">
+                                <li>换元后积分是否只含 $u$？</li>
+                                <li>定积分是否换限并回到原变量？</li>
+                                <li>答案是否包含常数 $C$ 或写成定积分数值？</li>
+                                <li>是否能用原函数求导验证结果？</li>
+                            </ul>
+                        </div>
+
+                        <div class="card">
+                            <h3>课堂拓展</h3>
+                            <p>尝试设计一道需要两次换元或先凑微分再分部积分的题目，与同伴交换并互评。可以将题目与解答录入 LMS，形成“互助题库”。</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <script>
+        function renderMath() {
+            if (window.MathJax && window.MathJax.typesetPromise) {
+                MathJax.typesetPromise();
+            }
+        }
+
+        const cases = {
+            basic: {
+                title: '$\\int 2x\\cos(x^2)\\,dx$',
+                description: '设 $u = x^2$，则 $du = 2x\\,dx$，代换后得到 $\\int \\cos u\\,du$。',
+                steps: [
+                    {
+                        id: 'chooseU',
+                        label: '选择 $u$',
+                        prompt: '请选择合适的 $u$：',
+                        type: 'options',
+                        options: ['u = x^2', 'u = 2x', 'u = \cos(x^2)'],
+                        answer: 'u = x^2'
+                    },
+                    {
+                        id: 'computeDu',
+                        label: '补齐 $du$',
+                        prompt: '填写 $du =$ ?',
+                        type: 'input',
+                        placeholder: '例如 2x dx',
+                        answer: '2x dx'
+                    },
+                    {
+                        id: 'integralU',
+                        label: '代换为 $u$ 的积分',
+                        prompt: '写出换元后的积分表达式：',
+                        type: 'input',
+                        placeholder: '例如 ∫cos(u) du',
+                        answer: '∫cos(u) du'
+                    },
+                    {
+                        id: 'backSub',
+                        label: '回代结果',
+                        prompt: '写出回代后的原函数：',
+                        type: 'input',
+                        placeholder: '例如 sin(x^2) + C',
+                        answer: 'sin(x^2) + C'
+                    }
+                ],
+                formula: ['$\\int 2x\\cos(x^2)\\,dx$', '设 $u=x^2$', 'du=2x\\,dx', '$\\int \\cos u\\,du$', '$\\sin u + C$', '$\\sin(x^2)+C$']
+            },
+            exp: {
+                title: '$\\int e^{3x}\\,dx$',
+                description: '设 $u = 3x$，则 $du = 3 dx$，补一个 $\\frac{1}{3}$，得到 $\\frac{1}{3}\\int e^u\\,du$。',
+                steps: [
+                    {
+                        id: 'chooseU',
+                        label: '选择 $u$',
+                        prompt: '请选择合适的 $u$：',
+                        type: 'options',
+                        options: ['u = 3x', 'u = e^{3x}', 'u = x'],
+                        answer: 'u = 3x'
+                    },
+                    {
+                        id: 'computeDu',
+                        label: '补齐 $du$',
+                        prompt: '填写 $du =$ ?',
+                        type: 'input',
+                        placeholder: '例如 3 dx',
+                        answer: '3 dx'
+                    },
+                    {
+                        id: 'factor',
+                        label: '补常数',
+                        prompt: '补上缺少的常数，使积分变成 $\\int e^u du$：',
+                        type: 'input',
+                        placeholder: '填入常数倍',
+                        answer: '1/3'
+                    },
+                    {
+                        id: 'backSub',
+                        label: '回代结果',
+                        prompt: '写出回代后的原函数：',
+                        type: 'input',
+                        placeholder: '例如 (1/3)e^{3x} + C',
+                        answer: '(1/3)e^{3x} + C'
+                    }
+                ],
+                formula: ['$\\int e^{3x}\\,dx$', '设 $u=3x$', 'du=3\\,dx', '$\\frac{1}{3}\\int e^u\\,du$', '$\\frac{1}{3}e^u + C$', '$\\frac{1}{3}e^{3x}+C$']
+            },
+            trig: {
+                title: '$\\int \\frac{\\cos x}{1+\\sin x}\\,dx$',
+                description: '设 $u=1+\\sin x$，则 $du = \\cos x\\,dx$，积分变成 $\\int \\frac{1}{u}du$。',
+                steps: [
+                    {
+                        id: 'chooseU',
+                        label: '选择 $u$',
+                        prompt: '请选择合适的 $u$：',
+                        type: 'options',
+                        options: ['u = \sin x', 'u = 1 + \sin x', 'u = \cos x'],
+                        answer: 'u = 1 + \sin x'
+                    },
+                    {
+                        id: 'computeDu',
+                        label: '补齐 $du$',
+                        prompt: '填写 $du =$ ?',
+                        type: 'input',
+                        placeholder: '例如 cos(x) dx',
+                        answer: 'cos(x) dx'
+                    },
+                    {
+                        id: 'integralU',
+                        label: '代换为 $u$ 的积分',
+                        prompt: '写出换元后的积分表达式：',
+                        type: 'input',
+                        placeholder: '例如 ∫1/u du',
+                        answer: '∫1/u du'
+                    },
+                    {
+                        id: 'backSub',
+                        label: '回代结果',
+                        prompt: '写出回代后的原函数：',
+                        type: 'input',
+                        placeholder: '例如 ln|1+sin(x)| + C',
+                        answer: 'ln|1+sin(x)| + C'
+                    }
+                ],
+                formula: ['$\\int \\frac{\\cos x}{1+\\sin x}\\,dx$', '设 $u=1+\\sin x$', 'du=\\cos x\\,dx', '$\\int \\frac{1}{u}\\,du$', '$\\ln|u| + C$', '$\\ln|1+\\sin x|+C$']
+            }
+        };
+
+        const caseSelector = document.getElementById('caseSelector');
+        const stepPanel = document.getElementById('stepPanel');
+        const stepHint = document.getElementById('stepHint');
+        const formulaStrip = document.getElementById('formulaStrip');
+        const formulaHint = document.getElementById('formulaHint');
+        const autoPlayBtn = document.getElementById('autoPlay');
+        const navButtons = document.querySelectorAll('.nav-btn');
+        const pages = document.querySelectorAll('.page-content');
+
+        let currentKey = 'basic';
+        let autoTimer = null;
+        let currentStepIndex = 0;
+
+        function switchPage(section) {
+            pages.forEach(page => {
+                page.classList.toggle('active', page.id === section);
+            });
+            navButtons.forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.section === section);
+            });
+
+            if (section !== 'principle') {
+                clearAuto();
+            }
+
+            setTimeout(renderMath, 80);
+        }
+
+        function initCaseSelector() {
+            Object.entries(cases).forEach(([key, item]) => {
+                const option = document.createElement('option');
+                option.value = key;
+                option.innerHTML = item.title;
+                caseSelector.appendChild(option);
+            });
+            caseSelector.value = currentKey;
+            renderMath();
+        }
+
+        function buildSteps() {
+            const data = cases[currentKey];
+            stepPanel.innerHTML = '';
+            data.steps.forEach((step, index) => {
+                const card = document.createElement('div');
+                card.className = 'step-card';
+                card.dataset.stepIndex = index;
+                card.innerHTML = `
+                    <strong>${index + 1}. ${step.label}</strong>
+                    <div>${step.prompt}</div>
+                    ${buildInput(step)}
+                `;
+                stepPanel.appendChild(card);
+            });
+            currentStepIndex = 0;
+            highlightStep();
+            stepHint.textContent = data.description;
+            buildFormulaStrip();
+            renderMath();
+        }
+
+        function buildInput(step) {
+            if (step.type === 'options') {
+                return `
+                    <div class="input-grid">
+                        ${step.options.map(opt => `<button class="action secondary option-btn" data-answer="${opt}">${opt}</button>`).join('')}
+                    </div>
+                `;
+            }
+            return `
+                <div class="input-box">
+                    <label>填写答案</label>
+                    <input type="text" placeholder="${step.placeholder || ''}" data-answer="${step.answer}">
+                    <button class="action check-btn">检查</button>
+                    <span class="hint">输入后点击检查，支持空格忽略。</span>
+                </div>
+            `;
+        }
+
+        function buildFormulaStrip() {
+            formulaStrip.innerHTML = '';
+            const data = cases[currentKey];
+            data.formula.forEach((item, index) => {
+                const bubble = document.createElement('div');
+                bubble.className = 'bubble';
+                bubble.dataset.index = index;
+                bubble.textContent = item.replace(/∫/g, '∫');
+                formulaStrip.appendChild(bubble);
+            });
+            formulaHint.textContent = '公式序列展示了换元的完整路径。完成步骤后会高亮对应节点。';
+            renderMath();
+        }
+
+        function highlightStep() {
+            const cards = stepPanel.querySelectorAll('.step-card');
+            cards.forEach(card => card.classList.remove('active'));
+            const active = cards[currentStepIndex];
+            if (active) active.classList.add('active');
+            const bubbles = formulaStrip.querySelectorAll('.bubble');
+            bubbles.forEach((bubble, idx) => {
+                bubble.classList.toggle('animate-highlight', idx === currentStepIndex);
+            });
+        }
+
+        function attachEvents() {
+            stepPanel.addEventListener('click', event => {
+                if (event.target.classList.contains('option-btn')) {
+                    handleOption(event.target);
+                }
+                if (event.target.classList.contains('check-btn')) {
+                    handleCheck(event.target);
+                }
+            });
+
+            caseSelector.addEventListener('change', () => {
+                currentKey = caseSelector.value;
+                clearAuto();
+                buildSteps();
+            });
+
+            autoPlayBtn.addEventListener('click', toggleAutoPlay);
+
+            navButtons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    switchPage(btn.dataset.section);
+                });
+            });
+        }
+
+        function handleOption(button) {
+            const step = cases[currentKey].steps[currentStepIndex];
+            const card = getActiveCard();
+            if (!step || step.type !== 'options') return;
+            const answer = button.dataset.answer;
+            if (normalize(answer) === normalize(step.answer)) {
+                markCard(card, true);
+                stepHint.textContent = `✓ 已确认 ${step.answer}`;
+                moveNext();
+            } else {
+                button.classList.add('shake');
+                setTimeout(() => button.classList.remove('shake'), 500);
+                stepHint.textContent = '答案不匹配，再试一次。';
+            }
+        }
+
+        function handleCheck(button) {
+            const container = button.closest('.input-box');
+            const input = container.querySelector('input');
+            const step = cases[currentKey].steps[currentStepIndex];
+            if (!input || !step) return;
+            const value = normalize(input.value);
+            const answer = normalize(step.answer);
+            const hint = container.querySelector('.hint');
+            if (!value) {
+                hint.textContent = '先填写答案哦。';
+                hint.classList.remove('success', 'error');
+                return;
+            }
+            if (value === answer) {
+                hint.textContent = '正确！继续下一步。';
+                hint.classList.add('success');
+                markCard(button.closest('.step-card'), true);
+                moveNext();
+            } else {
+                hint.textContent = '还差一点，再检查一下常数或符号。';
+                hint.classList.add('error');
+            }
+        }
+
+        function getActiveCard() {
+            return stepPanel.querySelector(`.step-card[data-step-index="${currentStepIndex}"]`);
+        }
+
+        function markCard(card, success) {
+            card.classList.remove('active');
+            card.classList.add(success ? 'success' : 'error');
+        }
+
+        function moveNext() {
+            currentStepIndex += 1;
+            const steps = cases[currentKey].steps;
+            if (currentStepIndex >= steps.length) {
+                stepHint.textContent = '恭喜完成全部步骤！可以切换题目或开启测验。';
+                clearAuto();
+                formulaHint.textContent = '完成换元流程，所有节点均已亮起。';
+                Array.from(formulaStrip.children).forEach(b => b.classList.add('animate-highlight'));
+            } else {
+                highlightStep();
+            }
+        }
+
+        function normalize(str) {
+            return (str || '')
+                .replace(/\\frac/g, 'frac')
+                .replace(/\\ln/g, 'ln')
+                .replace(/[{}()\[\]\s]/g, '')
+                .replace(/\*+/g, '')
+                .replace(/dx|du/g, match => match.toLowerCase())
+                .replace(/sin/g, 'sin')
+                .replace(/cos/g, 'cos')
+                .replace(/exp/g, 'exp')
+                .toLowerCase();
+        }
+
+        function toggleAutoPlay() {
+            if (autoTimer) {
+                clearAuto();
+                return;
+            }
+            autoPlayBtn.textContent = '停止动画';
+            autoStep();
+        }
+
+        function autoStep() {
+            const steps = cases[currentKey].steps;
+            if (currentStepIndex >= steps.length) {
+                clearAuto();
+                return;
+            }
+            const step = steps[currentStepIndex];
+            const card = getActiveCard();
+            card.classList.add('animate-highlight');
+            stepHint.textContent = `动画演示：${step.label}`;
+            autoTimer = setTimeout(() => {
+                card.classList.remove('animate-highlight');
+                markCard(card, true);
+                moveNext();
+                autoStep();
+            }, 1400);
+        }
+
+        function clearAuto() {
+            if (autoTimer) clearTimeout(autoTimer);
+            autoTimer = null;
+            autoPlayBtn.textContent = '观看动画';
+        }
+
+        function init() {
+            initCaseSelector();
+            buildSteps();
+            attachEvents();
+            switchPage('principle');
+            renderMath();
+        }
+
+        init();
+    </script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
