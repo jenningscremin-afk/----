@@ -1,0 +1,1626 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>学生成绩管理系统 - 西安航空职业技术学院</title>
+    <script src="common-assets/js/xlsx.full.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Microsoft YaHei', sans-serif;
+            background: #f5f5f5;
+        }
+        
+        .header {
+            background: #2c3e50;
+            color: white;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .btn {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 0 5px;
+            font-size: 13px;
+        }
+        
+        .btn-primary { background: #3498db; color: white; }
+        .btn-success { background: #27ae60; color: white; }
+        .btn-danger { background: #e74c3c; color: white; }
+        .btn-warning { background: #f39c12; color: white; }
+        
+        .control-bar {
+            background: #ecf0f1;
+            padding: 15px;
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .table-container {
+            max-height: calc(100vh - 200px);
+            overflow: auto;
+            background: white;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th {
+            background: #34495e;
+            color: white;
+            padding: 10px;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            font-size: 13px;
+        }
+        
+        td {
+            padding: 8px;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        tr:hover { background: #f8f9fa; }
+        
+        /* 应电1班和应电2班的颜色区分 */
+        tr.yingdian-class1 {
+            background: #fff;
+        }
+        
+        tr.yingdian-class2 {
+            background: #f0f8ff;
+        }
+        
+        tr.yingdian-class1:hover {
+            background: #e8f4f8;
+        }
+        
+        tr.yingdian-class2:hover {
+            background: #e0efff;
+        }
+        
+        .class-indicator {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 11px;
+            margin-left: 5px;
+        }
+        
+        .class1-badge {
+            background: #e3f2fd;
+            color: #1565c0;
+        }
+        
+        .class2-badge {
+            background: #fce4ec;
+            color: #c2185b;
+        }
+        
+        .editable {
+            cursor: pointer;
+            padding: 2px 5px;
+            border-radius: 3px;
+        }
+        
+        .editable:hover { background: #e3f2fd; }
+        
+        .welcome {
+            padding: 100px 20px;
+            text-align: center;
+        }
+        
+        .class-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 300px);
+            gap: 20px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+        
+        .class-btn {
+            padding: 30px;
+            background: white;
+            border: 2px solid #3498db;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .class-btn:hover {
+            background: #3498db;
+            color: white;
+        }
+        
+        .stats {
+            background: white;
+            padding: 10px 20px;
+            border-top: 2px solid #34495e;
+            display: flex;
+            gap: 30px;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        
+        .modal.show { display: flex; }
+        
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            min-width: 400px;
+            max-width: 600px;
+        }
+        
+        .form-group {
+            margin: 15px 0;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        
+        .form-group input[type="text"],
+        .form-group input[type="number"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        
+        .group-badge {
+            padding: 2px 8px;
+            border-radius: 3px;
+            font-size: 12px;
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+        
+        .score-good { color: #27ae60; font-weight: bold; }
+        .score-warn { color: #f39c12; font-weight: bold; }
+        .score-bad { color: #e74c3c; font-weight: bold; }
+        .score-negative { color: #9c27b0; font-weight: bold; }
+        
+        .score-info {
+            background: #fff3cd;
+            padding: 10px;
+            margin: 10px;
+            border-radius: 5px;
+            border-left: 4px solid #f39c12;
+        }
+        
+        .select-range {
+            background: #bbdefb !important;
+        }
+        
+        .class-status {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 3px;
+            font-size: 11px;
+            margin-left: 10px;
+        }
+        
+        .status-loaded { background: #d4edda; color: #155724; }
+        .status-empty { background: #f8d7da; color: #721c24; }
+        
+        .sub-class-info {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div>
+            <span style="font-size: 18px; font-weight: bold;">学生成绩管理系统</span>
+            <span style="margin-left: 20px;">班级: <span id="className">未选择</span></span>
+            <span style="margin-left: 20px;">教师: 宋文雅</span>
+        </div>
+        <div>
+            <button class="btn btn-primary" onclick="switchClass()">切换班级</button>
+            <button class="btn btn-primary" onclick="importExcel()">导入数据</button>
+            <button class="btn btn-success" onclick="showExportOptions()" style="display:none;" id="exportBtn">导出数据</button>
+            <button class="btn btn-warning" onclick="checkDataStatus()">检查数据状态</button>
+            <button class="btn btn-danger" onclick="resetCurrentClass()" style="display:none;" id="resetBtn">重置当前班级</button>
+            <input type="file" id="fileInput" style="display:none;" accept=".xlsx,.xls" onchange="loadFile(event)">
+        </div>
+    </div>
+    
+    <div id="welcome" class="welcome">
+        <h1>西安航空职业技术学院 - 学生成绩管理系统</h1>
+        <p>高等数学 2025-2026-1学期</p>
+        <div class="score-info">
+            <strong>评分标准：</strong>总分100分 = 平时成绩50分 + 考试成绩50分
+            <br><strong>平时成绩50分包含：</strong>
+            <br>• 课堂表现：20分
+            <br>• 小组活动：20分
+            <br>• 笔记检查：10分（两次检查，每次5分）
+            <br><strong>课程安排：</strong>共20次课，其中16次安排小组任务
+            <br><strong>分组说明：</strong>
+            <br>• 液压三班（30人）：15组，每组2人
+            <br>• 无人机三班（40人）：13组，前12组每组3人，第13组4人
+            <br>• 无人机四班（40人）：13组，前12组每组3人，第13组4人
+            <br>• 应电1-2班（86人）：14组，约每组6人
+            <br><strong>选择功能：</strong>
+            <br>• 拖拽选择：点击并拖动鼠标可批量选择连续行
+            <br>• Shift+点击：选择两行之间的所有行
+            <br>• Ctrl+点击：多选/取消单个选择
+            <br><strong>加分与扣分：</strong>
+            <br>• 快速操作：每行有 +1 和 -1 按钮，快速调整课堂表现分
+            <br>• 批量操作：选中多个学生后，可批量加分或扣分
+            <br>• 直接编辑：点击分数单元格可直接输入分数
+            <br>• 支持负分：扣分可以扣成负分，紫色显示
+        </div>
+        <div class="class-grid">
+            <div class="class-btn" onclick="selectClass('25无人机三班')">
+                <h3>25无人机三班（陆军）</h3>
+                <p>40名学生 - 13个小组</p>
+                <span id="status-25无人机三班" class="class-status status-empty">未加载</span>
+            </div>
+            <div class="class-btn" onclick="selectClass('25液压三班')">
+                <h3>25液压三班（陆军）</h3>
+                <p>30名学生 - 15个小组</p>
+                <span id="status-25液压三班" class="class-status status-empty">未加载</span>
+            </div>
+            <div class="class-btn" onclick="selectClass('25无人机四班')">
+                <h3>25无人机四班（空军）</h3>
+                <p>40名学生 - 13个小组</p>
+                <span id="status-25无人机四班" class="class-status status-empty">未加载</span>
+            </div>
+            <div class="class-btn" onclick="selectClass('25应电12班')">
+                <h3>25应电1-2班</h3>
+                <p>86名学生 - 14个小组</p>
+                <div class="sub-class-info">应电1班: 43人 | 应电2班: 43人</div>
+                <span id="status-25应电12班" class="class-status status-empty">未加载</span>
+            </div>
+        </div>
+    </div>
+    
+    <div id="main" style="display:none;">
+        <div class="control-bar">
+            <select id="groupFilter" onchange="filterGroup()">
+                <option value="">全部组别</option>
+            </select>
+            <button class="btn btn-primary" onclick="selectCurrentGroup()">选中当前组</button>
+            <button class="btn btn-primary" onclick="invertSelection()">反选</button>
+            <button class="btn btn-danger" onclick="clearSelection()">清除选择</button>
+            
+            <select id="batchType">
+                <option value="1">课堂表现</option>
+                <option value="2">小组活动</option>
+                <option value="3">笔记检查</option>
+            </select>
+            <input type="number" id="batchScore" value="1" min="-20" max="20" style="width:80px;">
+            <button class="btn btn-success" onclick="batchAdd()">批量加分</button>
+            <button class="btn btn-warning" onclick="batchDeduct()">批量扣分</button>
+            
+            <input type="text" id="search" placeholder="搜索学号或姓名" onkeyup="doSearch()">
+        </div>
+        
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th><input type="checkbox" id="selectAll" onchange="toggleAll()"></th>
+                        <th>序号</th>
+                        <th>学号</th>
+                        <th>姓名</th>
+                        <th>组别</th>
+                        <th>课堂表现(20)</th>
+                        <th>小组活动(20)</th>
+                        <th>笔记检查(10)</th>
+                        <th>平时总分(50)</th>
+                        <th>考试成绩(50)</th>
+                        <th>总分(100)</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody id="tbody"></tbody>
+            </table>
+        </div>
+        
+        <div class="stats">
+            <span>总人数: <b id="total">0</b></span>
+            <span>已选择: <b id="selected">0</b></span>
+            <span>平均分: <b id="avg">0</b></span>
+            <span>及格率: <b id="pass">0%</b></span>
+            <span style="margin-left:20px;color:#666;">共20次课，16次小组任务</span>
+        </div>
+    </div>
+    
+    <div id="noteModal" class="modal">
+        <div class="modal-content">
+            <h3>笔记检查 - <span id="noteName"></span></h3>
+            <p style="color: #666; margin: 10px 0;">每次检查5分，共2次，满分10分</p>
+            <div class="form-group">
+                <label><input type="checkbox" id="note1"> 第一次检查 (5分)</label>
+            </div>
+            <div class="form-group">
+                <label><input type="checkbox" id="note2"> 第二次检查 (5分)</label>
+            </div>
+            <button class="btn btn-success" onclick="saveNote()">保存</button>
+            <button class="btn btn-danger" onclick="closeNote()">取消</button>
+        </div>
+    </div>
+    
+    <div id="exportModal" class="modal">
+        <div class="modal-content">
+            <h3>选择导出选项</h3>
+            <p style="margin: 20px 0;">请选择要导出的数据范围：</p>
+            <button id="exportCurrentBtn" class="btn btn-primary" onclick="exportCurrentClass()" style="width: 100%; margin: 10px 0; padding: 15px;">
+                导出当前班级
+            </button>
+            <button class="btn btn-success" onclick="exportAllClasses()" style="width: 100%; margin: 10px 0; padding: 15px;">
+                导出所有班级 (4个班级)
+            </button>
+            <button class="btn btn-danger" onclick="closeExportModal()" style="width: 100%; margin: 10px 0;">
+                取消
+            </button>
+            <div style="margin-top: 20px; padding: 10px; background: #e3f2fd; border-radius: 5px;">
+                <strong>数据状态：</strong><br>
+                <span id="exportDebugInfo">检查中...</span>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+    // 全局变量
+    let students = [];
+    let currentClass = '';
+    let currentNoteIndex = -1;
+    let currentFilter = '';
+    let allClassesData = {};
+    
+    // 批量选择相关变量
+    let isSelecting = false;
+    let startSelectIndex = -1;
+    let endSelectIndex = -1;
+    let lastClickedIndex = -1;
+    
+    // 班级数据 - 确保数据准确
+    const classesData = {
+        '25无人机三班': [
+            ['25090300301', '安忠睿'], ['25090300302', '曹兆雄'], ['25090300303', '陈炳臻'],
+            ['25090300304', '成硕'], ['25090300305', '樊稼乐'], ['25090300306', '何兆文'],
+            ['25090300307', '贺文韬'], ['25090300308', '侯笑宇'], ['25090300309', '侯奕辰'],
+            ['25090300310', '姜鉴罡'], ['25090300311', '姜杉泽'], ['25090300312', '景博楷'],
+            ['25090300313', '康家豪'], ['25090300314', '雷鎔阳'], ['25090300315', '李斌'],
+            ['25090300316', '李孔戟'], ['25090300317', '李骑东'], ['25090300318', '林禹辰阳'],
+            ['25090300319', '刘浩园'], ['25090300320', '刘佳祈'], ['25090300321', '吕延博'],
+            ['25090300322', '马子杰'], ['25090300323', '潘政旭'], ['25090300324', '蒲岩松'],
+            ['25090300325', '任嘉鑫'], ['25090300326', '苏兆宇'], ['25090300327', '唐森林'],
+            ['25090300328', '王帅'], ['25090300329', '王晓东'], ['25090300330', '王卓悦'],
+            ['25090300331', '魏毅阳'], ['25090300332', '徐子轩'], ['25090300333', '袁浩'],
+            ['25090300334', '袁子豪'], ['25090300335', '张博森'], ['25090300336', '张伟然'],
+            ['25090300337', '郑帅涛'], ['25090300338', '朱秦东阳'], ['25090300339', '朱怡凡'],
+            ['25090300340', '左天雨']
+        ],
+        '25液压三班': [
+            ['25090200301', '陈润龙'], ['25090200302', '陈楠'], ['25090200303', '段宇轩'],
+            ['25090200304', '侯一诺'], ['25090200305', '黄佳强'], ['25090200306', '冀志远'],
+            ['25090200307', '金旭阳'], ['25090200308', '金子航'], ['25090200309', '乐思炎'],
+            ['25090200310', '李茂源'], ['25090200311', '李铠君'], ['25090200312', '刘崇智'],
+            ['25090200313', '吕一铭'], ['25090200314', '骆研宇'], ['25090200315', '石靖楠'],
+            ['25090200316', '宋浩然'], ['25090200317', '宋世杰'], ['25090200318', '谭思翰'],
+            ['25090200319', '汤译博'], ['25090200320', '王德福'], ['25090200321', '魏源培'],
+            ['25090200322', '吴迪'], ['25090200323', '吴松睿'], ['25090200324', '席子辰'],
+            ['25090200325', '曾圣俊'], ['25090200326', '张家豪'], ['25090200327', '张文译'],
+            ['25090200328', '周秦宇'], ['25090200329', '朱伯恩'], ['25090200330', '朱小宇']
+        ],
+        '25无人机四班': [
+            ['25090300401', '白石权'], ['25090300402', '蔡宇轩'], ['25090300403', '陈定基'],
+            ['25090300404', '陈科早'], ['25090300405', '陈绍武'], ['25090300406', '陈天一'],
+            ['25090300407', '陈宇涵'], ['25090300408', '陈鑫'], ['25090300409', '崔峻冉'],
+            ['25090300410', '丁文龙'], ['25090300411', '杜叶晨'], ['25090300412', '樊镇宇'],
+            ['25090300413', '范一哲'], ['25090300414', '郝玉洁'], ['25090300415', '洪其荣'],
+            ['25090300416', '胡锦熙'], ['25090300417', '黄耀杰'], ['25090300418', '孔惪'],
+            ['25090300419', '李彦臻'], ['25090300420', '李睿康'], ['25090300421', '梁家辉'],
+            ['25090300422', '刘浩展'], ['25090300423', '刘景晖'], ['25090300424', '罗毅涛'],
+            ['25090300425', '骆岳宏'], ['25090300426', '牟嘉豪'], ['25090300427', '宁俊熙'],
+            ['25090300428', '邱世显'], ['25090300429', '施斌豪'], ['25090300430', '唐文杰'],
+            ['25090300431', '杨济玮'], ['25090300432', '杨柠铖'], ['25090300433', '员晨阳'],
+            ['25090300434', '张锦程'], ['25090300435', '张晓宁'], ['25090300436', '张展鹏'],
+            ['25090300437', '张志杰'], ['25090300438', '张鑫鹏'], ['25090300439', '周杰'],
+            ['25090300440', '周通']
+        ],
+        '25应电12班': [  // 原通航运维班
+            ['25010030101', '安文娜'], ['25010030102', '陈胜'], ['25010030103', '单天璞'],
+            ['25010030104', '段天宇'], ['25010030105', '范晨希'], ['25010030106', '高硕果'],
+            ['25010030107', '郭世雄'], ['25010030108', '黄俊宁'], ['25010030109', '金欣雨'],
+            ['25010030110', '井锐航'], ['25010030111', '亢鑫钰'], ['25010030112', '李朝阳'],
+            ['25010030113', '李登辉'], ['25010030114', '李芬竹'], ['25010030115', '李希言'],
+            ['25010030116', '李姿怡'], ['25010030117', '刘思彤'], ['25010030118', '刘毅坤'],
+            ['25010030119', '毛鑫冰'], ['25010030120', '彭彩玲'], ['25010030121', '齐园明'],
+            ['25010030122', '任思源'], ['25010030123', '孙鹤卿'], ['25010030124', '孙明哲'],
+            ['25010030125', '王锦楠'], ['25010030126', '王思杰'], ['25010030127', '魏晨怡'],
+            ['25010030128', '魏旭岩'], ['25010030129', '温玉荣'], ['25010030130', '乌·特尼格尔'],
+            ['25010030131', '薛淇文'], ['25010030132', '杨瑜泽'], ['25010030133', '姚锦莉'],
+            ['25010030134', '易小雨'], ['25010030135', '袁程军'], ['25010030136', '张晨'],
+            ['25010030137', '张美豪'], ['25010030138', '张心源'], ['25010030139', '张亚川'],
+            ['25010030140', '张宇轩'], ['25010030141', '张子怡'], ['25010030142', '赵佳宾'],
+            ['25010030143', '赵子怡'], ['25010030201', '安橦橦'], ['25010030202', '陈坤'],
+            ['25010030203', '程志远'], ['25010030204', '代韶涵'], ['25010030205', '懂阳宁'],
+            ['25010030206', '冯子青'], ['25010030207', '付孟璞'], ['25010030208', '高延杰'],
+            ['25010030209', '郝星宇'], ['25010030210', '蒋秦湘'], ['25010030211', '靳惠琪'],
+            ['25010030212', '康轶'], ['25010030213', '雷智浩'], ['25010030214', '黎含昕'],
+            ['25010030215', '李承泽'], ['25010030216', '李键'], ['25010030217', '李知萱'],
+            ['25010030218', '刘凌飞'], ['25010030219', '刘莎'], ['25010030220', '刘颖然'],
+            ['25010030221', '马晨东'], ['25010030222', '孟成坤'], ['25010030223', '秦诚诚'],
+            ['25010030224', '尚明'], ['25010030225', '邵欣怡'], ['25010030226', '孙嘉浩'],
+            ['25010030227', '孙宇晨'], ['25010030228', '王鹏磊'], ['25010030229', '王宇翔'],
+            ['25010030230', '魏振驰'], ['25010030231', '许佳乐'], ['25010030232', '薛博文'],
+            ['25010030233', '杨嘉瑶'], ['25010030234', '杨鑫宇'], ['25010030235', '尹雪齐'],
+            ['25010030236', '张非凡'], ['25010030237', '张瑞嘉'], ['25010030238', '张水涵'],
+            ['25010030239', '张毅航'], ['25010030240', '张育萌'], ['25010030241', '张泽豪'],
+            ['25010030242', '赵焕彤'], ['25010030243', '左阳']
+        ]
+    };
+    
+    // 判断是应电1班还是应电2班
+    function getSubClass(studentId) {
+        if (studentId.startsWith('250100301')) {
+            return '应电1班';
+        } else if (studentId.startsWith('250100302')) {
+            return '应电2班';
+        }
+        return '';
+    }
+    
+    // 获取分组函数 - 根据实际分组规则
+    function getGroupForStudent(className, index) {
+        if (className === '25液压三班') {
+            // 30人分15组：每组2人
+            return '第' + (Math.floor(index / 2) + 1) + '组';
+        } else if (className === '25无人机三班' || className === '25无人机四班') {
+            // 40人分13组：前12组每组3人(36人)，第13组4人
+            if (index < 36) {
+                return '第' + (Math.floor(index / 3) + 1) + '组';
+            } else {
+                return '第13组';
+            }
+        } else if (className === '25应电12班') {
+            // 86人分14组：前7组每组6人(42人)，第8-14组分配剩余44人
+            if (index < 42) {
+                return '第' + (Math.floor(index / 6) + 1) + '组';
+            } else {
+                // 第8-14组：44人分7组，约每组6-7人
+                const remaining = index - 42;
+                return '第' + (Math.floor(remaining / 6.3) + 8) + '组';
+            }
+        }
+        return '未分组';
+    }
+    
+    // 根据您提供的表格获取准确分组（应电12班）
+    function getGroupForYingDian(index) {
+        // 根据您的表格分组
+        if (index < 6) return '第一组';
+        else if (index < 12) return '第二组';
+        else if (index < 18) return '第三组';
+        else if (index < 24) return '第四组';
+        else if (index < 30) return '第五组';
+        else if (index < 36) return '第六组';
+        else if (index < 42) return '第七组';
+        else if (index < 48) return '第8组';
+        else if (index < 54) return '第9组';
+        else if (index < 60) return '第10组';
+        else if (index < 66) return '第11组';
+        else if (index < 72) return '第12组';
+        else if (index < 79) return '第13组';
+        else return '第14组';
+    }
+    
+    // 更新班级状态显示
+    function updateClassStatus() {
+        ['25无人机三班', '25液压三班', '25无人机四班', '25应电12班'].forEach(className => {
+            const statusEl = document.getElementById('status-' + className);
+            if (statusEl) {
+                if (allClassesData[className] && allClassesData[className].length > 0) {
+                    const hasScores = allClassesData[className].some(s => 
+                        s.课堂表现 !== 0 || s.小组活动 !== 0 || s.考试成绩 !== 0
+                    );
+                    statusEl.textContent = hasScores ? '有数据' : '已加载';
+                    statusEl.className = 'class-status status-loaded';
+                } else {
+                    statusEl.textContent = '未加载';
+                    statusEl.className = 'class-status status-empty';
+                }
+            }
+        });
+    }
+    
+    // 选择班级
+    function selectClass(className) {
+        // 保存当前班级数据
+        if (currentClass && students.length > 0) {
+            allClassesData[currentClass] = JSON.parse(JSON.stringify(students));
+            saveToLocalStorage();
+        }
+        
+        currentClass = className;
+        document.getElementById('className').textContent = className;
+        
+        // 检查是否有已保存的数据
+        if (allClassesData[className] && allClassesData[className].length > 0) {
+            students = JSON.parse(JSON.stringify(allClassesData[className]));
+            console.log('加载已保存的班级数据:', className, '学生数:', students.length);
+        } else {
+            // 创建新的班级数据
+            const data = classesData[className];
+            students = data.map((item, i) => {
+                let group;
+                if (className === '25应电12班') {
+                    group = getGroupForYingDian(i);
+                } else {
+                    group = getGroupForStudent(className, i);
+                }
+                
+                return {
+                    学号: item[0],
+                    姓名: item[1],
+                    组别: group,
+                    子班级: className === '25应电12班' ? getSubClass(item[0]) : '',
+                    课堂表现: 0,  // 改为课堂表现
+                    小组活动: 0,
+                    笔记1: false,
+                    笔记2: false,
+                    笔记总分: 0,
+                    考试成绩: 0,
+                    平时总分: 0,
+                    总分: 0,
+                    selected: false
+                };
+            });
+            console.log('创建新的班级数据:', className, '学生数:', students.length);
+        }
+        
+        // 重新计算所有分数
+        students.forEach((s, i) => calc(i));
+        
+        currentFilter = '';
+        showMain();
+        updateGroups();
+        render();
+        updateClassStatus();
+    }
+    
+    // 显示主界面
+    function showMain() {
+        document.getElementById('welcome').style.display = 'none';
+        document.getElementById('main').style.display = 'block';
+        document.getElementById('exportBtn').style.display = 'inline-block';
+        document.getElementById('resetBtn').style.display = 'inline-block';
+    }
+    
+    // 渲染表格
+    function render() {
+        const tbody = document.getElementById('tbody');
+        tbody.innerHTML = '';
+        
+        let visibleStudents = students;
+        if (currentFilter) {
+            visibleStudents = students.filter(s => s.组别 === currentFilter);
+        }
+        
+        visibleStudents.forEach((s, displayIndex) => {
+            const i = students.indexOf(s);
+            const tr = tbody.insertRow();
+            
+            // 分数颜色类
+            let scoreClass = 'score-bad';
+            if (s.总分 < 0) {
+                scoreClass = 'score-negative';
+            } else if (s.总分 >= 85) {
+                scoreClass = 'score-good';
+            } else if (s.总分 >= 60) {
+                scoreClass = 'score-warn';
+            }
+            
+            // 应电班级的行背景色
+            let rowClass = '';
+            if (currentClass === '25应电12班') {
+                if (s.子班级 === '应电1班') {
+                    rowClass = 'yingdian-class1';
+                } else if (s.子班级 === '应电2班') {
+                    rowClass = 'yingdian-class2';
+                }
+            }
+            
+            tr.className = rowClass;
+            
+            // 课堂表现分数颜色
+            let ketangClass = '';
+            if (s.课堂表现 < 0) ketangClass = 'score-negative';
+            else if (s.课堂表现 >= 18) ketangClass = 'score-good';
+            else if (s.课堂表现 >= 12) ketangClass = 'score-warn';
+            else ketangClass = 'score-bad';
+            
+            // 小组活动分数颜色
+            let xiaozuClass = '';
+            if (s.小组活动 < 0) xiaozuClass = 'score-negative';
+            else if (s.小组活动 >= 18) xiaozuClass = 'score-good';
+            else if (s.小组活动 >= 12) xiaozuClass = 'score-warn';
+            else xiaozuClass = 'score-bad';
+            
+            // 平时总分颜色
+            let pingshiClass = '';
+            if (s.平时总分 < 0) pingshiClass = 'score-negative';
+            else if (s.平时总分 >= 45) pingshiClass = 'score-good';
+            else if (s.平时总分 >= 30) pingshiClass = 'score-warn';
+            else pingshiClass = 'score-bad';
+            
+            tr.innerHTML = `
+                <td><input type="checkbox" ${s.selected ? 'checked' : ''} onchange="toggle(${i})"></td>
+                <td>${displayIndex + 1}</td>
+                <td>${s.学号}${s.子班级 ? `<span class="class-indicator ${s.子班级 === '应电1班' ? 'class1-badge' : 'class2-badge'}">${s.子班级.replace('应电', '')}</span>` : ''}</td>
+                <td>${s.姓名}</td>
+                <td><span class="group-badge">${s.组别}</span></td>
+                <td class="editable ${ketangClass}" contenteditable onblur="update(${i},'课堂表现',this.textContent)">${s.课堂表现}</td>
+                <td class="editable ${xiaozuClass}" contenteditable onblur="update(${i},'小组活动',this.textContent)">${s.小组活动}</td>
+                <td>${s.笔记总分} <button class="btn btn-primary" onclick="editNote(${i})" style="padding:2px 8px;font-size:12px;">编辑</button></td>
+                <td class="${pingshiClass}">${s.平时总分}</td>
+                <td class="editable" contenteditable onblur="update(${i},'考试成绩',this.textContent)">${s.考试成绩}</td>
+                <td class="${scoreClass}">${s.总分}</td>
+                <td>
+                    <button class="btn btn-success" onclick="quickAdd(${i})" style="padding:2px 6px;font-size:12px;">+1</button>
+                    <button class="btn btn-danger" onclick="quickDeduct(${i})" style="padding:2px 6px;font-size:12px;">-1</button>
+                </td>
+            `;
+            
+            // 添加拖拽选择事件
+            tr.addEventListener('mousedown', (e) => handleRowMouseDown(e, i));
+            tr.addEventListener('mouseenter', (e) => handleRowMouseEnter(e, i));
+            tr.addEventListener('mouseup', (e) => handleRowMouseUp(e, i));
+            
+            // 阻止在可编辑元素上触发选择
+            tr.querySelectorAll('.editable, button, input').forEach(el => {
+                el.addEventListener('mousedown', (e) => e.stopPropagation());
+            });
+        });
+        
+        updateStats();
+        updateSelectAll();
+    }
+    
+    // 更新组别选项
+    function updateGroups() {
+        const groups = [...new Set(students.map(s => s.组别))];
+        const select = document.getElementById('groupFilter');
+        select.innerHTML = '<option value="">全部组别</option>';
+        
+        // 按组号排序
+        groups.sort((a, b) => {
+            const numA = parseInt(a.replace(/[^0-9]/g, '')) || 0;
+            const numB = parseInt(b.replace(/[^0-9]/g, '')) || 0;
+            return numA - numB;
+        });
+        
+        groups.forEach(g => {
+            const count = students.filter(s => s.组别 === g).length;
+            select.innerHTML += `<option value="${g}">${g} (${count}人)</option>`;
+        });
+    }
+    
+    // 更新统计
+    function updateStats() {
+        let visibleStudents = students;
+        if (currentFilter) {
+            visibleStudents = students.filter(s => s.组别 === currentFilter);
+        }
+        
+        const total = visibleStudents.length;
+        const selected = visibleStudents.filter(s => s.selected).length;
+        const avg = total > 0 ? (visibleStudents.reduce((sum, s) => sum + s.总分, 0) / total).toFixed(1) : 0;
+        const pass = visibleStudents.filter(s => s.总分 >= 60).length;
+        const passRate = total > 0 ? (pass / total * 100).toFixed(1) : 0;
+        
+        document.getElementById('total').textContent = total;
+        document.getElementById('selected').textContent = selected;
+        document.getElementById('avg').textContent = avg;
+        document.getElementById('pass').textContent = passRate + '%';
+    }
+    
+    // 计算分数 - 允许负分
+    function calc(i) {
+        const s = students[i];
+        s.课堂表现 = parseFloat(s.课堂表现) || 0;
+        s.小组活动 = parseFloat(s.小组活动) || 0;
+        s.考试成绩 = Math.min(50, Math.max(0, parseFloat(s.考试成绩) || 0));
+        s.笔记总分 = (s.笔记1 ? 5 : 0) + (s.笔记2 ? 5 : 0);
+        s.平时总分 = s.课堂表现 + s.小组活动 + s.笔记总分;
+        s.总分 = s.平时总分 + s.考试成绩;
+    }
+    
+    // 更新分数 - 允许负分
+    function update(i, field, value) {
+        const v = parseFloat(value) || 0;
+        if (field === '考试成绩') {
+            students[i][field] = Math.min(50, Math.max(0, v));
+        } else {
+            students[i][field] = v;  // 允许负分
+        }
+        calc(i);
+        render();
+        saveToLocalStorage();
+    }
+    
+    // 切换选择
+    function toggle(i) {
+        students[i].selected = !students[i].selected;
+        updateSelectAll();
+        updateStats();
+    }
+    
+    // 全选/取消全选
+    function toggleAll() {
+        const checked = document.getElementById('selectAll').checked;
+        
+        if (currentFilter) {
+            students.forEach(s => {
+                if (s.组别 === currentFilter) {
+                    s.selected = checked;
+                }
+            });
+        } else {
+            students.forEach(s => s.selected = checked);
+        }
+        
+        render();
+    }
+    
+    // 更新全选框状态
+    function updateSelectAll() {
+        let visibleStudents = students;
+        if (currentFilter) {
+            visibleStudents = students.filter(s => s.组别 === currentFilter);
+        }
+        
+        const allSelected = visibleStudents.length > 0 && visibleStudents.every(s => s.selected);
+        document.getElementById('selectAll').checked = allSelected;
+    }
+    
+    // 清除选择
+    function clearSelection() {
+        students.forEach(s => s.selected = false);
+        document.getElementById('selectAll').checked = false;
+        lastClickedIndex = -1;
+        render();
+    }
+    
+    // 反选
+    function invertSelection() {
+        if (currentFilter) {
+            students.forEach(s => {
+                if (s.组别 === currentFilter) {
+                    s.selected = !s.selected;
+                }
+            });
+        } else {
+            students.forEach(s => s.selected = !s.selected);
+        }
+        render();
+    }
+    
+    // 选中当前组
+    function selectCurrentGroup() {
+        if (currentFilter) {
+            students.forEach(s => {
+                s.selected = (s.组别 === currentFilter);
+            });
+        } else {
+            students.forEach(s => s.selected = true);
+        }
+        render();
+    }
+    
+    // 快速加分
+    function quickAdd(i) {
+        students[i].课堂表现 = students[i].课堂表现 + 1;
+        calc(i);
+        render();
+        saveToLocalStorage();
+    }
+    
+    // 快速扣分 - 允许扣成负分
+    function quickDeduct(i) {
+        students[i].课堂表现 = students[i].课堂表现 - 1;
+        calc(i);
+        render();
+        saveToLocalStorage();
+    }
+    
+    // 兼容旧函数名
+    function quick(i) {
+        quickAdd(i);
+    }
+    
+    // 批量加分
+    function batchAdd() {
+        const type = document.getElementById('batchType').value;
+        const score = Math.abs(parseFloat(document.getElementById('batchScore').value) || 1);
+        const selected = students.filter(s => s.selected);
+        
+        if (selected.length === 0) {
+            alert('请先选择学生');
+            return;
+        }
+        
+        selected.forEach(s => {
+            const i = students.indexOf(s);
+            if (type === '1') {
+                s.课堂表现 = s.课堂表现 + score;
+            } else if (type === '2') {
+                s.小组活动 = s.小组活动 + score;
+            } else if (type === '3') {
+                if (!s.笔记1) s.笔记1 = true;
+                else if (!s.笔记2) s.笔记2 = true;
+            }
+            calc(i);
+        });
+        
+        clearSelection();
+        saveToLocalStorage();
+        alert(`成功为${selected.length}名学生加分`);
+    }
+    
+    // 批量扣分 - 允许扣成负分
+    function batchDeduct() {
+        const type = document.getElementById('batchType').value;
+        const score = Math.abs(parseFloat(document.getElementById('batchScore').value) || 1);
+        const selected = students.filter(s => s.selected);
+        
+        if (selected.length === 0) {
+            alert('请先选择学生');
+            return;
+        }
+        
+        if (!confirm(`确定要为${selected.length}名学生扣${score}分吗？`)) {
+            return;
+        }
+        
+        selected.forEach(s => {
+            const i = students.indexOf(s);
+            if (type === '1') {
+                s.课堂表现 = s.课堂表现 - score;  // 允许负分
+            } else if (type === '2') {
+                s.小组活动 = s.小组活动 - score;  // 允许负分
+            } else if (type === '3') {
+                if (s.笔记2) s.笔记2 = false;
+                else if (s.笔记1) s.笔记1 = false;
+            }
+            calc(i);
+        });
+        
+        clearSelection();
+        saveToLocalStorage();
+        alert(`成功为${selected.length}名学生扣分`);
+    }
+    
+    // 编辑笔记
+    function editNote(i) {
+        currentNoteIndex = i;
+        const s = students[i];
+        document.getElementById('noteName').textContent = s.姓名;
+        document.getElementById('note1').checked = s.笔记1;
+        document.getElementById('note2').checked = s.笔记2;
+        document.getElementById('noteModal').classList.add('show');
+    }
+    
+    // 保存笔记
+    function saveNote() {
+        const s = students[currentNoteIndex];
+        s.笔记1 = document.getElementById('note1').checked;
+        s.笔记2 = document.getElementById('note2').checked;
+        calc(currentNoteIndex);
+        closeNote();
+        render();
+        saveToLocalStorage();
+    }
+    
+    // 关闭笔记
+    function closeNote() {
+        document.getElementById('noteModal').classList.remove('show');
+    }
+    
+    // 筛选组别
+    function filterGroup() {
+        currentFilter = document.getElementById('groupFilter').value;
+        clearSelection();
+        render();
+    }
+    
+    // 搜索
+    function doSearch() {
+        const term = document.getElementById('search').value.toLowerCase();
+        const tbody = document.getElementById('tbody');
+        const rows = tbody.rows;
+        
+        let visibleStudents = students;
+        if (currentFilter) {
+            visibleStudents = students.filter(s => s.组别 === currentFilter);
+        }
+        
+        for (let i = 0; i < rows.length; i++) {
+            const s = visibleStudents[i];
+            const match = s.学号.includes(term) || s.姓名.includes(term);
+            rows[i].style.display = match ? '' : 'none';
+        }
+    }
+    
+    // 鼠标事件处理
+    function handleRowMouseDown(e, index) {
+        if (e.target.tagName === 'INPUT' || e.target.tagName === 'BUTTON' || e.target.contentEditable === 'true') {
+            return;
+        }
+        
+        e.preventDefault();
+        
+        if (e.shiftKey && lastClickedIndex !== -1) {
+            selectRange(lastClickedIndex, index);
+        } else if (e.ctrlKey || e.metaKey) {
+            toggle(index);
+            lastClickedIndex = index;
+        } else {
+            isSelecting = true;
+            startSelectIndex = index;
+            endSelectIndex = index;
+            lastClickedIndex = index;
+            
+            if (!e.ctrlKey && !e.metaKey) {
+                clearSelection();
+            }
+            
+            students[index].selected = true;
+            updateSelectAll();
+            updateStats();
+        }
+    }
+    
+    function handleRowMouseEnter(e, index) {
+        if (isSelecting && startSelectIndex !== -1) {
+            endSelectIndex = index;
+            updateSelectionVisual();
+        }
+    }
+    
+    function handleRowMouseUp(e, index) {
+        if (isSelecting) {
+            isSelecting = false;
+            endSelectIndex = index;
+            
+            if (startSelectIndex !== -1) {
+                selectRange(startSelectIndex, endSelectIndex);
+            }
+            
+            clearSelectionVisual();
+        }
+    }
+    
+    function selectRange(start, end) {
+        const startIdx = Math.min(start, end);
+        const endIdx = Math.max(start, end);
+        
+        for (let i = startIdx; i <= endIdx; i++) {
+            students[i].selected = true;
+        }
+        
+        updateSelectAll();
+        updateStats();
+        render();
+    }
+    
+    function updateSelectionVisual() {
+        if (startSelectIndex === -1 || endSelectIndex === -1) return;
+        
+        const startIdx = Math.min(startSelectIndex, endSelectIndex);
+        const endIdx = Math.max(startSelectIndex, endSelectIndex);
+        
+        const tbody = document.getElementById('tbody');
+        const rows = tbody.rows;
+        
+        clearSelectionVisual();
+        
+        for (let i = startIdx; i <= endIdx; i++) {
+            if (rows[i]) {
+                rows[i].classList.add('select-range');
+            }
+        }
+    }
+    
+    function clearSelectionVisual() {
+        const tbody = document.getElementById('tbody');
+        const rows = tbody.rows;
+        
+        for (let i = 0; i < rows.length; i++) {
+            rows[i].classList.remove('select-range');
+        }
+    }
+    
+    // 切换班级
+    function switchClass() {
+        // 保存当前班级数据
+        if (currentClass && students.length > 0) {
+            allClassesData[currentClass] = JSON.parse(JSON.stringify(students));
+            saveToLocalStorage();
+        }
+        
+        document.getElementById('main').style.display = 'none';
+        document.getElementById('welcome').style.display = 'block';
+        currentFilter = '';
+        document.getElementById('groupFilter').value = '';
+        updateClassStatus();
+    }
+    
+    // 导入Excel
+    function importExcel() {
+        document.getElementById('fileInput').click();
+    }
+    
+    // 加载文件
+    function loadFile(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+        
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            try {
+                const data = new Uint8Array(e.target.result);
+                const workbook = XLSX.read(data, {type: 'array'});
+                
+                if (workbook.SheetNames.includes('所有班级汇总')) {
+                    importAllClasses(workbook);
+                } else {
+                    importSingleClass(workbook);
+                }
+                
+                alert('导入成功！');
+            } catch (error) {
+                alert('导入失败：' + error.message);
+                console.error('导入错误:', error);
+            }
+        };
+        reader.readAsArrayBuffer(file);
+        event.target.value = '';
+    }
+    
+    // 导入单个班级
+    function importSingleClass(workbook) {
+        const sheet = workbook.Sheets[workbook.SheetNames[0]];
+        const json = XLSX.utils.sheet_to_json(sheet);
+        
+        let className;
+        if (json[0] && json[0]['班级']) {
+            className = json[0]['班级'];
+        } else {
+            className = workbook.SheetNames[0];
+        }
+        
+        // 处理班级名称兼容性
+        if (className === '25通航运维班') {
+            className = '25应电12班';
+        }
+        
+        if (!classesData[className]) {
+            alert('未知的班级：' + className);
+            return;
+        }
+        
+        const originalData = classesData[className];
+        students = originalData.map((item, i) => {
+            const importedStudent = json.find(row => 
+                row['学号'] === item[0] || row['姓名'] === item[1]
+            );
+            
+            let group;
+            if (className === '25应电12班') {
+                group = getGroupForYingDian(i);
+            } else {
+                group = getGroupForStudent(className, i);
+            }
+            
+            // 兼容旧字段名
+            let ketangScore = 0;
+            let xiaozuScore = 0;
+            
+            if (importedStudent) {
+                ketangScore = parseFloat(importedStudent['课堂表现']) || 
+                            parseFloat(importedStudent['平时表现']) || 0;
+                xiaozuScore = parseFloat(importedStudent['小组活动']) || 0;
+            }
+            
+            return {
+                学号: item[0],
+                姓名: item[1],
+                组别: group,
+                子班级: className === '25应电12班' ? getSubClass(item[0]) : '',
+                课堂表现: ketangScore,
+                小组活动: xiaozuScore,
+                笔记1: importedStudent ? (importedStudent['笔记1'] === '√' || importedStudent['笔记1'] === true) : false,
+                笔记2: importedStudent ? (importedStudent['笔记2'] === '√' || importedStudent['笔记2'] === true) : false,
+                笔记总分: 0,
+                考试成绩: importedStudent ? (parseFloat(importedStudent['考试成绩']) || 0) : 0,
+                平时总分: 0,
+                总分: 0,
+                selected: false
+            };
+        });
+        
+        students.forEach((s, i) => calc(i));
+        currentClass = className;
+        document.getElementById('className').textContent = currentClass;
+        allClassesData[currentClass] = JSON.parse(JSON.stringify(students));
+        
+        currentFilter = '';
+        showMain();
+        updateGroups();
+        render();
+        updateClassStatus();
+        saveToLocalStorage();
+    }
+    
+    // 导入所有班级
+    function importAllClasses(workbook) {
+        allClassesData = {};
+        let firstClass = null;
+        let importCount = 0;
+        
+        // 从汇总表导入
+        if (workbook.SheetNames.includes('所有班级汇总')) {
+            const sheet = workbook.Sheets['所有班级汇总'];
+            const json = XLSX.utils.sheet_to_json(sheet);
+            
+            // 按班级分组处理
+            const classGroups = {};
+            json.forEach(row => {
+                let className = row['班级'];
+                if (className === '25通航运维班') {
+                    className = '25应电12班';
+                }
+                if (!className || !classesData[className]) return;
+                
+                if (!classGroups[className]) {
+                    classGroups[className] = [];
+                    if (!firstClass) firstClass = className;
+                }
+                
+                classGroups[className].push(row);
+            });
+            
+            // 为每个班级处理数据
+            Object.keys(classGroups).forEach(className => {
+                const classRows = classGroups[className];
+                const originalData = classesData[className];
+                
+                allClassesData[className] = originalData.map((item, i) => {
+                    const importedStudent = classRows.find(row => 
+                        row['学号'] === item[0] || row['姓名'] === item[1]
+                    );
+                    
+                    let group;
+                    if (className === '25应电12班') {
+                        group = getGroupForYingDian(i);
+                    } else {
+                        group = getGroupForStudent(className, i);
+                    }
+                    
+                    let ketangScore = 0;
+                    let xiaozuScore = 0;
+                    
+                    if (importedStudent) {
+                        ketangScore = parseFloat(importedStudent['课堂表现']) || 
+                                    parseFloat(importedStudent['平时表现']) || 0;
+                        xiaozuScore = parseFloat(importedStudent['小组活动']) || 0;
+                    }
+                    
+                    return {
+                        学号: item[0],
+                        姓名: item[1],
+                        组别: group,
+                        子班级: className === '25应电12班' ? getSubClass(item[0]) : '',
+                        课堂表现: ketangScore,
+                        小组活动: xiaozuScore,
+                        笔记1: importedStudent ? (importedStudent['笔记1'] === '√' || importedStudent['笔记1'] === true) : false,
+                        笔记2: importedStudent ? (importedStudent['笔记2'] === '√' || importedStudent['笔记2'] === true) : false,
+                        笔记总分: 0,
+                        考试成绩: importedStudent ? (parseFloat(importedStudent['考试成绩']) || 0) : 0,
+                        平时总分: 0,
+                        总分: 0,
+                        selected: false
+                    };
+                });
+                
+                // 重新计算分数
+                allClassesData[className].forEach(s => {
+                    s.笔记总分 = (s.笔记1 ? 5 : 0) + (s.笔记2 ? 5 : 0);
+                    s.平时总分 = s.课堂表现 + s.小组活动 + s.笔记总分;
+                    s.总分 = s.平时总分 + s.考试成绩;
+                });
+                
+                importCount++;
+            });
+        }
+        
+        // 显示第一个班级
+        if (firstClass && allClassesData[firstClass]) {
+            currentClass = firstClass;
+            students = JSON.parse(JSON.stringify(allClassesData[firstClass]));
+            document.getElementById('className').textContent = currentClass;
+            currentFilter = '';
+            showMain();
+            updateGroups();
+            render();
+            updateClassStatus();
+            saveToLocalStorage();
+            
+            alert(`成功导入 ${importCount} 个班级的数据！\n当前显示：${currentClass}`);
+        }
+    }
+    
+    // 显示导出选项
+    function showExportOptions() {
+        // 保存当前班级数据
+        if (currentClass && students.length > 0) {
+            allClassesData[currentClass] = JSON.parse(JSON.stringify(students));
+            saveToLocalStorage();
+        }
+        
+        const btn = document.getElementById('exportCurrentBtn');
+        btn.innerHTML = `导出当前班级 (${currentClass || '未选择'})`;
+        
+        // 更新调试信息
+        const debugInfo = document.getElementById('exportDebugInfo');
+        const classInfo = ['25无人机三班', '25液压三班', '25无人机四班', '25应电12班'].map(className => {
+            const data = allClassesData[className];
+            if (data) {
+                const hasScores = data.some(s => s.课堂表现 !== 0 || s.小组活动 !== 0 || s.考试成绩 !== 0);
+                return `${className}: ${data.length}人 ${hasScores ? '(有成绩)' : '(无成绩)'}`;
+            } else {
+                return `${className}: 未加载`;
+            }
+        });
+        debugInfo.innerHTML = classInfo.join('<br>');
+        
+        document.getElementById('exportModal').classList.add('show');
+    }
+    
+    // 关闭导出模态窗口
+    function closeExportModal() {
+        document.getElementById('exportModal').classList.remove('show');
+    }
+    
+    // 导出当前班级
+    function exportCurrentClass() {
+        if (!currentClass || students.length === 0) {
+            alert('请先选择一个班级');
+            return;
+        }
+        
+        const data = students.map(s => ({
+            '班级': currentClass,
+            '学号': s.学号,
+            '姓名': s.姓名,
+            '组别': s.组别,
+            '课堂表现': s.课堂表现,
+            '小组活动': s.小组活动,
+            '笔记1': s.笔记1 ? '√' : '',
+            '笔记2': s.笔记2 ? '√' : '',
+            '笔记总分': s.笔记总分,
+            '平时总分': s.平时总分,
+            '考试成绩': s.考试成绩,
+            '总分': s.总分
+        }));
+        
+        const ws = XLSX.utils.json_to_sheet(data);
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, currentClass);
+        
+        const date = new Date().toLocaleDateString('zh-CN').replace(/\//g, '-');
+        XLSX.writeFile(wb, currentClass + '_成绩_' + date + '.xlsx');
+        
+        console.log('导出当前班级:', currentClass, '学生数:', data.length);
+        closeExportModal();
+    }
+    
+    // 导出所有班级
+    function exportAllClasses() {
+        // 保存当前班级数据
+        if (currentClass && students.length > 0) {
+            allClassesData[currentClass] = JSON.parse(JSON.stringify(students));
+        }
+        
+        const wb = XLSX.utils.book_new();
+        const allData = [];
+        let totalExported = 0;
+        
+        // 确保所有班级都有数据
+        ['25无人机三班', '25液压三班', '25无人机四班', '25应电12班'].forEach(className => {
+            let classStudents;
+            
+            // 优先使用已保存的数据
+            if (allClassesData[className] && allClassesData[className].length > 0) {
+                classStudents = allClassesData[className];
+                console.log('使用已保存的数据:', className, '学生数:', classStudents.length);
+            } else {
+                // 创建初始数据
+                const data = classesData[className];
+                classStudents = data.map((item, i) => {
+                    let group;
+                    if (className === '25应电12班') {
+                        group = getGroupForYingDian(i);
+                    } else {
+                        group = getGroupForStudent(className, i);
+                    }
+                    
+                    return {
+                        学号: item[0],
+                        姓名: item[1],
+                        组别: group,
+                        子班级: className === '25应电12班' ? getSubClass(item[0]) : '',
+                        课堂表现: 0,
+                        小组活动: 0,
+                        笔记1: false,
+                        笔记2: false,
+                        笔记总分: 0,
+                        考试成绩: 0,
+                        平时总分: 0,
+                        总分: 0
+                    };
+                });
+                console.log('创建初始数据:', className, '学生数:', classStudents.length);
+            }
+            
+            totalExported += classStudents.length;
+            
+            // 添加到总数据中
+            classStudents.forEach(s => {
+                allData.push({
+                    '班级': className,
+                    '学号': s.学号,
+                    '姓名': s.姓名,
+                    '组别': s.组别,
+                    '课堂表现': s.课堂表现,
+                    '小组活动': s.小组活动,
+                    '笔记1': s.笔记1 ? '√' : '',
+                    '笔记2': s.笔记2 ? '√' : '',
+                    '笔记总分': s.笔记总分 || 0,
+                    '平时总分': s.平时总分,
+                    '考试成绩': s.考试成绩 || 0,
+                    '总分': s.总分
+                });
+            });
+            
+            // 为每个班级创建单独的sheet
+            const sheetData = classStudents.map(s => ({
+                '学号': s.学号,
+                '姓名': s.姓名,
+                '组别': s.组别,
+                '课堂表现': s.课堂表现,
+                '小组活动': s.小组活动,
+                '笔记1': s.笔记1 ? '√' : '',
+                '笔记2': s.笔记2 ? '√' : '',
+                '笔记总分': s.笔记总分 || 0,
+                '平时总分': s.平时总分,
+                '考试成绩': s.考试成绩 || 0,
+                '总分': s.总分
+            }));
+            
+            const ws = XLSX.utils.json_to_sheet(sheetData);
+            XLSX.utils.book_append_sheet(wb, ws, className);
+        });
+        
+        // 创建汇总sheet
+        const summaryWs = XLSX.utils.json_to_sheet(allData);
+        XLSX.utils.book_append_sheet(wb, summaryWs, '所有班级汇总');
+        
+        const date = new Date().toLocaleDateString('zh-CN').replace(/\//g, '-');
+        XLSX.writeFile(wb, '全部班级成绩_' + date + '.xlsx');
+        
+        console.log('导出所有班级完成，总人数:', totalExported);
+        console.log('各班级人数:', {
+            '25无人机三班': 40,
+            '25液压三班': 30,
+            '25无人机四班': 40,
+            '25应电12班': 86
+        });
+        
+        closeExportModal();
+        alert(`导出成功！\n总共导出 ${totalExported} 名学生的数据\n包含4个班级的完整名单`);
+    }
+    
+    // 重置当前班级
+    function resetCurrentClass() {
+        if (!currentClass) {
+            alert('请先选择一个班级');
+            return;
+        }
+        
+        if (!confirm(`确定要重置 ${currentClass} 的所有成绩吗？\n这将清除该班级的所有成绩数据！`)) {
+            return;
+        }
+        
+        const data = classesData[currentClass];
+        students = data.map((item, i) => {
+            let group;
+            if (currentClass === '25应电12班') {
+                group = getGroupForYingDian(i);
+            } else {
+                group = getGroupForStudent(currentClass, i);
+            }
+            
+            return {
+                学号: item[0],
+                姓名: item[1],
+                组别: group,
+                子班级: currentClass === '25应电12班' ? getSubClass(item[0]) : '',
+                课堂表现: 0,
+                小组活动: 0,
+                笔记1: false,
+                笔记2: false,
+                笔记总分: 0,
+                考试成绩: 0,
+                平时总分: 0,
+                总分: 0,
+                selected: false
+            };
+        });
+        
+        allClassesData[currentClass] = JSON.parse(JSON.stringify(students));
+        render();
+        saveToLocalStorage();
+        updateClassStatus();
+        alert(`${currentClass} 的成绩已重置！`);
+    }
+    
+    // 检查数据状态
+    function checkDataStatus() {
+        let status = '数据状态检查：\n\n';
+        
+        ['25无人机三班', '25液压三班', '25无人机四班', '25应电12班'].forEach(className => {
+            const expectedCount = classesData[className].length;
+            const actualData = allClassesData[className];
+            
+            if (actualData) {
+                const hasScores = actualData.some(s => 
+                    s.课堂表现 !== 0 || s.小组活动 !== 0 || s.考试成绩 !== 0
+                );
+                status += `${className}：\n`;
+                status += `  - 预期人数：${expectedCount}\n`;
+                status += `  - 实际人数：${actualData.length}\n`;
+                status += `  - 状态：${hasScores ? '有成绩数据' : '无成绩数据'}\n`;
+                
+                // 统计负分情况
+                const negativeScores = actualData.filter(s => s.课堂表现 < 0 || s.小组活动 < 0);
+                if (negativeScores.length > 0) {
+                    status += `  - 负分学生：${negativeScores.length}人\n`;
+                }
+                status += '\n';
+            } else {
+                status += `${className}：未加载（预期 ${expectedCount} 人）\n\n`;
+            }
+        });
+        
+        status += '\n总计：196人（40+30+40+86）';
+        
+        alert(status);
+    }
+    
+    // 保存到本地存储
+    function saveToLocalStorage() {
+        try {
+            if (currentClass && students.length > 0) {
+                allClassesData[currentClass] = JSON.parse(JSON.stringify(students));
+            }
+            localStorage.setItem('allClassesData_v3', JSON.stringify(allClassesData));
+            localStorage.setItem('currentClass_v3', currentClass);
+        } catch (e) {
+            console.error('保存失败:', e);
+        }
+    }
+    
+    // 从本地存储加载
+    function loadFromLocalStorage() {
+        try {
+            const saved = localStorage.getItem('allClassesData_v3');
+            const savedClass = localStorage.getItem('currentClass_v3');
+            
+            if (saved) {
+                allClassesData = JSON.parse(saved);
+                console.log('加载保存的数据，班级数:', Object.keys(allClassesData).length);
+                
+                // 验证并修复数据
+                Object.keys(allClassesData).forEach(className => {
+                    if (classesData[className]) {
+                        const expectedCount = classesData[className].length;
+                        const actualCount = allClassesData[className].length;
+                        
+                        if (actualCount !== expectedCount) {
+                            console.warn(`${className} 人数不匹配：预期 ${expectedCount}，实际 ${actualCount}，重新初始化`);
+                            delete allClassesData[className];
+                        } else {
+                            // 确保字段名正确，添加子班级字段
+                            allClassesData[className].forEach((s, i) => {
+                                // 兼容旧字段名
+                                if (s.平时表现 !== undefined && s.课堂表现 === undefined) {
+                                    s.课堂表现 = s.平时表现;
+                                    delete s.平时表现;
+                                }
+                                // 添加子班级字段
+                                if (className === '25应电12班' && !s.子班级) {
+                                    s.子班级 = getSubClass(classesData[className][i][0]);
+                                }
+                            });
+                        }
+                    }
+                });
+                
+                updateClassStatus();
+            }
+            
+            if (savedClass && allClassesData[savedClass]) {
+                selectClass(savedClass);
+            }
+        } catch (e) {
+            console.error('加载失败:', e);
+        }
+    }
+    
+    // 全局鼠标事件处理
+    document.addEventListener('mouseup', function() {
+        if (isSelecting) {
+            isSelecting = false;
+            clearSelectionVisual();
+        }
+    });
+    
+    document.addEventListener('mouseleave', function() {
+        if (isSelecting) {
+            isSelecting = false;
+            clearSelectionVisual();
+        }
+    });
+    
+    // 初始化
+    document.addEventListener('DOMContentLoaded', function() {
+        loadFromLocalStorage();
+        
+        // 定期保存
+        setInterval(saveToLocalStorage, 5000);
+        
+        console.log('系统初始化完成');
+        console.log('班级数据:', {
+            '25无人机三班': 40,
+            '25液压三班': 30,
+            '25无人机四班': 40,
+            '25应电12班': 86
+        });
+    });
+    </script>
+</body>
+</html>

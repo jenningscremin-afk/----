@@ -1,0 +1,1212 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab 6.5 旋转体体积与定积分物理应用实验室</title>
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true
+            },
+            startup: {
+                pageReady: () => {
+                    return MathJax.startup.defaultPageReady().then(() => {
+                        if (typeof window.scheduleMathRender === 'function') {
+                            window.scheduleMathRender();
+                        }
+                        console.log('MathJax加载完成');
+                    });
+                }
+            },
+            options: {
+                skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+            }
+        };
+    </script>
+    <script defer src="../common-assets/js/mathjax-3.2.2-tex-svg.min.js"></script>
+    <script defer src="../common-assets/js/lab-math-enhancer.js"></script>
+    <style>
+        :root {
+            --h1-size: 22px;
+            --h2-size: 20px;
+            --h3-size: 18px;
+            --btn-size: 16px;
+            --formula-size: 20px;
+            --text-size: 16px;
+            --primary: #4f46e5;
+            --primary-light: #6366f1;
+            --primary-dark: #3730a3;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --light: #ffffff;
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-500: #6b7280;
+            --gray-600: #4b5563;
+            --gray-800: #1f2937;
+            --border: #e5e7eb;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        *::-webkit-scrollbar {
+            width: 0;
+            background: transparent;
+        }
+
+        * {
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', Arial, sans-serif;
+            font-size: var(--text-size);
+            line-height: 1.5;
+            background: var(--gray-50);
+            color: var(--gray-800);
+        }
+
+        .return-home-panel {
+            position: fixed;
+            top: 16px;
+            left: 16px;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .return-link {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 6px 14px;
+            border-radius: 999px;
+            font-size: 14px;
+            color: var(--light);
+            text-decoration: none;
+            background: rgba(79, 70, 229, 0.85);
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+            transition: background 0.2s ease;
+        }
+
+        .return-link:hover {
+            background: rgba(79, 70, 229, 1);
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1400px;
+            height: 100vh;
+            max-height: 700px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            background: var(--light);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: var(--light);
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header h1 {
+            font-size: var(--h1-size);
+            font-weight: 600;
+        }
+
+        .header .subtitle {
+            font-size: 14px;
+            opacity: 0.85;
+        }
+
+        .main {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .sidebar {
+            width: 120px;
+            background: var(--gray-100);
+            padding: 16px 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            border-right: 1px solid var(--border);
+        }
+
+        .nav-btn {
+            padding: 10px 12px;
+            border-radius: 10px;
+            border: 1px solid transparent;
+            background: var(--light);
+            color: var(--gray-600);
+            font-size: var(--btn-size);
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .nav-btn:hover {
+            border-color: var(--primary-light);
+            color: var(--primary);
+        }
+
+        .nav-btn.active {
+            background: var(--primary);
+            color: var(--light);
+            box-shadow: 0 6px 14px rgba(79, 70, 229, 0.25);
+        }
+
+        .content {
+            flex: 1;
+            display: none;
+            padding: 20px 24px;
+            overflow-y: auto;
+            background: linear-gradient(180deg, rgba(99, 102, 241, 0.04), rgba(255, 255, 255, 0));
+        }
+
+        .content.active {
+            display: block;
+        }
+
+        .column-wrapper {
+            display: flex;
+            gap: 20px;
+            height: calc(100% - 16px);
+        }
+
+        .column {
+            flex: 1;
+            background: var(--light);
+            border-radius: 16px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            border: 1px solid var(--gray-200);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8);
+            overflow: hidden;
+        }
+
+        .column h2 {
+            font-size: var(--h3-size);
+            color: var(--primary-dark);
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .control-group label {
+            font-weight: 600;
+            color: var(--gray-600);
+        }
+
+        .control-group input[type="range"] {
+            width: 100%;
+            accent-color: var(--primary);
+        }
+
+        .control-group input[type="number"],
+        .control-group select,
+        .control-group button {
+            padding: 10px 12px;
+            border-radius: 10px;
+            border: 1px solid var(--gray-200);
+            font-size: 15px;
+            transition: border 0.2s ease;
+        }
+
+        .control-group button {
+            cursor: pointer;
+            background: var(--primary);
+            color: var(--light);
+            border: none;
+            font-weight: 600;
+            box-shadow: 0 6px 12px rgba(79, 70, 229, 0.2);
+        }
+
+        .control-group button.secondary {
+            background: var(--gray-100);
+            color: var(--gray-600);
+            box-shadow: none;
+            border: 1px solid var(--gray-200);
+        }
+
+        .control-group button.active {
+            background: var(--primary);
+            color: var(--light);
+            border: none;
+            box-shadow: 0 6px 12px rgba(79, 70, 229, 0.2);
+        }
+
+        .info-card {
+            background: var(--gray-100);
+            border: 1px solid var(--gray-200);
+            border-radius: 12px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .info-card strong {
+            color: var(--primary-dark);
+        }
+
+        canvas {
+            width: 100%;
+            height: 100%;
+            background: var(--light);
+            border-radius: 14px;
+            border: 1px solid var(--gray-200);
+        }
+
+        .canvas-wrapper {
+            flex: 1;
+            position: relative;
+            min-height: 260px;
+        }
+
+        .legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            font-size: 14px;
+            color: var(--gray-600);
+        }
+
+        .legend span::before {
+            content: '';
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 4px;
+            margin-right: 6px;
+            vertical-align: middle;
+        }
+
+        .legend .profile::before { background: rgba(79, 70, 229, 0.6); }
+        .legend .shadow::before { background: rgba(16, 185, 129, 0.5); }
+        .legend .slice::before { background: rgba(239, 68, 68, 0.5); }
+
+        .highlight {
+            background: rgba(16, 185, 129, 0.1);
+            border-left: 4px solid var(--success);
+            padding: 12px 16px;
+            border-radius: 12px;
+            color: var(--gray-600);
+        }
+
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+        }
+
+        .stat-card {
+            border-radius: 12px;
+            border: 1px solid var(--gray-200);
+            padding: 14px;
+            background: var(--gray-100);
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .stat-card .label { color: var(--gray-500); font-size: 14px; }
+        .stat-card .value { font-weight: 700; color: var(--primary-dark); font-size: 18px; }
+
+        .flex-row {
+            display: flex;
+            gap: 12px;
+        }
+
+        .flex-row button {
+            flex: 1;
+        }
+
+        @media (max-width: 1100px) {
+            .main { flex-direction: column; }
+            .sidebar { flex-direction: row; width: 100%; justify-content: center; }
+            .content { padding: 16px; }
+            .column-wrapper { flex-direction: column; height: auto; }
+        }
+    </style>
+</head>
+<body>
+    <div class="return-home-panel">
+        <a class="return-link" href="index.html">← 返回目录</a>
+        <a class="return-link" href="../index.html">⌂ 返回主站</a>
+    </div>
+
+    <div class="container">
+        <header class="header">
+            <h1>Lab 6.5 旋转体体积与定积分的物理应用</h1>
+            <span class="subtitle">切片法 · 功的计算 · 流体静力压强</span>
+        </header>
+
+        <div class="main">
+            <nav class="sidebar">
+                <button class="nav-btn active"  data-panel="module1"onclick="switchPanel('module1', this)">旋转体体积</button>
+                <button class="nav-btn"  data-panel="module2"onclick="switchPanel('module2', this)">变力做功</button>
+                <button class="nav-btn"  data-panel="module3"onclick="switchPanel('module3', this)">液体压力</button>
+            </nav>
+
+            <div class="content active" id="module1">
+                <div class="column-wrapper">
+                    <div class="column">
+                        <h2>切片法：$V = \pi \int_a^b [f(x)]^2\,dx$</h2>
+                        <div class="control-group">
+                            <label for="profileSelect">选择旋转曲线：</label>
+                            <select id="profileSelect" onchange="updateRotationProfile()">
+                                <option value="parabola">$y = \sqrt{x}$, 0 ≤ x ≤ 4</option>
+                                <option value="cone">$y = 1 - \frac{x}{2}$, 0 ≤ x ≤ 2</option>
+                                <option value="sine">$y = \sin\left(\frac{\pi x}{4}\right)$, 0 ≤ x ≤ 4</option>
+                            </select>
+                        </div>
+                        <div class="control-group">
+                            <label>旋转轴方向：</label>
+                            <div class="flex-row">
+                                <button id="axisXBtn" class="secondary" onclick="switchRotationAxis('x')">绕 $x$ 轴</button>
+                                <button id="axisYBtn" class="secondary" onclick="switchRotationAxis('y')">绕 $y$ 轴</button>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label for="slicePosition">切片位置（$x$）：<span id="sliceValue">2.0</span></label>
+                            <input type="range" id="slicePosition" min="0" max="4" step="0.1" value="2" oninput="updateSlicePosition(this.value)">
+                        </div>
+                        <div class="control-group">
+                            <div class="flex-row">
+                                <button onclick="toggleRotationAnimation()">旋转生成</button>
+                                <button class="secondary" onclick="toggleSliceHighlight()">切片演示</button>
+                            </div>
+                        </div>
+                        <div class="info-card" id="volumeSummary"></div>
+                        <div class="highlight">
+                            <strong>学习提示：</strong> 切片法的关键是用薄圆盘体积 $dV = \pi [f(x)]^2\,dx$ 逼近整体体积，并通过极限思想转化为积分。
+                        </div>
+                    </div>
+                    <div class="column">
+                        <h2>几何生成过程</h2>
+                        <div class="canvas-wrapper">
+                            <canvas id="rotationCanvas"></canvas>
+                        </div>
+                        <div class="legend">
+                            <span class="profile">原始曲线</span>
+                            <span class="shadow">旋转生成体</span>
+                            <span class="slice">薄片 $dV$</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content" id="module2">
+                <div class="column-wrapper">
+                    <div class="column">
+                        <h2>变力做功：$W = \int_{x_0}^{x_1} F(x)\,dx$</h2>
+                        <div class="control-group">
+                            <label for="scenarioSelect">场景选择：</label>
+                            <select id="scenarioSelect" onchange="updateWorkScenario()">
+                                <option value="spring">弹簧拉伸 $F(x)=k x$</option>
+                                <option value="rope">滑轮牵引 $F(x)=k(1+0.2x)$</option>
+                                <option value="custom">自定义线性 $F(x)=a x + b$</option>
+                            </select>
+                        </div>
+                        <div class="control-group" id="springControls">
+                            <label for="springK">劲度系数 $k$：<span id="springKValue">4.0</span> N/m</label>
+                            <input type="range" id="springK" min="1" max="10" step="0.5" value="4" oninput="updateSpringK(this.value)">
+                        </div>
+                        <div class="control-group" id="ropeControls" style="display:none;">
+                            <label for="ropeK">牵引系数 $k$：<span id="ropeKValue">12.0</span> N</label>
+                            <input type="range" id="ropeK" min="4" max="20" step="1" value="12" oninput="updateRopeK(this.value)">
+                        </div>
+                        <div class="control-group" id="customControls" style="display:none;">
+                            <label>自定义参数：</label>
+                            <div class="flex-row">
+                                <div style="flex:1; display:flex; flex-direction:column; gap:6px;">
+                                    <span>斜率 $a$</span>
+                                    <input type="number" id="customA" value="2" step="0.5" onchange="updateCustomForce()">
+                                </div>
+                                <div style="flex:1; display:flex; flex-direction:column; gap:6px;">
+                                    <span>初始力 $b$</span>
+                                    <input type="number" id="customB" value="1" step="0.5" onchange="updateCustomForce()">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label for="workRange">位移 $x_1$（m）：<span id="workRangeValue">3.0</span></label>
+                            <input type="range" id="workRange" min="0.5" max="5" step="0.1" value="3" oninput="updateWorkRange(this.value)">
+                        </div>
+                        <div class="control-group">
+                            <div class="flex-row">
+                                <button onclick="animateWorkArea()">逐步累加</button>
+                                <button class="secondary" onclick="resetWorkAnimation()">重置演示</button>
+                            </div>
+                        </div>
+                        <div class="stat-grid" id="workStats"></div>
+                        <div class="highlight">
+                            <strong>理解要点：</strong> 做功图像下的面积与积分值相同，曲线越陡说明单位位移所做功越大。
+                        </div>
+                    </div>
+                    <div class="column">
+                        <h2>功的几何意义</h2>
+                        <div class="canvas-wrapper">
+                            <canvas id="workCanvas"></canvas>
+                        </div>
+                        <div class="legend">
+                            <span class="profile">力函数 $F(x)$</span>
+                            <span class="shadow">累积做功面积</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content" id="module3">
+                <div class="column-wrapper">
+                    <div class="column">
+                        <h2>液体静压力：$F = \int_{a}^{b} \rho g h(x)\, w(x)\,dx$</h2>
+                        <div class="control-group">
+                            <label for="tankShape">容器截面：</label>
+                            <select id="tankShape" onchange="updateTankShape()">
+                                <option value="rectangle">矩形水槽</option>
+                                <option value="triangle">三角形水渠</option>
+                                <option value="circle">圆形水塔</option>
+                            </select>
+                        </div>
+                        <div class="control-group">
+                            <label for="fluidDepth">液面深度（m）：<span id="fluidDepthValue">2.0</span></label>
+                            <input type="range" id="fluidDepth" min="0.5" max="4" step="0.1" value="2" oninput="updateFluidDepth(this.value)">
+                        </div>
+                        <div class="control-group">
+                            <label for="fluidDensity">流体密度（kg/m³）：<span id="fluidDensityValue">1000</span></label>
+                            <input type="range" id="fluidDensity" min="500" max="1200" step="10" value="1000" oninput="updateFluidDensity(this.value)">
+                        </div>
+                        <div class="control-group">
+                            <label for="panelWidth">受力面宽度（m）：<span id="panelWidthValue">3.0</span></label>
+                            <input type="range" id="panelWidth" min="1" max="5" step="0.1" value="3" oninput="updatePanelWidth(this.value)">
+                        </div>
+                        <div class="info-card" id="pressureSummary"></div>
+                        <div class="highlight">
+                            <strong>思考：</strong> 深度越大压力越大，因此积分中 $h(x)$ 始终随深度增加。不同截面形状决定了每一层的宽度函数 $w(x)$。
+                        </div>
+                    </div>
+                    <div class="column">
+                        <h2>压力分布示意</h2>
+                        <div class="canvas-wrapper">
+                            <canvas id="pressureCanvas"></canvas>
+                        </div>
+                        <div class="legend">
+                            <span class="profile">截面轮廓</span>
+                            <span class="shadow">受力区域</span>
+                            <span class="slice">微元压力 $dF$</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const rotationCanvas = document.getElementById('rotationCanvas');
+        const rotationCtx = rotationCanvas.getContext('2d');
+        const workCanvas = document.getElementById('workCanvas');
+        const workCtx = workCanvas.getContext('2d');
+        const pressureCanvas = document.getElementById('pressureCanvas');
+        const pressureCtx = pressureCanvas.getContext('2d');
+
+        let animationFrameId = null;
+        let sliceHighlight = false;
+        let rotationState = {
+            profile: 'parabola',
+            axis: 'x',
+            sliceX: 2,
+            angle: 0,
+            animating: false
+        };
+
+        const rotationProfiles = {
+            parabola: {
+                name: '$y=\\sqrt{x}$',
+                expression: '\\sqrt{x}',
+                func: x => Math.sqrt(Math.max(0, x)),
+                inverse: y => y * y,
+                domain: [0, 4],
+                description: '旋转后形成抛物线旋转体，可用于水杯等造型的体积估算。'
+            },
+            cone: {
+                name: '$y=1-\\frac{x}{2}$',
+                expression: '1-\\tfrac{x}{2}',
+                func: x => Math.max(0, 1 - x / 2),
+                inverse: y => 2 * (1 - y),
+                domain: [0, 2],
+                description: '线性函数旋转形成圆锥体，适用于圆锥容器体积计算。'
+            },
+            sine: {
+                name: '$y=\\sin(\\tfrac{\\pi x}{4})$',
+                expression: '\\sin(\\tfrac{\\pi x}{4})',
+                func: x => Math.max(0, Math.sin(Math.PI * x / 4)),
+                inverse: y => (4 / Math.PI) * Math.asin(Math.min(1, Math.max(0, y))),
+                domain: [0, 4],
+                description: '正弦函数旋转产生波浪形容器，常见于灯罩、艺术造型。'
+            }
+        };
+
+        function switchPanel(id, btn) {
+            document.querySelectorAll('.content').forEach(el => el.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            resizeAllCanvas();
+            renderMath();
+        }
+
+        function drawAxis(ctx, width, height, xMax = 5, yMax = 5, xMin = 0, yMin = 0, xTicks = 5, yTicks = 5) {
+            ctx.save();
+            ctx.strokeStyle = '#4b5563';
+            ctx.lineWidth = 1.2;
+            ctx.beginPath();
+            ctx.moveTo(50, height - 40);
+            ctx.lineTo(width - 30, height - 40);
+            ctx.moveTo(50, height - 40);
+            ctx.lineTo(50, 30);
+            ctx.stroke();
+
+            ctx.fillStyle = '#6b7280';
+            ctx.font = '12px sans-serif';
+            for (let i = 0; i <= xTicks; i++) {
+                const x = 50 + ((width - 80) / xTicks) * i;
+                ctx.beginPath();
+                ctx.moveTo(x, height - 40);
+                ctx.lineTo(x, height - 44);
+                ctx.stroke();
+                const value = (xMin + (xMax - xMin) * (i / xTicks)).toFixed(1);
+                ctx.fillText(value, x - 8, height - 20);
+            }
+            for (let j = 0; j <= yTicks; j++) {
+                const y = height - 40 - ((height - 80) / yTicks) * j;
+                ctx.beginPath();
+                ctx.moveTo(50, y);
+                ctx.lineTo(46, y);
+                ctx.stroke();
+                const value = (yMin + (yMax - yMin) * (j / yTicks)).toFixed(1);
+                ctx.fillText(value, 12, y + 4);
+            }
+            ctx.restore();
+        }
+
+        function resizeCanvas(canvas) {
+            const container = canvas.parentElement;
+            const width = container.clientWidth - 10;
+            const height = container.clientHeight - 10;
+            const ratio = window.devicePixelRatio || 1;
+            canvas.style.width = width + 'px';
+            canvas.style.height = height + 'px';
+            canvas.width = width * ratio;
+            canvas.height = height * ratio;
+            const ctx = canvas.getContext('2d');
+            ctx.setTransform(1, 0, 0, 1, 0, 0);
+            ctx.scale(ratio, ratio);
+        }
+
+        function resizeAllCanvas() {
+            [rotationCanvas, workCanvas, pressureCanvas].forEach(canvas => {
+                if (canvas) {
+                    resizeCanvas(canvas);
+                }
+            });
+            drawRotationScene();
+            drawWorkScene();
+            drawPressureScene();
+        }
+
+        window.addEventListener('resize', () => {
+            resizeAllCanvas();
+        });
+
+        function updateRotationProfile() {
+            const select = document.getElementById('profileSelect');
+            rotationState.profile = select.value;
+            const domain = rotationProfiles[rotationState.profile].domain;
+            document.getElementById('slicePosition').max = domain[1];
+            rotationState.sliceX = Math.min(rotationState.sliceX, domain[1]);
+            document.getElementById('slicePosition').value = rotationState.sliceX;
+            document.getElementById('sliceValue').textContent = rotationState.sliceX.toFixed(1);
+            updateVolumeSummary();
+            drawRotationScene();
+        }
+
+        function switchRotationAxis(axis) {
+            rotationState.axis = axis;
+            document.getElementById('axisXBtn').classList.toggle('secondary', axis !== 'x');
+            document.getElementById('axisYBtn').classList.toggle('secondary', axis !== 'y');
+            document.getElementById('axisXBtn').classList.toggle('active', axis === 'x');
+            document.getElementById('axisYBtn').classList.toggle('active', axis === 'y');
+            updateVolumeSummary();
+            drawRotationScene();
+        }
+
+        function updateSlicePosition(value) {
+            rotationState.sliceX = parseFloat(value);
+            document.getElementById('sliceValue').textContent = rotationState.sliceX.toFixed(1);
+            drawRotationScene();
+        }
+
+        function toggleRotationAnimation() {
+            rotationState.animating = !rotationState.animating;
+            if (rotationState.animating) {
+                animateRotation();
+            } else {
+                cancelAnimationFrame(animationFrameId);
+            }
+        }
+
+        function animateRotation() {
+            if (!rotationState.animating) {
+                cancelAnimationFrame(animationFrameId);
+                return;
+            }
+            rotationState.angle = (rotationState.angle + 0.04) % (Math.PI * 2);
+            drawRotationScene();
+            animationFrameId = requestAnimationFrame(animateRotation);
+        }
+
+        function toggleSliceHighlight() {
+            sliceHighlight = !sliceHighlight;
+            drawRotationScene();
+        }
+
+        function computeVolume(profile, axis) {
+            const { func, domain } = rotationProfiles[profile];
+            const n = 240;
+            const h = (domain[1] - domain[0]) / n;
+            let sum = 0;
+            for (let i = 0; i <= n; i++) {
+                const x = domain[0] + i * h;
+                const weight = (i === 0 || i === n) ? 1 : (i % 2 === 0 ? 2 : 4);
+                if (axis === 'x') {
+                    sum += weight * Math.pow(func(x), 2);
+                } else {
+                    sum += weight * x * func(x);
+                }
+            }
+            return (axis === 'x' ? Math.PI : 2 * Math.PI) * (sum * h / 3);
+        }
+
+        function updateVolumeSummary() {
+            const profile = rotationProfiles[rotationState.profile];
+            const axis = rotationState.axis;
+            const volume = computeVolume(rotationState.profile, axis);
+            const domain = profile.domain;
+            const formula = axis === 'x'
+                ? `V = \pi \int_{${domain[0]}}^{${domain[1]}} [${profile.expression}]^2\\,dx`
+                : `V = 2\pi \int_{${domain[0]}}^{${domain[1]}} x\cdot ${profile.expression}\\,dx`;
+            const summary = `
+                <strong>当前曲线：</strong> ${profile.name} <br>
+                <strong>旋转轴：</strong> ${axis === 'x' ? '绕 $x$ 轴' : '绕 $y$ 轴'} <br>
+                <strong>体积近似：</strong> ${volume.toFixed(3)} \, \text{立方单位}<br>
+                <span style="color:var(--gray-500)">积分模型：${formula}</span><br>
+                <em style="color:var(--gray-500)">${profile.description}</em>
+            `;
+            const container = document.getElementById('volumeSummary');
+            container.innerHTML = summary;
+            renderMath();
+        }
+
+        function mapToCanvas(x, y, width, height, xMax = 5, yMax = 5, xMin = 0, yMin = 0) {
+            const x0 = 50;
+            const y0 = height - 40;
+            const scaleX = (width - 80) / (xMax - xMin || 1);
+            const scaleY = (height - 80) / (yMax - yMin || 1);
+            return [x0 + (x - xMin) * scaleX, y0 - (y - yMin) * scaleY];
+        }
+
+        function drawRotationScene() {
+            const width = rotationCanvas.clientWidth;
+            const height = rotationCanvas.clientHeight;
+            rotationCtx.clearRect(0, 0, width, height);
+
+            const profile = rotationProfiles[rotationState.profile];
+            const [a, b] = profile.domain;
+            const axis = rotationState.axis;
+            let maxY = 0;
+            for (let x = a; x <= b; x += (b - a) / 200) {
+                maxY = Math.max(maxY, profile.func(x));
+            }
+            const yMax = Math.max(1, maxY * 1.2);
+            const xMax = Math.max(4, b * 1.1);
+
+            drawAxis(rotationCtx, width, height, xMax, yMax, 0, 0, 5, 5);
+
+            // draw original curve and area
+            rotationCtx.save();
+            rotationCtx.beginPath();
+            for (let x = a; x <= b; x += (b - a) / 240) {
+                const [cx, cy] = mapToCanvas(x, profile.func(x), width, height, xMax, yMax);
+                if (x === a) {
+                    rotationCtx.moveTo(cx, cy);
+                } else {
+                    rotationCtx.lineTo(cx, cy);
+                }
+            }
+            rotationCtx.strokeStyle = 'rgba(79, 70, 229, 0.9)';
+            rotationCtx.lineWidth = 2;
+            rotationCtx.stroke();
+            rotationCtx.lineTo(...mapToCanvas(b, 0, width, height, xMax, yMax));
+            rotationCtx.lineTo(...mapToCanvas(a, 0, width, height, xMax, yMax));
+            rotationCtx.closePath();
+            rotationCtx.fillStyle = 'rgba(79, 70, 229, 0.12)';
+            rotationCtx.fill();
+            rotationCtx.restore();
+
+            // axis indicator
+            rotationCtx.save();
+            rotationCtx.strokeStyle = axis === 'x' ? '#10b981' : '#ef4444';
+            rotationCtx.lineWidth = 2;
+            if (axis === 'x') {
+                rotationCtx.beginPath();
+                const [ax1, ay] = mapToCanvas(a, 0, width, height, xMax, yMax);
+                const [ax2] = mapToCanvas(b, 0, width, height, xMax, yMax);
+                rotationCtx.moveTo(ax1, ay);
+                rotationCtx.lineTo(ax2, ay);
+                rotationCtx.stroke();
+                rotationCtx.fillStyle = '#10b981';
+                rotationCtx.font = '14px sans-serif';
+                rotationCtx.fillText('旋转轴：x 轴', ax2 - 90, ay - 8);
+            } else {
+                rotationCtx.beginPath();
+                const [ayx, ay1] = mapToCanvas(0, 0, width, height, xMax, yMax);
+                const [, ay2] = mapToCanvas(0, yMax, width, height, xMax, yMax);
+                rotationCtx.moveTo(ayx, ay1);
+                rotationCtx.lineTo(ayx, ay2);
+                rotationCtx.stroke();
+                rotationCtx.fillStyle = '#ef4444';
+                rotationCtx.font = '14px sans-serif';
+                rotationCtx.fillText('旋转轴：y 轴', ayx + 10, ay2 + 16);
+            }
+            rotationCtx.restore();
+
+            // draw rotated geometry
+            rotationCtx.save();
+            const steps = 30;
+            for (let i = 0; i < steps; i++) {
+                const t = i / (steps - 1);
+                const x = a + t * (b - a);
+                const radius = axis === 'x' ? profile.func(x) : x;
+                const heightVal = axis === 'x' ? profile.func(x) : profile.func(x);
+                const [cx, baseY] = mapToCanvas(x, 0, width, height, xMax, yMax);
+                const [, topY] = mapToCanvas(0, heightVal, width, height, xMax, yMax);
+                const [shellRadius] = mapToCanvas(radius, 0, width, height, xMax, yMax);
+                const [originX] = mapToCanvas(0, 0, width, height, xMax, yMax);
+                const r = Math.abs(shellRadius - originX);
+                const ellipseY = (baseY + topY) / 2;
+                const ellipseH = Math.max(Math.abs(baseY - topY), 4);
+                const ellipseW = Math.max((axis === 'x' ? r : r * 0.6) * Math.abs(Math.sin(rotationState.angle)) * 0.8, 2);
+                rotationCtx.beginPath();
+                if (axis === 'x') {
+                    rotationCtx.ellipse(cx, ellipseY, Math.max(r * 0.6, 2), Math.max(ellipseW, 2), 0, 0, Math.PI * 2);
+                } else {
+                    rotationCtx.rect(originX - r, baseY - ellipseH, 2 * r, Math.max(ellipseH, 4));
+                }
+                rotationCtx.fillStyle = 'rgba(16, 185, 129, 0.12)';
+                rotationCtx.fill();
+                rotationCtx.strokeStyle = 'rgba(16, 185, 129, 0.35)';
+                rotationCtx.stroke();
+            }
+            rotationCtx.restore();
+
+            if (sliceHighlight) {
+                const x = Math.min(Math.max(rotationState.sliceX, a), b);
+                const y = profile.func(x);
+                const [cx, cy] = mapToCanvas(x, y, width, height, xMax, yMax);
+                const [bx, by] = mapToCanvas(x, 0, width, height, xMax, yMax);
+                rotationCtx.save();
+                rotationCtx.fillStyle = 'rgba(239, 68, 68, 0.3)';
+                rotationCtx.strokeStyle = 'rgba(239, 68, 68, 0.8)';
+                rotationCtx.lineWidth = 2;
+                if (axis === 'x') {
+                    const thickness = (width - 80) / (xMax - 0) * 0.05;
+                    rotationCtx.beginPath();
+                    rotationCtx.moveTo(cx - thickness, by);
+                    rotationCtx.lineTo(cx - thickness, cy);
+                    rotationCtx.lineTo(cx + thickness, cy);
+                    rotationCtx.lineTo(cx + thickness, by);
+                    rotationCtx.closePath();
+                } else {
+                    const [originX] = mapToCanvas(0, 0, width, height, xMax, yMax);
+                    const radius = Math.abs(cx - originX);
+                    rotationCtx.beginPath();
+                    rotationCtx.rect(originX - radius, cy, radius * 2, by - cy);
+                }
+                rotationCtx.fill();
+                rotationCtx.stroke();
+                rotationCtx.fillStyle = '#ef4444';
+                rotationCtx.font = '14px sans-serif';
+                rotationCtx.fillText(axis === 'x' ? '薄片 $dV$' : '薄壳 $dV$', cx + 6, cy - 8);
+                rotationCtx.restore();
+                renderMath();
+            }
+        }
+
+        let workAnimation = { active: false, progress: 0 };
+
+        function getWorkFunction(x) {
+            const scenario = document.getElementById('scenarioSelect').value;
+            if (scenario === 'spring') {
+                const k = parseFloat(document.getElementById('springK').value);
+                return k * x;
+            }
+            if (scenario === 'rope') {
+                const k = parseFloat(document.getElementById('ropeK').value);
+                return k * (1 + 0.2 * x);
+            }
+            const a = parseFloat(document.getElementById('customA').value);
+            const b = parseFloat(document.getElementById('customB').value);
+            return a * x + b;
+        }
+
+        function integrateWork(func, a, b) {
+            const n = 200;
+            const h = (b - a) / n;
+            let sum = 0;
+            for (let i = 0; i <= n; i++) {
+                const x = a + i * h;
+                const weight = (i === 0 || i === n) ? 1 : (i % 2 === 0 ? 2 : 4);
+                sum += weight * func(x);
+            }
+            return sum * h / 3;
+        }
+
+        function updateWorkScenario() {
+            const scenario = document.getElementById('scenarioSelect').value;
+            document.getElementById('springControls').style.display = scenario === 'spring' ? 'flex' : 'none';
+            document.getElementById('ropeControls').style.display = scenario === 'rope' ? 'flex' : 'none';
+            document.getElementById('customControls').style.display = scenario === 'custom' ? 'flex' : 'none';
+            workAnimation = { active: false, progress: 0 };
+            drawWorkScene();
+        }
+
+        function updateSpringK(value) {
+            document.getElementById('springKValue').textContent = parseFloat(value).toFixed(1);
+            drawWorkScene();
+        }
+
+        function updateRopeK(value) {
+            document.getElementById('ropeKValue').textContent = parseFloat(value).toFixed(1);
+            drawWorkScene();
+        }
+
+        function updateCustomForce() {
+            drawWorkScene();
+        }
+
+        function updateWorkRange(value) {
+            document.getElementById('workRangeValue').textContent = parseFloat(value).toFixed(1);
+            workAnimation.progress = Math.min(workAnimation.progress, parseFloat(value));
+            drawWorkScene();
+        }
+
+        function animateWorkArea() {
+            workAnimation.active = true;
+            function step() {
+                if (!workAnimation.active) return;
+                const maxX = parseFloat(document.getElementById('workRange').value);
+                workAnimation.progress = Math.min(maxX, workAnimation.progress + maxX / 120);
+                drawWorkScene();
+                if (workAnimation.progress < maxX) {
+                    requestAnimationFrame(step);
+                } else {
+                    workAnimation.active = false;
+                }
+            }
+            requestAnimationFrame(step);
+        }
+
+        function resetWorkAnimation() {
+            workAnimation = { active: false, progress: 0 };
+            drawWorkScene();
+        }
+
+        function drawWorkScene() {
+            const width = workCanvas.clientWidth;
+            const height = workCanvas.clientHeight;
+            workCtx.clearRect(0, 0, width, height);
+            const maxX = parseFloat(document.getElementById('workRange').value);
+            let maxForce = 0;
+            for (let i = 0; i <= 200; i++) {
+                const x = (maxX / 200) * i;
+                maxForce = Math.max(maxForce, getWorkFunction(x));
+            }
+            const yMax = Math.max(5, maxForce * 1.2);
+            drawAxis(workCtx, width, height, maxX, yMax, 0, 0, 5, 5);
+
+            const func = getWorkFunction;
+
+            // draw curve
+            workCtx.save();
+            workCtx.beginPath();
+            for (let x = 0; x <= maxX; x += maxX / 200) {
+                const y = func(x);
+                const [cx, cy] = mapToCanvas(x, y, width, height, maxX, yMax);
+                if (x === 0) workCtx.moveTo(cx, cy);
+                else workCtx.lineTo(cx, cy);
+            }
+            workCtx.strokeStyle = 'rgba(79, 70, 229, 0.9)';
+            workCtx.lineWidth = 2;
+            workCtx.stroke();
+            workCtx.restore();
+
+            // shade area up to progress
+            const progress = workAnimation.progress || 0;
+            workCtx.save();
+            workCtx.beginPath();
+            workCtx.moveTo(...mapToCanvas(0, 0, width, height, maxX, yMax));
+            for (let x = 0; x <= progress; x += progress / 100) {
+                const y = func(x);
+                workCtx.lineTo(...mapToCanvas(x, y, width, height, maxX, yMax));
+            }
+            workCtx.lineTo(...mapToCanvas(progress, 0, width, height, maxX, yMax));
+            workCtx.closePath();
+            workCtx.fillStyle = 'rgba(16, 185, 129, 0.18)';
+            workCtx.fill();
+            workCtx.restore();
+
+            if (progress > 0) {
+                workCtx.save();
+                workCtx.strokeStyle = 'rgba(16, 185, 129, 0.6)';
+                workCtx.setLineDash([6, 4]);
+                workCtx.beginPath();
+                workCtx.moveTo(...mapToCanvas(progress, 0, width, height, maxX, yMax));
+                workCtx.lineTo(...mapToCanvas(progress, func(progress), width, height, maxX, yMax));
+                workCtx.stroke();
+                workCtx.restore();
+            }
+
+            const totalWork = integrateWork(func, 0, maxX);
+            const stats = document.getElementById('workStats');
+            stats.innerHTML = `
+                <div class="stat-card">
+                    <span class="label">积分表达式</span>
+                    <span class="value">$W=\int_0^{${maxX.toFixed(1)}} F(x)\,dx$</span>
+                </div>
+                <div class="stat-card">
+                    <span class="label">累计做功</span>
+                    <span class="value">${totalWork.toFixed(2)}\,\text{J}</span>
+                </div>
+                <div class="stat-card">
+                    <span class="label">终点力值</span>
+                    <span class="value">${func(maxX).toFixed(2)}\,\text{N}</span>
+                </div>
+                <div class="stat-card">
+                    <span class="label">平均力</span>
+                    <span class="value">${(totalWork / maxX).toFixed(2)}\,\text{N}</span>
+                </div>
+            `;
+            renderMath();
+        }
+
+        const tankState = {
+            shape: 'rectangle',
+            depth: 2,
+            density: 1000,
+            width: 3
+        };
+
+        function updateTankShape() {
+            tankState.shape = document.getElementById('tankShape').value;
+            drawPressureScene();
+        }
+
+        function updateFluidDepth(value) {
+            tankState.depth = parseFloat(value);
+            document.getElementById('fluidDepthValue').textContent = parseFloat(value).toFixed(1);
+            drawPressureScene();
+        }
+
+        function updateFluidDensity(value) {
+            tankState.density = parseFloat(value);
+            document.getElementById('fluidDensityValue').textContent = parseFloat(value).toFixed(0);
+            drawPressureScene();
+        }
+
+        function updatePanelWidth(value) {
+            tankState.width = parseFloat(value);
+            document.getElementById('panelWidthValue').textContent = parseFloat(value).toFixed(1);
+            drawPressureScene();
+        }
+
+        function widthFunction(y) {
+            if (tankState.shape === 'rectangle') return tankState.width;
+            if (tankState.shape === 'triangle') {
+                const baseWidth = tankState.width * 1.8;
+                return (y / tankState.depth) * baseWidth;
+            }
+            const radius = tankState.width / 2;
+            return 2 * Math.sqrt(Math.max(0, radius * radius - Math.pow(y - tankState.depth / 2, 2)));
+        }
+
+        function computeHydrostaticForce() {
+            const rho = tankState.density;
+            const g = 9.8;
+            const depth = tankState.depth;
+            const n = 200;
+            const h = depth / n;
+            let sum = 0;
+            for (let i = 0; i <= n; i++) {
+                const y = i * h;
+                const weight = (i === 0 || i === n) ? 1 : (i % 2 === 0 ? 2 : 4);
+                const pressure = rho * g * (depth - y);
+                sum += weight * pressure * widthFunction(y);
+            }
+            return sum * h / 3;
+        }
+
+        function drawPressureScene() {
+            const width = pressureCanvas.clientWidth;
+            const height = pressureCanvas.clientHeight;
+            pressureCtx.clearRect(0, 0, width, height);
+
+            const depth = tankState.depth;
+            let maxWidth = 0;
+            for (let i = 0; i <= 200; i++) {
+                const y = depth * (i / 200);
+                maxWidth = Math.max(maxWidth, widthFunction(y));
+            }
+            const halfWidth = Math.max(0.5, maxWidth / 2);
+            const xPadding = Math.max(0.5, halfWidth * 0.15);
+            const xMin = -halfWidth - xPadding;
+            const xMax = halfWidth + xPadding;
+            const yMin = 0;
+            const yMax = Math.max(depth + depth * 0.2, depth + 0.5, 4);
+
+            drawAxis(pressureCtx, width, height, xMax, yMax, xMin, yMin, 5, 5);
+
+            // draw outline
+            pressureCtx.save();
+            pressureCtx.beginPath();
+            pressureCtx.moveTo(...mapToCanvas(0, 0, width, height, xMax, yMax, xMin, yMin));
+            for (let y = 0; y <= depth; y += depth / 60) {
+                const half = widthFunction(y) / 2;
+                pressureCtx.lineTo(...mapToCanvas(half, y, width, height, xMax, yMax, xMin, yMin));
+            }
+            for (let y = depth; y >= 0; y -= depth / 60) {
+                const half = -widthFunction(y) / 2;
+                pressureCtx.lineTo(...mapToCanvas(half, y, width, height, xMax, yMax, xMin, yMin));
+            }
+            pressureCtx.closePath();
+            pressureCtx.strokeStyle = 'rgba(79, 70, 229, 0.9)';
+            pressureCtx.lineWidth = 2;
+            pressureCtx.stroke();
+            pressureCtx.fillStyle = 'rgba(79, 70, 229, 0.12)';
+            pressureCtx.fill();
+            pressureCtx.restore();
+
+            // highlight filled area
+            pressureCtx.save();
+            pressureCtx.beginPath();
+            pressureCtx.moveTo(...mapToCanvas(0, 0, width, height, xMax, yMax, xMin, yMin));
+            const fillDepth = Math.min(depth, tankState.depth);
+            const step = Math.max(fillDepth / 50, 0.05);
+            for (let y = 0; y <= fillDepth; y += step) {
+                const half = widthFunction(y) / 2;
+                pressureCtx.lineTo(...mapToCanvas(half, y, width, height, xMax, yMax, xMin, yMin));
+            }
+            for (let y = fillDepth; y >= 0; y -= step) {
+                const half = -widthFunction(y) / 2;
+                pressureCtx.lineTo(...mapToCanvas(half, y, width, height, xMax, yMax, xMin, yMin));
+            }
+            pressureCtx.closePath();
+            pressureCtx.fillStyle = 'rgba(16, 185, 129, 0.2)';
+            pressureCtx.fill();
+            pressureCtx.restore();
+
+            // draw sample strip
+            const sampleY = Math.min(depth * 0.7, depth - 0.05);
+            const stripWidth = widthFunction(sampleY);
+            const stripThickness = Math.max(0.08, depth * 0.04);
+            const yTop = Math.min(depth, sampleY + stripThickness / 2);
+            const yBottom = Math.max(0, sampleY - stripThickness / 2);
+            pressureCtx.save();
+            pressureCtx.fillStyle = 'rgba(239, 68, 68, 0.28)';
+            pressureCtx.strokeStyle = 'rgba(239, 68, 68, 0.7)';
+            pressureCtx.lineWidth = 2;
+            pressureCtx.beginPath();
+            pressureCtx.moveTo(...mapToCanvas(-stripWidth / 2, yBottom, width, height, xMax, yMax, xMin, yMin));
+            pressureCtx.lineTo(...mapToCanvas(stripWidth / 2, yBottom, width, height, xMax, yMax, xMin, yMin));
+            pressureCtx.lineTo(...mapToCanvas(stripWidth / 2, yTop, width, height, xMax, yMax, xMin, yMin));
+            pressureCtx.lineTo(...mapToCanvas(-stripWidth / 2, yTop, width, height, xMax, yMax, xMin, yMin));
+            pressureCtx.closePath();
+            pressureCtx.fill();
+            pressureCtx.stroke();
+            const labelPos = mapToCanvas(stripWidth / 2, yTop, width, height, xMax, yMax, xMin, yMin);
+            const textX = Math.min(width - 150, labelPos[0] + 8);
+            pressureCtx.font = '14px sans-serif';
+            pressureCtx.fillStyle = '#ef4444';
+            pressureCtx.fillText('微元 dF = ρ g h · w dh', textX, labelPos[1] - 8);
+            pressureCtx.restore();
+
+            const force = computeHydrostaticForce();
+            const summary = document.getElementById('pressureSummary');
+            summary.innerHTML = `
+                <strong>当前截面：</strong> ${tankState.shape === 'rectangle' ? '矩形' : tankState.shape === 'triangle' ? '三角形' : '圆形'}<br>
+                <strong>液面深度：</strong> ${tankState.depth.toFixed(1)}\,\text{m}<br>
+                <strong>密度：</strong> ${tankState.density.toFixed(0)}\,\text{kg/m}^3<br>
+                <strong>受力面宽度：</strong> ${tankState.width.toFixed(1)}\,\text{m}<br>
+                <strong>总压力：</strong> ${force.toFixed(0)}\,\text{N}<br>
+                <span style="color:var(--gray-500)">积分模型：$F = \int_0^{${tankState.depth.toFixed(1)}} \rho g (h) \, w(h)\,dh$</span>
+            `;
+            renderMath();
+        }
+
+        function renderMath() {
+            if (window.MathJax && MathJax.typesetPromise) {
+                MathJax.typesetPromise().catch(err => console.error('渲染错误:', err));
+            }
+        }
+
+        window.scheduleMathRender = function () {
+            renderMath();
+        };
+
+        function init() {
+            resizeAllCanvas();
+            updateRotationProfile();
+            switchRotationAxis(rotationState.axis);
+            updateWorkScenario();
+            updateWorkRange(document.getElementById('workRange').value);
+            updateFluidDepth(document.getElementById('fluidDepth').value);
+            updateFluidDensity(document.getElementById('fluidDensity').value);
+            updatePanelWidth(document.getElementById('panelWidth').value);
+            drawRotationScene();
+            drawWorkScene();
+            drawPressureScene();
+        }
+
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>

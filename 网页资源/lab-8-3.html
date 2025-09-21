@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab 8.3 偏导数几何内涵实验室</title>
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\(', '\)']],
+                displayMath: [['$$', '$$'], ['\[', '\]']],
+                processEscapes: true
+            },
+            startup: {
+                pageReady: () => {
+                    return MathJax.startup.defaultPageReady().then(() => {
+                        if (typeof window.scheduleMathRender === 'function') {
+                            window.scheduleMathRender();
+                        }
+                        console.log('MathJax加载完成');
+                    });
+                }
+            },
+            options: {
+                skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+            }
+        };
+    </script>
+    <script defer src="../common-assets/js/mathjax-3.2.2-tex-svg.min.js"></script>
+    <script defer src="../common-assets/js/lab-math-enhancer.js"></script>
+    <style>
+        :root {
+            --h1-size: 22px;
+            --h2-size: 20px;
+            --h3-size: 18px;
+            --btn-size: 16px;
+            --formula-size: 20px;
+            --text-size: 16px;
+            --primary: #4f46e5;
+            --primary-dark: #3730a3;
+            --primary-light: #6366f1;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --light: #ffffff;
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-400: #9ca3af;
+            --gray-600: #4b5563;
+            --gray-800: #1f2937;
+            --border: #e5e7eb;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        *::-webkit-scrollbar { width: 0; background: transparent; }
+        * { scrollbar-width: none; -ms-overflow-style: none; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', Arial, sans-serif;
+            font-size: var(--text-size);
+            line-height: 1.5;
+            background: var(--gray-50);
+            color: var(--gray-800);
+        }
+
+        .return-home-panel {
+            position: fixed;
+            top: 12px;
+            right: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 8px;
+            z-index: 40;
+        }
+
+        .return-toggle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: none;
+            background: linear-gradient(135deg, rgba(79, 70, 229, 0.95), rgba(99, 102, 241, 0.9));
+            color: #ffffff;
+            font-size: 20px;
+            cursor: pointer;
+            box-shadow: 0 10px 18px rgba(79, 70, 229, 0.28);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .return-toggle:focus-visible {
+            outline: 2px solid rgba(129, 140, 248, 0.6);
+            outline-offset: 3px;
+        }
+
+        .return-toggle:hover {
+            transform: translateY(-1px) scale(1.03);
+            box-shadow: 0 14px 26px rgba(79, 70, 229, 0.35);
+        }
+
+        .return-links {
+            display: none;
+            flex-direction: column;
+            gap: 6px;
+            padding: 10px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid rgba(79, 70, 229, 0.15);
+            box-shadow: 0 16px 30px rgba(15, 23, 42, 0.18);
+            backdrop-filter: blur(6px);
+        }
+
+        .return-home-panel.open .return-links {
+            display: flex;
+        }
+
+        .return-link {
+            padding: 6px 12px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 14px;
+            color: var(--primary);
+            background: rgba(79, 70, 229, 0.12);
+            transition: background 0.2s ease, color 0.2s ease;
+        }
+
+        .return-link.return-main {
+            color: var(--success);
+            background: rgba(16, 185, 129, 0.12);
+        }
+
+        .return-link:hover {
+            background: rgba(79, 70, 229, 0.2);
+            color: var(--primary-dark);
+        }
+
+        .return-link.return-main:hover {
+            background: rgba(16, 185, 129, 0.22);
+        }
+
+        .container { width: 100%; max-width: 1400px; height: 100vh; max-height: 700px; margin: 0 auto; display: flex; flex-direction: column; background: var(--light); border-radius: 12px; box-shadow: 0 12px 24px rgba(15,23,42,0.08); overflow: hidden; }
+        .header { background: linear-gradient(90deg, var(--primary), var(--primary-dark)); color: var(--light); padding: 10px 24px; height: 48px; display: flex; align-items: center; }
+        .header h1 { font-size: var(--h1-size); font-weight: 600; }
+        .main { flex: 1; display: flex; overflow: hidden; }
+        .sidebar { width: 120px; background: var(--gray-50); border-right: 1px solid var(--border); padding: 12px 10px; display: flex; flex-direction: column; gap: 8px; }
+        .nav-btn { width: 100%; padding: 8px; border: none; border-radius: 6px; background: transparent; color: var(--gray-600); text-align: left; font-size: var(--text-size); cursor: pointer; transition: all 0.2s ease; }
+        .nav-btn:hover { background: var(--gray-100); color: var(--primary); }
+        .nav-btn.active { background: rgba(79,70,229,0.12); color: var(--primary); font-weight: 600; }
+
+        .content { flex: 1; display: none; padding: 16px 20px; overflow-y: auto; }
+        .content.active { display: flex; gap: 18px; }
+        .column { flex: 1; display: flex; flex-direction: column; gap: 14px; background: var(--gray-50); border-radius: 10px; padding: 16px; border: 1px solid var(--border); overflow: hidden; }
+        .panel-title { font-size: var(--h3-size); font-weight: 600; color: var(--primary-dark); }
+        .control-group { display: flex; flex-direction: column; gap: 8px; background: var(--light); padding: 12px; border-radius: 8px; border: 1px solid var(--gray-200); }
+        label { font-weight: 500; color: var(--gray-600); }
+        select, input[type="range"] { padding: 8px 10px; border-radius: 6px; border: 1px solid var(--gray-300); font-size: var(--text-size); outline: none; transition: border 0.2s ease; }
+        select:focus, input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(79,70,229,0.2); }
+        .info-card { background: var(--light); border-radius: 8px; border: 1px solid var(--gray-200); padding: 12px 14px; line-height: 1.6; }
+        .status-tag { display: inline-flex; align-items: center; gap: 6px; padding: 4px 8px; border-radius: 999px; background: rgba(79,70,229,0.12); color: var(--primary); font-size: 14px; }
+        .status-tag.success { background: rgba(16,185,129,0.16); color: var(--success); }
+        .status-tag.warning { background: rgba(245,158,11,0.18); color: var(--warning); }
+        canvas { width: 100%; height: 100%; border-radius: 8px; background: var(--light); border: 1px solid var(--gray-200); }
+
+        @media (max-width: 1100px) { .content.active { flex-direction: column; } }
+    </style>
+</head>
+<body>
+    <div class="return-home-panel">
+        <button class="return-toggle" type="button" aria-label="打开返回导航" onclick="toggleReturnPanel(event)">⌂</button>
+        <div class="return-links">
+            <a class="return-link return-sub" href="index.html">← 返回目录</a>
+            <a class="return-link return-main" href="../index.html">⌂ 返回主站</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <header class="header">
+            <h1>Lab 8.3｜偏导数的几何意义与切平面</h1>
+        </header>
+
+        <div class="main">
+            <nav class="sidebar">
+                <button class="nav-btn active"  data-panel="module1"onclick="switchPanel('module1', this)">切平面观察</button>
+                <button class="nav-btn"  data-panel="module2"onclick="switchPanel('module2', this)">方向导数</button>
+            </nav>
+
+            <div class="content active" id="module1">
+                <div class="column">
+                    <div class="panel-title">函数与采样点</div>
+                    <div class="control-group">
+                        <label for="surfaceSelect">选择函数：</label>
+                        <select id="surfaceSelect" onchange="updateSurface()">
+                            <option value="f1">$z = x^2 + y^2$</option>
+                            <option value="f2">$z = x y$</option>
+                            <option value="f3">$z = \sin x \cos y$</option>
+                        </select>
+                    </div>
+                    <div class="control-group">
+                        <label>采样点 $(a,b)$：</label>
+                        <label for="aSlider">$a$：<span id="aValue" class="status-tag">0.00</span></label>
+                        <input type="range" id="aSlider" min="-1.5" max="1.5" step="0.1" value="0" oninput="updatePoint()" />
+                        <label for="bSlider">$b$：<span id="bValue" class="status-tag">0.00</span></label>
+                        <input type="range" id="bSlider" min="-1.5" max="1.5" step="0.1" value="0" oninput="updatePoint()" />
+                    </div>
+                    <div class="info-card" id="partialInfo">偏导数结果将在此展示。</div>
+                    <div class="info-card" id="planeInfo">切平面方程更新中……</div>
+                </div>
+                <div class="column">
+                    <div class="panel-title">曲面与切线方向</div>
+                    <canvas id="surfaceCanvas"></canvas>
+                </div>
+            </div>
+
+            <div class="content" id="module2">
+                <div class="column">
+                    <div class="panel-title">方向导数探索</div>
+                    <div class="control-group">
+                        <label for="angleSlider">方向角 $\theta$（相对 $x$ 轴）：<span id="angleValue" class="status-tag">0°</span></label>
+                        <input type="range" id="angleSlider" min="0" max="360" value="0" oninput="updateDirection()" />
+                    </div>
+                    <div class="info-card" id="directionInfo">旋转方向向量以查看方向导数的大小。</div>
+                    <div class="info-card" id="gradientInfo">梯度向量与方向导数之间的关系将在此更新。</div>
+                </div>
+                <div class="column">
+                    <div class="panel-title">方向导数可视化</div>
+                    <canvas id="directionCanvas"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const surfaces = {
+            f1: {
+                func: (x, y) => x * x + y * y,
+                fx: (x, y) => 2 * x,
+                fy: (x, y) => 2 * y,
+                name: '$z = x^2 + y^2$'
+            },
+            f2: {
+                func: (x, y) => x * y,
+                fx: (x, y) => y,
+                fy: (x, y) => x,
+                name: '$z = xy$'
+            },
+            f3: {
+                func: (x, y) => Math.sin(x) * Math.cos(y),
+                fx: (x, y) => Math.cos(x) * Math.cos(y),
+                fy: (x, y) => -Math.sin(x) * Math.sin(y),
+                name: '$z = \sin x \cos y$'
+            }
+        };
+
+        const surfCanvas = document.getElementById('surfaceCanvas');
+        const dirCanvas = document.getElementById('directionCanvas');
+        let activeSurface = 'f1';
+        let a = 0;
+        let b = 0;
+
+        function resizeCanvas(canvas) {
+            const container = canvas.parentElement;
+            const width = container.clientWidth - 20;
+            const height = container.clientHeight - 20;
+            canvas.style.width = width + 'px';
+            canvas.style.height = height + 'px';
+            const ratio = window.devicePixelRatio || 1;
+            canvas.width = width * ratio;
+            canvas.height = height * ratio;
+            const ctx = canvas.getContext('2d');
+            ctx.setTransform(1, 0, 0, 1, 0, 0);
+            ctx.scale(ratio, ratio);
+            return ctx;
+        }
+
+        function drawAxis(ctx, width, height) {
+            ctx.clearRect(0, 0, width, height);
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0, 0, width, height);
+            ctx.strokeStyle = '#374151';
+            ctx.lineWidth = 1.5;
+            ctx.beginPath();
+            ctx.moveTo(50, height - 40);
+            ctx.lineTo(width - 30, height - 40);
+            ctx.moveTo(50, height - 40);
+            ctx.lineTo(50, 30);
+            ctx.stroke();
+            ctx.fillStyle = '#4b5563';
+            ctx.font = '14px sans-serif';
+            ctx.fillText('x', width - 40, height - 48);
+            ctx.fillText('y', 60, 36);
+            ctx.strokeStyle = 'rgba(148,163,184,0.4)';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            for (let i = 1; i <= 6; i++) {
+                const x = 50 + i * 60;
+                ctx.moveTo(x, height - 45);
+                ctx.lineTo(x, height - 35);
+                const y = height - 40 - i * 50;
+                ctx.moveTo(45, y);
+                ctx.lineTo(55, y);
+            }
+            ctx.stroke();
+        }
+
+        let mathObserver = null;
+        let mathRenderQueued = false;
+
+        function startMathObserver() {
+            if (typeof MutationObserver === 'undefined' || !document.body) {
+                return;
+            }
+            if (mathObserver) {
+                mathObserver.disconnect();
+            }
+            mathObserver = new MutationObserver(mutations => {
+                for (const mutation of mutations) {
+                    if (mutation.type === 'childList' || mutation.type === 'characterData') {
+                        scheduleMathRender();
+                        break;
+                    }
+                }
+            });
+            mathObserver.observe(document.body, { childList: true, subtree: true, characterData: true });
+        }
+
+        function scheduleMathRender() {
+            if (mathRenderQueued) {
+                return;
+            }
+            mathRenderQueued = true;
+            requestAnimationFrame(() => {
+                mathRenderQueued = false;
+                if (window.MathJax && MathJax.typesetPromise) {
+                    if (mathObserver) {
+                        mathObserver.disconnect();
+                    }
+                    MathJax.typesetPromise()
+                        .catch(err => console.log('渲染错误:', err))
+                        .finally(() => {
+                            startMathObserver();
+                        });
+                } else {
+                    setTimeout(scheduleMathRender, 160);
+                }
+            });
+        }
+
+        window.scheduleMathRender = scheduleMathRender;
+
+        function renderMath() {
+            scheduleMathRender();
+        }
+
+        function ensureMathReady() {
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', () => {
+                    startMathObserver();
+                    scheduleMathRender();
+                });
+            } else {
+                startMathObserver();
+                scheduleMathRender();
+            }
+        }
+
+        ensureMathReady();
+
+        function toggleReturnPanel(event) {
+            event.stopPropagation();
+            const panel = document.querySelector('.return-home-panel');
+            if (panel) {
+                panel.classList.toggle('open');
+            }
+        }
+
+        document.addEventListener('click', event => {
+            const panel = document.querySelector('.return-home-panel');
+            if (!panel) {
+                return;
+            }
+            if (panel.classList.contains('open') && !panel.contains(event.target)) {
+                panel.classList.remove('open');
+            }
+        });
+
+        window.addEventListener('pageshow', () => {
+            scheduleMathRender();
+        });
+
+        function switchPanel(id, btn) {
+            document.querySelectorAll('.content').forEach(panel => panel.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
+            btn.classList.add('active');
+            setTimeout(() => {
+                drawSurface();
+                drawDirectionCanvas();
+            }, 80);
+        }
+
+        function updateSurface() {
+            activeSurface = document.getElementById('surfaceSelect').value;
+            updatePoint();
+        }
+
+        function updatePoint() {
+            a = parseFloat(document.getElementById('aSlider').value);
+            b = parseFloat(document.getElementById('bSlider').value);
+            document.getElementById('aValue').textContent = a.toFixed(2);
+            document.getElementById('bValue').textContent = b.toFixed(2);
+            const s = surfaces[activeSurface];
+            const fx = s.fx(a, b);
+            const fy = s.fy(a, b);
+            const value = s.func(a, b);
+            document.getElementById('partialInfo').innerHTML = `<span class="status-tag">偏导</span> $f_x(a,b)=${fx.toFixed(3)},\ f_y(a,b)=${fy.toFixed(3)}$`;
+            const plane = `z = ${value.toFixed(3)} + ${fx.toFixed(3)}(x-${a.toFixed(2)}) + ${fy.toFixed(3)}(y-${b.toFixed(2)})`;
+            document.getElementById('planeInfo').innerHTML = `<span class="status-tag success">切平面</span> ${plane}`;
+            drawSurface();
+            updateDirection();
+            renderMath();
+        }
+
+        function drawSurface() {
+            const ctx = resizeCanvas(surfCanvas);
+            const width = surfCanvas.clientWidth - 20;
+            const height = surfCanvas.clientHeight - 20;
+            drawAxis(ctx, width, height);
+            ctx.save();
+            ctx.translate(50, height - 40);
+            ctx.scale(1, -1);
+            const s = surfaces[activeSurface];
+            const scale = 80;
+            for (let x = -2; x <= 2; x += 0.2) {
+                ctx.beginPath();
+                for (let y = -2; y <= 2; y += 0.2) {
+                    const z = s.func(x, y);
+                    const px = x * scale;
+                    const py = y * scale;
+                    const color = Math.max(-1, Math.min(1, z / 3));
+                    ctx.fillStyle = `rgba(${color > 0 ? 79 : 239}, ${color > 0 ? 70 : 68}, ${color > 0 ? 229 : 68}, ${0.15 + Math.abs(color) * 0.6})`;
+                    ctx.fillRect(px - 2, py - 2, 4, 4);
+                }
+            }
+            ctx.strokeStyle = '#6366f1';
+            ctx.lineWidth = 2;
+            // 画出 x-方向切线
+            ctx.beginPath();
+            for (let dx = -0.8; dx <= 0.8; dx += 0.05) {
+                const x = a + dx;
+                const y = b;
+                const z = s.func(a, b) + s.fx(a, b) * dx;
+                const px = x * scale;
+                const py = y * scale;
+                if (dx === -0.8) ctx.moveTo(px, py);
+                else ctx.lineTo(px, py);
+            }
+            ctx.stroke();
+            ctx.strokeStyle = '#10b981';
+            ctx.beginPath();
+            for (let dy = -0.8; dy <= 0.8; dy += 0.05) {
+                const x = a;
+                const y = b + dy;
+                const z = s.func(a, b) + s.fy(a, b) * dy;
+                const px = x * scale;
+                const py = y * scale;
+                if (dy === -0.8) ctx.moveTo(px, py);
+                else ctx.lineTo(px, py);
+            }
+            ctx.stroke();
+            ctx.fillStyle = '#ef4444';
+            ctx.beginPath();
+            ctx.arc(a * scale, b * scale, 6, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+        }
+
+        function updateDirection() {
+            const thetaDeg = parseFloat(document.getElementById('angleSlider').value);
+            document.getElementById('angleValue').textContent = `${thetaDeg.toFixed(0)}°`;
+            const theta = thetaDeg * Math.PI / 180;
+            const ux = Math.cos(theta);
+            const uy = Math.sin(theta);
+            const s = surfaces[activeSurface];
+            const grad = { x: s.fx(a, b), y: s.fy(a, b) };
+            const directional = grad.x * ux + grad.y * uy;
+            document.getElementById('directionInfo').innerHTML = `<span class="status-tag">方向导数</span> $D_{\mathbf{u}}f(a,b)=${directional.toFixed(3)}$，方向向量 $\mathbf{u}=(${ux.toFixed(2)}, ${uy.toFixed(2)})$。`;
+            const gradMagnitude = Math.sqrt(grad.x * grad.x + grad.y * grad.y);
+            document.getElementById('gradientInfo').innerHTML = `<span class="status-tag success">梯度</span> $\nabla f(a,b)=(${grad.x.toFixed(3)}, ${grad.y.toFixed(3)})$，$D_{\mathbf{u}}f = \lVert\nabla f\rVert \cos(\theta-\theta_\nabla)$。`;
+            drawDirectionCanvas(ux, uy, grad, directional, gradMagnitude);
+            renderMath();
+        }
+
+        function drawDirectionCanvas(ux = 1, uy = 0, grad = {x:1, y:0}, directional = 0, gradMag = 1) {
+            const ctx = resizeCanvas(dirCanvas);
+            const width = dirCanvas.clientWidth - 20;
+            const height = dirCanvas.clientHeight - 20;
+            drawAxis(ctx, width, height);
+            ctx.save();
+            ctx.translate(50, height - 40);
+            ctx.scale(1, -1);
+            const scale = 120;
+            ctx.strokeStyle = '#6366f1';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.moveTo(0, 0);
+            ctx.lineTo(ux * scale, uy * scale);
+            ctx.stroke();
+            ctx.fillStyle = '#6366f1';
+            ctx.beginPath();
+            ctx.arc(ux * scale, uy * scale, 6, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.strokeStyle = '#10b981';
+            ctx.beginPath();
+            ctx.moveTo(0, 0);
+            ctx.lineTo(grad.x * 60, grad.y * 60);
+            ctx.stroke();
+            ctx.fillStyle = '#10b981';
+            ctx.beginPath();
+            ctx.arc(grad.x * 60, grad.y * 60, 6, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.strokeStyle = '#f59e0b';
+            ctx.beginPath();
+            ctx.moveTo(ux * scale, uy * scale);
+            ctx.lineTo(grad.x * 60, grad.y * 60);
+            ctx.stroke();
+            ctx.restore();
+        }
+
+        window.addEventListener('resize', () => {
+            drawSurface();
+            drawDirectionCanvas();
+        });
+
+        updateSurface();
+    </script>
+</body>
+</html>

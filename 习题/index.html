@@ -3,24 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>高等数学习题集 - 星空之旅</title>
+    <title>高等数学习题集</title>
     <style>
-        /* 极简性能优化设计 */
+        /* 共享样式变量 */
         :root {
-            --primary: #4f46e5;
-            --primary-dark: #4338ca;
-            --primary-light: #6366f1;
-            --secondary: #7c3aed;
-            --accent: #06ffa5;
-            --accent-warm: #ff6b6b;
-            --dark: #0f172a;
-            --dark-surface: #1e293b;
-            --light: #ffffff;
-            --border: #334155;
-            --text: #e2e8f0;
-            --text-muted: #94a3b8;
-            --glass: rgba(255, 255, 255, 0.1);
-            --glass-border: rgba(255, 255, 255, 0.2);
+            /* 秋天主题色彩 */
+            --autumn-primary: #d97706;
+            --autumn-primary-dark: #b45309;
+            --autumn-accent: #16a34a;
+            --autumn-background: #fffbeb;
+            --autumn-surface: #ffffff;
+            --autumn-text-primary: #451a03;
+            --autumn-text-secondary: #78350f;
+            --autumn-glass-bg: rgba(255, 251, 235, 0.6);
+            --autumn-glass-border: rgba(180, 83, 9, 0.15);
+            
+            /* 星空主题色彩 */
+            --space-primary: #4f46e5;
+            --space-primary-dark: #4338ca;
+            --space-accent: #06ffa5;
+            --space-dark: #0f172a;
+            --space-dark-surface: #1e293b;
+            --space-text: #e2e8f0;
+            --space-text-muted: #94a3b8;
+            --space-glass: rgba(255, 255, 255, 0.1);
+            --space-glass-border: rgba(255, 255, 255, 0.2);
+            
+            /* 阴影 */
             --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.3), 0 2px 4px -2px rgb(0 0 0 / 0.3);
             --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.4), 0 4px 6px -4px rgb(0 0 0 / 0.4);
             --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.5), 0 8px 10px -6px rgb(0 0 0 / 0.5);
@@ -50,28 +59,74 @@
         body {
             font-family: 'WDLubrifont', 'DingLieCiWei', sans-serif;
             font-size: 18px;
-            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #312e81 100%);
             width: 100vw;
             min-height: 100vh;
             margin: 0;
             padding: 0;
             position: relative;
-            color: var(--text);
+            overflow: hidden;
+            transition: background 0.5s ease, color 0.3s ease;
         }
 
-        /* 高性能星空背景 */
-        #starry-sky {
+        /* 秋天主题 body 样式 */
+        body.autumn-theme {
+            background: linear-gradient(120deg, #fffbeb 0%, #fef3c7 50%, #fde68a 100%);
+            color: var(--autumn-text-primary);
+        }
+
+        /* 星空主题 body 样式 */
+        body.space-theme {
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #312e81 100%);
+            color: var(--space-text);
+        }
+
+        /* 主题切换按钮 */
+        .theme-switch-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 10000;
+            padding: 12px 24px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 30px;
+            color: white;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        body.autumn-theme .theme-switch-btn {
+            background: rgba(217, 119, 6, 0.1);
+            border-color: rgba(217, 119, 6, 0.3);
+            color: var(--autumn-text-primary);
+        }
+
+        .theme-switch-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+        }
+
+        body.autumn-theme .theme-switch-btn:hover {
+            background: rgba(217, 119, 6, 0.2);
+            box-shadow: 0 0 20px rgba(217, 119, 6, 0.3);
+        }
+
+        /* 背景画布 */
+        #bg-canvas {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             z-index: -1;
-            background: radial-gradient(ellipse at center, #1e1b4b 0%, #0f172a 100%);
         }
 
-        /* 粒子场响应背景动效 */
-        #particleFieldCanvas {
+        #particle-canvas {
             position: fixed;
             top: 0;
             left: 0;
@@ -80,6 +135,11 @@
             z-index: 1;
             pointer-events: none;
             opacity: 0.3;
+            display: none;
+        }
+
+        body.space-theme #particle-canvas {
+            display: block;
         }
 
         /* 主内容区 */
@@ -96,12 +156,10 @@
             display: flex;
             align-items: flex-start;
             justify-content: center;
-            color: white;
-            padding: 40px 20px 40px 20px;
+            padding: 40px 20px;
             box-sizing: border-box;
             overflow-y: auto;
             position: relative;
-            background: transparent;
         }
 
         .welcome-content {
@@ -113,21 +171,18 @@
             align-items: center;
             position: relative;
             z-index: 2;
-            background: transparent;
-            padding: 10px 40px 20px 40px;
-            min-height: auto;
+            padding: 10px 40px 20px;
         }
 
         .welcome-title-section {
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 20px;
+            gap: 10px;
             width: 100%;
-            margin-bottom: 15px;
-            position: relative;
-            z-index: 3;
-            flex-wrap: wrap;
+            margin-bottom: 25px;
+            text-align: center;
         }
 
         .welcome-items-grid {
@@ -136,10 +191,6 @@
             gap: 25px;
             width: 100%;
             max-width: 1200px;
-            position: relative;
-            z-index: 3;
-            justify-content: center;
-            align-items: stretch;
         }
 
         .welcome-title {
@@ -148,10 +199,21 @@
             font-weight: 400;
             margin: 0;
             letter-spacing: 3px;
-            background: linear-gradient(135deg, var(--accent), #67e8f9, var(--accent-warm));
+            line-height: 1.2;
+            transition: all 0.3s ease;
+        }
+
+        body.autumn-theme .welcome-title {
+            background: linear-gradient(135deg, var(--autumn-primary), var(--autumn-accent));
             -webkit-background-clip: text;
             background-clip: text;
-            line-height: 1.1;
+            -webkit-text-fill-color: transparent;
+        }
+
+        body.space-theme .welcome-title {
+            background: linear-gradient(135deg, var(--space-accent), #67e8f9, #ff6b6b);
+            -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent;
             filter: drop-shadow(0 0 10px rgba(6, 255, 165, 0.3));
         }
@@ -159,12 +221,19 @@
         .welcome-subtitle {
             font-family: 'WDLubrifont', 'DingLieCiWei', sans-serif;
             font-size: 18px;
-            opacity: 0.95;
             margin: 0;
             line-height: 1.6;
             font-weight: 400;
+            transition: color 0.3s ease;
+        }
+
+        body.autumn-theme .welcome-subtitle {
+            color: var(--autumn-text-secondary);
+        }
+
+        body.space-theme .welcome-subtitle {
+            color: var(--space-text);
             text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-            color: var(--text);
         }
 
         .welcome-item {
@@ -172,17 +241,31 @@
             align-items: center;
             gap: 18px;
             padding: 20px 25px;
-            background: transparent;
+            border-radius: 20px;
             transition: all 0.3s ease;
-            flex-shrink: 0;
             cursor: pointer;
             position: relative;
-            will-change: transform;
-            min-height: 80px;
-            height: auto;
         }
 
-        .welcome-item:hover {
+        body.autumn-theme .welcome-item {
+            background: var(--autumn-glass-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--autumn-glass-border);
+            box-shadow: var(--shadow-lg);
+        }
+
+        body.autumn-theme .welcome-item:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: var(--shadow-xl);
+            border-color: rgba(120, 53, 15, 0.2);
+            background: rgba(255, 255, 255, 0.8);
+        }
+
+        body.space-theme .welcome-item {
+            background: transparent;
+        }
+
+        body.space-theme .welcome-item:hover {
             transform: translateX(8px) translateY(-3px);
         }
 
@@ -193,9 +276,15 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: transform 0.3s ease;
-            color: var(--accent);
-            background: transparent;
+            transition: transform 0.3s ease, color 0.3s ease;
+        }
+
+        body.autumn-theme .welcome-item-icon {
+            color: var(--autumn-primary);
+        }
+
+        body.space-theme .welcome-item-icon {
+            color: var(--space-accent);
         }
 
         .welcome-item-icon svg {
@@ -207,16 +296,27 @@
             transform: scale(1.1) rotate(5deg);
         }
 
+        body.autumn-theme .welcome-item:hover .welcome-item-icon {
+            color: var(--autumn-primary-dark);
+        }
+
         .welcome-item-text {
             font-family: 'WDLubrifont', 'DingLieCiWei', sans-serif;
             font-size: 24px;
             font-weight: 400;
             letter-spacing: 0.5px;
-            color: var(--text);
             transition: color 0.3s ease;
         }
 
-        .welcome-item:hover .welcome-item-text {
+        body.autumn-theme .welcome-item-text {
+            color: var(--autumn-text-primary);
+        }
+
+        body.space-theme .welcome-item-text {
+            color: var(--space-text);
+        }
+
+        body.space-theme .welcome-item:hover .welcome-item-text {
             color: #ffffff;
         }
 
@@ -226,7 +326,14 @@
             height: 100vh;
             display: none;
             position: relative;
-            background: var(--dark);
+        }
+
+        body.autumn-theme .content-display {
+            background: var(--autumn-background);
+        }
+
+        body.space-theme .content-display {
+            background: var(--space-dark);
         }
 
         .content-display.active {
@@ -237,11 +344,9 @@
             width: 100%;
             height: 100%;
             border: none;
-            background: var(--dark);
         }
 
-
-        /* 简化版右下角导航栏 */
+        /* 导航栏 */
         .floating-nav-sidebar {
             position: fixed;
             right: 25px;
@@ -251,47 +356,65 @@
             align-items: center;
             gap: 15px;
             z-index: 1000;
-            transition: all 0.3s ease;
         }
 
         .nav-btn, .sidebar-action-btn, .nav-collapse-btn {
             width: 55px;
             height: 55px;
             border-radius: 20px;
-            border: 2px solid var(--glass-border);
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 12px;
             font-weight: 700;
-            box-shadow: var(--shadow-lg);
             transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        body.autumn-theme .nav-btn, 
+        body.autumn-theme .sidebar-action-btn, 
+        body.autumn-theme .nav-collapse-btn {
+            background: linear-gradient(135deg, 
+                rgba(255, 251, 235, 0.8) 0%, 
+                rgba(254, 243, 199, 0.7) 100%);
+            border: 2px solid var(--autumn-glass-border);
+            color: var(--autumn-text-secondary);
+            box-shadow: var(--shadow-lg);
+        }
+
+        body.autumn-theme .nav-btn:hover, 
+        body.autumn-theme .sidebar-action-btn:hover, 
+        body.autumn-theme .nav-collapse-btn:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: var(--shadow-xl);
+            border-color: var(--autumn-primary);
+            color: var(--autumn-primary);
+        }
+
+        body.space-theme .nav-btn, 
+        body.space-theme .sidebar-action-btn, 
+        body.space-theme .nav-collapse-btn {
             background: linear-gradient(135deg, 
                 rgba(15, 23, 42, 0.8) 0%, 
                 rgba(30, 41, 59, 0.7) 100%);
-            backdrop-filter: blur(10px);
-            color: var(--text-muted);
-            position: relative;
-            will-change: transform;
+            border: 2px solid var(--space-glass-border);
+            color: var(--space-text-muted);
+            box-shadow: var(--shadow-lg);
         }
 
-        .nav-btn:hover, .sidebar-action-btn:hover, .nav-collapse-btn:hover {
+        body.space-theme .nav-btn:hover, 
+        body.space-theme .sidebar-action-btn:hover, 
+        body.space-theme .nav-collapse-btn:hover {
             transform: translateY(-3px) scale(1.05);
             box-shadow: var(--glow), var(--shadow-xl);
-            border-color: var(--accent);
-            color: var(--accent);
+            border-color: var(--space-accent);
+            color: var(--space-accent);
         }
 
         .nav-btn svg {
             width: 24px;
             height: 24px;
-            transition: all 0.3s ease;
-        }
-
-        .nav-collapse-btn {
-            font-size: 18px;
-            transition: transform 0.3s ease;
         }
 
         .nav-collapse-btn svg {
@@ -299,25 +422,52 @@
             height: 20px;
         }
 
+        .nav-divider {
+            width: 35px;
+            height: 2px;
+            background: linear-gradient(90deg, 
+                transparent, 
+                rgba(255, 255, 255, 0.2), 
+                transparent);
+            margin: 8px 0;
+            border-radius: 1px;
+        }
+
         .keyboard-hint {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
             font-size: 11px;
-            color: var(--text-muted);
-            background: linear-gradient(135deg, 
-                rgba(0, 0, 0, 0.8) 0%, 
-                rgba(30, 41, 59, 0.9) 100%);
             padding: 8px 15px;
             border-radius: 15px;
             white-space: nowrap;
             text-align: center;
-            box-shadow: var(--shadow);
             transition: all 0.3s ease;
             backdrop-filter: blur(10px);
-            border: 1px solid var(--glass-border);
+        }
+
+        body.autumn-theme .keyboard-hint {
+            color: var(--autumn-text-secondary);
+            background: linear-gradient(135deg, 
+                rgba(255, 251, 235, 0.9) 0%, 
+                rgba(254, 243, 199, 0.9) 100%);
+            border: 1px solid var(--autumn-glass-border);
+            box-shadow: var(--shadow);
+        }
+
+        body.space-theme .keyboard-hint {
+            color: var(--space-text-muted);
+            background: linear-gradient(135deg, 
+                rgba(0, 0, 0, 0.8) 0%, 
+                rgba(30, 41, 59, 0.9) 100%);
+            border: 1px solid var(--space-glass-border);
+            box-shadow: var(--shadow);
         }
 
         .keyboard-hint.hidden {
             opacity: 0;
-            transform: translateY(10px);
+            transform: translateX(-50%) translateY(10px);
             pointer-events: none;
         }
 
@@ -331,137 +481,99 @@
             transform: rotate(180deg);
         }
 
-        .nav-divider {
-            width: 35px;
-            height: 2px;
-            background: linear-gradient(90deg, 
-                transparent, 
-                var(--glass-border), 
-                transparent);
-            margin: 8px 0;
-            border-radius: 1px;
-        }
-
-        /* 平板优化 */
-        @media (max-width: 1024px) and (min-width: 769px) {
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .theme-switch-btn {
+                top: 10px;
+                right: 10px;
+                padding: 10px 20px;
+                font-size: 12px;
+            }
+            
+            .welcome-page {
+                padding: 20px 15px;
+            }
+            
             .welcome-content {
-                max-width: 100%;
-                padding: 40px 30px 50px 30px;
+                padding: 5px 15px;
             }
             
             .welcome-items-grid {
-                grid-template-columns: repeat(2, 1fr);
+                grid-template-columns: 1fr;
                 gap: 20px;
-                max-width: 100%;
             }
             
             .welcome-title {
-                font-size: 42px;
-            }
-        }
-
-        /* 移动端优化 */
-        @media (max-width: 768px) {
-            .welcome-page { 
-                padding: 20px 15px 40px 15px; 
-                min-height: 100vh; 
-                overflow-y: auto; 
-            }
-            
-            .welcome-content { 
-                gap: 15px;
-                max-width: 100%; 
-                padding: 5px 25px 20px 25px; 
-                min-height: auto;
-            }
-            
-            .welcome-items-grid { 
-                grid-template-columns: 1fr; 
-                gap: 20px; 
-                max-width: 100%;
-            }
-            
-            .welcome-title { 
-                font-size: 36px; 
-                letter-spacing: 2px; 
-            }
-            
-            .welcome-title-section {
-                flex-direction: column;
-                gap: 10px;
+                font-size: 36px;
             }
             
             .welcome-subtitle {
                 font-size: 16px;
             }
             
-            .welcome-item { 
-                padding: 18px 20px; 
+            .welcome-item-text {
+                font-size: 20px;
             }
             
-            .welcome-item:hover { 
-                transform: translateX(5px) scale(1.02); 
+            .floating-nav-sidebar {
+                right: 15px;
+                bottom: 15px;
+                gap: 12px;
             }
             
-            .welcome-item-text { 
-                font-size: 20px; 
-            }
-            
-            .floating-topbar { 
-                top: 15px; 
-                font-size: 16px; 
-                padding: 15px 30px; 
-                width: 90%; 
-            }
-            
-            .floating-nav-sidebar { 
-                right: 15px; 
-                bottom: 15px; 
-                gap: 12px; 
-            }
-            
-            .nav-btn, .sidebar-action-btn, .nav-collapse-btn { 
-                width: 50px; 
-                height: 50px; 
+            .nav-btn, .sidebar-action-btn, .nav-collapse-btn {
+                width: 50px;
+                height: 50px;
             }
         }
 
         /* 滚动条样式 */
-        * {
-            scroll-behavior: smooth;
-        }
-        
-        /* 美化滚动条 */
         *::-webkit-scrollbar {
             width: 8px;
         }
-        *::-webkit-scrollbar-track {
+        
+        body.autumn-theme *::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.05);
+            border-radius: 4px;
+        }
+        
+        body.autumn-theme *::-webkit-scrollbar-thumb {
+            background: rgba(217, 119, 6, 0.5);
+            border-radius: 4px;
+        }
+        
+        body.autumn-theme *::-webkit-scrollbar-thumb:hover {
+            background: rgba(217, 119, 6, 0.7);
+        }
+        
+        body.space-theme *::-webkit-scrollbar-track {
             background: rgba(255, 255, 255, 0.1);
             border-radius: 4px;
         }
-        *::-webkit-scrollbar-thumb {
+        
+        body.space-theme *::-webkit-scrollbar-thumb {
             background: rgba(6, 255, 165, 0.6);
             border-radius: 4px;
         }
-        *::-webkit-scrollbar-thumb:hover {
+        
+        body.space-theme *::-webkit-scrollbar-thumb:hover {
             background: rgba(6, 255, 165, 0.8);
         }
 
-        /* 简化版加载动画 */
+        /* 加载动画 */
         .welcome-item {
             opacity: 0;
             transform: translateY(20px);
             animation: fadeInUp 0.6s ease-out forwards;
         }
-
+        
         @keyframes fadeInUp {
             to {
-            opacity: 1;
+                opacity: 1;
                 transform: translateY(0);
             }
         }
-
-        /* 为每个项目添加少量延迟 */
+        
         .welcome-item:nth-child(1) { animation-delay: 0.05s; }
         .welcome-item:nth-child(2) { animation-delay: 0.1s; }
         .welcome-item:nth-child(3) { animation-delay: 0.15s; }
@@ -472,22 +584,30 @@
     </style>
 </head>
 
-<body>
-<!-- 优化版星空背景 -->
-<canvas id="starry-sky"></canvas>
+<body class="space-theme">
+<!-- 主题切换按钮 -->
+<button class="theme-switch-btn" onclick="switchTheme()">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+    </svg>
+    <span id="theme-switch-text">切换到金秋主题</span>
+</button>
 
-<!-- 粒子场响应背景动效 -->
-<canvas id="particleFieldCanvas"></canvas>
+<!-- 背景画布 -->
+<canvas id="bg-canvas"></canvas>
+<canvas id="particle-canvas"></canvas>
 
-    <!-- 主内容区 -->
-    <div class="main-content">
-    <!-- 欢迎页 -->
+<!-- 主内容区 -->
+<div class="main-content">
     <div class="welcome-page" id="welcomePage">
         <div class="welcome-content">
             <div class="welcome-title-section">
                 <div class="welcome-title">高等数学习题集</div>
-                <div class="welcome-subtitle">✨ 数学宇宙 - 在无限中寻找真理的足迹 ✨</div>
-                    </div>
+                <div class="welcome-subtitle" id="subtitle">
+                    <span class="autumn-subtitle" style="display: none;">🍂 在知识的森林里，拾起智慧的金叶 🍂</span>
+                    <span class="space-subtitle">✨ 数学宇宙 - 在无限中寻找真理的足迹 ✨</span>
+                </div>
+            </div>
             <div class="welcome-items-grid">
                 <div class="welcome-item" onclick="showChapter(0)">
                     <span class="welcome-item-icon">
@@ -496,7 +616,7 @@
                         </svg>
                     </span>
                     <span class="welcome-item-text">代数与函数</span>
-                    </div>
+                </div>
                 <div class="welcome-item" onclick="showChapter(1)">
                     <span class="welcome-item-icon">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
@@ -512,7 +632,7 @@
                         </svg>
                     </span>
                     <span class="welcome-item-text">导数与微分</span>
-                    </div>
+                </div>
                 <div class="welcome-item" onclick="showChapter(3)">
                     <span class="welcome-item-icon">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
@@ -520,7 +640,7 @@
                         </svg>
                     </span>
                     <span class="welcome-item-text">导数的应用</span>
-                    </div>
+                </div>
                 <div class="welcome-item" onclick="showChapter(4)">
                     <span class="welcome-item-icon">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
@@ -532,42 +652,41 @@
                 <div class="welcome-item" onclick="showChapter(5)">
                     <span class="welcome-item-icon">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/>
+                            <path d="M18 4H6v2l6.5 6L6 18v2h12v-3h-7l5-5-5-5h7z"/>
                         </svg>
                     </span>
                     <span class="welcome-item-text">定积分及其应用</span>
-                    </div>
+                </div>
                 <div class="welcome-item" onclick="showChapter(6)">
                     <span class="welcome-item-icon">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M3 3h18v2H3V3zm0 4h18v2H3V7zm0 4h18v2H3v-2zm0 4h18v2H3v-2zm0 4h18v2H3v-2z"/>
+                            <path d="M3.5 18.5c1.33-2.67 2.67-4.67 4-6 1.33-1.33 2.67-2 4-2s2.67.67 4 2c1.33 1.33 2.67 3.33 4 6"/>
                         </svg>
                     </span>
                     <span class="welcome-item-text">常微分方程</span>
-                    </div>
                 </div>
-                    </div>
-                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- 内容显示区域 -->
     <div class="content-display" id="contentDisplay">
         <iframe class="content-iframe" id="contentFrame"></iframe>
-                    </div>
-                    </div>
-
+    </div>
+</div>
 
 <!-- 键盘提示 -->
 <div class="keyboard-hint hidden" id="keyboardHint">
-    使用 ← → 键导航，Home 键返回目录，End 键回主站
-    </div>
+    使用 ← → 键导航，Home 键返回目录，End 键回主站，T 键切换主题
+</div>
 
-<!-- 优化版右下角导航栏 -->
+<!-- 右下角导航栏 -->
 <div class="floating-nav-sidebar" id="navSidebar">
     <button class="nav-btn" onclick="goPrev()" title="上一章">
         <svg viewBox="0 0 24 24" fill="currentColor">
             <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
         </svg>
-        </button>
+    </button>
     <button class="nav-btn" onclick="goHome()" title="返回目录">
         <svg viewBox="0 0 24 24" fill="currentColor">
             <path d="M4 6h16v2H4V6zm0 5h16v2H4v-2zm0 5h16v2H4v-2z"/>
@@ -593,8 +712,8 @@
             <path d="M0 0h24v24H0V0z" fill="none"/>
             <path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6 1.41 1.41z"/>
         </svg>
-        </button>
-    </div>
+    </button>
+</div>
 
 <script>
     // 章节数据
@@ -611,111 +730,298 @@
     // 全局变量
     let currentUrl = '';
     let currentIndex = -1;
-    let currentOpenChapter = -1;
+    let currentTheme = 'space'; // 默认星空主题
+    let animationId;
+    let particleAnimationId;
 
-    // 优化版星空背景
-    let canvas, ctx, stars = [], animationId;
-
-    function setCanvasSize() {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-    }
-
-    function createStars() {
-        stars = [];
-        // 减少星星数量以提高性能
-        const numStars = Math.min(80, Math.floor((canvas.width * canvas.height) / 20000));
-        for (let i = 0; i < numStars; i++) {
-            stars.push({
-                x: Math.random() * canvas.width,
-                y: Math.random() * canvas.height,
-                radius: Math.random() * 1.2 + 0.3,
-                vx: (Math.random() - 0.5) * 0.05,
-                vy: (Math.random() - 0.5) * 0.05,
-                opacity: Math.random() * 0.8 + 0.2,
-                twinkle: Math.random() * 0.005 + 0.002
-            });
+    // 主题切换功能
+    function switchTheme() {
+        const body = document.body;
+        const switchText = document.getElementById('theme-switch-text');
+        const autumnSubtitle = document.querySelector('.autumn-subtitle');
+        const spaceSubtitle = document.querySelector('.space-subtitle');
+        
+        if (currentTheme === 'autumn') {
+            // 切换到星空主题
+            body.classList.remove('autumn-theme');
+            body.classList.add('space-theme');
+            switchText.textContent = '切换到金秋主题';
+            autumnSubtitle.style.display = 'none';
+            spaceSubtitle.style.display = 'inline';
+            currentTheme = 'space';
+            
+            // 停止树叶动画，启动星空动画
+            if (animationId) {
+                cancelAnimationFrame(animationId);
+            }
+            initSpaceBackground();
+            initParticleField();
+        } else {
+            // 切换到秋天主题
+            body.classList.remove('space-theme');
+            body.classList.add('autumn-theme');
+            switchText.textContent = '切换到星空主题';
+            autumnSubtitle.style.display = 'inline';
+            spaceSubtitle.style.display = 'none';
+            currentTheme = 'autumn';
+            
+            // 停止星空动画，启动树叶动画
+            if (animationId) {
+                cancelAnimationFrame(animationId);
+            }
+            if (particleAnimationId) {
+                cancelAnimationFrame(particleAnimationId);
+            }
+            initAutumnBackground();
         }
     }
 
-    function draw() {
-        // 简化背景渐变
-        const gradient = ctx.createRadialGradient(
-            canvas.width/2, canvas.height/2, 0,
-            canvas.width/2, canvas.height/2, Math.max(canvas.width, canvas.height)/2
-        );
-        gradient.addColorStop(0, 'rgba(30, 27, 75, 0.6)');
-        gradient.addColorStop(1, 'rgba(15, 23, 42, 0.9)');
+    // 秋天主题 - 树叶动画
+    function initAutumnBackground() {
+        const canvas = document.getElementById('bg-canvas');
+        const ctx = canvas.getContext('2d');
         
-        ctx.fillStyle = gradient;
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        let leaves = [];
+        const leafCount = 50;
+        const mouse = { x: undefined, y: undefined, radius: 120 };
         
-        // 绘制星星（移除复杂光晕效果）
-        stars.forEach(star => {
-            ctx.beginPath();
-            ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
-            ctx.fillStyle = `rgba(255, 255, 255, ${star.opacity})`;
-            ctx.fill();
+        // 创建叶子SVG路径
+        const leafPath = new Path2D("M25.2,2.8C25.2,2.8,18,1.9,13.4,6.5s-5,11.3-5,11.3s-0.2,0.5,0.2,0.7s0.7-0.2,0.7-0.2S12,15.1,15.3,12s6.6-5.2,6.6-5.2s0.4-0.4,0.2-0.8S21.3,5.6,21.3,5.6s-3.5,3.9-6,6.9c-0.6,0.7,0.3,1.6,0.3,1.6s2.9-3.2,6.9-6.3c0,0,0,0,0,0c0.1,0,0.2-0.1,0.2-0.2c0,0,0,0,0,0c0-0.1,0-0.1-0.1-0.2c0,0-0.1,0-0.1,0c-0.5-0.1-1.8-0.2-3.2-0.3c0,0,0,0,0,0c-0.1,0-0.1,0-0.2-0.1c0,0,0-0.1-0.1-0.1c0,0,0,0,0,0c-1.3-1.2-2.2-2.7-2.7-4.3c-0.1-0.2,0.1-0.4,0.1-0.4s3.3,0.4,6.2-2.3C24.4,3.1,24.8,2.9,25.2,2.8z");
+        
+        window.addEventListener('mousemove', (event) => {
+            mouse.x = event.x;
+            mouse.y = event.y;
         });
-    }
-
-    function update() {
-        // 简化星星更新逻辑
-        stars.forEach(star => {
-            star.x += star.vx;
-            star.y += star.vy;
-            
-            // 简化闪烁效果
-            star.opacity += star.twinkle * (Math.random() - 0.5);
-            star.opacity = Math.max(0.2, Math.min(1, star.opacity));
-            
-            // 边界检查
-            if (star.x < 0) star.x = canvas.width;
-            if (star.x > canvas.width) star.x = 0;
-            if (star.y < 0) star.y = canvas.height;
-            if (star.y > canvas.height) star.y = 0;
+        
+        window.addEventListener('mouseout', () => {
+            mouse.x = undefined;
+            mouse.y = undefined;
         });
-    }
-
-    function tick() {
-        update();
-        draw();
-        animationId = requestAnimationFrame(tick);
-    }
-
-    function loadContent(url, title) {
-        const frame = document.getElementById('contentFrame');
-        const welcome = document.getElementById('welcomePage');
-        const contentDisplay = document.getElementById('contentDisplay');
-        const topbar = document.getElementById('topbar');
-        const keyboardHint = document.getElementById('keyboardHint');
-
-        frame.src = url;
-        contentDisplay.classList.add('active');
-        welcome.style.display = 'none';
-        keyboardHint.classList.remove('hidden');
-
-        currentUrl = url;
-        const displayTitle = title || getChineseTitle(url);
-        topbar.textContent = displayTitle;
-
-        currentIndex = Object.values(chapters).findIndex(ch => ch.url === url);
-    }
-
-    function getChineseTitle(url) {
-        for (let chapter of Object.values(chapters)) {
-            if (chapter.url === url) {
-                return chapter.title;
+        
+        function setCanvasSize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        
+        class Leaf {
+            constructor() {
+                this.size = Math.random() * 15 + 10;
+                const colorPalettes = [
+                    { h: 35, s: 85, l: 60 },
+                    { h: 45, s: 90, l: 55 },
+                    { h: 20, s: 80, l: 50 },
+                ];
+                const color = colorPalettes[Math.floor(Math.random() * colorPalettes.length)];
+                this.hue = color.h + Math.random() * 10 - 5;
+                this.saturation = color.s;
+                this.lightness = color.l;
+                this.opacity = Math.random() * 0.7 + 0.3;
+                
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height - canvas.height;
+                
+                this.vx = Math.random() * 1 - 0.5;
+                this.vy = Math.random() * 0.8 + 0.4;
+                this.density = Math.random() * 5 + 2;
+                
+                this.angle = Math.random() * Math.PI * 2;
+                this.rotationSpeed = (Math.random() - 0.5) * 0.02;
+                this.sway = Math.random() * Math.PI;
+            }
+            
+            draw() {
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                ctx.rotate(this.angle);
+                ctx.scale(this.size / 25, this.size / 25);
+                
+                ctx.fillStyle = `hsla(${this.hue}, ${this.saturation}%, ${this.lightness}%, ${this.opacity})`;
+                ctx.fill(leafPath);
+                
+                ctx.restore();
+            }
+            
+            update() {
+                this.angle += this.rotationSpeed;
+                this.sway += 0.03;
+                
+                this.y += this.vy;
+                this.x += this.vx + Math.sin(this.sway) * 0.5;
+                
+                if (mouse.x !== undefined && mouse.y !== undefined) {
+                    const dx = this.x - mouse.x;
+                    const dy = this.y - mouse.y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    if (distance < mouse.radius + this.size) {
+                        const forceDirectionX = dx / distance;
+                        const forceDirectionY = dy / distance;
+                        const force = (mouse.radius - distance) / mouse.radius;
+                        this.x += forceDirectionX * force * this.density;
+                        this.y += forceDirectionY * force * this.density;
+                    }
+                }
+                
+                if (this.y > canvas.height + this.size) {
+                    this.y = -this.size;
+                    this.x = Math.random() * canvas.width;
+                }
+                if (this.x > canvas.width + this.size) this.x = -this.size;
+                if (this.x < -this.size) this.x = canvas.width + this.size;
             }
         }
-        return url;
+        
+        function initLeaves() {
+            leaves = [];
+            for (let i = 0; i < leafCount; i++) {
+                leaves.push(new Leaf());
+            }
+        }
+        
+        function animateLeaves() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            leaves.forEach(leaf => {
+                leaf.update();
+                leaf.draw();
+            });
+            animationId = requestAnimationFrame(animateLeaves);
+        }
+        
+        setCanvasSize();
+        initLeaves();
+        animateLeaves();
+        
+        window.addEventListener('resize', () => {
+            setCanvasSize();
+            initLeaves();
+        });
     }
 
+    // 星空主题 - 星星动画
+    function initSpaceBackground() {
+        const canvas = document.getElementById('bg-canvas');
+        const ctx = canvas.getContext('2d');
+        let stars = [];
+        
+        function setCanvasSize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        
+        function createStars() {
+            stars = [];
+            const numStars = Math.min(80, Math.floor((canvas.width * canvas.height) / 20000));
+            for (let i = 0; i < numStars; i++) {
+                stars.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    radius: Math.random() * 1.2 + 0.3,
+                    vx: (Math.random() - 0.5) * 0.05,
+                    vy: (Math.random() - 0.5) * 0.05,
+                    opacity: Math.random() * 0.8 + 0.2,
+                    twinkle: Math.random() * 0.005 + 0.002
+                });
+            }
+        }
+        
+        function draw() {
+            const gradient = ctx.createRadialGradient(
+                canvas.width/2, canvas.height/2, 0,
+                canvas.width/2, canvas.height/2, Math.max(canvas.width, canvas.height)/2
+            );
+            gradient.addColorStop(0, 'rgba(30, 27, 75, 0.6)');
+            gradient.addColorStop(1, 'rgba(15, 23, 42, 0.9)');
+            
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            stars.forEach(star => {
+                ctx.beginPath();
+                ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(255, 255, 255, ${star.opacity})`;
+                ctx.fill();
+            });
+        }
+        
+        function update() {
+            stars.forEach(star => {
+                star.x += star.vx;
+                star.y += star.vy;
+                
+                star.opacity += star.twinkle * (Math.random() - 0.5);
+                star.opacity = Math.max(0.2, Math.min(1, star.opacity));
+                
+                if (star.x < 0) star.x = canvas.width;
+                if (star.x > canvas.width) star.x = 0;
+                if (star.y < 0) star.y = canvas.height;
+                if (star.y > canvas.height) star.y = 0;
+            });
+        }
+        
+        function tick() {
+            update();
+            draw();
+            animationId = requestAnimationFrame(tick);
+        }
+        
+        setCanvasSize();
+        createStars();
+        tick();
+        
+        window.addEventListener('resize', () => {
+            setCanvasSize();
+            createStars();
+        });
+    }
+
+    // 星空主题 - 粒子场动画（简化版）
+    function initParticleField() {
+        const canvas = document.getElementById('particle-canvas');
+        const ctx = canvas.getContext('2d');
+        
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        
+        let particles = [];
+        const particleCount = 50;
+        
+        for (let i = 0; i < particleCount; i++) {
+            particles.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                vx: (Math.random() - 0.5) * 0.5,
+                vy: (Math.random() - 0.5) * 0.5,
+                radius: Math.random() * 2 + 1
+            });
+        }
+        
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            particles.forEach(p => {
+                p.x += p.vx;
+                p.y += p.vy;
+                
+                if (p.x < 0) p.x = canvas.width;
+                if (p.x > canvas.width) p.x = 0;
+                if (p.y < 0) p.y = canvas.height;
+                if (p.y > canvas.height) p.y = 0;
+                
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                ctx.fillStyle = 'rgba(6, 255, 165, 0.5)';
+                ctx.fill();
+            });
+            
+            particleAnimationId = requestAnimationFrame(animateParticles);
+        }
+        
+        animateParticles();
+    }
+
+    // 导航功能
     function showChapter(categoryId) {
         const chapter = chapters[categoryId];
         if (!chapter) return;
-
-        // 目录点击：整页跳转
         window.location.href = chapter.url;
     }
 
@@ -761,11 +1067,29 @@
         navSidebar.classList.toggle('collapsed');
     }
 
+    function loadContent(url, title) {
+        const frame = document.getElementById('contentFrame');
+        const welcome = document.getElementById('welcomePage');
+        const contentDisplay = document.getElementById('contentDisplay');
+        const keyboardHint = document.getElementById('keyboardHint');
+        
+        frame.src = url;
+        contentDisplay.classList.add('active');
+        welcome.style.display = 'none';
+        keyboardHint.classList.remove('hidden');
+        
+        currentUrl = url;
+        currentIndex = Object.values(chapters).findIndex(ch => ch.url === url);
+    }
+
+    // 键盘导航
     function initKeyboardNavigation() {
         document.addEventListener('keydown', function(event) {
             const activeElement = document.activeElement;
-            if (activeElement && (activeElement.tagName === 'INPUT' || activeElement.tagName === 'TEXTAREA' || activeElement.isContentEditable)) return;
-
+            if (activeElement && (activeElement.tagName === 'INPUT' || 
+                activeElement.tagName === 'TEXTAREA' || 
+                activeElement.isContentEditable)) return;
+            
             switch(event.key) {
                 case 'ArrowLeft':
                     event.preventDefault();
@@ -783,185 +1107,21 @@
                     event.preventDefault();
                     goMainSite();
                     break;
+                case 't':
+                case 'T':
+                    event.preventDefault();
+                    switchTheme();
+                    break;
             }
         });
     }
 
     // 初始化
     document.addEventListener('DOMContentLoaded', function() {
-        canvas = document.getElementById('starry-sky');
-        ctx = canvas.getContext('2d');
-        
-        setCanvasSize();
-        createStars();
-        tick();
-        
+        initSpaceBackground(); // 默认启动星空主题
+        initParticleField(); // 启动粒子场动画
         initKeyboardNavigation();
-        
-        // 窗口大小改变时重新设置画布
-        window.addEventListener('resize', function() {
-            setCanvasSize();
-            createStars();
-        });
     });
-
-    // --- 粒子场响应动画 ---
-    const particleCanvas = document.getElementById('particleFieldCanvas');
-    const particleCtx = particleCanvas.getContext('2d');
-
-    let particleWidth, particleHeight, particleTime = 0;
-    let particleParticles = [];
-    let particleFields = [];
-
-    // --- 配置参数 ---
-    const PARTICLE_COUNT = 8000; // 粒子数量（增加以更激烈）
-    const PARTICLE_COLOR_INACTIVE = 'rgba(200, 220, 255, 0.25)';
-    const ACTIVE_LINE_LENGTH = 5; // 激活状态下力场线的长度（增加）
-    const FIELD_COLORS = [
-        { r: 6, g: 255, b: 165 },   // 青色（与主题协调）
-        { r: 124, g: 58, b: 237 }, // 紫色（与主题协调）
-        { r: 79, g: 70, b: 229 }   // 蓝色（与主题协调）
-    ];
-
-    // 定义随时间演变的隐形力场函数
-    const fieldFunction = (x, t) => {
-        const freq1 = 2 * Math.PI / (particleWidth * 0.6);  // 增加频率
-        const freq2 = 2 * Math.PI / (particleWidth * 0.2);  // 增加频率
-        const freq3 = 2 * Math.PI / (particleWidth * 0.4);  // 添加第三个频率
-        const amp1 = particleHeight * 0.25;  // 增加振幅
-        const amp2 = particleHeight * 0.15;  // 增加振幅
-        const amp3 = particleHeight * 0.1;   // 添加第三个振幅
-        const y_sin = Math.sin(x * freq1 + t * 1.5) * amp1 + 
-                     Math.sin(x * freq2 - t * 1.2) * amp2 + 
-                     Math.sin(x * freq3 + t * 0.8) * amp3;
-        return particleHeight / 2 + y_sin;
-    };
-
-    // 定义力场函数的导数，用于计算切线斜率
-    const fieldFunctionDerivative = (x, t) => {
-        const freq1 = 2 * Math.PI / (particleWidth * 0.6);
-        const freq2 = 2 * Math.PI / (particleWidth * 0.2);
-        const freq3 = 2 * Math.PI / (particleWidth * 0.4);
-        const amp1 = particleHeight * 0.25;
-        const amp2 = particleHeight * 0.15;
-        const amp3 = particleHeight * 0.1;
-        return Math.cos(x * freq1 + t * 1.5) * freq1 * amp1 + 
-               Math.cos(x * freq2 - t * 1.2) * freq2 * amp2 + 
-               Math.cos(x * freq3 + t * 0.8) * freq3 * amp3;
-    };
-    
-    function setupParticleField() {
-        particleWidth = particleCanvas.width = window.innerWidth;
-        particleHeight = particleCanvas.height = window.innerHeight;
-        
-        particleParticles = [];
-        for (let i = 0; i < PARTICLE_COUNT; i++) {
-            particleParticles.push({
-                x: Math.random() * particleWidth,
-                y: Math.random() * particleHeight,
-                vx: (Math.random() - 0.5) * 0.6, // 增加速度
-                vy: (Math.random() - 0.5) * 0.6
-            });
-        }
-
-        particleFields = [];
-        for (let i = 0; i < FIELD_COLORS.length; i++) {
-            particleFields.push({
-                x: Math.random() * particleWidth,
-                width: Math.random() * 300 + 200, // 增加宽度 200-500
-                speed: (Math.random() - 0.5) * 4 + 1, // 增加速度
-                color: FIELD_COLORS[i]
-            });
-        }
-    }
-
-    function updateParticleField() {
-        particleTime += 0.008; // 增加时间步长，让动画更快
-
-        // 用半透明的黑色矩形创建拖影效果
-        particleCtx.fillStyle = 'rgba(2, 4, 16, 0.1)';
-        particleCtx.fillRect(0, 0, particleWidth, particleHeight);
-
-        // 更新所有力场的位置
-        particleFields.forEach(field => {
-            field.x += field.speed;
-            if (field.speed > 0 && field.x > particleWidth + field.width) {
-                field.x = -field.width;
-            } else if (field.speed < 0 && field.x < -field.width) {
-                field.x = particleWidth + field.width;
-            }
-        });
-
-        particleCtx.lineWidth = 1.5;
-
-        // 遍历并绘制所有粒子
-        for (const p of particleParticles) {
-            // 更新粒子位置，使其"舞动"
-            p.x += p.vx;
-            p.y += p.vy;
-
-            // 边界环绕
-            if (p.x < 0) p.x = particleWidth;
-            if (p.x > particleWidth) p.x = 0;
-            if (p.y < 0) p.y = particleHeight;
-            if (p.y > particleHeight) p.y = 0;
-
-            let totalInfluence = { r: 0, g: 0, b: 0, a: 0 };
-            let strongestIntensity = 0;
-            let finalAngle = 0;
-
-            // 检查粒子与所有力场的相互作用
-            particleFields.forEach(field => {
-                const dist = Math.abs(p.x - field.x);
-                if (dist < field.width / 2) {
-                    const intensity = (1 - (dist / (field.width / 2))) ** 2; // 用平方让中心更亮
-
-                    // 累加颜色影响（加法混合）
-                    totalInfluence.r += field.color.r * intensity;
-                    totalInfluence.g += field.color.g * intensity;
-                    totalInfluence.b += field.color.b * intensity;
-                    totalInfluence.a += intensity;
-
-                    // 最强的场决定粒子的排列方向
-                    if (intensity > strongestIntensity) {
-                        strongestIntensity = intensity;
-                        const slope = fieldFunctionDerivative(p.x, particleTime);
-                        finalAngle = Math.atan(-1 / slope);
-                    }
-                }
-            });
-
-            if (strongestIntensity > 0.005) { // 降低阈值，让更多粒子被激活
-                // --- 粒子被激活 ---
-                const r = Math.min(255, totalInfluence.r);
-                const g = Math.min(255, totalInfluence.g);
-                const b = Math.min(255, totalInfluence.b);
-                const a = Math.min(1.0, totalInfluence.a); // 增加透明度
-
-                const dx = Math.cos(finalAngle) * ACTIVE_LINE_LENGTH * strongestIntensity;
-                const dy = Math.sin(finalAngle) * ACTIVE_LINE_LENGTH * strongestIntensity;
-                
-                particleCtx.strokeStyle = `rgba(${r | 0}, ${g | 0}, ${b | 0}, ${a})`;
-                particleCtx.beginPath();
-                particleCtx.moveTo(p.x - dx, p.y - dy);
-                particleCtx.lineTo(p.x + dx, p.y + dy);
-                particleCtx.stroke();
-
-            } else {
-                // --- 粒子未被激活 ---
-                particleCtx.fillStyle = PARTICLE_COLOR_INACTIVE;
-                particleCtx.fillRect(p.x, p.y, 1, 1);
-            }
-        }
-        
-        requestAnimationFrame(updateParticleField);
-    }
-
-    // 初始化粒子场动画
-    window.addEventListener('resize', setupParticleField);
-    setupParticleField();
-    requestAnimationFrame(updateParticleField);
 </script>
 </body>
-
 </html>

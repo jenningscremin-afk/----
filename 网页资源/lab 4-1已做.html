@@ -1,53 +1,33 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>中值定理虚拟实验室</title>
-    <script>
-        window.MathJax = {
-            tex: {
-                inlineMath: [['$', '$'], ['\\(', '\\)']],
-                displayMath: [['$$', '$$'], ['\\[', '\\]']],
-                processEscapes: true
-            },
-            startup: {
-                pageReady: () => {
-                    return MathJax.startup.defaultPageReady().then(() => {
-                        console.log('MathJax加载完成');
-                    });
-                }
-            },
-            options: {
-                skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
-            }
-        };
-    </script>
     <script defer src="../common-assets/js/mathjax-3.2.2-tex-svg.min.js"></script>
     <style>
-        :root {
-            --primary: #4f46e5;
-            --primary-dark: #3730a3;
-            --primary-light: #6366f1;
-            --success: #10b981;
-            --warning: #f59e0b;
-            --danger: #ef4444;
-            --info: #3b82f6;
-            --gray-50: #f9fafb;
-            --gray-100: #f3f4f6;
-            --gray-200: #e5e7eb;
-            --gray-300: #d1d5db;
-            --gray-500: #6b7280;
-            --gray-600: #4b5563;
-            --gray-700: #1f2937;
-            --white: #ffffff;
-            --border: #e5e7eb;
-            --h1-size: 22px;
-            --h3-size: 18px;
-            --text-size: 16px;
-            --formula-size: 20px;
-        }
-
+    :root {
+        --primary: #4f46e5;
+        --primary-dark: #3730a3;
+        --primary-light: #6366f1;
+        --success: #10b981;
+        --warning: #f59e0b;
+        --danger: #ef4444;
+        --gray-50: #f9fafb;
+        --gray-100: #f3f4f6;
+        --gray-200: #e5e7eb;
+        --gray-300: #d1d5db;
+        --gray-500: #6b7280;
+        --gray-600: #4b5563;
+        --gray-700: #1f2937;
+        --white: #ffffff;
+        --light: #ffffff;
+        --border: #e5e7eb;
+        --h1-size: 22px;
+        --h3-size: 18px;
+        --text-size: 16px;
+        --formula-size: 20px;
+    }
         * {
             margin: 0;
             padding: 0;
@@ -58,130 +38,101 @@
             width: 0;
             background: transparent;
         }
-
+        
         * {
             scrollbar-width: none;
             -ms-overflow-style: none;
         }
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
-            font-size: var(--text-size);
-            line-height: 1.5;
-            background: var(--gray-50);
-            color: var(--gray-700);
-        }
+            body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
+        font-size: var(--text-size);
+        line-height: 1.5;
+        background: var(--gray-50);
+        color: var(--gray-700);
+    }
 
-        .container {
-            width: 100%;
-            max-width: 1400px;
-            height: min(100vh, 700px);
-            margin: 0 auto;
-            display: flex;
-            flex-direction: column;
-            background: var(--white);
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
-            overflow: hidden;
-        }
+            .container {
+        width: 100%;
+        max-width: 1400px;
+        height: min(100vh, 700px);
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        background: var(--white);
+    }
 
-        .header {
-            height: 40px;
-            background: var(--primary);
-            color: var(--white);
-            display: flex;
-            align-items: center;
-            padding: 0 20px;
-        }
+            .header {
+        height: 40px;
+        background: var(--primary);
+        color: var(--white);
+        display: flex;
+        align-items: center;
+        padding: 0 20px;
+    }
 
-        .header h1 {
-            font-size: var(--h1-size);
-            font-weight: 600;
-        }
+            .header h1 { font-size: var(--h1-size); margin: 0; }
 
-        .main {
-            flex: 1;
-            display: flex;
-            overflow: hidden;
-        }
+            .main { flex: 1; display: flex; overflow: hidden; }
 
-        .sidebar {
-            width: 120px;
-            background: var(--gray-50);
-            border-right: 1px solid var(--border);
-            padding: 12px 10px;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
+            .sidebar {
+        width: 120px;
+        background: var(--gray-50);
+        border-right: 1px solid var(--border);
+        padding: 10px 8px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
 
-        .nav-btn {
-            width: 100%;
-            padding: 8px;
-            background: transparent;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: var(--text-size);
-            color: var(--gray-600);
-            text-align: left;
-            transition: background 0.2s ease, color 0.2s ease;
-        }
+            .nav-btn {
+        width: 100%;
+        padding: 8px;
+        background: transparent;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: var(--text-size);
+        color: var(--gray-600);
+        text-align: left;
+        transition: background 0.2s ease, color 0.2s ease;
+    }
 
-        .nav-btn:hover {
-            background: var(--gray-100);
-        }
+            .nav-btn:hover { background: var(--gray-100); }
 
-        .nav-btn.active {
-            background: var(--primary);
-            color: var(--white);
-        }
+            .nav-btn.active { background: var(--primary); color: var(--white); }
 
-        .page-content {
-            flex: 1;
-            display: none;
-            padding: 16px;
-            overflow-y: auto;
-            background: var(--white);
-        }
+            .page-content {
+        flex: 1;
+        position: relative;
+        overflow: hidden;
+        display: none;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 18px;
+        padding: 16px;
+    }
 
-        .page-content.active {
-            display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 18px;
-        }
+    .page-content.active {
+        display: grid;
+    }
 
-        .column {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-            min-height: 0;
-            overflow-y: auto;
-            padding-right: 4px;
-        }
+            .column { display: flex; flex-direction: column; gap: 16px; overflow-y: auto; padding-right: 4px; }
 
-        .card {
-            background: var(--white);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 16px;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            box-shadow: 0 8px 20px rgba(15, 23, 42, 0.04);
-        }
+            .card { background: var(--white); border: 1px solid var(--border); border-radius: 12px; padding: 12px; display: flex; flex-direction: column; gap: 10px; }
 
         .card h3 {
-            font-size: var(--h3-size);
+            font-size: 18px;
             color: var(--primary);
+            margin-bottom: 12px;
         }
 
         .info-box {
             background: var(--gray-50);
-            padding: 12px;
-            border-radius: 8px;
-            font-size: var(--text-size);
-            color: var(--gray-600);
+            padding: 10px;
+            border-radius: 4px;
+            margin: 8px 0;
+            font-size: 16px;
+            text-align: center;
         }
 
         .info-box.success {
@@ -204,30 +155,32 @@
 
         .formula-box {
             background: #f0f7ff;
-            border-left: 3px solid var(--primary);
-            border-radius: 8px;
             padding: 12px;
+            border-radius: 4px;
+            border-left: 3px solid var(--primary);
+            margin: 12px 0;
             text-align: center;
-            font-size: var(--formula-size);
+            font-size: 20px;
         }
 
         .steps {
             background: #fff9e6;
-            border-left: 3px solid var(--warning);
-            border-radius: 8px;
             padding: 12px;
+            border-radius: 4px;
+            border-left: 3px solid #f59e0b;
             line-height: 1.8;
+            font-size: 16px;
         }
 
         .input-group {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
+            margin-bottom: 12px;
         }
 
         .input-group label {
-            font-weight: 600;
-            color: var(--gray-600);
+            display: block;
+            margin-bottom: 4px;
+            font-size: 16px;
+            font-weight: 500;
         }
 
         .input-group select,
@@ -235,8 +188,8 @@
             width: 100%;
             padding: 8px;
             border: 1px solid var(--border);
-            border-radius: 6px;
-            font-size: var(--text-size);
+            border-radius: 4px;
+            font-size: 16px;
             background: var(--gray-50);
         }
 
@@ -244,25 +197,23 @@
             display: flex;
             align-items: center;
             gap: 12px;
-            background: var(--gray-50);
             padding: 12px;
-            border-radius: 8px;
+            background: var(--gray-50);
+            border-radius: 4px;
             margin-top: 12px;
         }
 
         .slider-group label {
             min-width: 60px;
-            font-weight: 600;
-            color: var(--gray-600);
+            font-size: 16px;
         }
 
         .slider {
             flex: 1;
+            height: 4px;
             -webkit-appearance: none;
             appearance: none;
-            height: 4px;
             background: var(--gray-200);
-            border-radius: 999px;
             outline: none;
         }
 
@@ -275,17 +226,8 @@
             cursor: pointer;
         }
 
-        .slider::-moz-range-thumb {
-            width: 16px;
-            height: 16px;
-            border-radius: 50%;
-            background: var(--primary);
-            border: none;
-            cursor: pointer;
-        }
-
         .slider-value {
-            min-width: 60px;
+            min-width: 40px;
             text-align: center;
             font-weight: 600;
             color: var(--primary);
@@ -293,9 +235,9 @@
 
         .canvas-container {
             border: 1px solid var(--gray-200);
-            border-radius: 12px;
+            border-radius: 4px;
             background: #fafafa;
-            padding: 16px;
+            padding: 10px;
             min-height: 300px;
             display: flex;
             align-items: center;
@@ -303,24 +245,25 @@
         }
 
         .canvas-container canvas {
+            display: block;
             max-width: 100%;
-            height: auto;
+            max-height: 100%;
         }
 
         .btn {
             padding: 8px 16px;
             background: var(--primary);
-            color: var(--white);
+            color: white;
             border: none;
-            border-radius: 8px;
+            border-radius: 4px;
             cursor: pointer;
-            font-size: var(--text-size);
-            transition: background 0.2s ease, transform 0.2s ease;
+            font-size: 16px;
+            transition: all 0.2s;
+            margin-right: 8px;
         }
 
         .btn:hover {
             background: var(--primary-dark);
-            transform: translateY(-1px);
         }
 
         .btn-success {
@@ -332,54 +275,63 @@
         }
 
         .highlight-box {
-            position: relative;
-            background: linear-gradient(135deg, #eff6ff, #dbeafe);
-            border: 2px solid rgba(59, 130, 246, 0.4);
-            border-radius: 12px;
+            background: linear-gradient(to right, #eff6ff, #dbeafe);
+            border: 2px solid var(--info);
+            border-radius: 8px;
             padding: 16px;
-            color: var(--gray-600);
+            margin: 12px 0;
+            position: relative;
         }
 
         .highlight-box::before {
             content: '💡';
             position: absolute;
-            top: -12px;
+            top: -10px;
             left: 20px;
-            background: var(--white);
+            background: white;
             padding: 0 8px;
             font-size: 20px;
         }
 
         @media (max-width: 768px) {
-            .main {
-                flex-direction: column;
-            }
+                .main { flex: 1; display: flex; overflow: hidden; }
 
-            .sidebar {
-                width: 100%;
-                flex-direction: row;
-                align-items: center;
-                justify-content: center;
-                border-right: none;
-                border-bottom: 1px solid var(--border);
-                gap: 8px;
-                overflow-x: auto;
-            }
+                .sidebar {
+        width: 120px;
+        background: var(--gray-50);
+        border-right: 1px solid var(--border);
+        padding: 10px 8px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
 
-            .nav-btn {
-                min-width: 90px;
-                text-align: center;
-                white-space: nowrap;
-            }
+                .nav-btn {
+        width: 100%;
+        padding: 8px;
+        background: transparent;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: var(--text-size);
+        color: var(--gray-600);
+        text-align: left;
+        transition: background 0.2s ease, color 0.2s ease;
+    }
 
-            .page-content.active {
+            .content.active {
                 grid-template-columns: 1fr;
             }
 
-            .container {
-                height: auto;
-                max-height: none;
-            }
+                .container {
+        width: 100%;
+        max-width: 1400px;
+        height: min(100vh, 700px);
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        background: var(--white);
+    }
         }
     </style>
 
@@ -1511,6 +1463,7 @@
             // 初始化对应页面的内容
             setTimeout(() => {
                 if (section === 'intro') {
+                    drawIntro();
                     resetIntro();
                 } else if (section === 'practice') {
                     initPracticeCanvas();

@@ -3,24 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>数学故事书 - 星空之旅</title>
+    <title>数学故事书</title>
     <style>
-        /* 优化版设计系统 */
+        /* 主题变量 */
         :root {
-            --primary: #4f46e5;
-            --primary-dark: #4338ca;
-            --primary-light: #6366f1;
-            --secondary: #7c3aed;
-            --accent: #06ffa5;
-            --accent-warm: #ff6b6b;
-            --dark: #0f172a;
-            --dark-surface: #1e293b;
-            --light: #ffffff;
-            --border: #334155;
-            --text: #e2e8f0;
-            --text-muted: #94a3b8;
-            --glass: rgba(255, 255, 255, 0.1);
-            --glass-border: rgba(255, 255, 255, 0.2);
+            /* 炉火主题 */
+            --fire-primary: #ea580c;
+            --fire-primary-dark: #c2410c;
+            --fire-accent: #f59e0b;
+            --fire-background-dark: #422006;
+            --fire-surface: #7f1d1d;
+            --fire-text-primary: #fff7ed;
+            --fire-text-secondary: #fed7aa;
+            --fire-glass-bg: rgba(127, 29, 29, 0.2);
+            --fire-glass-border: rgba(253, 186, 116, 0.3);
+            
+            /* 星空主题 */
+            --space-primary: #4f46e5;
+            --space-primary-dark: #4338ca;
+            --space-primary-light: #6366f1;
+            --space-secondary: #7c3aed;
+            --space-accent: #06ffa5;
+            --space-accent-warm: #ff6b6b;
+            --space-dark: #0f172a;
+            --space-dark-surface: #1e293b;
+            --space-light: #ffffff;
+            --space-border: #334155;
+            --space-text: #e2e8f0;
+            --space-text-muted: #94a3b8;
+            --space-glass: rgba(255, 255, 255, 0.1);
+            --space-glass-border: rgba(255, 255, 255, 0.2);
+            
+            /* 共享阴影 */
             --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.3), 0 2px 4px -2px rgb(0 0 0 / 0.3);
             --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.4), 0 4px 6px -4px rgb(0 0 0 / 0.4);
             --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.5), 0 8px 10px -6px rgb(0 0 0 / 0.5);
@@ -43,16 +57,80 @@
         body {
             font-family: 'Iansui-Regular', serif;
             font-size: 18px;
-            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #312e81 100%);
             width: 100vw;
             min-height: 100vh;
             margin: 0;
             padding: 0;
             position: relative;
-            color: var(--text);
+            overflow: hidden;
+            transition: background 0.5s ease, color 0.3s ease;
         }
 
-        /* 简化版星空背景 */
+        /* 炉火主题样式 */
+        body.fire-theme {
+            background: radial-gradient(ellipse at bottom, #7f1d1d 0%, #422006 100%);
+            color: var(--fire-text-primary);
+        }
+
+        /* 星空主题样式 */
+        body.space-theme {
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #312e81 100%);
+            color: var(--space-text);
+        }
+
+        /* 主题切换按钮 */
+        .theme-switch-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 10000;
+            padding: 12px 24px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 30px;
+            color: white;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        body.fire-theme .theme-switch-btn {
+            background: rgba(234, 88, 12, 0.1);
+            border-color: rgba(234, 88, 12, 0.3);
+            color: var(--fire-text-primary);
+        }
+
+        .theme-switch-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+        }
+
+        body.fire-theme .theme-switch-btn:hover {
+            background: rgba(234, 88, 12, 0.2);
+            box-shadow: 0 0 20px rgba(234, 88, 12, 0.3);
+        }
+
+        /* 炉火背景 Canvas - 仅在炉火主题显示 */
+        #fire-canvas {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            display: none;
+        }
+
+        body.fire-theme #fire-canvas {
+            display: block;
+        }
+
+        /* 星空背景 - 仅在星空主题显示 */
         #starry-sky {
             position: fixed;
             top: 0;
@@ -60,9 +138,14 @@
             width: 100%;
             height: 100%;
             z-index: -1;
+            display: none;
         }
 
-        /* 数字碎片背景动效 */
+        body.space-theme #starry-sky {
+            display: block;
+        }
+
+        /* 数字碎片背景动效 - 仅在星空主题显示 */
         #glitchCanvas {
             position: fixed;
             top: 0;
@@ -72,6 +155,11 @@
             z-index: 1;
             pointer-events: none;
             opacity: 0.15;
+            display: none;
+        }
+
+        body.space-theme #glitchCanvas {
+            display: block;
         }
 
         /* 主内容区 */
@@ -79,21 +167,20 @@
             width: 100vw;
             min-height: 100vh;
             position: relative;
+            z-index: 1;
         }
 
-        /* 优化版欢迎页 */
+        /* 欢迎页 */
         .welcome-page {
             width: 100%;
             min-height: 100vh;
             display: flex;
             align-items: flex-start;
             justify-content: center;
-            color: white;
-            padding: 40px 20px 40px 20px;
+            padding: 40px 20px;
             box-sizing: border-box;
             overflow-y: auto;
             position: relative;
-            background: transparent;
         }
 
         .welcome-content {
@@ -105,21 +192,18 @@
             align-items: center;
             position: relative;
             z-index: 2;
-            background: transparent;
-            padding: 10px 40px 20px 40px;
-            min-height: auto;
+            padding: 10px 40px 20px;
         }
 
         .welcome-title-section {
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 20px;
+            gap: 10px;
             width: 100%;
-            margin-bottom: 15px;
-            position: relative;
-            z-index: 3;
-            flex-wrap: wrap;
+            margin-bottom: 25px;
+            text-align: center;
         }
 
         .welcome-items-grid {
@@ -128,10 +212,6 @@
             gap: 15px;
             width: 100%;
             max-width: 1200px;
-            position: relative;
-            z-index: 3;
-            justify-content: center;
-            align-items: stretch;
         }
 
         .welcome-title {
@@ -140,10 +220,22 @@
             font-weight: 400;
             margin: 0;
             letter-spacing: 3px;
-            background: linear-gradient(135deg, var(--accent), #67e8f9, var(--accent-warm));
+            line-height: 1.2;
+            transition: all 0.3s ease;
+        }
+
+        body.fire-theme .welcome-title {
+            background: linear-gradient(135deg, #f59e0b, #fbbf24, #fff7ed);
             -webkit-background-clip: text;
             background-clip: text;
-            line-height: 1.1;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 20px rgba(234, 88, 12, 0.5);
+        }
+
+        body.space-theme .welcome-title {
+            background: linear-gradient(135deg, var(--space-accent), #67e8f9, var(--space-accent-warm));
+            -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent;
             filter: drop-shadow(0 0 10px rgba(6, 255, 165, 0.3));
         }
@@ -151,11 +243,18 @@
         .welcome-subtitle {
             font-family: 'Iansui-Regular', serif;
             font-size: 20px;
-            opacity: 0.95;
             margin: 0;
             line-height: 1.6;
             font-weight: 400;
-            color: var(--text);
+            transition: color 0.3s ease;
+        }
+
+        body.fire-theme .welcome-subtitle {
+            color: var(--fire-text-secondary);
+        }
+
+        body.space-theme .welcome-subtitle {
+            color: var(--space-text);
             text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
         }
 
@@ -164,17 +263,32 @@
             align-items: center;
             gap: 18px;
             padding: 20px 25px;
-            background: transparent;
+            border-radius: 20px;
             transition: all 0.3s ease;
-            flex-shrink: 0;
             cursor: pointer;
             position: relative;
-            will-change: transform;
-            min-height: 80px;
-            height: auto;
         }
 
-        .welcome-item:hover {
+        body.fire-theme .welcome-item {
+            background: var(--fire-glass-bg);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid var(--fire-glass-border);
+            box-shadow: var(--shadow-lg);
+        }
+
+        body.fire-theme .welcome-item:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: var(--shadow-xl);
+            border-color: rgba(253, 230, 138, 0.5);
+            background: rgba(127, 29, 29, 0.5);
+        }
+
+        body.space-theme .welcome-item {
+            background: transparent;
+        }
+
+        body.space-theme .welcome-item:hover {
             transform: translateX(8px) translateY(-3px);
         }
 
@@ -185,9 +299,15 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: transform 0.3s ease;
-            color: var(--accent);
-            background: transparent;
+            transition: transform 0.3s ease, color 0.3s ease;
+        }
+
+        body.fire-theme .welcome-item-icon {
+            color: var(--fire-accent);
+        }
+
+        body.space-theme .welcome-item-icon {
+            color: var(--space-accent);
         }
 
         .welcome-item-icon svg {
@@ -199,16 +319,27 @@
             transform: scale(1.1) rotate(5deg);
         }
 
+        body.fire-theme .welcome-item:hover .welcome-item-icon {
+            color: #fef08a;
+        }
+
         .welcome-item-text {
             font-family: 'Iansui-Regular', serif;
             font-size: 16px;
             font-weight: 400;
             letter-spacing: 0.5px;
-            color: var(--text);
             transition: color 0.3s ease;
         }
 
-        .welcome-item:hover .welcome-item-text {
+        body.fire-theme .welcome-item-text {
+            color: var(--fire-text-primary);
+        }
+
+        body.space-theme .welcome-item-text {
+            color: var(--space-text);
+        }
+
+        body.space-theme .welcome-item:hover .welcome-item-text {
             color: #ffffff;
         }
 
@@ -218,7 +349,14 @@
             height: 100vh;
             display: none;
             position: relative;
-            background: var(--dark);
+        }
+
+        body.fire-theme .content-display {
+            background: var(--fire-surface);
+        }
+
+        body.space-theme .content-display {
+            background: var(--space-dark);
         }
 
         .content-display.active {
@@ -229,11 +367,9 @@
             width: 100%;
             height: 100%;
             border: none;
-            background: var(--dark);
         }
 
-
-        /* 简化版右下角导航栏 */
+        /* 导航栏 */
         .floating-nav-sidebar {
             position: fixed;
             right: 25px;
@@ -243,42 +379,65 @@
             align-items: center;
             gap: 15px;
             z-index: 1000;
-            transition: all 0.3s ease;
         }
 
         .nav-btn, .sidebar-action-btn, .nav-collapse-btn {
             width: 55px;
             height: 55px;
             border-radius: 20px;
-            border: 2px solid var(--glass-border);
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 12px;
             font-weight: 700;
-            box-shadow: var(--shadow-lg);
             transition: all 0.3s ease;
-            background: linear-gradient(135deg, 
-                rgba(15, 23, 42, 0.8) 0%, 
-                rgba(30, 41, 59, 0.7) 100%);
             backdrop-filter: blur(10px);
-            color: var(--text-muted);
             position: relative;
             will-change: transform;
         }
 
-        .nav-btn:hover, .sidebar-action-btn:hover, .nav-collapse-btn:hover {
+        body.fire-theme .nav-btn,
+        body.fire-theme .sidebar-action-btn,
+        body.fire-theme .nav-collapse-btn {
+            background: var(--fire-glass-bg);
+            border: 1px solid var(--fire-glass-border);
+            color: var(--fire-text-secondary);
+            box-shadow: var(--shadow-lg);
+        }
+
+        body.fire-theme .nav-btn:hover,
+        body.fire-theme .sidebar-action-btn:hover,
+        body.fire-theme .nav-collapse-btn:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 0 15px rgba(245, 158, 11, 0.5), var(--shadow-xl);
+            color: var(--fire-accent);
+            border-color: var(--fire-accent);
+        }
+
+        body.space-theme .nav-btn,
+        body.space-theme .sidebar-action-btn,
+        body.space-theme .nav-collapse-btn {
+            background: linear-gradient(135deg, 
+                rgba(15, 23, 42, 0.8) 0%, 
+                rgba(30, 41, 59, 0.7) 100%);
+            border: 2px solid var(--space-glass-border);
+            color: var(--space-text-muted);
+            box-shadow: var(--shadow-lg);
+        }
+
+        body.space-theme .nav-btn:hover,
+        body.space-theme .sidebar-action-btn:hover,
+        body.space-theme .nav-collapse-btn:hover {
             transform: translateY(-3px) scale(1.05);
             box-shadow: var(--glow), var(--shadow-xl);
-            border-color: var(--accent);
-            color: var(--accent);
+            border-color: var(--space-accent);
+            color: var(--space-accent);
         }
 
         .nav-btn svg {
             width: 24px;
             height: 24px;
-            transition: all 0.3s ease;
         }
 
         .nav-collapse-btn {
@@ -293,18 +452,28 @@
 
         .keyboard-hint {
             font-size: 11px;
-            color: var(--text-muted);
-            background: linear-gradient(135deg, 
-                rgba(0, 0, 0, 0.8) 0%, 
-                rgba(30, 41, 59, 0.9) 100%);
             padding: 8px 15px;
             border-radius: 15px;
             white-space: nowrap;
             text-align: center;
-            box-shadow: var(--shadow);
             transition: all 0.3s ease;
             backdrop-filter: blur(10px);
-            border: 1px solid var(--glass-border);
+        }
+
+        body.fire-theme .keyboard-hint {
+            color: var(--fire-text-secondary);
+            background: var(--fire-glass-bg);
+            border: 1px solid var(--fire-glass-border);
+            box-shadow: var(--shadow);
+        }
+
+        body.space-theme .keyboard-hint {
+            color: var(--space-text-muted);
+            background: linear-gradient(135deg, 
+                rgba(0, 0, 0, 0.8) 0%, 
+                rgba(30, 41, 59, 0.9) 100%);
+            border: 1px solid var(--space-glass-border);
+            box-shadow: var(--shadow);
         }
 
         .keyboard-hint.hidden {
@@ -328,13 +497,13 @@
             height: 2px;
             background: linear-gradient(90deg, 
                 transparent, 
-                var(--glass-border), 
+                var(--space-glass-border), 
                 transparent);
             margin: 8px 0;
             border-radius: 1px;
         }
 
-        /* 平板优化 */
+        /* 响应式设计 */
         @media (max-width: 1024px) and (min-width: 769px) {
             .welcome-content {
                 max-width: 100%;
@@ -352,30 +521,36 @@
             }
         }
 
-        /* 移动端优化 */
         @media (max-width: 768px) {
-            .welcome-page { 
-                padding: 20px 15px 40px 15px; 
-                min-height: 100vh; 
-                overflow-y: auto; 
+            .theme-switch-btn {
+                top: 10px;
+                right: 10px;
+                padding: 10px 20px;
+                font-size: 12px;
             }
             
-            .welcome-content { 
-                gap: 15px; 
-                max-width: 100%; 
-                padding: 5px 25px 20px 25px; 
+            .welcome-page {
+                padding: 20px 15px 40px 15px;
+                min-height: 100vh;
+                overflow-y: auto;
+            }
+            
+            .welcome-content {
+                gap: 15px;
+                max-width: 100%;
+                padding: 5px 25px 20px 25px;
                 min-height: auto;
             }
             
-            .welcome-items-grid { 
-                grid-template-columns: 1fr; 
-                gap: 12px; 
+            .welcome-items-grid {
+                grid-template-columns: 1fr;
+                gap: 12px;
                 max-width: 100%;
             }
             
-            .welcome-title { 
-                font-size: 36px; 
-                letter-spacing: 2px; 
+            .welcome-title {
+                font-size: 36px;
+                letter-spacing: 2px;
             }
             
             .welcome-title-section {
@@ -387,34 +562,27 @@
                 font-size: 16px;
             }
             
-            .welcome-item { 
-                padding: 18px 20px; 
+            .welcome-item {
+                padding: 18px 20px;
             }
             
-            .welcome-item:hover { 
-                transform: translateX(5px) scale(1.02); 
+            .welcome-item:hover {
+                transform: translateX(5px) scale(1.02);
             }
             
-            .welcome-item-text { 
-                font-size: 15px; 
+            .welcome-item-text {
+                font-size: 15px;
             }
             
-            .floating-topbar { 
-                top: 15px; 
-                font-size: 16px; 
-                padding: 15px 30px; 
-                width: 90%; 
+            .floating-nav-sidebar {
+                right: 15px;
+                bottom: 15px;
+                gap: 12px;
             }
             
-            .floating-nav-sidebar { 
-                right: 15px; 
-                bottom: 15px; 
-                gap: 12px; 
-            }
-            
-            .nav-btn, .sidebar-action-btn, .nav-collapse-btn { 
-                width: 50px; 
-                height: 50px; 
+            .nav-btn, .sidebar-action-btn, .nav-collapse-btn {
+                width: 50px;
+                height: 50px;
             }
         }
 
@@ -423,37 +591,52 @@
             scroll-behavior: smooth;
         }
         
-        /* 美化滚动条 */
         *::-webkit-scrollbar {
             width: 8px;
         }
-        *::-webkit-scrollbar-track {
+        
+        body.fire-theme *::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 4px;
+        }
+        
+        body.fire-theme *::-webkit-scrollbar-thumb {
+            background: rgba(234, 88, 12, 0.6);
+            border-radius: 4px;
+        }
+        
+        body.fire-theme *::-webkit-scrollbar-thumb:hover {
+            background: rgba(234, 88, 12, 0.8);
+        }
+        
+        body.space-theme *::-webkit-scrollbar-track {
             background: rgba(255, 255, 255, 0.1);
             border-radius: 4px;
         }
-        *::-webkit-scrollbar-thumb {
+        
+        body.space-theme *::-webkit-scrollbar-thumb {
             background: rgba(6, 255, 165, 0.6);
             border-radius: 4px;
         }
-        *::-webkit-scrollbar-thumb:hover {
+        
+        body.space-theme *::-webkit-scrollbar-thumb:hover {
             background: rgba(6, 255, 165, 0.8);
         }
 
-        /* 简化版加载动画 */
+        /* 加载动画 */
         .welcome-item {
             opacity: 0;
             transform: translateY(20px);
             animation: fadeInUp 0.6s ease-out forwards;
         }
-
+        
         @keyframes fadeInUp {
             to {
                 opacity: 1;
                 transform: translateY(0);
             }
         }
-
-        /* 为每个项目添加少量延迟 */
+        
         .welcome-item:nth-child(1) { animation-delay: 0.05s; }
         .welcome-item:nth-child(2) { animation-delay: 0.1s; }
         .welcome-item:nth-child(3) { animation-delay: 0.15s; }
@@ -469,7 +652,19 @@
         .welcome-item:nth-child(13) { animation-delay: 0.65s; }
     </style>
 </head>
-<body>
+
+<body class="space-theme">
+<!-- 主题切换按钮 -->
+<button class="theme-switch-btn" onclick="switchTheme()">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+    </svg>
+    <span id="theme-switch-text">切换到炉火主题</span>
+</button>
+
+<!-- 炉火背景 -->
+<canvas id="fire-canvas"></canvas>
+
 <!-- 优化版星空背景 -->
 <canvas id="starry-sky"></canvas>
 
@@ -478,12 +673,14 @@
 
 <!-- 主内容区 -->
 <div class="main-content">
-    <!-- 欢迎页 -->
     <div class="welcome-page" id="welcomePage">
         <div class="welcome-content">
             <div class="welcome-title-section">
                 <div class="welcome-title">数学故事书</div>
-                <div class="welcome-subtitle">✨ 星空之旅 - 数学的浪漫传说 ✨</div>
+                <div class="welcome-subtitle" id="subtitle">
+                    <span class="fire-subtitle" style="display: none;">🔥 智慧之火 - 聆听数学的古老传说 🔥</span>
+                    <span class="space-subtitle">✨ 星空之旅 - 数学的浪漫传说 ✨</span>
+                </div>
             </div>
             <div class="welcome-items-grid">
                 <div class="welcome-item" onclick="showChapter(0)">
@@ -600,7 +797,6 @@
     </div>
 </div>
 
-
 <!-- 键盘提示 -->
 <div class="keyboard-hint hidden" id="keyboardHint">
     使用 ← → 键导航，Home 键返回目录，End 键回主站
@@ -663,103 +859,45 @@
     let currentUrl = '';
     let currentIndex = -1;
     let currentOpenChapter = -1;
+    let currentTheme = 'space'; // 默认星空主题
 
-    // 优化版星空背景
-    let canvas, ctx, stars = [], animationId;
-
-    function setCanvasSize() {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-    }
-
-    function createStars() {
-        stars = [];
-        // 减少星星数量以提高性能
-        const numStars = Math.min(150, Math.floor((canvas.width * canvas.height) / 12000));
-        for (let i = 0; i < numStars; i++) {
-            stars.push({
-                x: Math.random() * canvas.width,
-                y: Math.random() * canvas.height,
-                radius: Math.random() * 1.5 + 0.5,
-                vx: (Math.random() - 0.5) * 0.2,
-                vy: (Math.random() - 0.5) * 0.2,
-                opacity: Math.random() * 0.8 + 0.2,
-                twinkle: Math.random() * 0.01 + 0.005
-            });
-        }
-    }
-
-    function draw() {
-        // 简化背景渐变
-        const gradient = ctx.createRadialGradient(
-            canvas.width/2, canvas.height/2, 0,
-            canvas.width/2, canvas.height/2, Math.max(canvas.width, canvas.height)/2
-        );
-        gradient.addColorStop(0, 'rgba(30, 27, 75, 0.6)');
-        gradient.addColorStop(1, 'rgba(15, 23, 42, 0.9)');
+    // 主题切换功能
+    function switchTheme() {
+        const body = document.body;
+        const switchText = document.getElementById('theme-switch-text');
+        const fireSubtitle = document.querySelector('.fire-subtitle');
+        const spaceSubtitle = document.querySelector('.space-subtitle');
         
-        ctx.fillStyle = gradient;
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        
-        // 绘制星星（移除复杂光晕效果）
-        stars.forEach(star => {
-            ctx.beginPath();
-            ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
-            ctx.fillStyle = `rgba(255, 255, 255, ${star.opacity})`;
-            ctx.fill();
-        });
-    }
-
-    function update() {
-        // 简化星星更新逻辑
-        stars.forEach(star => {
-            star.x += star.vx;
-            star.y += star.vy;
+        if (currentTheme === 'fire') {
+            // 切换到星空主题
+            body.classList.remove('fire-theme');
+            body.classList.add('space-theme');
+            switchText.textContent = '切换到炉火主题';
+            fireSubtitle.style.display = 'none';
+            spaceSubtitle.style.display = 'inline';
+            currentTheme = 'space';
             
-            // 简化闪烁效果
-            star.opacity += star.twinkle * (Math.random() - 0.5);
-            star.opacity = Math.max(0.2, Math.min(1, star.opacity));
+            // 初始化星空背景动画
+            if (!window.starryInitialized) {
+                initStarryBackground();
+                initGlitchAnimation();
+                window.starryInitialized = true;
+            }
+        } else {
+            // 切换到炉火主题
+            body.classList.remove('space-theme');
+            body.classList.add('fire-theme');
+            switchText.textContent = '切换到星空主题';
+            fireSubtitle.style.display = 'inline';
+            spaceSubtitle.style.display = 'none';
+            currentTheme = 'fire';
             
-            // 边界检查
-            if (star.x < 0) star.x = canvas.width;
-            if (star.x > canvas.width) star.x = 0;
-            if (star.y < 0) star.y = canvas.height;
-            if (star.y > canvas.height) star.y = 0;
-        });
-    }
-
-    function tick() {
-        update();
-        draw();
-        animationId = requestAnimationFrame(tick);
-    }
-
-    function loadContent(url, title) {
-        const frame = document.getElementById('contentFrame');
-        const welcome = document.getElementById('welcomePage');
-        const contentDisplay = document.getElementById('contentDisplay');
-        const topbar = document.getElementById('topbar');
-        const keyboardHint = document.getElementById('keyboardHint');
-
-        frame.src = url;
-        contentDisplay.classList.add('active');
-        welcome.style.display = 'none';
-        keyboardHint.classList.remove('hidden');
-
-        currentUrl = url;
-        const displayTitle = title || getChineseTitle(url);
-        topbar.textContent = displayTitle;
-
-        currentIndex = Object.values(chapters).findIndex(ch => ch.url === url);
-    }
-
-    function getChineseTitle(url) {
-        for (let chapter of Object.values(chapters)) {
-            if (chapter.url === url) {
-                return chapter.title;
+            // 初始化炉火背景动画
+            if (!window.fireInitialized) {
+                initFireAnimation();
+                window.fireInitialized = true;
             }
         }
-        return url;
     }
 
     function showChapter(categoryId) {
@@ -768,6 +906,21 @@
 
         // 目录点击：整页跳转
         window.location.href = chapter.url;
+    }
+
+    function loadContent(url, title) {
+        const frame = document.getElementById('contentFrame');
+        const welcome = document.getElementById('welcomePage');
+        const contentDisplay = document.getElementById('contentDisplay');
+        const keyboardHint = document.getElementById('keyboardHint');
+
+        if (frame) frame.src = url;
+        if (contentDisplay) contentDisplay.classList.add('active');
+        if (welcome) welcome.style.display = 'none';
+        if (keyboardHint) keyboardHint.classList.remove('hidden');
+
+        currentUrl = url;
+        currentIndex = Object.values(chapters).findIndex(ch => ch.url === url);
     }
 
     function goPrev() {
@@ -838,194 +991,384 @@
         });
     }
 
-    // 初始化
-    document.addEventListener('DOMContentLoaded', function() {
-        canvas = document.getElementById('starry-sky');
-        ctx = canvas.getContext('2d');
-        
+    // --- 炉火动画逻辑（完整保留原始代码）---
+    function initFireAnimation() {
+        const canvas = document.getElementById('fire-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        const particleCount = 150;
+        const mouse = { x: undefined, y: undefined, radius: 150 };
+
+        window.addEventListener('mousemove', (event) => { 
+            mouse.x = event.x; 
+            mouse.y = event.y; 
+        });
+        window.addEventListener('mouseout', () => { 
+            mouse.x = undefined; 
+            mouse.y = undefined; 
+        });
+        window.addEventListener('resize', () => { 
+            setCanvasSize(); 
+            initFireParticles(); 
+        });
+
+        function setCanvasSize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+
+        class Particle {
+            constructor(x, y) {
+                this.x = x || Math.random() * canvas.width;
+                this.y = y || canvas.height + Math.random() * 100;
+                this.size = Math.random() * 3 + 1;
+                this.baseSpeedY = (Math.random() * 1 + 1.5) * -1;
+                this.speedY = this.baseSpeedY;
+                this.speedX = Math.random() * 2 - 1;
+                this.life = Math.random() * 150 + 50;
+                this.maxLife = this.life;
+                this.hue = Math.random() * 20 + 25; // Orange-Yellow range
+                this.opacity = 1;
+            }
+
+            update() {
+                this.life -= 1;
+                if (this.life <= 0) {
+                    this.reset();
+                }
+
+                // Mouse interaction
+                if (mouse.x !== undefined && mouse.y !== undefined) {
+                    const dx = this.x - mouse.x;
+                    const dy = this.y - mouse.y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    if (distance < mouse.radius) {
+                        const force = (mouse.radius - distance) / mouse.radius;
+                        this.x += dx / distance * force * 2;
+                        this.y += dy / distance * force * 2;
+                        this.speedY *= 0.95;
+                    }
+                } else {
+                     this.speedY = this.baseSpeedY;
+                }
+
+                this.y += this.speedY;
+                this.x += this.speedX + (Math.sin(this.life * 0.1)); // Wobble
+                
+                this.opacity = (this.life / this.maxLife) * 0.8;
+            }
+
+            draw() {
+                ctx.beginPath();
+                ctx.fillStyle = `hsla(${this.hue}, 100%, 50%, ${this.opacity})`;
+                ctx.shadowColor = `hsla(${this.hue}, 100%, 50%, 1)`;
+                ctx.shadowBlur = this.size * 2;
+                
+                const r = this.size * (this.life / this.maxLife);
+                ctx.moveTo(this.x, this.y - r);
+                ctx.quadraticCurveTo(this.x - r, this.y, this.x, this.y + r);
+                ctx.quadraticCurveTo(this.x + r, this.y, this.x, this.y - r);
+
+                ctx.fill();
+            }
+            
+            reset() {
+                this.x = Math.random() * canvas.width;
+                this.y = canvas.height + Math.random() * 50;
+                this.life = Math.random() * 150 + 50;
+                this.maxLife = this.life;
+                this.opacity = 1;
+            }
+        }
+
+        function initFireParticles() {
+            particles = [];
+            for (let i = 0; i < particleCount; i++) {
+                particles.push(new Particle());
+            }
+        }
+
+        function animateFire() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+            requestAnimationFrame(animateFire);
+        }
+
+        setCanvasSize();
+        initFireParticles();
+        animateFire();
+    }
+
+    // --- 优化版星空背景（完整保留原始代码）---
+    function initStarryBackground() {
+        let canvas = document.getElementById('starry-sky');
+        let ctx = canvas.getContext('2d');
+        let stars = [], animationId;
+
+        function setCanvasSize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+
+        function createStars() {
+            stars = [];
+            // 减少星星数量以提高性能
+            const numStars = Math.min(150, Math.floor((canvas.width * canvas.height) / 12000));
+            for (let i = 0; i < numStars; i++) {
+                stars.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    radius: Math.random() * 1.5 + 0.5,
+                    vx: (Math.random() - 0.5) * 0.2,
+                    vy: (Math.random() - 0.5) * 0.2,
+                    opacity: Math.random() * 0.8 + 0.2,
+                    twinkle: Math.random() * 0.01 + 0.005
+                });
+            }
+        }
+
+        function draw() {
+            // 简化背景渐变
+            const gradient = ctx.createRadialGradient(
+                canvas.width/2, canvas.height/2, 0,
+                canvas.width/2, canvas.height/2, Math.max(canvas.width, canvas.height)/2
+            );
+            gradient.addColorStop(0, 'rgba(30, 27, 75, 0.6)');
+            gradient.addColorStop(1, 'rgba(15, 23, 42, 0.9)');
+            
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // 绘制星星（移除复杂光晕效果）
+            stars.forEach(star => {
+                ctx.beginPath();
+                ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(255, 255, 255, ${star.opacity})`;
+                ctx.fill();
+            });
+        }
+
+        function update() {
+            // 简化星星更新逻辑
+            stars.forEach(star => {
+                star.x += star.vx;
+                star.y += star.vy;
+                
+                // 简化闪烁效果
+                star.opacity += star.twinkle * (Math.random() - 0.5);
+                star.opacity = Math.max(0.2, Math.min(1, star.opacity));
+                
+                // 边界检查
+                if (star.x < 0) star.x = canvas.width;
+                if (star.x > canvas.width) star.x = 0;
+                if (star.y < 0) star.y = canvas.height;
+                if (star.y > canvas.height) star.y = 0;
+            });
+        }
+
+        function tick() {
+            update();
+            draw();
+            animationId = requestAnimationFrame(tick);
+        }
+
         setCanvasSize();
         createStars();
         tick();
-        
-        initKeyboardNavigation();
         
         // 窗口大小改变时重新设置画布
         window.addEventListener('resize', function() {
             setCanvasSize();
             createStars();
         });
-    });
+    }
 
-    // --- 数字碎片动画配置 ---
-    const CONFIG = {
-        PARTICLE_COUNT: 1500,    // 碎片数量（增加以更激烈）
-        PARTICLE_SIZE: 1.5,      // 碎片大小（增大）
-        GLOW_CHANCE: 0.08,       // 发光几率（增加）
-        GLITCH_CHANCE: 0.15,     // 故障效果几率（增加）
-        
-        // 颜色配置 (与主题协调)
-        COLORS: ['#06ffa5', '#7c3aed', '#4f46e5', '#ff6b6b', '#ffffff'],
-        
-        // 动画阶段时长 (帧) - 更快更激烈
-        DURATION_SCATTER: 80,    // 混沌散乱（更快）
-        DURATION_ASSEMBLE: 30,   // 汇集重组（更快）
-        DURATION_HOLD: 20,       // 完美瞬间（更短）
-        DURATION_GLITCH: 40,     // 故障崩溃（更快）
-    };
-
-    const glitchCanvas = document.getElementById('glitchCanvas');
-    const glitchCtx = glitchCanvas.getContext('2d');
-
-    let glitchWidth, glitchHeight, glitchCenterX, glitchCenterY;
-    let glitchParticles = [];
-    let glitchShapeIndex = 0;
-    let glitchFrame = 0;
-
-    // --- 数学函数定义的形状 ---
-    const SHAPES = [
-        { name: "心形线", scale: 100, func: t => ({ x: (1 - Math.sin(t)) * Math.cos(t), y: -(1 - Math.sin(t)) * Math.sin(t) }) },
-        { name: "四叶玫瑰线", scale: 180, func: t => ({ x: Math.sin(2 * t) * Math.cos(t), y: -Math.sin(2 * t) * Math.sin(t) }) },
-        { name: "蝴蝶曲线", scale: 50, func: t => { const r = Math.exp(Math.sin(t)) - 2 * Math.cos(4 * t) + Math.pow(Math.sin((2 * t - Math.PI) / 24), 5); return { x: r * Math.cos(t), y: -r * Math.sin(t) }; } },
-        { name: "螺旋线", scale: 15, func: t => ({ x: (0.5 * t) * Math.cos(t), y: -(0.5 * t) * Math.sin(t) }) }
-    ];
-
-    // --- 碎片类 ---
-    class GlitchParticle {
-        constructor() {
-            this.reset();
-        }
-
-        reset() {
-            this.x = (Math.random() - 0.5) * glitchWidth * 1.5;
-            this.y = (Math.random() - 0.5) * glitchHeight * 1.5;
-            this.vx = (Math.random() - 0.5) * 0.8;  // 增加速度
-            this.vy = (Math.random() - 0.5) * 0.8;  // 增加速度
+    // --- 数字碎片动画配置（完整保留原始代码）---
+    function initGlitchAnimation() {
+        const CONFIG = {
+            PARTICLE_COUNT: 1500,    // 碎片数量（增加以更激烈）
+            PARTICLE_SIZE: 1.5,      // 碎片大小（增大）
+            GLOW_CHANCE: 0.08,       // 发光几率（增加）
+            GLITCH_CHANCE: 0.15,     // 故障效果几率（增加）
             
-            this.targetX = 0;
-            this.targetY = 0;
+            // 颜色配置 (与主题协调)
+            COLORS: ['#06ffa5', '#7c3aed', '#4f46e5', '#ff6b6b', '#ffffff'],
+            
+            // 动画阶段时长 (帧) - 更快更激烈
+            DURATION_SCATTER: 80,    // 混沌散乱（更快）
+            DURATION_ASSEMBLE: 30,   // 汇集重组（更快）
+            DURATION_HOLD: 20,       // 完美瞬间（更短）
+            DURATION_GLITCH: 40,     // 故障崩溃（更快）
+        };
 
-            this.color = CONFIG.COLORS[Math.floor(Math.random() * CONFIG.COLORS.length)];
-            this.size = CONFIG.PARTICLE_SIZE + Math.random() * 0.8;  // 增大尺寸变化
-        }
-        
-        setTarget(shape) {
-            const angle = Math.random() * Math.PI * (shape.name === "螺旋线" ? 6 : 2);
-            const targetPos = shape.func(angle);
-            this.targetX = targetPos.x * shape.scale;
-            this.targetY = targetPos.y * shape.scale;
-        }
+        const glitchCanvas = document.getElementById('glitchCanvas');
+        const glitchCtx = glitchCanvas.getContext('2d');
 
-        update(phase) {
-            if (phase === 'scatter') {
-                this.x += this.vx;
-                this.y += this.vy;
-                if (this.x > glitchWidth / 2 || this.x < -glitchWidth / 2) this.vx *= -1;
-                if (this.y > glitchHeight / 2 || this.y < -glitchHeight / 2) this.vy *= -1;
-            } else if (phase === 'assemble') {
-                const ax = (this.targetX - this.x) * 0.15;  // 增加汇集速度
-                const ay = (this.targetY - this.y) * 0.15;  // 增加汇集速度
-                this.x += ax;
-                this.y += ay;
-            } else if (phase === 'glitch') {
-                if (Math.random() < CONFIG.GLITCH_CHANCE) {
-                    this.x += (Math.random() - 0.5) * 20;  // 增加故障位移
-                    this.y += (Math.random() - 0.5) * 20;  // 增加故障位移
+        let glitchWidth, glitchHeight, glitchCenterX, glitchCenterY;
+        let glitchParticles = [];
+        let glitchShapeIndex = 0;
+        let glitchFrame = 0;
+
+        // --- 数学函数定义的形状 ---
+        const SHAPES = [
+            { name: "心形线", scale: 100, func: t => ({ x: (1 - Math.sin(t)) * Math.cos(t), y: -(1 - Math.sin(t)) * Math.sin(t) }) },
+            { name: "四叶玫瑰线", scale: 180, func: t => ({ x: Math.sin(2 * t) * Math.cos(t), y: -Math.sin(2 * t) * Math.sin(t) }) },
+            { name: "蝴蝶曲线", scale: 50, func: t => { const r = Math.exp(Math.sin(t)) - 2 * Math.cos(4 * t) + Math.pow(Math.sin((2 * t - Math.PI) / 24), 5); return { x: r * Math.cos(t), y: -r * Math.sin(t) }; } },
+            { name: "螺旋线", scale: 15, func: t => ({ x: (0.5 * t) * Math.cos(t), y: -(0.5 * t) * Math.sin(t) }) }
+        ];
+
+        // --- 碎片类 ---
+        class GlitchParticle {
+            constructor() {
+                this.reset();
+            }
+
+            reset() {
+                this.x = (Math.random() - 0.5) * glitchWidth * 1.5;
+                this.y = (Math.random() - 0.5) * glitchHeight * 1.5;
+                this.vx = (Math.random() - 0.5) * 0.8;  // 增加速度
+                this.vy = (Math.random() - 0.5) * 0.8;  // 增加速度
+                
+                this.targetX = 0;
+                this.targetY = 0;
+
+                this.color = CONFIG.COLORS[Math.floor(Math.random() * CONFIG.COLORS.length)];
+                this.size = CONFIG.PARTICLE_SIZE + Math.random() * 0.8;  // 增大尺寸变化
+            }
+            
+            setTarget(shape) {
+                const angle = Math.random() * Math.PI * (shape.name === "螺旋线" ? 6 : 2);
+                const targetPos = shape.func(angle);
+                this.targetX = targetPos.x * shape.scale;
+                this.targetY = targetPos.y * shape.scale;
+            }
+
+            update(phase) {
+                if (phase === 'scatter') {
+                    this.x += this.vx;
+                    this.y += this.vy;
+                    if (this.x > glitchWidth / 2 || this.x < -glitchWidth / 2) this.vx *= -1;
+                    if (this.y > glitchHeight / 2 || this.y < -glitchHeight / 2) this.vy *= -1;
+                } else if (phase === 'assemble') {
+                    const ax = (this.targetX - this.x) * 0.15;  // 增加汇集速度
+                    const ay = (this.targetY - this.y) * 0.15;  // 增加汇集速度
+                    this.x += ax;
+                    this.y += ay;
+                } else if (phase === 'glitch') {
+                    if (Math.random() < CONFIG.GLITCH_CHANCE) {
+                        this.x += (Math.random() - 0.5) * 20;  // 增加故障位移
+                        this.y += (Math.random() - 0.5) * 20;  // 增加故障位移
+                    }
+                }
+            }
+
+            draw(ctx, phase) {
+                ctx.fillStyle = this.color;
+
+                const drawX = this.x + glitchCenterX;
+                const drawY = this.y + glitchCenterY;
+
+                // 故障效果：色彩分离
+                if (phase === 'glitch' && Math.random() < CONFIG.GLITCH_CHANCE / 8) {
+                    ctx.fillStyle = '#FF0000';
+                    ctx.fillRect(drawX - 2, drawY, this.size, this.size);
+                    ctx.fillStyle = '#00FF00';
+                    ctx.fillRect(drawX, drawY - 2, this.size, this.size);
+                    ctx.fillStyle = '#0000FF';
+                    ctx.fillRect(drawX + 2, drawY, this.size, this.size);
+                } else {
+                    ctx.fillRect(drawX, drawY, this.size, this.size);
+                }
+
+                // 发光效果
+                if (phase === 'hold' || (phase === 'assemble' && Math.random() < CONFIG.GLOW_CHANCE)) {
+                    ctx.shadowColor = this.color;
+                    ctx.shadowBlur = 12;  // 增加发光强度
+                    ctx.fillRect(drawX, drawY, this.size, this.size);
+                    ctx.shadowBlur = 0;
                 }
             }
         }
+        
+        // --- 数字碎片动画控制函数 ---
+        function setupGlitchAnimation() {
+            const dpr = window.devicePixelRatio || 1;
+            glitchWidth = window.innerWidth;
+            glitchHeight = window.innerHeight;
+            glitchCanvas.width = glitchWidth * dpr;
+            glitchCanvas.height = glitchHeight * dpr;
+            glitchCanvas.style.width = `${glitchWidth}px`;
+            glitchCanvas.style.height = `${glitchHeight}px`;
+            glitchCtx.scale(dpr, dpr);
+            glitchCenterX = glitchWidth / 2;
+            glitchCenterY = glitchHeight / 2;
 
-        draw(ctx, phase) {
-            ctx.fillStyle = this.color;
-
-            const drawX = this.x + glitchCenterX;
-            const drawY = this.y + glitchCenterY;
-
-            // 故障效果：色彩分离
-            if (phase === 'glitch' && Math.random() < CONFIG.GLITCH_CHANCE / 8) {
-                ctx.fillStyle = '#FF0000';
-                ctx.fillRect(drawX - 2, drawY, this.size, this.size);
-                ctx.fillStyle = '#00FF00';
-                ctx.fillRect(drawX, drawY - 2, this.size, this.size);
-                ctx.fillStyle = '#0000FF';
-                ctx.fillRect(drawX + 2, drawY, this.size, this.size);
-            } else {
-                ctx.fillRect(drawX, drawY, this.size, this.size);
+            glitchParticles = [];
+            for (let i = 0; i < CONFIG.PARTICLE_COUNT; i++) {
+                glitchParticles.push(new GlitchParticle());
             }
-
-            // 发光效果
-            if (phase === 'hold' || (phase === 'assemble' && Math.random() < CONFIG.GLOW_CHANCE)) {
-                ctx.shadowColor = this.color;
-                ctx.shadowBlur = 12;  // 增加发光强度
-                ctx.fillRect(drawX, drawY, this.size, this.size);
-                ctx.shadowBlur = 0;
-            }
-        }
-    }
-    
-    // --- 数字碎片动画控制函数 ---
-    function setupGlitchAnimation() {
-        const dpr = window.devicePixelRatio || 1;
-        glitchWidth = window.innerWidth;
-        glitchHeight = window.innerHeight;
-        glitchCanvas.width = glitchWidth * dpr;
-        glitchCanvas.height = glitchHeight * dpr;
-        glitchCanvas.style.width = `${glitchWidth}px`;
-        glitchCanvas.style.height = `${glitchHeight}px`;
-        glitchCtx.scale(dpr, dpr);
-        glitchCenterX = glitchWidth / 2;
-        glitchCenterY = glitchHeight / 2;
-
-        glitchParticles = [];
-        for (let i = 0; i < CONFIG.PARTICLE_COUNT; i++) {
-            glitchParticles.push(new GlitchParticle());
-        }
-        startNewGlitchCycle();
-    }
-
-    function startNewGlitchCycle() {
-        glitchShapeIndex = (glitchShapeIndex + 1) % SHAPES.length;
-        const currentShape = SHAPES[glitchShapeIndex];
-        glitchParticles.forEach(p => p.setTarget(currentShape));
-    }
-
-    // --- 数字碎片动画循环 ---
-    function animateGlitch() {
-        glitchFrame++;
-        
-        glitchCtx.fillStyle = 'rgba(0, 0, 0, 0.02)'; // 更淡的背景制造拖尾效果
-        glitchCtx.fillRect(0, 0, glitchWidth, glitchHeight);
-
-        const totalCycle = CONFIG.DURATION_SCATTER + CONFIG.DURATION_ASSEMBLE + CONFIG.DURATION_HOLD + CONFIG.DURATION_GLITCH;
-        const currentPhaseTime = glitchFrame % totalCycle;
-        
-        let phase = 'scatter';
-        if (currentPhaseTime < CONFIG.DURATION_SCATTER) {
-            phase = 'scatter';
-        } else if (currentPhaseTime < CONFIG.DURATION_SCATTER + CONFIG.DURATION_ASSEMBLE) {
-            phase = 'assemble';
-        } else if (currentPhaseTime < CONFIG.DURATION_SCATTER + CONFIG.DURATION_ASSEMBLE + CONFIG.DURATION_HOLD) {
-            phase = 'hold';
-        } else {
-            phase = 'glitch';
-        }
-
-        glitchParticles.forEach(p => {
-            p.update(phase);
-            p.draw(glitchCtx, phase);
-        });
-        
-        if (currentPhaseTime === 0 && glitchFrame > 0) {
-            glitchParticles.forEach(p => p.reset());
             startNewGlitchCycle();
         }
 
-        requestAnimationFrame(animateGlitch);
+        function startNewGlitchCycle() {
+            glitchShapeIndex = (glitchShapeIndex + 1) % SHAPES.length;
+            const currentShape = SHAPES[glitchShapeIndex];
+            glitchParticles.forEach(p => p.setTarget(currentShape));
+        }
+
+        // --- 数字碎片动画循环 ---
+        function animateGlitch() {
+            glitchFrame++;
+            
+            glitchCtx.fillStyle = 'rgba(0, 0, 0, 0.02)'; // 更淡的背景制造拖尾效果
+            glitchCtx.fillRect(0, 0, glitchWidth, glitchHeight);
+
+            const totalCycle = CONFIG.DURATION_SCATTER + CONFIG.DURATION_ASSEMBLE + CONFIG.DURATION_HOLD + CONFIG.DURATION_GLITCH;
+            const currentPhaseTime = glitchFrame % totalCycle;
+            
+            let phase = 'scatter';
+            if (currentPhaseTime < CONFIG.DURATION_SCATTER) {
+                phase = 'scatter';
+            } else if (currentPhaseTime < CONFIG.DURATION_SCATTER + CONFIG.DURATION_ASSEMBLE) {
+                phase = 'assemble';
+            } else if (currentPhaseTime < CONFIG.DURATION_SCATTER + CONFIG.DURATION_ASSEMBLE + CONFIG.DURATION_HOLD) {
+                phase = 'hold';
+            } else {
+                phase = 'glitch';
+            }
+
+            glitchParticles.forEach(p => {
+                p.update(phase);
+                p.draw(glitchCtx, phase);
+            });
+            
+            if (currentPhaseTime === 0 && glitchFrame > 0) {
+                glitchParticles.forEach(p => p.reset());
+                startNewGlitchCycle();
+            }
+
+            requestAnimationFrame(animateGlitch);
+        }
+
+        // 初始化数字碎片动画
+        window.addEventListener('resize', setupGlitchAnimation);
+        setupGlitchAnimation();
+        animateGlitch();
     }
 
-    // 初始化数字碎片动画
-    window.addEventListener('resize', setupGlitchAnimation);
-    setupGlitchAnimation();
-    animateGlitch();
+    // 初始化
+    document.addEventListener('DOMContentLoaded', function() {
+        initKeyboardNavigation();
+        
+        // 初始化星空主题背景（默认主题）
+        initStarryBackground();
+        initGlitchAnimation();
+        window.starryInitialized = true;
+        window.fireInitialized = false;
+    });
 </script>
 </body>
 </html>

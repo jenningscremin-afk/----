@@ -9,14 +9,14 @@
     <style>
         @font-face {
             font-family: 'DingLieCiWei';
-            src: url('common-assets/fonts/dinglieciweifont.ttf') format('truetype');
+            src: url('./common-assets/fonts/dinglieciweifont.ttf') format('truetype');
             font-weight: 400;
             font-style: normal;
         }
         
         @font-face {
             font-family: 'OpenHuninn';
-            src: url('common-assets/fonts/jf-openhuninn-2.1.ttf') format('truetype');
+            src: url('./common-assets/fonts/jf-openhuninn-2.1.ttf') format('truetype');
             font-weight: 400;
             font-style: normal;
         }
@@ -48,6 +48,72 @@
             position: relative;
         }
 
+        /* 背景切换按钮 */
+        .bg-switch-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            padding: 12px 24px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 30px;
+            color: white;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .bg-switch-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(0, 255, 255, 0.8);
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+        }
+
+        .bg-switch-icon {
+            width: 20px;
+            height: 20px;
+            position: relative;
+        }
+
+        /* 成绩册按钮 - 不起眼的设计 */
+        .grade-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+            width: 40px;
+            height: 40px;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            color: rgba(255, 255, 255, 0.6);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0.7;
+        }
+
+        .grade-btn:hover {
+            background: rgba(0, 0, 0, 0.5);
+            border-color: rgba(255, 255, 255, 0.3);
+            color: rgba(255, 255, 255, 0.9);
+            opacity: 1;
+            transform: scale(1.05);
+        }
+
+        .grade-btn svg {
+            width: 18px;
+            height: 18px;
+        }
+
         /* 3D背景容器 */
         #three-container {
             position: fixed;
@@ -56,6 +122,30 @@
             width: 100%;
             height: 100%;
             z-index: -1;
+            transition: opacity 0.5s ease;
+        }
+
+        /* 2D泡泡背景 */
+        #bubble-canvas {
+            display: block;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: -1;
+            width: 100%;
+            height: 100%;
+            transition: opacity 0.5s ease;
+        }
+
+        /* 隐藏背景 */
+        .bg-hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        /* 2D背景body样式 */
+        body.bubble-bg {
+            background: linear-gradient(120deg, #0a2540 0%, #2074c8 40%, #00eaff 80%, #0a2540 100%);
         }
 
         /* 主容器 */
@@ -70,7 +160,7 @@
             z-index: 1;
         }
 
-        /* 标题区域 - 全息投影效果 */
+        /* 标题区域 */
         .header-section {
             position: absolute;
             top: 8%;
@@ -94,7 +184,6 @@
             text-transform: uppercase;
         }
 
-
         .subtitle {
             font-family: 'OpenHuninn', 'DingLieCiWei', sans-serif;
             font-size: 1.4rem;
@@ -105,7 +194,7 @@
             text-transform: uppercase;
         }
 
-        /* 导航容器 - 空间分布式布局 */
+        /* 导航容器 */
         .nav-container {
             position: absolute;
             width: 100%;
@@ -113,48 +202,16 @@
             pointer-events: none;
         }
 
-        /* 导航项 - 全息卡片效果 */
+        /* 导航项 - 简洁无框设计 */
         .nav-item {
             position: absolute;
             cursor: pointer;
             pointer-events: all;
-           
-            background: 
-                rgba(255, 0, 255, 0) 100%;
-            border:    rgba(255, 0, 255, 0) 100%;
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border-radius: 20px;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            padding: 30px 40px;
+            background: transparent;
+            border: none;
+            transition: all 0.3s ease;
             transform-style: preserve-3d;
-        }
-
-        /* 悬浮光效边框 */
-        .nav-item::before {
-          
-            position: absolute;
-            inset: -2px;
-            background: linear-gradient(45deg, 
-                transparent,
-                #00ffff,
-                transparent,
-                #ff00ff,
-                transparent);
-            border-radius: 10px;
-            opacity: 0;
-            z-index: -1;
-            transition: opacity 0.4s ease;
-        }
-
-        .nav-item:hover::before {
-            opacity: 1;
-        }
-
-        .nav-item:hover {
-            
-            background: 
-                rgba(255, 0, 255, 0) 100%;
-           
         }
 
         .nav-title {
@@ -192,7 +249,7 @@
             color: rgba(255, 255, 255, 0.9);
         }
 
-        /* 导航项定位 - 钻石形布局 */
+        /* 导航项定位 */
         .nav-1 {
             top: 40%;
             left: 55%;
@@ -215,46 +272,6 @@
             bottom: 30%;
             right: 65%;
             transform: translate(50%, 50%);
-        }
-
-    
-
-        /* 动画定义 */
-        @keyframes gradientShift {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); opacity: 0.5; }
-            50% { transform: scale(1.05); opacity: 0.8; }
-        }
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes floatAnimation {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-20px); }
-        }
-
-        @keyframes borderRotate {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        @keyframes rotate {
-            0% { transform: translate(-50%, -50%) rotate(0deg); }
-            100% { transform: translate(-50%, -50%) rotate(360deg); }
         }
 
         /* 扫描线效果 */
@@ -308,29 +325,48 @@
                 align-items: center;
                 padding: 150px 20px 50px;
             }
-            
-            .center-decoration {
-                display: none;
-            }
         }
     </style>
 </head>
 <body>
+    <!-- 背景切换按钮 -->
+    <button class="bg-switch-btn" onclick="switchBackground()">
+        <div class="bg-switch-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                <circle cx="12" cy="12" r="3"></circle>
+            </svg>
+        </div>
+        <span id="bg-switch-text">切换到2D背景</span>
+    </button>
+    
+    <!-- 成绩册按钮 -->
+    <button class="grade-btn" onclick="window.location.href='成绩册.html'" title="成绩册">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14,2 14,8 20,8"></polyline>
+            <line x1="16" y1="13" x2="8" y2="13"></line>
+            <line x1="16" y1="17" x2="8" y2="17"></line>
+            <polyline points="10,9 9,9 8,9"></polyline>
+        </svg>
+    </button>
+    
     <!-- 3D背景容器 -->
     <div id="three-container"></div>
     
-    <!-- 扫描线效果 -->
-    <div class="scan-line"></div>
+    <!-- 2D泡泡背景 -->
+    <canvas id="bubble-canvas" class="bg-hidden"></canvas>
+    
+    <!-- 扫描线效果 (仅在3D背景时显示) -->
+    <div class="scan-line" id="scan-line"></div>
     
     <!-- 主容器 -->
     <div class="main-container">
         <!-- 标题区域 -->
         <header class="header-section">
-            <h1 class="main-title" data-text="高等应用数学">高等应用数学</h1>
+            <h1 class="main-title">高等应用数学</h1>
             <p class="subtitle">Online Learning Platform</p>
         </header>
-
-      
         
         <!-- 导航容器 -->
         <nav class="nav-container">
@@ -355,6 +391,181 @@
             </div>
         </nav>
     </div>
+    
+    <!-- 背景切换逻辑 -->
+    <script>
+        let currentBg = '3d'; // 当前背景状态
+        let threeJsInitialized = false;
+        let bubbleAnimationId = null;
+        
+        function switchBackground() {
+            const threeContainer = document.getElementById('three-container');
+            const bubbleCanvas = document.getElementById('bubble-canvas');
+            const scanLine = document.getElementById('scan-line');
+            const switchText = document.getElementById('bg-switch-text');
+            const body = document.body;
+            
+            if (currentBg === '3d') {
+                // 切换到2D泡泡背景
+                threeContainer.classList.add('bg-hidden');
+                bubbleCanvas.classList.remove('bg-hidden');
+                scanLine.style.display = 'none';
+                body.classList.add('bubble-bg');
+                switchText.textContent = '切换到3D背景';
+                currentBg = '2d';
+                
+                // 初始化泡泡背景
+                if (!bubbleAnimationId) {
+                    initBubbleBackground();
+                }
+            } else {
+                // 切换到3D背景
+                bubbleCanvas.classList.add('bg-hidden');
+                threeContainer.classList.remove('bg-hidden');
+                scanLine.style.display = 'block';
+                body.classList.remove('bubble-bg');
+                switchText.textContent = '切换到2D背景';
+                currentBg = '3d';
+                
+                // 停止泡泡动画
+                if (bubbleAnimationId) {
+                    cancelAnimationFrame(bubbleAnimationId);
+                    bubbleAnimationId = null;
+                }
+            }
+        }
+        
+        // 2D泡泡背景代码
+        function initBubbleBackground() {
+            const canvas = document.getElementById('bubble-canvas');
+            const ctx = canvas.getContext('2d');
+
+            let bubbles = [];
+            const bubbleCount = 60;
+
+            const mouse = {
+                x: undefined,
+                y: undefined,
+                radius: 150
+            };
+
+            window.addEventListener('mousemove', (event) => {
+                mouse.x = event.x;
+                mouse.y = event.y;
+            });
+
+            window.addEventListener('mouseout', () => {
+                mouse.x = undefined;
+                mouse.y = undefined;
+            });
+
+            function setCanvasSize() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            }
+
+            class Bubble {
+                constructor() {
+                    this.radius = Math.random() * 25 + 10;
+                    const colorPalettes = [
+                        { h: 260, s: 80, l: 75 },
+                        { h: 280, s: 70, l: 80 },
+                        { h: 200, s: 70, l: 85 },
+                        { h: 320, s: 70, l: 85 },
+                        { h: 240, s: 60, l: 90 },
+                    ];
+                    const color = colorPalettes[Math.floor(Math.random() * colorPalettes.length)];
+                    this.hue = color.h + Math.random() * 20 - 10;
+                    this.saturation = color.s;
+                    this.lightness = color.l;
+                    this.opacity = Math.random() * 0.3 + 0.1;
+
+                    this.x = Math.random() * (canvas.width - this.radius * 2) + this.radius;
+                    this.y = Math.random() * (canvas.height + 100);
+                    this.baseX = this.x;
+                    
+                    this.vx = Math.random() * 0.6 - 0.3;
+                    this.vy = Math.random() * -1.5 - 0.5;
+                    
+                    this.density = Math.random() * 10 + 5;
+                }
+
+                draw() {
+                    ctx.beginPath();
+                    const gradient = ctx.createRadialGradient(
+                        this.x - this.radius * 0.3,
+                        this.y - this.radius * 0.3,
+                        this.radius * 0.1,
+                        this.x,
+                        this.y,
+                        this.radius
+                    );
+                    gradient.addColorStop(0, `hsla(0, 0%, 100%, ${this.opacity * 3})`);
+                    gradient.addColorStop(0.3, `hsla(${this.hue}, ${this.saturation}%, ${this.lightness}%, ${this.opacity * 2})`);
+                    gradient.addColorStop(1, `hsla(${this.hue}, ${this.saturation}%, ${this.lightness}%, 0)`);
+                    ctx.fillStyle = gradient;
+                    ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.strokeStyle = `hsla(${this.hue}, ${this.saturation}%, ${this.lightness - 10}%, ${this.opacity * 2})`;
+                    ctx.lineWidth = 0.5;
+                    ctx.stroke();
+                    ctx.closePath();
+                }
+
+                update() {
+                    if (mouse.x !== undefined && mouse.y !== undefined) {
+                        const dx = this.x - mouse.x;
+                        const dy = this.y - mouse.y;
+                        const distance = Math.sqrt(dx * dx + dy * dy);
+
+                        if (distance < mouse.radius + this.radius) {
+                            const forceDirectionX = dx / distance;
+                            const forceDirectionY = dy / distance;
+                            const force = (mouse.radius + this.radius - distance) / (mouse.radius + this.radius);
+                            const directionX = forceDirectionX * force * this.density;
+                            const directionY = forceDirectionY * force * this.density;
+                            this.x += directionX * 0.6;
+                            this.y += directionY * 0.6;
+                        }
+                    }
+                    this.y += this.vy;
+                    this.x += this.vx + Math.sin(Date.now() * 0.001 + this.radius) * 0.2;
+                    if (this.y < -this.radius) {
+                        this.y = canvas.height + this.radius;
+                        this.x = Math.random() * (canvas.width - this.radius * 2) + this.radius;
+                        this.baseX = this.x;
+                    }
+                    if (this.x < this.radius || this.x > canvas.width - this.radius) {
+                        this.vx *= -1;
+                    }
+                }
+            }
+
+            function init() {
+                bubbles = [];
+                for (let i = 0; i < bubbleCount; i++) {
+                    setTimeout(() => {
+                        bubbles.push(new Bubble());
+                    }, i * 50);
+                }
+            }
+
+            function animate() {
+                if (currentBg === '2d') {
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    bubbles.forEach(bubble => {
+                        bubble.update();
+                        bubble.draw();
+                    });
+                    bubbleAnimationId = requestAnimationFrame(animate);
+                }
+            }
+
+            setCanvasSize();
+            init();
+            animate();
+        }
+    </script>
     
     <!-- Three.js 3D背景 -->
     <script type="module">
@@ -491,63 +702,66 @@
         // --- 动画循环 ---
         function animate() {
             requestAnimationFrame(animate);
-
-            const elapsedTime = clock.getElapsedTime();
-
-            // 更新粒子系统
-            const positions = particles.geometry.attributes.position.array;
-            const velocities = particles.geometry.attributes.velocity.array;
             
-            const mouseForce = 100;
-            const flowSpeed = 0.1;
-            const damping = 0.98;
-            
-            for (let i = 0; i < positions.length / 3; i++) {
-                const i3 = i * 3;
+            // 只在3D背景激活时更新
+            if (window.currentBg === '3d' || window.currentBg === undefined) {
+                const elapsedTime = clock.getElapsedTime();
+
+                // 更新粒子系统
+                const positions = particles.geometry.attributes.position.array;
+                const velocities = particles.geometry.attributes.velocity.array;
                 
-                // 向中心引力
-                let p = new THREE.Vector3(positions[i3], positions[i3+1], positions[i3+2]);
-                let directionToCenter = p.clone().negate().normalize();
-                velocities[i3] += directionToCenter.x * 0.01;
-                velocities[i3+1] += directionToCenter.y * 0.01;
-                velocities[i3+2] += directionToCenter.z * 0.01;
+                const mouseForce = 100;
+                const flowSpeed = 0.1;
+                const damping = 0.98;
+                
+                for (let i = 0; i < positions.length / 3; i++) {
+                    const i3 = i * 3;
+                    
+                    // 向中心引力
+                    let p = new THREE.Vector3(positions[i3], positions[i3+1], positions[i3+2]);
+                    let directionToCenter = p.clone().negate().normalize();
+                    velocities[i3] += directionToCenter.x * 0.01;
+                    velocities[i3+1] += directionToCenter.y * 0.01;
+                    velocities[i3+2] += directionToCenter.z * 0.01;
 
-                // 鼠标推开效果
-                let dx = positions[i3] - (mouse.x * camera.position.z * 0.5);
-                let dy = positions[i3+1] - (mouse.y * camera.position.z * 0.5);
-                let distSq = dx * dx + dy * dy;
-                if (distSq < mouseForce * mouseForce) {
-                    let force = (mouseForce - Math.sqrt(distSq)) / mouseForce;
-                    velocities[i3] += (dx / Math.sqrt(distSq)) * force * 0.5;
-                    velocities[i3+1] += (dy / Math.sqrt(distSq)) * force * 0.5;
+                    // 鼠标推开效果
+                    let dx = positions[i3] - (mouse.x * camera.position.z * 0.5);
+                    let dy = positions[i3+1] - (mouse.y * camera.position.z * 0.5);
+                    let distSq = dx * dx + dy * dy;
+                    if (distSq < mouseForce * mouseForce) {
+                        let force = (mouseForce - Math.sqrt(distSq)) / mouseForce;
+                        velocities[i3] += (dx / Math.sqrt(distSq)) * force * 0.5;
+                        velocities[i3+1] += (dy / Math.sqrt(distSq)) * force * 0.5;
+                    }
+
+                    // 流动效果
+                    positions[i3] += (Math.sin(elapsedTime * 0.5 + i) * flowSpeed) + velocities[i3];
+                    positions[i3+1] += (Math.cos(elapsedTime * 0.5 + i) * flowSpeed) + velocities[i3+1];
+                    positions[i3+2] += (Math.sin(elapsedTime * 0.3 + i) * flowSpeed) + velocities[i3+2];
+                    
+                    // 速度衰减
+                    velocities[i3] *= damping;
+                    velocities[i3+1] *= damping;
+                    velocities[i3+2] *= damping;
                 }
-
-                // 流动效果
-                positions[i3] += (Math.sin(elapsedTime * 0.5 + i) * flowSpeed) + velocities[i3];
-                positions[i3+1] += (Math.cos(elapsedTime * 0.5 + i) * flowSpeed) + velocities[i3+1];
-                positions[i3+2] += (Math.sin(elapsedTime * 0.3 + i) * flowSpeed) + velocities[i3+2];
+                particles.geometry.attributes.position.needsUpdate = true;
                 
-                // 速度衰减
-                velocities[i3] *= damping;
-                velocities[i3+1] *= damping;
-                velocities[i3+2] *= damping;
+                // 更新外部线框
+                outerShell.rotation.y += 0.0005;
+                
+                // 更新控制器和渲染
+                controls.update();
+                renderer.render(scene, camera);
             }
-            particles.geometry.attributes.position.needsUpdate = true;
-            
-            // 更新外部线框
-            outerShell.rotation.y += 0.0005;
-            
-            // 更新控制器和渲染
-            controls.update();
-            renderer.render(scene, camera);
         }
 
         // --- 启动 ---
         init();
     </script>
     
+    <!-- 增强交互功能 -->
     <script>
-        // 增强交互功能
         document.addEventListener('DOMContentLoaded', function() {
             // 键盘导航
             document.addEventListener('keydown', function(e) {
@@ -555,6 +769,7 @@
                 if (e.key === '2') window.location.href = '故事书/index.html';
                 if (e.key === '3') window.location.href = '课件/index.html';
                 if (e.key === '4') window.location.href = '习题/index.html';
+                if (e.key === 'b' || e.key === 'B') switchBackground(); // 按B键切换背景
             });
 
             // 导航项入场动画

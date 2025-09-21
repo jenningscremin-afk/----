@@ -45,8 +45,22 @@
             overflow: hidden;
         }
 
-        /* 矩阵数字雨背景 */
-        #matrix-background {
+        /* 暖色主题时的body样式 */
+        body.warm-theme {
+            --text: #ffd700;
+            --text-muted: #ffb347;
+            --primary: #ffd700;
+            --primary-dark: #ffb347;
+            --primary-light: #ffe55c;
+            --glass: rgba(255, 215, 0, 0.05);
+            --glass-border: rgba(255, 215, 0, 0.2);
+            --glow: 0 0 15px rgba(255, 215, 0, 0.4);
+            --glow-hover: 0 0 25px rgba(255, 215, 0, 0.7);
+            background: radial-gradient(ellipse at center, #1a0a00, #000000);
+        }
+
+        /* 背景画布 */
+        #starry-sky {
             position: fixed;
             top: 0;
             left: 0;
@@ -55,6 +69,31 @@
             z-index: -1;
             opacity: 0.4;
             pointer-events: none;
+        }
+
+        /* 背景切换按钮 */
+        .bg-switch-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 10000;
+            padding: 10px 20px;
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            color: var(--text);
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .bg-switch-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: var(--glow);
         }
 
         /* 扫描线 */
@@ -66,6 +105,10 @@
             animation: scan 10s linear infinite;
             pointer-events: none;
             z-index: 2;
+        }
+
+        body.warm-theme .scan-line {
+            background: linear-gradient(to bottom, transparent, rgba(255, 215, 0, 0.2), transparent);
         }
         
         @keyframes scan {
@@ -124,13 +167,6 @@
             color: var(--text-muted);
             margin-bottom: 40px;
         }
-
-
-
-
-
-
-
 
         /* 内容显示区域 - 全屏预览 */
         .content-display {
@@ -217,7 +253,7 @@
             z-index: 99999;
             opacity: 0;
             transition: all 0.3s ease;
-            border: 3px solid #00ff00;
+            border: 3px solid var(--primary);
         }
 
         .floating-chapter-panel.active {
@@ -247,8 +283,8 @@
             display: flex;
             align-items: center;
             gap: 18px;
-            background: linear-gradient(135deg, rgba(0, 255, 0, 0.1), rgba(0, 255, 255, 0.05));
-            border: 1px solid rgba(0, 255, 0, 0.3);
+            background: linear-gradient(135deg, var(--glass), rgba(0, 255, 255, 0.05));
+            border: 1px solid var(--glass-border);
             font-size: 16px;
             position: relative;
             overflow: hidden;
@@ -263,7 +299,7 @@
             left: -100%;
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(0, 255, 0, 0.1), transparent);
+            background: linear-gradient(90deg, transparent, var(--glass), transparent);
             transition: left 0.6s ease;
         }
 
@@ -277,8 +313,12 @@
             border-color: var(--primary);
             box-shadow: 
                 0 20px 40px rgba(0, 0, 0, 0.3),
-                0 0 20px rgba(0, 255, 0, 0.3),
+                0 0 20px var(--glow),
                 inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        }
+
+        body.warm-theme .chapter-item:hover {
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.15), rgba(255, 179, 71, 0.1));
         }
 
         .chapter-item:active {
@@ -643,19 +683,25 @@
     </style>
 </head>
 <body>
-<!-- 矩阵数字雨背景 -->
+<!-- 背景切换按钮 -->
+<button class="bg-switch-btn" onclick="switchBackground()">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+    </svg>
+    <span id="bg-switch-text">切换背景</span>
+</button>
+
+<!-- 背景画布 -->
 <canvas id="starry-sky"></canvas>
 
 <!-- 扫描线 -->
 <div class="scan-line"></div>
-
 
 <!-- 主内容区 -->
 <div class="main-content">
     <!-- 欢迎页 -->
     <div class="welcome-page" id="welcomePage">
         <div class="welcome-content">
-           
             <!-- 章节目录按钮 - 移到右上角 -->
             <div style="position: fixed; top: 20px; right: 20px; z-index: 999999; background: var(--glass); border: 1px solid var(--glass-border); border-radius: 15px; padding: 15px 25px; cursor: pointer; backdrop-filter: blur(5px); transition: all 0.3s ease;" onclick="showChapterList()" onmouseover="this.style.background='rgba(0, 255, 0, 0.1)'; this.style.transform='translateY(-2px)'" onmouseout="this.style.background='var(--glass)'; this.style.transform='translateY(0)'">
                 <span style="display: flex; align-items: center; gap: 10px; color: var(--text); font-size: 16px; font-weight: 500;">
@@ -665,8 +711,8 @@
                     目录
                 </span>
             </div>
-            </div>
         </div>
+    </div>
 
     <!-- 内容显示区域 - 全屏预览 -->
     <div class="content-display" id="contentDisplay">
@@ -691,34 +737,19 @@
     </div>
 </div>
 
-
-
-
 <!-- 极简右下角导航栏 -->
 <div class="floating-nav-sidebar" id="navSidebar">
-
     <button class="nav-btn" onclick="goPrev()" title="上一页">
-
         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
-
     </button>
-
-
     <button class="nav-btn" onclick="goMainSite()" title="返回主站">
-
         <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="currentColor"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8h5z"/></svg>
-
     </button>
-
     <button class="nav-btn" onclick="goNext()" title="下一页">
-
         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
-
     </button>
-
     <div class="nav-divider"></div>
-
-   <button class="sidebar-action-btn" id="quickNavBtn" onclick="showQuickNav()" title="跳转">
+    <button class="sidebar-action-btn" id="quickNavBtn" onclick="showQuickNav()" title="跳转">
         跳转
     </button>
     <button class="sidebar-action-btn" id="feedbackBtn" onclick="showFeedback()" title="反馈">
@@ -730,39 +761,68 @@
     </button>
 </div>
 
-    <script>
-// 矩阵数字雨背景
-let canvas, ctx, stars = [], animationId;
+<script>
+// 背景相关变量
+let canvas, ctx, animationId;
+let currentBg = 'matrix'; // 'matrix' 或 'warm'
+
+// 矩阵背景变量
 let matrixWidth, matrixHeight;
 const fontSize = 18;
 let columns, drops;
 
+// 暖色背景变量
+let warmParticles = [];
+
 function setCanvasSize() {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
+    
+    if (currentBg === 'matrix') {
+        initMatrixBackground();
+    } else {
+        initWarmBackground();
+    }
+}
+
+// 初始化矩阵背景
+function initMatrixBackground() {
     matrixWidth = canvas.width;
     matrixHeight = canvas.height;
     columns = Math.floor(matrixWidth / fontSize);
     
-    // 初始化雨滴
     drops = [];
     for (let i = 0; i < columns; i++) {
         drops[i] = Math.floor(Math.random() * -100);
     }
 }
 
+// 初始化暖色背景
+function initWarmBackground() {
+    warmParticles = [];
+    const particleCount = 100;
+    
+    for (let i = 0; i < particleCount; i++) {
+        warmParticles.push({
+            x: Math.random() * canvas.width,
+            y: Math.random() * canvas.height,
+            radius: Math.random() * 3 + 1,
+            vx: (Math.random() - 0.5) * 0.5,
+            vy: Math.random() * 2 + 0.5,
+            opacity: Math.random() * 0.5 + 0.3,
+            hue: Math.random() * 60 + 15 // 15-75度，橙色到黄色范围
+        });
+    }
+}
 
-
+// 绘制矩阵背景
 function drawMatrix() {
-    // 创建淡出效果
     ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
     ctx.fillRect(0, 0, matrixWidth, matrixHeight);
 
-    // 设置矩阵字符样式
     ctx.fillStyle = '#00ff00';
     ctx.font = `${fontSize}px monospace`;
 
-    // 绘制矩阵字符 - 只使用01
     for (let i = 0; i < drops.length; i++) {
         const text = Math.random() > 0.5 ? '1' : '0';
         const x = i * fontSize;
@@ -770,7 +830,6 @@ function drawMatrix() {
 
         ctx.fillText(text, x, y);
 
-        // 重置雨滴
         if (y > matrixHeight && Math.random() > 0.975) {
             drops[i] = 0;
         }
@@ -778,23 +837,101 @@ function drawMatrix() {
     }
 }
 
-function draw() {
-    // 绘制矩阵数字雨
-    drawMatrix();
+// 绘制暖色背景
+function drawWarmBackground() {
+    // 创建渐变背景
+    const gradient = ctx.createRadialGradient(
+        canvas.width / 2, canvas.height / 2, 0,
+        canvas.width / 2, canvas.height / 2, Math.max(canvas.width, canvas.height)
+    );
+    gradient.addColorStop(0, 'rgba(26, 10, 0, 0.95)');
+    gradient.addColorStop(1, 'rgba(0, 0, 0, 0.98)');
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // 绘制流光粒子
+    warmParticles.forEach(p => {
+        // 更新粒子位置
+        p.y -= p.vy;
+        p.x += p.vx;
+        
+        // 边界处理
+        if (p.y < -10) {
+            p.y = canvas.height + 10;
+            p.x = Math.random() * canvas.width;
+        }
+        if (p.x < 0) p.x = canvas.width;
+        if (p.x > canvas.width) p.x = 0;
+        
+        // 绘制粒子
+        ctx.save();
+        ctx.globalAlpha = p.opacity;
+        
+        // 创建发光效果
+        const gradient = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.radius * 3);
+        gradient.addColorStop(0, `hsla(${p.hue}, 100%, 60%, 1)`);
+        gradient.addColorStop(0.5, `hsla(${p.hue}, 100%, 50%, 0.5)`);
+        gradient.addColorStop(1, `hsla(${p.hue}, 100%, 40%, 0)`);
+        
+        ctx.fillStyle = gradient;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.radius * 3, 0, Math.PI * 2);
+        ctx.fill();
+        
+        // 中心亮点
+        ctx.fillStyle = `hsla(${p.hue}, 100%, 80%, 1)`;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+        ctx.fill();
+        
+        ctx.restore();
+        
+        // 随机改变透明度，创建闪烁效果
+        p.opacity += (Math.random() - 0.5) * 0.02;
+        p.opacity = Math.max(0.3, Math.min(0.8, p.opacity));
+    });
 }
 
-
-function tick() {
-    draw();
-    animationId = requestAnimationFrame(tick);
+// 主动画循环
+function animate() {
+    if (currentBg === 'matrix') {
+        drawMatrix();
+    } else {
+        drawWarmBackground();
+    }
+    animationId = requestAnimationFrame(animate);
 }
 
-// 初始化星空背景
+// 切换背景
+function switchBackground() {
+    if (animationId) {
+        cancelAnimationFrame(animationId);
+    }
+    
+    const body = document.body;
+    const switchText = document.getElementById('bg-switch-text');
+    
+    if (currentBg === 'matrix') {
+        currentBg = 'warm';
+        body.classList.add('warm-theme');
+        switchText.textContent = '切换到矩阵';
+        initWarmBackground();
+    } else {
+        currentBg = 'matrix';
+        body.classList.remove('warm-theme');
+        switchText.textContent = '切换到流光';
+        initMatrixBackground();
+    }
+    
+    animate();
+}
+
+// 初始化
 canvas = document.getElementById('starry-sky');
 ctx = canvas.getContext('2d');
 
 setCanvasSize();
-tick();
+animate();
 
 window.addEventListener('resize', () => {
     setCanvasSize();
@@ -931,9 +1068,10 @@ function showChapterList() {
     
     // 创建内容容器
     const content = document.createElement('div');
+    const primaryColor = currentBg === 'warm' ? '#ffd700' : '#00ff00';
     content.style.cssText = `
-        background: linear-gradient(135deg, rgba(0, 255, 0, 0.1), rgba(0, 255, 255, 0.05));
-        border: 2px solid #00ff00;
+        background: linear-gradient(135deg, rgba(0, 0, 0, 0.8), rgba(30, 30, 30, 0.6));
+        border: 2px solid ${primaryColor};
         border-radius: 20px;
         padding: 30px;
         max-width: 90%;
@@ -979,12 +1117,12 @@ function showChapterList() {
     title.style.cssText = `
         grid-column: 1 / -1;
         text-align: center;
-        color: #00ff00;
+        color: ${primaryColor};
         font-size: 24px;
         font-weight: bold;
         margin-bottom: 20px;
         padding-bottom: 15px;
-        border-bottom: 2px solid rgba(0, 255, 0, 0.3);
+        border-bottom: 2px solid rgba(255, 255, 255, 0.2);
     `;
     title.innerHTML = '';
     
@@ -992,8 +1130,8 @@ function showChapterList() {
     Object.entries(chapters).forEach(([id, chapter]) => {
         const item = document.createElement('div');
         item.style.cssText = `
-            background: rgba(0, 255, 0, 0.1);
-            border: 1px solid rgba(0, 255, 0, 0.3);
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.2);
             border-radius: 15px;
             padding: 20px;
             cursor: pointer;
@@ -1001,23 +1139,23 @@ function showChapterList() {
             display: flex;
             align-items: center;
             gap: 15px;
-            color: #00ff00;
+            color: ${primaryColor};
             font-size: 16px;
         `;
         item.innerHTML = `
-            <div style="width: 30px; height: 30px; background: #00ff00; color: black; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold;">${parseInt(id) + 1}</div>
+            <div style="width: 30px; height: 30px; background: ${primaryColor}; color: black; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold;">${parseInt(id) + 1}</div>
             <span>${chapter.title}</span>
         `;
         item.onclick = () => {
             window.location.href = chapter.url;
         };
         item.onmouseover = () => {
-            item.style.background = 'rgba(0, 255, 0, 0.2)';
+            item.style.background = 'rgba(255, 255, 255, 0.1)';
             item.style.transform = 'translateY(-5px)';
-            item.style.boxShadow = '0 10px 20px rgba(0, 255, 0, 0.3)';
+            item.style.boxShadow = `0 10px 20px rgba(${currentBg === 'warm' ? '255, 215, 0' : '0, 255, 0'}, 0.3)`;
         };
         item.onmouseout = () => {
-            item.style.background = 'rgba(0, 255, 0, 0.1)';
+            item.style.background = 'rgba(255, 255, 255, 0.05)';
             item.style.transform = 'translateY(0)';
             item.style.boxShadow = 'none';
         };
@@ -1243,6 +1381,11 @@ function initKeyboardNavigation() {
             event.preventDefault();
             goMainSite();
             break;
+        case 'b':
+        case 'B':
+            event.preventDefault();
+            switchBackground();
+            break;
         }
     });
 }
@@ -1261,6 +1404,6 @@ window.addEventListener('DOMContentLoaded', () => {
         }
     }
 });
-    </script>
+</script>
 </body>
 </html>

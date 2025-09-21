@@ -1,978 +1,1134 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>函数性态与图形绘制实验室</title>
-
+    <title>优化问题实验室</title>
     <script>
         window.MathJax = {
             tex: {
                 inlineMath: [['$', '$'], ['\\(', '\\)']],
                 displayMath: [['$$', '$$'], ['\\[', '\\]']],
-                processEscapes: true,
-                processEnvironments: true
+                processEscapes: true
+            },
+            startup: {
+                pageReady: () => MathJax.startup.defaultPageReady()
             },
             options: {
                 skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
-            },
-            startup: {
-                pageReady: () => {
-                    return MathJax.startup.defaultPageReady().then(() => {
-                        console.log('MathJax加载完成');
-                    });
-                }
             }
         };
     </script>
     <script defer src="../common-assets/js/mathjax-3.2.2-tex-svg.min.js"></script>
-
     <style>
-    :root {
-        --primary: #4f46e5;
-        --primary-dark: #3730a3;
-        --primary-light: #6366f1;
-        --success: #10b981;
-        --warning: #f59e0b;
-        --danger: #ef4444;
-        --gray-50: #f9fafb;
-        --gray-100: #f3f4f6;
-        --gray-200: #e5e7eb;
-        --gray-300: #d1d5db;
-        --gray-500: #6b7280;
-        --gray-600: #4b5563;
-        --gray-700: #1f2937;
-        --white: #ffffff;
-        --light: #ffffff;
-        --border: #e5e7eb;
-        --h1-size: 22px;
-        --h3-size: 18px;
-        --text-size: 16px;
-        --formula-size: 20px;
-    }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        *::-webkit-scrollbar { width: 0; background: transparent; }
-        * { scrollbar-width: none; -ms-overflow-style: none; }
+        :root {
+            --primary: #4f46e5;
+            --primary-dark: #3730a3;
+            --primary-light: #6366f1;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --info: #0ea5e9;
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-500: #6b7280;
+            --gray-600: #4b5563;
+            --gray-700: #1f2937;
+            --white: #ffffff;
+            --border: #e5e7eb;
+            --h1-size: 22px;
+            --h3-size: 18px;
+            --text-size: 16px;
+        }
 
-            body {
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
-        font-size: var(--text-size);
-        line-height: 1.5;
-        background: var(--gray-50);
-        color: var(--gray-700);
-    }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-            .container {
-        width: 100%;
-        max-width: 1400px;
-        height: min(100vh, 700px);
-        margin: 0 auto;
-        display: flex;
-        flex-direction: column;
-        background: var(--white);
-    }
+        *::-webkit-scrollbar {
+            width: 0;
+            background: transparent;
+        }
 
-            .header {
-        height: 40px;
-        background: var(--primary);
-        color: var(--white);
-        display: flex;
-        align-items: center;
-        padding: 0 20px;
-    }
-            .header h1 { font-size: var(--h1-size); margin: 0; }
+        * {
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
 
-            .main { flex: 1; display: flex; overflow: hidden; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
+            font-size: var(--text-size);
+            background: var(--gray-50);
+            color: var(--gray-700);
+        }
 
-            .sidebar {
-        width: 120px;
-        background: var(--gray-50);
-        border-right: 1px solid var(--border);
-        padding: 10px 8px;
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-    }
+        .container {
+            width: 100%;
+            max-width: 1400px;
+            height: min(100vh, 700px);
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            background: var(--white);
+            border-radius: 12px;
+            box-shadow: 0 12px 32px rgba(15, 23, 42, 0.12);
+            overflow: hidden;
+        }
 
-            .nav-btn {
-        width: 100%;
-        padding: 8px;
-        background: transparent;
-        border: none;
-        border-radius: 6px;
-        cursor: pointer;
-        font-size: var(--text-size);
-        color: var(--gray-600);
-        text-align: left;
-        transition: background 0.2s ease, color 0.2s ease;
-    }
-            .nav-btn.active { background: var(--primary); color: var(--white); }
-            .nav-btn:hover { background: var(--gray-100); }
+        .header {
+            height: 44px;
+            background: linear-gradient(90deg, var(--primary), var(--primary-light));
+            color: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+        }
 
-            .content {
-        flex: 1;
-        position: relative;
-        overflow: hidden;
-        padding: 0;
-    }
+        .header h1 {
+            font-size: var(--h1-size);
+            font-weight: 600;
+        }
+
+        .header p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .main {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+        }
+
+        .sidebar {
+            width: 120px;
+            background: var(--gray-50);
+            border-right: 1px solid var(--border);
+            padding: 12px 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .nav-btn {
+            padding: 8px 10px;
+            border-radius: 8px;
+            border: none;
+            background: transparent;
+            color: var(--gray-600);
+            cursor: pointer;
+            text-align: left;
+            transition: background 0.2s ease, color 0.2s ease;
+        }
+
+        .nav-btn:hover {
+            background: var(--gray-100);
+        }
+
+        .nav-btn.active {
+            background: var(--primary);
+            color: var(--white);
+            box-shadow: 0 8px 18px rgba(79, 70, 229, 0.35);
+        }
+
+        .page-content {
+            display: none;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 18px;
+            padding: 16px;
+            height: 100%;
+        }
+
+        .page-content.active {
+            display: grid;
+        }
+
+        .column {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            overflow-y: auto;
+            padding-right: 4px;
+        }
+
+        .card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            box-shadow: 0 10px 24px rgba(15, 23, 42, 0.05);
+        }
+
+        .card h3 {
+            font-size: var(--h3-size);
+            color: var(--primary-dark);
+        }
+
+        .card p {
+            color: var(--gray-600);
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 10px;
+        }
+
+        .info-item {
+            background: var(--gray-50);
+            border: 1px solid var(--gray-200);
+            border-radius: 10px;
+            padding: 10px 12px;
+            font-size: 15px;
+        }
+
+        .info-item strong {
+            display: block;
+            margin-bottom: 6px;
+            color: var(--primary);
+        }
+
+        .tag-list {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .tag {
+            background: var(--gray-100);
+            color: var(--gray-500);
+            font-size: 13px;
+            padding: 4px 10px;
+            border-radius: 999px;
+        }
+
+        .status-box {
+            background: #eef2ff;
+            border: 1px dashed rgba(79, 70, 229, 0.4);
+            border-radius: 10px;
+            padding: 12px;
+            font-size: 14px;
+            color: var(--primary-dark);
+        }
+
+        .controls {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            background: var(--gray-50);
+            border: 1px solid var(--gray-200);
+            border-radius: 12px;
+            padding: 12px;
+        }
+
+        .control-row {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .control-row label {
+            font-weight: 600;
+            color: var(--gray-600);
+        }
+
+        select, input[type="range"] {
+            flex: 1;
+            padding: 8px 10px;
+            border-radius: 8px;
+            border: 1px solid var(--gray-300);
+            font-size: 15px;
+        }
+
+        .action-btn {
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: none;
+            background: var(--primary);
+            color: var(--white);
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .action-btn.secondary {
+            background: var(--white);
+            color: var(--primary);
+            border: 1px solid var(--primary);
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(79, 70, 229, 0.25);
+        }
+
+        .metric-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 10px;
+        }
+
+        .metric {
+            background: var(--gray-50);
+            border: 1px solid var(--gray-200);
+            border-radius: 10px;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .metric strong {
+            display: block;
+            font-size: 20px;
+            color: var(--primary);
+        }
+
+        .chart-wrapper {
+            border: 1px solid var(--gray-200);
+            border-radius: 12px;
+            padding: 12px;
+            background: var(--gray-50);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        canvas {
+            width: 100%;
+            height: 240px;
+            border-radius: 10px;
+            background: var(--white);
+        }
+
+        .legend {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            font-size: 14px;
+            color: var(--gray-600);
+        }
+
+        .legend span {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .legend i {
+            width: 14px;
+            height: 14px;
+            border-radius: 4px;
+            display: inline-block;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 15px;
+        }
+
+        th, td {
+            border: 1px solid var(--gray-200);
+            padding: 8px 10px;
+            text-align: center;
+        }
+
+        thead {
+            background: var(--gray-100);
+            color: var(--primary-dark);
+        }
+
+        .quiz-options {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 10px;
+        }
+
+        .quiz-option {
+            border: 1px solid var(--gray-200);
+            border-radius: 10px;
+            padding: 10px 12px;
+            cursor: pointer;
+            text-align: left;
+            transition: background 0.2s ease, border 0.2s ease;
+        }
+
+        .quiz-option.correct {
+            border-color: var(--success);
+            background: #ecfdf5;
+            color: #047857;
+        }
+
+        .quiz-option.wrong {
+            border-color: var(--danger);
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .history-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            font-size: 14px;
+            color: var(--gray-600);
+        }
+
+        .history-item {
+            display: flex;
+            justify-content: space-between;
+            border: 1px solid var(--gray-200);
+            background: var(--gray-50);
+            border-radius: 8px;
+            padding: 8px 10px;
+        }
+
+        @media (max-width: 1200px) {
             .page-content {
-        display: none;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 18px;
-        height: 100%;
-        padding: 16px;
-    }
-
-    .page-content.active {
-        display: grid;
-    }
-
-            .column { display: flex; flex-direction: column; gap: 16px; overflow-y: auto; padding-right: 4px; }
-
-            .card { background: var(--white); border: 1px solid var(--border); border-radius: 12px; padding: 12px; display: flex; flex-direction: column; gap: 10px; }
-        .card h3 { font-size: var(--h3-size); color: var(--primary-dark); }
-        .card p { line-height: 1.5; }
-        .card-scroll { overflow-y: auto; }
-
-        .tag-list { display: flex; gap: 8px; flex-wrap: wrap; }
-        .tag { font-size: 13px; padding: 4px 10px; border-radius: 999px; background: var(--gray-100); color: var(--gray-500); }
-
-        .controls { display: flex; flex-direction: column; gap: 10px; background: var(--gray-50); border: 1px solid var(--gray-200); border-radius: 10px; padding: 10px; }
-        .control-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
-        .control-row label { font-weight: 600; }
-        select, input[type="text"] { flex: 1; padding: 6px 8px; border-radius: 8px; border: 1px solid var(--gray-300); font-size: 15px; }
-        input[type="range"] { flex: 1; }
-        .btn-group { display: flex; gap: 10px; }
-        button.action { flex: 1; background: var(--primary); color: var(--white); border: none; border-radius: 8px; padding: 10px 12px; font-size: var(--text-size); cursor: pointer; transition: transform 0.2s ease; position: relative; z-index: 10; pointer-events: auto; }
-        button.action.secondary { background: var(--white); color: var(--primary); border: 1px solid var(--primary); }
-        button.action:hover { transform: translateY(-2px); }
-
-        .canvas-grid { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 12px; }
-        .canvas-item { border: 1px solid var(--gray-200); border-radius: 12px; background: var(--gray-50); padding: 8px; display: flex; flex-direction: column; gap: 6px; }
-        .canvas-item canvas { width: 100%; height: 160px; border-radius: 8px; background: var(--white); }
-        .canvas-item h4 { font-size: 15px; color: var(--primary-dark); }
-
-        .info-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 12px; }
-        .info-item { background: var(--gray-50); border: 1px solid var(--gray-200); border-radius: 10px; padding: 10px; font-size: 15px; }
-        .info-item strong { display: block; margin-bottom: 6px; color: var(--primary-dark); }
-
-        table { width: 100%; border-collapse: collapse; font-size: 15px; }
-        th, td { border: 1px solid var(--gray-200); padding: 8px; text-align: center; }
-        thead { background: var(--gray-100); }
-
-        .status-box { background: #eef2ff; color: var(--primary-dark); border-radius: 10px; padding: 10px; font-size: 14px; }
+                grid-template-columns: 1fr;
+            }
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <header class="header">
-            <h1>函数性态与图形绘制实验室</h1>
-            <div>综合 $f(x), f'(x), f''(x)$ 的信息构建精准图像</div>
+            <h1>优化问题实验室</h1>
+            <p>从导数出发寻找最优方案</p>
         </header>
         <div class="main">
             <nav class="sidebar">
-                <button class="nav-btn active" data-section="overview">综合观察</button>
-                <button class="nav-btn" data-section="concavity">凹凸性判断</button>
-                <button class="nav-btn" data-section="inflection">拐点分析</button>
+                <button class="nav-btn active" data-section="model">模型理解</button>
+                <button class="nav-btn" data-section="compare">方案比较</button>
+                <button class="nav-btn" data-section="practice">案例训练</button>
             </nav>
             <section class="content">
-                <!-- 综合观察页面 -->
-                <div class="page-content active" id="overview">
+                <div class="page-content active" id="model">
                     <div class="column">
-                        <div class="card card-scroll">
-                            <h3>学习指引</h3>
-                            <p>本实验聚焦于曲线的"整体性态"。通过三张同步画布展示 $f(x)$、$f'(x)$、$f''(x)$，配合扫描线和数值分析，你可以迅速判断凹凸区间、拐点位置以及图像的转折特征。</p>
-                            <div class="tag-list">
-                                <span class="tag">凹凸分析</span>
-                                <span class="tag">拐点检测</span>
-                                <span class="tag">三重对照</span>
-                                <span class="tag">动画扫描</span>
-                            </div>
-                            <div class="status-box" id="summaryBox">当前函数：$f(x)=x^3-3x$，二阶导数 $f''(x)=6x$，拐点位于 $x=0$，在 $x>0$ 区域曲线凹向上。</div>
-                        </div>
-
-                        <div class="card card-scroll">
-                            <h3>凹凸及拐点表</h3>
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>区间</th>
-                                        <th>$f''(x)$ 符号</th>
-                                        <th>凹凸性</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="concavityTable"></tbody>
-                            </table>
-                        </div>
-
                         <div class="card">
-                            <h3>结论速记</h3>
+                            <h3>实验导览</h3>
+                            <p>优化问题关注“最大”“最小”。通过导数判断趋势，我们可以迅速定位最佳方案，并解释其现实含义。</p>
+                            <div class="tag-list">
+                                <span class="tag">最值</span>
+                                <span class="tag">导数</span>
+                                <span class="tag">图像</span>
+                                <span class="tag">方案</span>
+                            </div>
+                            <div class="status-box" id="modelStatus">选择场景后显示最优解。</div>
+                        </div>
+                        <div class="card">
+                            <h3>操作步骤</h3>
                             <div class="info-grid">
-                                <div class="info-item">
-                                    <strong>凹凸判别</strong>
-                                    $f''(x)>0$ 凹向上（微笑形），$f''(x)<0$ 凹向下（皱眉形），符号改变处可能是拐点。
-                                </div>
-                                <div class="info-item">
-                                    <strong>图像形状</strong>
-                                    综合 $f'(x)$ 和 $f''(x)$ 可以判断图像的走势、弯曲方向以及极值类型。
-                                </div>
-                                <div class="info-item">
-                                    <strong>绘图步骤</strong>
-                                    先找驻点与拐点，再在各区间标出增减与凹凸，最后连接成光滑曲线。
-                                </div>
-                                <div class="info-item">
-                                    <strong>常见误区</strong>
-                                    忽略不可导点或二阶导数不存在的地方，可能导致漏判拐点或错误的凹凸结论。
-                                </div>
+                                <div class="info-item"><strong>① 函数建模</strong>把目标量写成变量 $x$ 的函数。</div>
+                                <div class="info-item"><strong>② 求导分析</strong>列出 $f'(x)$，解方程或判断符号。</div>
+                                <div class="info-item"><strong>③ 比较取值</strong>把端点与临界点代入 $f(x)$。</div>
+                                <div class="info-item"><strong>④ 翻译结论</strong>说明“导数为零”对应的现实意义。</div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <h3>进度提示</h3>
+                            <div class="info-grid">
+                                <div class="info-item" id="stepBadge1"><strong>任务 A</strong>读懂模型与图像。</div>
+                                <div class="info-item" id="stepBadge2"><strong>任务 B</strong>比较方案差异。</div>
+                                <div class="info-item" id="stepBadge3"><strong>任务 C</strong>解释最优方案。</div>
+                                <div class="info-item" id="stepBadge4"><strong>任务 D</strong>独立完成练习。</div>
                             </div>
                         </div>
                     </div>
-
                     <div class="column">
                         <div class="card">
-                            <h3>三重曲线同步观察</h3>
+                            <h3>优化模型面板</h3>
                             <div class="controls">
                                 <div class="control-row">
-                                    <label>选择函数</label>
-                                    <select id="presetSelector"></select>
+                                    <label for="scenarioSelect">选择场景</label>
+                                    <select id="scenarioSelect"></select>
                                 </div>
                                 <div class="control-row">
-                                    <label>自定义表达式</label>
-                                    <input type="text" id="customInput" placeholder="例如: Math.exp(-x*x) - x">
-                                    <button class="action secondary" id="applyCustom">应用</button>
+                                    <label for="variableSlider" id="variableLabel">自变量</label>
+                                    <input type="range" id="variableSlider" min="0" max="10" step="0.1" value="1">
+                                    <span id="variableValue">x = 1.00</span>
                                 </div>
                                 <div class="control-row">
-                                    <label>扫描速度</label>
-                                    <input type="range" id="speedSlider" min="1" max="5" step="1" value="3">
-                                    <span id="speedValue">偏快</span>
-                                    <button class="action" id="toggleScan">启动扫描</button>
-                                    <button class="action secondary" id="resetView">重置</button>
+                                    <button class="action-btn" id="autoScan">自动探索</button>
+                                    <button class="action-btn secondary" id="resetScenario">重置</button>
+                                </div>
+                                <div class="metric-grid">
+                                    <div class="metric"><span>目标值</span><strong id="objectiveValue">0.00</strong></div>
+                                    <div class="metric"><span>导数</span><strong id="derivativeValue">0.00</strong></div>
+                                    <div class="metric"><span>结论</span><strong id="optimalHint">待判断</strong></div>
                                 </div>
                             </div>
-                            <div class="canvas-grid">
-                                <div class="canvas-item">
-                                    <h4>$f(x)$</h4>
-                                    <canvas id="fxCanvas"></canvas>
-                                </div>
-                                <div class="canvas-item">
-                                    <h4>$f'(x)$</h4>
-                                    <canvas id="fxPrimeCanvas"></canvas>
-                                </div>
-                                <div class="canvas-item">
-                                    <h4>$f''(x)$</h4>
-                                    <canvas id="fxSecondCanvas"></canvas>
+                            <div class="chart-wrapper">
+                                <canvas id="objectiveCanvas"></canvas>
+                                <div class="legend">
+                                    <span><i style="background:#2563eb"></i> 目标函数</span>
+                                    <span><i style="background:#10b981"></i> 最优位置</span>
+                                    <span><i style="background:#f97316"></i> 当前选择</span>
                                 </div>
                             </div>
                         </div>
-
                         <div class="card">
-                            <h3>关键结论与解读</h3>
-                            <div class="info-grid">
-                                <div class="info-item">
-                                    <strong>拐点</strong>
-                                    <span id="inflectionInfo">拐点：$x=0$</span>
-                                </div>
-                                <div class="info-item">
-                                    <strong>凹凸区间</strong>
-                                    <span id="concavityInfo">$(-\\infty,0)$ 凹向下，$(0,\\infty)$ 凹向上</span>
-                                </div>
-                                <div class="info-item">
-                                    <strong>综合说明</strong>
-                                    <span id="explainInfo">扫描线经过拐点时，$f'(x)$ 的增长速度发生突变，图像弯曲方向改变。</span>
-                                </div>
-                                <div class="info-item">
-                                    <strong>即时提示</strong>
-                                    <span id="hintInfo">拖动或自动扫描会同步更新三张图和凹凸判断。</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="card">
-                            <h3>工程与设计应用</h3>
-                            <div class="info-grid">
-                                <div class="info-item">
-                                    <strong>结构工程</strong>
-                                    桥梁设计：分析弯矩图的凹凸性，确定最大弯矩点
-                                </div>
-                                <div class="info-item">
-                                    <strong>机械设计</strong>
-                                    凸轮设计：利用凹凸性控制运动轨迹的平滑性
-                                </div>
-                                <div class="info-item">
-                                    <strong>光学设计</strong>
-                                    透镜设计：分析光线路径的凹凸性，优化成像质量
-                                </div>
-                                <div class="info-item">
-                                    <strong>经济分析</strong>
-                                    成本函数：分析边际成本的变化趋势，找到最优点
-                                </div>
-                            </div>
-                            <div class="status-box">
-                                💡 提示：凹凸性分析在工程设计中非常重要，能帮助优化结构性能和降低成本。
-                            </div>
+                            <h3>最优方案总结</h3>
+                            <p id="scenarioSummary">最优方案将在此展示。</p>
+                            <div class="status-box" id="scenarioTips">导数符号说明了目标值随 $x$ 的变化方向。</div>
                         </div>
                     </div>
                 </div>
-
-                <!-- 凹凸性判断页面 -->
-                <div class="page-content" id="concavity">
+                <div class="page-content" id="compare">
                     <div class="column">
-                        <div class="card card-scroll">
-                            <h3>凹凸性判断</h3>
-                            <p>凹凸性是函数图像的重要特征，通过分析二阶导数的符号可以准确判断曲线的凹凸性。</p>
-                            <div class="tag-list">
-                                <span class="tag">二阶导数</span>
-                                <span class="tag">凹凸判别</span>
-                                <span class="tag">符号变化</span>
-                                <span class="tag">图像形状</span>
-                            </div>
-                            <div class="status-box">通过分析 $f''(x)$ 的符号来判断曲线的凹凸性。</div>
+                        <div class="card">
+                            <h3>方案评估表</h3>
+                            <table>
+                                <thead><tr><th>方案</th><th>$x$</th><th>目标值</th><th>评价</th></tr></thead>
+                                <tbody id="planTable"></tbody>
+                            </table>
                         </div>
                         <div class="card">
-                            <h3>凹凸性判别法</h3>
-                            <div class="info-grid">
-                                <div class="info-item">
-                                    <strong>凹向上</strong>
-                                    $f''(x) > 0$，曲线向上弯曲，形状如微笑。
-                                </div>
-                                <div class="info-item">
-                                    <strong>凹向下</strong>
-                                    $f''(x) < 0$，曲线向下弯曲，形状如皱眉。
-                                </div>
-                                <div class="info-item">
-                                    <strong>拐点</strong>
-                                    $f''(x) = 0$ 且符号改变，曲线弯曲方向改变。
-                                </div>
-                                <div class="info-item">
-                                    <strong>应用意义</strong>
-                                    凹凸性在经济学、工程学中有重要应用。
-                                </div>
-                            </div>
+                            <h3>关键步骤</h3>
+                            <div class="info-grid" id="stepList"></div>
                         </div>
                     </div>
                     <div class="column">
                         <div class="card">
-                            <h3>凹凸性可视化</h3>
-                            <div class="canvas-grid">
-                                <div class="canvas-item">
-                                    <h4>原函数</h4>
-                                    <canvas id="concavityCanvas"></canvas>
-                                </div>
-                                <div class="canvas-item">
-                                    <h4>二阶导数</h4>
-                                    <canvas id="secondDerivCanvas"></canvas>
+                            <h3>灵敏度分析</h3>
+                            <div class="chart-wrapper">
+                                <canvas id="sensitivityCanvas"></canvas>
+                                <div class="legend">
+                                    <span><i style="background:#0ea5e9"></i> $f'(x)$</span>
+                                    <span><i style="background:#f59e0b"></i> 临界点</span>
                                 </div>
                             </div>
+                        </div>
+                        <div class="card">
+                            <h3>应用讨论</h3>
+                            <p id="applicationNotes">切换场景后会显示行业中的应用解释。</p>
+                            <div class="status-box">用“导数为零”“导数改变符号”描述最优方案形成的原因。</div>
                         </div>
                     </div>
                 </div>
-
-                <!-- 拐点分析页面 -->
-                <div class="page-content" id="inflection">
+                <div class="page-content" id="practice">
                     <div class="column">
-                        <div class="card card-scroll">
-                            <h3>拐点分析</h3>
-                            <p>拐点是函数图像的重要特征点，是曲线凹凸性发生改变的位置。</p>
-                            <div class="tag-list">
-                                <span class="tag">拐点定义</span>
-                                <span class="tag">寻找方法</span>
-                                <span class="tag">判别条件</span>
-                                <span class="tag">实际应用</span>
+                        <div class="card">
+                            <h3>案例训练</h3>
+                            <p>选择正确的方案或结论，说明你的判断依据。</p>
+                            <div class="control-row">
+                                <button class="action-btn" id="startExercise">开始练习</button>
+                                <button class="action-btn secondary" id="nextExercise" disabled>下一题</button>
                             </div>
-                            <div class="status-box">拐点是曲线凹凸性发生改变的关键点。</div>
+                            <div id="exercisePanel" style="display:none; flex-direction:column; gap:12px;">
+                                <div class="status-box" id="exerciseStem">题目加载中...</div>
+                                <div class="quiz-options" id="exerciseOptions"></div>
+                                <div class="status-box" id="exerciseFeedback">请选择答案。</div>
+                            </div>
                         </div>
                         <div class="card">
-                            <h3>拐点判别</h3>
-                            <div class="info-grid">
-                                <div class="info-item">
-                                    <strong>必要条件</strong>
-                                    $f''(x_0) = 0$ 或 $f''(x_0)$ 不存在。
-                                </div>
-                                <div class="info-item">
-                                    <strong>充分条件</strong>
-                                    $f''(x)$ 在 $x_0$ 左右符号相反。
-                                </div>
-                                <div class="info-item">
-                                    <strong>几何意义</strong>
-                                    曲线在该点改变弯曲方向。
-                                </div>
-                                <div class="info-item">
-                                    <strong>物理意义</strong>
-                                    加速度为零或方向改变的点。
-                                </div>
+                            <h3>练习统计</h3>
+                            <div class="metric-grid">
+                                <div class="metric"><span>已作答</span><strong id="exerciseTotal">0</strong></div>
+                                <div class="metric"><span>正确数</span><strong id="exerciseCorrect">0</strong></div>
+                                <div class="metric"><span>平均得分</span><strong id="exerciseScore">0</strong></div>
                             </div>
                         </div>
                     </div>
                     <div class="column">
                         <div class="card">
-                            <h3>拐点可视化</h3>
-                            <div class="canvas-grid">
-                                <div class="canvas-item">
-                                    <h4>函数与拐点</h4>
-                                    <canvas id="inflectionCanvas"></canvas>
-                                </div>
-                                <div class="canvas-item">
-                                    <h4>二阶导数变化</h4>
-                                    <canvas id="secondDerivChangeCanvas"></canvas>
-                                </div>
-                            </div>
+                            <h3>复盘记录</h3>
+                            <div class="history-list" id="exerciseHistory"></div>
+                        </div>
+                        <div class="card">
+                            <h3>课堂提示</h3>
+                            <p>把“导数为正/负”的结论翻译成实际语言，如“切角再增大会让体积下降”。</p>
+                            <div class="status-box">请把你的判断写在学习单上，并和同伴说明推理过程。</div>
                         </div>
                     </div>
                 </div>
             </section>
         </div>
     </div>
-
     <script>
         function renderMath() {
             if (window.MathJax && MathJax.typesetPromise) {
-                MathJax.typesetPromise().catch(err => console.log('渲染错误:', err));
+                MathJax.typesetPromise().catch(err => console.warn('渲染失败', err));
             }
         }
 
-        // 确保页面加载完成后渲染数学公式
-        document.addEventListener('DOMContentLoaded', function() {
-            setTimeout(renderMath, 100);
-        });
+        const scenarios = {
+            box: {
+                label: '纸板开口箱体',
+                description: '从 $30\\text{cm}\times20\\text{cm}$ 的纸板四角裁去边长 $x$ 的正方形并折起侧面，体积 $V(x)=x(30-2x)(20-2x)$。',
+                domain: [0.5, 8.5],
+                objective: x => x * (30 - 2 * x) * (20 - 2 * x),
+                derivative: x => 12 * x * x - 200 * x + 600,
+                unit: 'cm³',
+                variableLabel: '切角边长 x (cm)',
+                steps: [
+                    '建立体积函数 $V(x)=x(30-2x)(20-2x)$。',
+                    '求导得到 $V'(x)=12x^2-200x+600$。',
+                    '解 $V'(x)=0$ 得 $x\approx3.9$，比较端点确定最大值。',
+                    '解释：裁剪约 3.9cm 时体积最大，约 $1485\text{cm}^3$。'
+                ],
+                plans: [
+                    { name: '方案 A', x: 2, note: '体积偏小，材料利用不足。' },
+                    { name: '方案 B', x: 3.5, note: '接近最优，可作为备用方案。' },
+                    { name: '参考方案', x: 3.9, note: '导数为零且为最大值。' }
+                ],
+                application: '包装设计：在给定纸板尺寸下获得最大容积。'
+            },
+            fence: {
+                label: '围栏最大面积',
+                description: '使用 120m 围栏围成三边矩形，面积 $A(x)=x(120-2x)$。',
+                domain: [1, 59],
+                objective: x => x * (120 - 2 * x),
+                derivative: x => 120 - 4 * x,
+                unit: 'm²',
+                variableLabel: '垂直墙壁长度 x (m)',
+                steps: [
+                    '面积函数 $A(x)=x(120-2x)$。',
+                    '导数 $A'(x)=120-4x$。',
+                    '令导数为零得 $x=30$，端点面积为 0，可判定最大值。',
+                    '解释：垂直墙壁 30m 时面积最大，为 1800m²。'
+                ],
+                plans: [
+                    { name: '方案一', x: 20, note: '面积 1600m²，可继续提升。' },
+                    { name: '方案二', x: 30, note: '面积 1800m²，导数由正转负。' },
+                    { name: '方案三', x: 40, note: '面积回落至 1600m²。' }
+                ],
+                application: '畜舍和菜地的围栏规划问题。'
+            },
+            production: {
+                label: '生产利润优化',
+                description: '利润函数 $P(q)=-0.02q^2+2q-30$（单位：千元），其中 $q$ 为产量。',
+                domain: [0, 120],
+                objective: q => -0.02 * q * q + 2 * q - 30,
+                derivative: q => -0.04 * q + 2,
+                unit: '千元',
+                variableLabel: '产量 q (件)',
+                steps: [
+                    '利润函数 $P(q)=-0.02q^2+2q-30$。',
+                    '导数 $P'(q)=-0.04q+2$。',
+                    '令导数为零得 $q=50$，端点利润更低。',
+                    '解释：产量 50 件时利润最大，约 20 千元。'
+                ],
+                plans: [
+                    { name: '试产 30 件', x: 30, note: '利润约 6 千元，尚未最优。' },
+                    { name: '推荐产量', x: 50, note: '利润约 20 千元，达到最大。' },
+                    { name: '超量 90 件', x: 90, note: '利润下降，导数为负。' }
+                ],
+                application: '企业生产计划与边际分析。'
+            }
+        };
 
-        function setupCanvas(canvas) {
-            const ctx = canvas.getContext('2d');
+        const exercises = [
+            {
+                stem: "若成本函数 $C(x)=x^3-9x^2+24x$，何处成本最小？",
+                options: ['x=0', 'x=2', 'x=3', 'x=6'],
+                answer: 1,
+                explain: "$C'(x)=3x^2-18x+24=3(x-2)(x-4)$，在 $x=2$ 处导数由负变正，对应极小值。"
+            },
+            {
+                stem: "利润函数 $P(q)=-0.01q^2+1.2q-15$，若导数为 $P'(q)=-0.02q+1.2$，应选择的产量是？",
+                options: ['q=0', 'q=20', 'q=40', 'q=60'],
+                answer: 3,
+                explain: "令 $P'(q)=-0.02q+1.2=0$ 得 $q=60$，此时利润最大。"
+            },
+            {
+                stem: "使用 40m 围栏围成长方形（四边），面积 $A(x)=x(20-x)$。最大面积时边长 $x$ 为？",
+                options: ['5m', '10m', '15m', '20m'],
+                answer: 1,
+                explain: "$A'(x)=20-2x$，令导数为零得 $x=10$，面积最大。"
+            },
+            {
+                stem: "若导数 $f'(x)$ 在 $x=4$ 左侧为正、右侧为负，可得结论？",
+                options: ['$x=4$ 为最小值', '$x=4$ 为最大值', '函数无最值', '函数先减后增'],
+                answer: 1,
+                explain: '导数由正变负说明函数先升后降，$x=4$ 为极大值。'
+            }
+        ];
+        const navButtons = document.querySelectorAll('.nav-btn');
+        const pages = document.querySelectorAll('.page-content');
+        const scenarioSelect = document.getElementById('scenarioSelect');
+        const variableSlider = document.getElementById('variableSlider');
+        const variableLabel = document.getElementById('variableLabel');
+        const variableValue = document.getElementById('variableValue');
+        const autoScanBtn = document.getElementById('autoScan');
+        const resetBtn = document.getElementById('resetScenario');
+        const objectiveValue = document.getElementById('objectiveValue');
+        const derivativeValue = document.getElementById('derivativeValue');
+        const optimalHint = document.getElementById('optimalHint');
+        const modelStatus = document.getElementById('modelStatus');
+        const scenarioSummary = document.getElementById('scenarioSummary');
+        const scenarioTips = document.getElementById('scenarioTips');
+        const planTable = document.getElementById('planTable');
+        const stepList = document.getElementById('stepList');
+        const applicationNotes = document.getElementById('applicationNotes');
+        const exercisePanel = document.getElementById('exercisePanel');
+        const exerciseStem = document.getElementById('exerciseStem');
+        const exerciseOptions = document.getElementById('exerciseOptions');
+        const exerciseFeedback = document.getElementById('exerciseFeedback');
+        const startExerciseBtn = document.getElementById('startExercise');
+        const nextExerciseBtn = document.getElementById('nextExercise');
+        const exerciseTotal = document.getElementById('exerciseTotal');
+        const exerciseCorrect = document.getElementById('exerciseCorrect');
+        const exerciseScore = document.getElementById('exerciseScore');
+        const exerciseHistory = document.getElementById('exerciseHistory');
+        const stepBadges = [
+            document.getElementById('stepBadge1'),
+            document.getElementById('stepBadge2'),
+            document.getElementById('stepBadge3'),
+            document.getElementById('stepBadge4')
+        ];
+
+        const objectiveCanvas = document.getElementById('objectiveCanvas');
+        const sensitivityCanvas = document.getElementById('sensitivityCanvas');
+
+        let currentScenarioKey = 'box';
+        let activeSection = 'model';
+        let scanId = null;
+        let scanningForward = true;
+        let exerciseIndex = -1;
+        let stats = { total: 0, correct: 0 };
+        const historyRecords = [];
+
+        function setupCanvas(canvas, fallbackWidth = 420, fallbackHeight = 240) {
+            if (!canvas) return null;
             const rect = canvas.getBoundingClientRect();
             const dpr = window.devicePixelRatio || 1;
-            canvas.width = rect.width * dpr;
-            canvas.height = rect.height * dpr;
-            canvas.style.width = rect.width + 'px';
-            canvas.style.height = rect.height + 'px';
+            const width = rect.width || canvas.clientWidth || fallbackWidth;
+            const height = rect.height || canvas.clientHeight || fallbackHeight;
+            canvas.width = width * dpr;
+            canvas.height = height * dpr;
+            canvas.style.width = `${width}px`;
+            canvas.style.height = `${height}px`;
+            const ctx = canvas.getContext('2d');
+            ctx.setTransform(1, 0, 0, 1, 0, 0);
             ctx.scale(dpr, dpr);
-            return { ctx, width: rect.width, height: rect.height };
+            return { ctx, width, height };
         }
 
-        function drawAxes(ctx, width, height) {
-            const padding = 30;
+        function toCanvasX(x, width, domain, padding = 40) {
+            return padding + (x - domain[0]) / (domain[1] - domain[0]) * (width - 2 * padding);
+        }
+
+        function toCanvasY(y, height, range, padding = 40) {
+            return height - (padding + (y - range[0]) / (range[1] - range[0]) * (height - 2 * padding));
+        }
+
+        function drawAxes(ctx, width, height, domain, range) {
+            const padding = 40;
             ctx.save();
-            ctx.strokeStyle = '#e2e8f0';
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0, 0, width, height);
+            ctx.strokeStyle = '#e5e7eb';
             ctx.lineWidth = 1;
-            for (let i = 0; i <= 6; i++) {
-                const x = padding + i * (width - 2 * padding) / 6;
+            const gridCount = 6;
+            for (let i = 0; i <= gridCount; i++) {
+                const gx = padding + (width - 2 * padding) * (i / gridCount);
                 ctx.beginPath();
-                ctx.moveTo(x, padding);
-                ctx.lineTo(x, height - padding);
+                ctx.moveTo(gx, padding);
+                ctx.lineTo(gx, height - padding);
                 ctx.stroke();
-                const y = padding + i * (height - 2 * padding) / 6;
+
+                const gy = padding + (height - 2 * padding) * (i / gridCount);
                 ctx.beginPath();
-                ctx.moveTo(padding, y);
-                ctx.lineTo(width - padding, y);
+                ctx.moveTo(padding, gy);
+                ctx.lineTo(width - padding, gy);
                 ctx.stroke();
             }
+            const zeroX = padding + (-domain[0]) / (domain[1] - domain[0]) * (width - 2 * padding);
+            const zeroY = height - (padding + (-range[0]) / (range[1] - range[0]) * (height - 2 * padding));
             ctx.strokeStyle = '#1f2937';
-            ctx.lineWidth = 1.2;
-            ctx.beginPath(); ctx.moveTo(padding, height / 2); ctx.lineTo(width - padding, height / 2); ctx.stroke();
-            ctx.beginPath(); ctx.moveTo(width / 2, padding); ctx.lineTo(width / 2, height - padding); ctx.stroke();
+            ctx.lineWidth = 1.4;
+            if (zeroY >= padding && zeroY <= height - padding) {
+                ctx.beginPath();
+                ctx.moveTo(padding, zeroY);
+                ctx.lineTo(width - padding, zeroY);
+                ctx.stroke();
+            }
+            if (zeroX >= padding && zeroX <= width - padding) {
+                ctx.beginPath();
+                ctx.moveTo(zeroX, padding);
+                ctx.lineTo(zeroX, height - padding);
+                ctx.stroke();
+            }
             ctx.restore();
         }
 
-        function mathToCanvas(x, y, width, height, xRange, yRange, padding = 30) {
-            const plotWidth = width - 2 * padding;
-            const plotHeight = height - 2 * padding;
-            const cx = padding + (x - xRange[0]) / (xRange[1] - xRange[0]) * plotWidth;
-            const cy = height - padding - (y - yRange[0]) / (yRange[1] - yRange[0]) * plotHeight;
-            return { x: cx, y: cy };
+        function formatNumber(value, digits = 2) {
+            if (!Number.isFinite(value)) return '∞';
+            if (Math.abs(value) >= 1000 || Math.abs(value) < 0.001) return value.toExponential(2);
+            return value.toFixed(digits);
         }
 
-        function derivative(fn, x, h = 1e-4) {
-            const f1 = fn(x + h);
-            const f2 = fn(x - h);
-            if (!Number.isFinite(f1) || !Number.isFinite(f2)) return NaN;
-            return (f1 - f2) / (2 * h);
+        function clamp(value, min, max) {
+            return Math.max(min, Math.min(max, value));
         }
 
-        function secondDerivative(fn, x, h = 1e-3) {
-            const f1 = fn(x + h);
-            const f2 = fn(x);
-            const f3 = fn(x - h);
-            if (!Number.isFinite(f1) || !Number.isFinite(f2) || !Number.isFinite(f3)) return NaN;
-            return (f1 - 2 * f2 + f3) / (h * h);
-        }
-
-        const presets = {
-            cubic: { name: '$x^3 - 3x$', expression: 'x*x*x - 3*x', domain: [-4, 4] },
-            quartic: { name: '$x^4 - 2x^2$', expression: 'Math.pow(x,4) - 2*Math.pow(x,2)', domain: [-3, 3] },
-            logistic: { name: '$\frac{1}{1+e^{-x}}$', expression: '1/(1+Math.exp(-x))', domain: [-6, 6] }
-        };
-
-        let currentFn = x => x * x * x - 3 * x;
-        let currentExpression = 'x*x*x - 3*x';
-        let domain = [-4, 4];
-        let scanActive = false;
-        let scanX = -4;
-        let scanDirection = 1;
-        let animationFrame = null;
-
-        const presetSelector = document.getElementById('presetSelector');
-        const customInput = document.getElementById('customInput');
-        const applyCustomBtn = document.getElementById('applyCustom');
-        const speedSlider = document.getElementById('speedSlider');
-        const speedValue = document.getElementById('speedValue');
-        const toggleScanBtn = document.getElementById('toggleScan');
-        const resetViewBtn = document.getElementById('resetView');
-        const navButtons = document.querySelectorAll('.nav-btn');
-        const pages = document.querySelectorAll('.page-content');
-
-        const fxCanvas = document.getElementById('fxCanvas');
-        const fxPrimeCanvas = document.getElementById('fxPrimeCanvas');
-        const fxSecondCanvas = document.getElementById('fxSecondCanvas');
-
-        const concavityTable = document.getElementById('concavityTable');
-        const summaryBox = document.getElementById('summaryBox');
-        const inflectionInfo = document.getElementById('inflectionInfo');
-        const concavityInfo = document.getElementById('concavityInfo');
-        const explainInfo = document.getElementById('explainInfo');
-        const hintInfo = document.getElementById('hintInfo');
-
-        let concavityData = [];
-
-        function populatePresetSelector() {
-            Object.entries(presets).forEach(([key, item]) => {
-                const option = document.createElement('option');
-                option.value = key;
-                option.innerHTML = item.name;
-                presetSelector.appendChild(option);
-            });
-            presetSelector.value = 'cubic';
-        }
-
-        function parseExpression(expr) {
-            try {
-                const sanitized = expr.replace(/\^/g, '**');
-                return new Function('x', `return ${sanitized};`);
-            } catch (e) {
-                return null;
-            }
-        }
-
-        function safeEval(fn, x) {
-            try {
-                const v = fn(x);
-                if (!Number.isFinite(v)) return NaN;
-                return v;
-            } catch (e) {
-                return NaN;
-            }
-        }
-
-        function analyzeConcavity() {
-            const points = findInflectionPoints();
-            concavityData = buildConcavityIntervals(points);
-            updateConcavityTable(points);
-            updateSummary(points);
-            drawAllCanvases();
-        }
-
-        function findInflectionPoints(samples = 240) {
-            const pts = [];
-            const [minX, maxX] = domain;
-            let prevX = minX;
-            let prevSecond = secondDerivative(currentFn, prevX);
-            for (let i = 1; i <= samples; i++) {
-                const x = minX + (i / samples) * (maxX - minX);
-                const second = secondDerivative(currentFn, x);
-                if (!Number.isFinite(second) || !Number.isFinite(prevSecond)) {
-                    prevX = x; prevSecond = second; continue;
-                }
-                if (Math.abs(second) < 1e-4) {
-                    pts.push(x);
-                } else if (prevSecond * second < 0) {
-                    let left = prevX;
-                    let right = x;
-                    for (let k = 0; k < 18; k++) {
-                        const mid = (left + right) / 2;
-                        const midSecond = secondDerivative(currentFn, mid);
-                        if (!Number.isFinite(midSecond)) break;
-                        if (prevSecond * midSecond <= 0) {
-                            right = mid;
-                        } else {
-                            left = mid;
-                            prevSecond = midSecond;
-                        }
-                    }
-                    pts.push((left + right) / 2);
-                }
-                prevX = x;
-                prevSecond = second;
-            }
-            return Array.from(new Set(pts.map(p => parseFloat(p.toFixed(3))))).sort((a, b) => a - b);
-        }
-
-        function buildConcavityIntervals(points) {
-            const arr = [domain[0], ...points, domain[1]];
-            const intervals = [];
-            for (let i = 0; i < arr.length - 1; i++) {
-                const left = arr[i];
-                const right = arr[i + 1];
-                const mid = (left + right) / 2;
-                const second = secondDerivative(currentFn, mid);
-                let status = 'flat';
-                if (Number.isFinite(second)) {
-                    if (second > 0) status = 'up';
-                    else if (second < 0) status = 'down';
-                }
-                intervals.push({ left, right, mid, status });
-            }
-            return intervals;
-        }
-
-        function updateConcavityTable(points) {
-            concavityTable.innerHTML = '';
-            concavityData.forEach(interval => {
-                const row = document.createElement('tr');
-                const intervalCell = document.createElement('td');
-                intervalCell.innerHTML = `$(${format(interval.left)}, ${format(interval.right)})$`;
-                const signCell = document.createElement('td');
-                signCell.textContent = interval.status === 'up' ? '正' : interval.status === 'down' ? '负' : '0';
-                const concavityCell = document.createElement('td');
-                concavityCell.textContent = interval.status === 'up' ? '凹向上' : interval.status === 'down' ? '凹向下' : '待定';
-                row.appendChild(intervalCell);
-                row.appendChild(signCell);
-                row.appendChild(concavityCell);
-                concavityTable.appendChild(row);
-            });
-            renderMath();
-        }
-
-        function updateSummary(points) {
-            const expressionDisplay = currentExpression.replace(/\*/g, '\\cdot ');
-            summaryBox.innerHTML = `当前函数：$f(x)=${expressionDisplay}$，检测到拐点 ${points.length ? points.map(p => p.toFixed(2)).join(', ') : '无'}。`;
-            inflectionInfo.innerHTML = points.length ? points.map(p => `$x=${p.toFixed(2)}$`).join('，') : '暂无拐点';
-            concavityInfo.innerHTML = concavityData.map(item => `$(${format(item.left)}, ${format(item.right)})${item.status === 'up' ? '凹向上' : item.status === 'down' ? '凹向下' : '待定'}$`).join('，');
-            explainInfo.innerHTML = points.length ? '在拐点附近，$f''(x)$ 的符号发生改变，图像弯曲方向随之变化。' : '暂无符号改变，曲线在定义域内保持同一凹凸性。';
-            renderMath();
-        }
-
-        function drawAllCanvases() {
-            drawCanvasWithFunction(fxCanvas, currentFn, '#1d4ed8');
-            drawCanvasWithFunction(fxPrimeCanvas, x => derivative(currentFn, x), '#f97316');
-            drawCanvasWithFunction(fxSecondCanvas, x => secondDerivative(currentFn, x), '#0ea5e9', true);
-        }
-
-        function drawCanvasWithFunction(canvas, fn, color, showSmile = false) {
-            const { ctx, width, height } = setupCanvas(canvas);
-            ctx.clearRect(0, 0, width, height);
-            drawAxes(ctx, width, height);
-            const [minX, maxX] = domain;
-            const samples = 500;
-            let minY = Infinity, maxY = -Infinity;
+        function sampleScenario(config) {
             const points = [];
-            for (let i = 0; i <= samples; i++) {
-                const x = minX + (i / samples) * (maxX - minX);
-                const y = safeEval(fn, x);
-                if (!Number.isFinite(y)) continue;
-                minY = Math.min(minY, y);
-                maxY = Math.max(maxY, y);
-                points.push({ x, y });
+            const domain = config.domain;
+            const steps = 320;
+            let minY = Infinity;
+            let maxY = -Infinity;
+            for (let i = 0; i <= steps; i++) {
+                const x = domain[0] + (i / steps) * (domain[1] - domain[0]);
+                const fx = config.objective(x);
+                const dx = config.derivative(x);
+                if (Number.isFinite(fx)) {
+                    minY = Math.min(minY, fx);
+                    maxY = Math.max(maxY, fx);
+                }
+                points.push({ x, fx, dx });
             }
-            const pad = (maxY - minY) * 0.2 || 1;
-            const yRange = [minY - pad, maxY + pad];
+            if (!Number.isFinite(minY) || !Number.isFinite(maxY)) {
+                minY = -5;
+                maxY = 5;
+            }
+            if (Math.abs(maxY - minY) < 1e-3) {
+                minY -= 1;
+                maxY += 1;
+            }
+            const padding = (maxY - minY) * 0.2 || 1;
+            return { points, range: [minY - padding, maxY + padding] };
+        }
+
+        function findOptimum(config) {
+            const { domain } = config;
+            let bestX = domain[0];
+            let bestValue = config.objective(bestX);
+            const step = (domain[1] - domain[0]) / 500;
+            for (let x = domain[0]; x <= domain[1]; x += step) {
+                const value = config.objective(x);
+                if (value > bestValue) {
+                    bestValue = value;
+                    bestX = x;
+                }
+            }
+            return { x: bestX, value: bestValue };
+        }
+
+        function updateBadges(level) {
+            stepBadges.forEach((badge, index) => {
+                if (!badge) return;
+                if (index <= level) {
+                    badge.style.background = '#eef2ff';
+                    badge.style.border = '1px solid var(--primary)';
+                } else {
+                    badge.style.background = 'var(--gray-50)';
+                    badge.style.border = '1px solid var(--gray-200)';
+                }
+            });
+        }
+
+        function drawObjectiveCanvas() {
+            const setup = setupCanvas(objectiveCanvas);
+            if (!setup) return;
+            const { ctx, width, height } = setup;
+            const config = scenarios[currentScenarioKey];
+            const { points, range } = sampleScenario(config);
+            const domain = config.domain;
+            drawAxes(ctx, width, height, domain, range);
             ctx.save();
-            ctx.strokeStyle = color;
-            ctx.lineWidth = 2;
+            ctx.strokeStyle = '#2563eb';
+            ctx.lineWidth = 2.2;
             ctx.beginPath();
             let started = false;
-            points.forEach(({ x, y }) => {
-                const { x: cx, y: cy } = mathToCanvas(x, y, width, height, domain, yRange);
+            points.forEach(({ x, fx }) => {
+                if (!Number.isFinite(fx)) { started = false; return; }
+                const cx = toCanvasX(x, width, domain);
+                const cy = toCanvasY(fx, height, range);
                 if (!started) { ctx.moveTo(cx, cy); started = true; }
                 else ctx.lineTo(cx, cy);
             });
             ctx.stroke();
             ctx.restore();
-            if (showSmile) drawConcavityMarks(ctx, width, height, yRange);
-            drawScanLine(ctx, width, height, yRange, color);
-        }
-
-        function drawConcavityMarks(ctx, width, height, yRange) {
-            const radius = 12;
-            concavityData.forEach(interval => {
-                const mid = (interval.left + interval.right) / 2;
-                const value = safeEval(x => secondDerivative(currentFn, x), mid);
-                const { x, y } = mathToCanvas(mid, 0, width, height, domain, yRange);
-                ctx.save();
-                ctx.translate(x, height / 2);
-                ctx.beginPath();
-                if (interval.status === 'up') {
-                    ctx.strokeStyle = '#10b981';
-                    ctx.arc(0, 6, radius, Math.PI, 2 * Math.PI);
-                    ctx.moveTo(-radius, 5);
-                    ctx.lineTo(-radius + 4, 0);
-                    ctx.moveTo(radius, 5);
-                    ctx.lineTo(radius - 4, 0);
-                } else if (interval.status === 'down') {
-                    ctx.strokeStyle = '#ef4444';
-                    ctx.arc(0, -6, radius, 0, Math.PI);
-                    ctx.moveTo(-radius, -5);
-                    ctx.lineTo(-radius + 4, 0);
-                    ctx.moveTo(radius, -5);
-                    ctx.lineTo(radius - 4, 0);
-                }
-                ctx.stroke();
-                ctx.restore();
-            });
-        }
-
-        function drawScanLine(ctx, width, height, yRange, color) {
-            if (!scanActive) return;
-            const { x } = mathToCanvas(scanX, 0, width, height, domain, yRange);
+            const optimum = findOptimum(config);
+            const optX = toCanvasX(optimum.x, width, domain);
+            const optY = toCanvasY(optimum.value, height, range);
             ctx.save();
-            ctx.strokeStyle = color;
-            ctx.setLineDash([6, 6]);
+            ctx.fillStyle = '#10b981';
             ctx.beginPath();
-            ctx.moveTo(x, 15);
-            ctx.lineTo(x, height - 15);
-            ctx.stroke();
+            ctx.arc(optX, optY, 5, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.font = '13px "Segoe UI", sans-serif';
+            ctx.fillText('最优', optX + 6, optY - 6);
+            ctx.restore();
+            const currentX = parseFloat(variableSlider.value);
+            const currentValue = config.objective(currentX);
+            ctx.save();
+            ctx.fillStyle = '#f97316';
+            ctx.beginPath();
+            ctx.arc(toCanvasX(currentX, width, domain), toCanvasY(currentValue, height, range), 4, 0, Math.PI * 2);
+            ctx.fill();
             ctx.restore();
         }
 
-        function animateScan() {
-            const speed = parseInt(speedSlider.value, 10);
-            const delta = (domain[1] - domain[0]) / (speed === 1 ? 700 : speed === 2 ? 450 : speed === 3 ? 300 : speed === 4 ? 180 : 120);
-            scanX += scanDirection * delta;
-            if (scanX >= domain[1] || scanX <= domain[0]) {
-                scanDirection *= -1;
-                scanX = Math.max(domain[0], Math.min(domain[1], scanX));
+        function drawSensitivityCanvas() {
+            const setup = setupCanvas(sensitivityCanvas, 420, 220);
+            if (!setup) return;
+            const { ctx, width, height } = setup;
+            const config = scenarios[currentScenarioKey];
+            const { points } = sampleScenario(config);
+            const domain = config.domain;
+            let minY = Infinity;
+            let maxY = -Infinity;
+            points.forEach(({ dx }) => {
+                if (Number.isFinite(dx)) {
+                    minY = Math.min(minY, dx);
+                    maxY = Math.max(maxY, dx);
+                }
+            });
+            if (!Number.isFinite(minY) || !Number.isFinite(maxY)) {
+                minY = -5;
+                maxY = 5;
             }
-            const concavity = secondDerivative(currentFn, scanX);
-            hintInfo.textContent = `当前 $x=${scanX.toFixed(2)}$，$f''(x)=${Number.isFinite(concavity) ? concavity.toFixed(3) : '∞'}$，曲线${concavity > 0 ? '凹向上' : concavity < 0 ? '凹向下' : '接近拐点' }。`;
-            drawAllCanvases();
-            animationFrame = requestAnimationFrame(animateScan);
+            const padding = (maxY - minY) * 0.2 || 1;
+            const range = [minY - padding, maxY + padding];
+            drawAxes(ctx, width, height, domain, range);
+            ctx.save();
+            ctx.strokeStyle = '#0ea5e9';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            let started = false;
+            points.forEach(({ x, dx }) => {
+                if (!Number.isFinite(dx)) { started = false; return; }
+                const cx = toCanvasX(x, width, domain);
+                const cy = toCanvasY(dx, height, range);
+                if (!started) { ctx.moveTo(cx, cy); started = true; }
+                else ctx.lineTo(cx, cy);
+            });
+            ctx.stroke();
+            ctx.restore();
+            const optimum = findOptimum(config);
+            ctx.save();
+            ctx.fillStyle = '#f59e0b';
+            ctx.beginPath();
+            ctx.arc(toCanvasX(optimum.x, width, domain), toCanvasY(0, height, range), 4, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+        }
+
+        function populateScenarioOptions() {
+            Object.entries(scenarios).forEach(([key, config]) => {
+                const option = document.createElement('option');
+                option.value = key;
+                option.textContent = config.label;
+                scenarioSelect.appendChild(option);
+            });
+            scenarioSelect.value = currentScenarioKey;
+        }
+
+        function updateScenarioInfo() {
+            const config = scenarios[currentScenarioKey];
+            variableLabel.textContent = config.variableLabel;
+            modelStatus.textContent = config.description;
+            const optimum = findOptimum(config);
+            scenarioSummary.innerHTML = `最优位置约在 $x=${formatNumber(optimum.x, 2)}$，目标值约为 ${formatNumber(optimum.value, 2)} ${config.unit}。`;
+            scenarioTips.textContent = '导数为零的位置需要通过比较确认是最大值还是最小值。';
+            applicationNotes.textContent = config.application;
+            planTable.innerHTML = config.plans.map(plan => {
+                const value = config.objective(plan.x);
+                return `<tr><td>${plan.name}</td><td>${formatNumber(plan.x, 2)}</td><td>${formatNumber(value, 2)} ${config.unit}</td><td>${plan.note}</td></tr>`;
+            }).join('');
+            stepList.innerHTML = config.steps.map(step => `<div class="info-item">${step}</div>`).join('');
+            renderMath();
+        }
+
+        function updateCurrentValues() {
+            const config = scenarios[currentScenarioKey];
+            const x = parseFloat(variableSlider.value);
+            const value = config.objective(x);
+            const derivative = config.derivative(x);
+            variableValue.textContent = `${config.variableLabel.split(' ')[0]} = ${formatNumber(x, 2)}`;
+            objectiveValue.textContent = formatNumber(value, 2);
+            derivativeValue.textContent = formatNumber(derivative, 3);
+            optimalHint.textContent = derivative > 0 ? '继续增大提高目标值' : derivative < 0 ? '继续增大目标值下降' : '导数为零，检查是否最优';
         }
 
         function stopScan() {
-            scanActive = false;
-            toggleScanBtn.textContent = '启动扫描';
-            if (animationFrame) cancelAnimationFrame(animationFrame);
-            animationFrame = null;
-            drawAllCanvases();
-        }
-
-        function format(value) {
-            if (!Number.isFinite(value)) return '∞';
-            if (Math.abs(value) >= 1000 || Math.abs(value) < 0.001) return value.toExponential(2);
-            return value.toFixed(2);
-        }
-
-        presetSelector.addEventListener('change', () => {
-            const item = presets[presetSelector.value];
-            if (!item) return;
-            const fn = parseExpression(item.expression);
-            if (!fn) return;
-            currentFn = fn;
-            currentExpression = item.expression;
-            domain = item.domain.slice();
-            scanX = domain[0];
-            scanDirection = 1;
-            stopScan();
-            analyzeConcavity();
-        });
-
-        applyCustomBtn.addEventListener('click', () => {
-            const expr = customInput.value.trim();
-            if (!expr) return;
-            const fn = parseExpression(expr);
-            if (!fn) {
-                hintInfo.textContent = '表达式解析失败，请使用 Math 函数并检查语法。';
-                return;
+            if (scanId) {
+                cancelAnimationFrame(scanId);
+                scanId = null;
             }
-            currentFn = fn;
-            currentExpression = expr;
-            domain = [-5, 5];
-            scanX = domain[0];
-            scanDirection = 1;
-            stopScan();
-            analyzeConcavity();
-        });
-
-        speedSlider.addEventListener('input', () => {
-            const value = parseInt(speedSlider.value, 10);
-            speedValue.textContent = value === 1 ? '慢速' : value === 2 ? '中速' : value === 3 ? '偏快' : value === 4 ? '快速' : '极速';
-        });
-
-        toggleScanBtn.addEventListener('click', () => {
-            scanActive = !scanActive;
-            if (scanActive) {
-                toggleScanBtn.textContent = '暂停扫描';
-                animationFrame = requestAnimationFrame(animateScan);
-            } else {
-                stopScan();
-            }
-        });
-
-        resetViewBtn.addEventListener('click', () => {
-            presetSelector.value = 'cubic';
-            const item = presets['cubic'];
-            currentFn = parseExpression(item.expression);
-            currentExpression = item.expression;
-            domain = item.domain.slice();
-            scanX = domain[0];
-            scanDirection = 1;
-            customInput.value = '';
-            stopScan();
-            analyzeConcavity();
-        });
-
-        // 页面切换功能
-        function switchPage(section) {
-            pages.forEach(page => {
-                page.classList.toggle('active', page.id === section);
-            });
-            navButtons.forEach(btn => {
-                btn.classList.toggle('active', btn.dataset.section === section);
-            });
-
-            setTimeout(renderMath, 80);
-
-            setTimeout(() => {
-                if (section === 'overview') {
-                    updateOverviewCanvas();
-                } else if (section === 'concavity') {
-                    updateConcavityCanvas();
-                } else if (section === 'inflection') {
-                    updateInflectionCanvas();
-                }
-            }, 200);
+            autoScanBtn.textContent = '自动探索';
         }
 
-        // 绑定导航按钮事件
+        function animateSlider() {
+            const config = scenarios[currentScenarioKey];
+            const step = (config.domain[1] - config.domain[0]) / 240;
+            let value = parseFloat(variableSlider.value);
+            value += scanningForward ? step : -step;
+            if (value >= config.domain[1] || value <= config.domain[0]) {
+                scanningForward = !scanningForward;
+                value = clamp(value, config.domain[0], config.domain[1]);
+            }
+            variableSlider.value = value.toFixed(3);
+            updateCurrentValues();
+            drawObjectiveCanvas();
+            scanId = requestAnimationFrame(animateSlider);
+        }
+
+        function resetScenario() {
+            const config = scenarios[currentScenarioKey];
+            const mid = (config.domain[0] + config.domain[1]) / 2;
+            variableSlider.min = config.domain[0];
+            variableSlider.max = config.domain[1];
+            variableSlider.step = (config.domain[1] - config.domain[0]) / 200;
+            variableSlider.value = mid.toFixed(2);
+            updateCurrentValues();
+            drawObjectiveCanvas();
+            drawSensitivityCanvas();
+            updateScenarioInfo();
+            updateBadges(0);
+        }
+
+        function switchSection(section) {
+            activeSection = section;
+            pages.forEach(page => page.classList.toggle('active', page.id === section));
+            navButtons.forEach(btn => btn.classList.toggle('active', btn.dataset.section === section));
+            if (section === 'model') {
+                drawObjectiveCanvas();
+                updateBadges(0);
+            }
+            if (section === 'compare') {
+                drawSensitivityCanvas();
+                updateBadges(1);
+            }
+            if (section === 'practice') {
+                updateBadges(3);
+            }
+            renderMath();
+        }
+
+        function recordHistory(question, answer, correct) {
+            historyRecords.unshift({ question, answer, correct });
+            if (historyRecords.length > 6) historyRecords.pop();
+            exerciseHistory.innerHTML = historyRecords.map(item => {
+                const prefix = item.correct ? '✅' : '❌';
+                return `<div class="history-item"><span>${prefix} ${item.question}</span><span>${item.answer}</span></div>`;
+            }).join('');
+        }
+
+        function updateStats() {
+            exerciseTotal.textContent = stats.total;
+            exerciseCorrect.textContent = stats.correct;
+            const score = stats.total === 0 ? 0 : Math.round((stats.correct / stats.total) * 100);
+            exerciseScore.textContent = `${score}`;
+        }
+
+        function showExercise() {
+            if (exerciseIndex < 0 || exerciseIndex >= exercises.length) return;
+            const question = exercises[exerciseIndex];
+            exerciseStem.innerHTML = question.stem;
+            exerciseOptions.innerHTML = '';
+            question.options.forEach((option, index) => {
+                const btn = document.createElement('button');
+                btn.className = 'quiz-option';
+                btn.type = 'button';
+                btn.textContent = option;
+                btn.addEventListener('click', () => selectExercise(index));
+                exerciseOptions.appendChild(btn);
+            });
+            exerciseFeedback.textContent = '请选择答案。';
+            renderMath();
+        }
+
+        function selectExercise(index) {
+            const question = exercises[exerciseIndex];
+            const buttons = exerciseOptions.querySelectorAll('.quiz-option');
+            buttons.forEach((btn, i) => {
+                btn.disabled = true;
+                if (i === question.answer) btn.classList.add('correct');
+                else if (i === index) btn.classList.add('wrong');
+            });
+            const isCorrect = index === question.answer;
+            stats.total += 1;
+            if (isCorrect) stats.correct += 1;
+            exerciseFeedback.textContent = isCorrect ? '回答正确！记得说明导数符号。' : `正确答案：${question.options[question.answer]}。${question.explain}`;
+            recordHistory(question.stem, question.options[index] || '未选择', isCorrect);
+            updateStats();
+            nextExerciseBtn.disabled = false;
+            renderMath();
+        }
+
+        function startExercise() {
+            exerciseIndex = Math.floor(Math.random() * exercises.length);
+            exercisePanel.style.display = 'flex';
+            nextExerciseBtn.disabled = true;
+            showExercise();
+            updateBadges(2);
+        }
+
+        function nextExercise() {
+            exerciseIndex = (exerciseIndex + 1) % exercises.length;
+            nextExerciseBtn.disabled = true;
+            showExercise();
+        }
+
         function initNavigation() {
             navButtons.forEach(btn => {
                 btn.addEventListener('click', () => {
-                    const section = btn.dataset.section;
-                    switchPage(section);
+                    if (btn.dataset.section !== activeSection) {
+                        stopScan();
+                        switchSection(btn.dataset.section);
+                    }
                 });
             });
         }
 
-        // 添加缺失的Canvas更新函数
-        function updateConcavityCanvas() {
-            const canvas = document.getElementById('concavityCanvas');
-            if (!canvas) return;
-            const ctx = canvas.getContext('2d');
-            const width = canvas.width = 400;
-            const height = canvas.height = 300;
-            ctx.clearRect(0, 0, width, height);
-            
-            // 绘制坐标轴
-            ctx.strokeStyle = '#374151';
-            ctx.lineWidth = 2;
-            ctx.beginPath();
-            ctx.moveTo(40, height - 40);
-            ctx.lineTo(width - 40, height - 40);
-            ctx.moveTo(40, 40);
-            ctx.lineTo(40, height - 40);
-            ctx.stroke();
-            
-            // 绘制函数曲线
-            ctx.strokeStyle = '#2563eb';
-            ctx.lineWidth = 2;
-            ctx.beginPath();
-            for (let x = -3; x <= 3; x += 0.1) {
-                const y = x * x * x - 3 * x;
-                const canvasX = 40 + ((x + 3) / 6) * (width - 80);
-                const canvasY = height - 40 - ((y + 10) / 20) * (height - 80);
-                if (x === -3) {
-                    ctx.moveTo(canvasX, canvasY);
+        function initControls() {
+            populateScenarioOptions();
+            resetScenario();
+            updateScenarioInfo();
+            drawSensitivityCanvas();
+            renderMath();
+
+            scenarioSelect.addEventListener('change', () => {
+                currentScenarioKey = scenarioSelect.value;
+                stopScan();
+                resetScenario();
+                updateScenarioInfo();
+                drawSensitivityCanvas();
+            });
+
+            variableSlider.addEventListener('input', () => {
+                updateCurrentValues();
+                drawObjectiveCanvas();
+            });
+
+            autoScanBtn.addEventListener('click', () => {
+                if (scanId) {
+                    stopScan();
                 } else {
-                    ctx.lineTo(canvasX, canvasY);
+                    autoScanBtn.textContent = '暂停探索';
+                    scanId = requestAnimationFrame(animateSlider);
                 }
-            }
-            ctx.stroke();
-            
-            // 标记凹凸区间
-            ctx.fillStyle = 'rgba(16, 185, 129, 0.3)';
-            ctx.beginPath();
-            ctx.moveTo(40 + ((0 + 3) / 6) * (width - 80), 40);
-            ctx.lineTo(40 + ((3 + 3) / 6) * (width - 80), 40);
-            ctx.lineTo(40 + ((3 + 3) / 6) * (width - 80), height - 40);
-            ctx.lineTo(40 + ((0 + 3) / 6) * (width - 80), height - 40);
-            ctx.fill();
-            
-            ctx.fillStyle = 'rgba(239, 68, 68, 0.3)';
-            ctx.beginPath();
-            ctx.moveTo(40 + ((-3 + 3) / 6) * (width - 80), 40);
-            ctx.lineTo(40 + ((0 + 3) / 6) * (width - 80), 40);
-            ctx.lineTo(40 + ((0 + 3) / 6) * (width - 80), height - 40);
-            ctx.lineTo(40 + ((-3 + 3) / 6) * (width - 80), height - 40);
-            ctx.fill();
-            
-            // 添加标签
-            ctx.fillStyle = '#1f2937';
-            ctx.font = '14px Arial';
-            ctx.fillText('凹向上', 40 + ((1.5 + 3) / 6) * (width - 80), 60);
-            ctx.fillText('凹向下', 40 + ((-1.5 + 3) / 6) * (width - 80), 60);
+            });
+
+            resetBtn.addEventListener('click', resetScenario);
+
+            startExerciseBtn.addEventListener('click', () => {
+                startExercise();
+                updateBadges(3);
+            });
+
+            nextExerciseBtn.addEventListener('click', nextExercise);
+
+            window.addEventListener('resize', () => {
+                if (activeSection === 'model') drawObjectiveCanvas();
+                if (activeSection === 'compare') drawSensitivityCanvas();
+            });
         }
 
-        function updateInflectionCanvas() {
-            const canvas = document.getElementById('inflectionCanvas');
-            if (!canvas) return;
-            const ctx = canvas.getContext('2d');
-            const width = canvas.width = 400;
-            const height = canvas.height = 300;
-            ctx.clearRect(0, 0, width, height);
-            
-            // 绘制坐标轴
-            ctx.strokeStyle = '#374151';
-            ctx.lineWidth = 2;
-            ctx.beginPath();
-            ctx.moveTo(40, height - 40);
-            ctx.lineTo(width - 40, height - 40);
-            ctx.moveTo(40, 40);
-            ctx.lineTo(40, height - 40);
-            ctx.stroke();
-            
-            // 绘制函数曲线
-            ctx.strokeStyle = '#2563eb';
-            ctx.lineWidth = 2;
-            ctx.beginPath();
-            for (let x = -3; x <= 3; x += 0.1) {
-                const y = x * x * x - 3 * x;
-                const canvasX = 40 + ((x + 3) / 6) * (width - 80);
-                const canvasY = height - 40 - ((y + 10) / 20) * (height - 80);
-                if (x === -3) {
-                    ctx.moveTo(canvasX, canvasY);
-                } else {
-                    ctx.lineTo(canvasX, canvasY);
-                }
-            }
-            ctx.stroke();
-            
-            // 标记拐点
-            ctx.fillStyle = '#f59e0b';
-            ctx.beginPath();
-            ctx.arc(40 + ((0 + 3) / 6) * (width - 80), height - 40 - ((0 + 10) / 20) * (height - 80), 8, 0, 2 * Math.PI);
-            ctx.fill();
-            
-            // 添加标签
-            ctx.fillStyle = '#1f2937';
-            ctx.font = '14px Arial';
-            ctx.fillText('拐点', 40 + ((0 + 3) / 6) * (width - 80) + 10, height - 40 - ((0 + 10) / 20) * (height - 80) - 10);
-        }
-
-        populatePresetSelector();
-        analyzeConcavity();
         initNavigation();
-        const firstNavButton = document.querySelector('.nav-btn[data-section]');
-        if (firstNavButton) {
-            switchPage(firstNavButton.dataset.section);
-        }
-        renderMath();
+        initControls();
+        switchSection('model');
+        updateStats();
     </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
