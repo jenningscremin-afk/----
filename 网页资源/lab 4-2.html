@@ -29,1596 +29,1206 @@
     <script defer src="../common-assets/js/lab-math-enhancer.js"></script>
 
     <style>
-    :root {
-        --primary: #4f46e5;
-        --primary-dark: #3730a3;
-        --primary-light: #6366f1;
-        --success: #10b981;
-        --warning: #f59e0b;
-        --danger: #ef4444;
-        --gray-50: #f9fafb;
-        --gray-100: #f3f4f6;
-        --gray-200: #e5e7eb;
-        --gray-300: #d1d5db;
-        --gray-500: #6b7280;
-        --gray-600: #4b5563;
-        --gray-700: #1f2937;
-        --white: #ffffff;
-        --light: #ffffff;
-        --border: #e5e7eb;
-        --h1-size: 22px;
-        --h3-size: 18px;
-        --text-size: 16px;
-        --formula-size: 20px;
-    }
+        :root {
+            --primary: #4f46e5;
+            --primary-dark: #3730a3;
+            --primary-light: #6366f1;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-500: #6b7280;
+            --gray-600: #4b5563;
+            --gray-700: #1f2937;
+            --white: #ffffff;
+            --border: #e5e7eb;
+            --h1-size: 22px;
+            --h3-size: 18px;
+            --text-size: 16px;
+            --formula-size: 20px;
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
-        *::-webkit-scrollbar { width: 0; background: transparent; }
-        * { scrollbar-width: none; -ms-overflow-style: none; }
+        *::-webkit-scrollbar { width: 6px; }
+        *::-webkit-scrollbar-track { background: transparent; }
+        *::-webkit-scrollbar-thumb { background: var(--gray-300); border-radius: 3px; }
 
-            body {
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
-        font-size: var(--text-size);
-        line-height: 1.5;
-        background: var(--gray-50);
-        color: var(--gray-700);
-    }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
+            font-size: var(--text-size);
+            line-height: 1.5;
+            background: var(--gray-50);
+            color: var(--gray-700);
+        }
 
-            .container {
-        width: 100%;
-        max-width: 1400px;
-        height: min(100vh, 700px);
-        margin: 0 auto;
-        display: flex;
-        flex-direction: column;
-        background: var(--white);
-    }
+        .container {
+            width: 100%;
+            max-width: 1400px;
+            height: 100vh;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            background: var(--white);
+        }
 
-            .header {
-        height: 40px;
-        background: var(--primary);
-        color: var(--white);
-        display: flex;
-        align-items: center;
-        padding: 0 20px;
-    }
+        .header {
+            height: 60px;
+            background: var(--primary);
+            color: var(--white);
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            gap: 15px;
+        }
 
-            .header h1 { font-size: var(--h1-size); margin: 0; }
+        .header h1 { font-size: var(--h1-size); margin: 0; }
+        .header > div { font-size: 14px; opacity: 0.9; }
 
-            .main { flex: 1; display: flex; overflow: hidden; }
+        .main { flex: 1; display: flex; overflow: hidden; }
 
-            .sidebar {
-        width: 120px;
-        background: var(--gray-50);
-        border-right: 1px solid var(--border);
-        padding: 10px 8px;
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-    }
+        .sidebar {
+            width: 150px;
+            background: var(--gray-50);
+            border-right: 1px solid var(--border);
+            padding: 20px 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
 
-            .nav-btn {
-        width: 100%;
-        padding: 8px;
-        background: transparent;
-        border: none;
-        border-radius: 6px;
-        cursor: pointer;
-        font-size: var(--text-size);
-        color: var(--gray-600);
-        text-align: left;
-        transition: background 0.2s ease, color 0.2s ease;
-    }
+        .nav-btn {
+            width: 100%;
+            padding: 10px;
+            background: transparent;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: var(--text-size);
+            color: var(--gray-600);
+            text-align: left;
+            transition: all 0.2s ease;
+        }
 
-            .nav-btn.active { background: var(--primary); color: var(--white); }
+        .nav-btn.active { 
+            background: var(--primary); 
+            color: var(--white);
+            transform: translateX(5px);
+        }
 
-            .nav-btn:hover { background: var(--gray-100); }
+        .nav-btn:hover:not(.active) { 
+            background: var(--gray-100);
+            transform: translateX(2px);
+        }
 
-            .content {
-        flex: 1;
-        position: relative;
-        overflow: hidden;
-        padding: 0;
-    }
-            .page-content {
-        display: none;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 18px;
-        height: 100%;
-        padding: 16px;
-    }
+        .content {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+            padding: 0;
+        }
 
-    .page-content.active {
-        display: grid;
-    }
+        .page-content {
+            display: none;
+            height: 100%;
+            padding: 20px;
+            overflow-y: auto;
+        }
 
-            .column { display: flex; flex-direction: column; gap: 16px; overflow-y: auto; padding-right: 4px; }
+        .page-content.active {
+            display: block;
+        }
 
-            .card { background: var(--white); border: 1px solid var(--border); border-radius: 12px; padding: 12px; display: flex; flex-direction: column; gap: 10px; }
+        .two-column {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 20px;
+            height: 100%;
+        }
 
-        .card h3 { font-size: var(--h3-size); color: var(--primary-dark); }
-        .card p { line-height: 1.5; }
-        .card-scroll { overflow-y: auto; }
+        .column { 
+            display: flex; 
+            flex-direction: column; 
+            gap: 16px; 
+            overflow-y: auto; 
+            padding-right: 4px; 
+        }
 
-        .tag-list { display: flex; gap: 8px; flex-wrap: wrap; }
-        .tag { font-size: 13px; padding: 4px 10px; border-radius: 999px; background: var(--gray-100); color: var(--gray-500); }
+        .card { 
+            background: var(--white); 
+            border: 1px solid var(--border); 
+            border-radius: 12px; 
+            padding: 16px; 
+            display: flex; 
+            flex-direction: column; 
+            gap: 12px; 
+        }
 
-        table { width: 100%; border-collapse: collapse; font-size: 15px; }
-        th, td { border: 1px solid var(--gray-200); padding: 8px; text-align: center; }
-        thead { background: var(--gray-100); }
+        .card h3 { 
+            font-size: var(--h3-size); 
+            color: var(--primary-dark);
+            border-bottom: 2px solid var(--gray-100);
+            padding-bottom: 8px;
+        }
+        
+        .card p { line-height: 1.6; }
+        
+        .formula-display {
+            background: var(--gray-50);
+            padding: 16px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: var(--formula-size);
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
 
-        .info-grid { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 12px; }
-        .info-item { background: var(--gray-50); border: 1px solid var(--gray-200); border-radius: 10px; padding: 10px; font-size: 15px; }
-        .info-item strong { display: block; margin-bottom: 6px; color: var(--primary-dark); }
+        .controls { 
+            display: flex; 
+            flex-direction: column; 
+            gap: 12px; 
+            background: var(--gray-50); 
+            border: 1px solid var(--gray-200); 
+            border-radius: 10px; 
+            padding: 12px; 
+        }
+        
+        .control-row { 
+            display: flex; 
+            align-items: center; 
+            gap: 10px; 
+        }
+        
+        .control-row label { 
+            font-weight: 600;
+            min-width: 100px;
+        }
+        
+        .control-row span { 
+            color: var(--primary-dark); 
+            font-weight: 600;
+            min-width: 40px;
+            text-align: right;
+        }
+        
+        select { 
+            flex: 1; 
+            padding: 8px; 
+            border-radius: 8px; 
+            border: 1px solid var(--gray-300); 
+            font-size: 15px; 
+        }
+        
+        input[type="range"] { 
+            flex: 1; 
+        }
 
-        .controls { display: flex; flex-direction: column; gap: 10px; background: var(--gray-50); border: 1px solid var(--gray-200); border-radius: 10px; padding: 10px; }
-        .control-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
-        .control-row label { font-weight: 600; }
-        .control-row span { color: var(--primary-dark); font-weight: 600; }
-        select { flex: 1; padding: 6px 8px; border-radius: 8px; border: 1px solid var(--gray-300); font-size: 15px; }
-        input[type="range"] { flex: 1; }
-
-        .btn-group { display: flex; gap: 10px; }
+        .btn-group { 
+            display: flex; 
+            gap: 10px; 
+            margin-top: 10px;
+        }
+        
         button.action {
             flex: 1;
             background: var(--primary);
             color: var(--white);
             border: none;
             border-radius: 8px;
-            padding: 10px 12px;
+            padding: 12px;
             font-size: var(--text-size);
             cursor: pointer;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-            position: relative;
-            z-index: 10;
-            pointer-events: auto;
+            transition: all 0.2s ease;
+            font-weight: 600;
+        }
+
+        button.action:hover { 
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
         }
 
         button.action.secondary {
             background: var(--white);
             color: var(--primary);
-            border: 1px solid var(--primary);
+            border: 2px solid var(--primary);
         }
 
-        button.action.danger { background: var(--danger); }
-        button.action:hover { transform: translateY(-2px); }
+        button.action.danger { 
+            background: var(--danger); 
+        }
 
         .flow-container {
             display: flex;
             flex-direction: column;
             gap: 12px;
-            overflow-y: auto;
-            padding-right: 4px;
         }
 
         .flow-step {
             position: relative;
-            border: 1px solid var(--gray-200);
+            border: 2px solid var(--gray-200);
             border-radius: 10px;
-            padding: 10px 12px;
+            padding: 12px;
             background: var(--gray-50);
-            transition: border 0.2s ease, background 0.2s ease, transform 0.2s ease;
+            transition: all 0.3s ease;
         }
-
-        .flow-step::before {
-            content: '';
-            position: absolute;
-            left: 18px;
-            top: -12px;
-            width: 2px;
-            height: 12px;
-            background: var(--gray-200);
-        }
-
-        .flow-step:first-child::before { display: none; }
 
         .flow-step.active {
             border-color: var(--primary);
             background: #eef2ff;
-            transform: translateX(4px);
+            transform: translateX(5px);
+            box-shadow: 0 2px 8px rgba(79, 70, 229, 0.2);
         }
 
-        .flow-step.success { border-color: var(--success); }
-        .flow-step.error { border-color: var(--danger); background: #fee2e2; }
+        .flow-step.success { 
+            border-color: var(--success);
+            background: #d1fae5;
+        }
 
-        .flow-step h4 { font-size: 15px; margin-bottom: 4px; color: var(--primary-dark); }
-        .flow-step p { font-size: 14px; color: var(--gray-600); line-height: 1.4; }
+        .flow-step h4 { 
+            font-size: 15px; 
+            margin-bottom: 6px; 
+            color: var(--primary-dark); 
+        }
+        
+        .flow-step p { 
+            font-size: 14px; 
+            color: var(--gray-600); 
+        }
 
         .canvas-wrapper {
             border: 1px solid var(--gray-200);
             border-radius: 12px;
-            background: var(--gray-50);
-            padding: 8px;
+            background: var(--white);
+            padding: 10px;
             display: flex;
             flex-direction: column;
-            gap: 6px;
-            flex: 1;
+            gap: 10px;
         }
 
         .canvas-wrapper canvas {
             width: 100%;
-            height: 260px;
+            height: 300px;
             border-radius: 8px;
             background: var(--white);
         }
 
-        .legend { display: flex; gap: 12px; flex-wrap: wrap; font-size: 14px; color: var(--gray-600); }
-        .legend span { display: flex; align-items: center; gap: 6px; }
-        .legend i { width: 14px; height: 14px; border-radius: 4px; display: inline-block; }
+        .legend { 
+            display: flex; 
+            gap: 16px; 
+            flex-wrap: wrap; 
+            font-size: 14px; 
+            color: var(--gray-600); 
+            padding: 8px;
+            background: var(--gray-50);
+            border-radius: 8px;
+        }
+        
+        .legend span { 
+            display: flex; 
+            align-items: center; 
+            gap: 6px; 
+        }
+        
+        .legend i { 
+            width: 16px; 
+            height: 3px; 
+            display: inline-block; 
+        }
+
+        .examples-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 12px;
+        }
+
+        .example-card {
+            padding: 12px;
+            border: 1px solid var(--gray-200);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .example-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .example-card.selected {
+            background: #eef2ff;
+            border-color: var(--primary);
+        }
 
         .status-box {
             border-radius: 10px;
-            padding: 10px;
-            font-size: 14px;
-            background: #eef2ff;
-            color: var(--primary-dark);
-        }
-
-        .derivation-visual {
-            position: relative;
-            display: grid;
-            grid-template-columns: minmax(0, 1fr) 40px minmax(0, 1fr) 40px minmax(0, 1fr);
-            align-items: stretch;
-            gap: 12px;
             padding: 12px;
-            border: 1px dashed var(--gray-200);
-            border-radius: 12px;
-            background: var(--gray-50);
-            overflow: hidden;
-        }
-
-        .derivation-stage {
-            position: relative;
-            background: var(--white);
-            border: 1px solid var(--gray-200);
-            border-radius: 12px;
-            padding: 12px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            transition: border 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
-        }
-
-        .derivation-stage.active {
-            border-color: var(--primary);
-            box-shadow: 0 6px 18px rgba(79, 70, 229, 0.14);
-            transform: translateY(-2px);
-        }
-
-        .derivation-stage.completed {
-            border-color: var(--success);
-        }
-
-        .stage-title {
-            font-size: 15px;
-            font-weight: 600;
-            color: var(--primary-dark);
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .stage-body {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
             font-size: 14px;
-            color: var(--gray-600);
+            text-align: center;
         }
 
-        .fraction-preview {
-            display: grid;
-            justify-items: center;
-            gap: 6px;
-            padding: 8px;
-            border-radius: 10px;
-            background: var(--gray-50);
+        .status-box.calculating {
+            background: #fef3c7;
+            color: #92400e;
         }
 
-        .fraction-line {
-            width: 100%;
-            max-width: 140px;
-            height: 2px;
-            background: var(--gray-300);
+        .status-box.complete {
+            background: #d1fae5;
+            color: #065f46;
         }
 
-        .fraction-numerator,
-        .fraction-denominator {
-            font-size: var(--formula-size);
-            min-height: 24px;
+        .status-box.error {
+            background: #fee2e2;
+            color: #991b1b;
         }
 
-        .derivative-box {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-            padding: 8px;
-            border-radius: 10px;
-            background: var(--gray-50);
-            border: 1px solid var(--gray-200);
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
         }
 
-        .derivative-box:nth-child(1) {
-            border-left: 3px solid #2563eb;
-        }
-
-        .derivative-box:nth-child(2) {
-            border-left: 3px solid #ef4444;
-        }
-
-        .box-label {
-            font-size: 13px;
-            font-weight: 600;
-            color: var(--gray-500);
-        }
-
-        .box-content {
-            font-size: var(--formula-size);
-            min-height: 26px;
-        }
-
-        .derivative-result {
-            padding: 8px;
-            border-radius: 10px;
-            background: #eef2ff;
-            color: var(--primary-dark);
-            font-weight: 600;
-        }
-
-        .result-expression {
-            padding: 10px;
-            border-radius: 10px;
-            background: var(--gray-50);
-            border: 1px solid var(--gray-200);
-            font-size: var(--formula-size);
-            min-height: 32px;
-        }
-
-        .flow-link {
-            width: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .flow-link::before {
-            content: '';
-            width: 100%;
-            height: 3px;
-            background: var(--gray-200);
-            border-radius: 999px;
-            transition: background 0.25s ease;
-        }
-
-        .flow-link.active::before {
-            background: var(--primary-light);
-        }
-
-        .flow-link.completed::before {
-            background: var(--success);
-        }
-
-        .animation-layer {
-            position: absolute;
-            inset: 0;
-            pointer-events: none;
-            overflow: visible;
-        }
-
-        .flying-token {
-            position: absolute;
-            padding: 6px 10px;
-            border-radius: 999px;
-            background: rgba(79, 70, 229, 0.12);
-            border: 1px solid rgba(79, 70, 229, 0.28);
-            font-size: var(--formula-size);
-            opacity: 0;
-            transition: transform 0.45s ease, opacity 0.2s ease;
-        }
-
-        .flying-token.denom {
-            background: rgba(239, 68, 68, 0.12);
-            border-color: rgba(239, 68, 68, 0.32);
-        }
-
-        .derivation-status {
-            margin-top: 10px;
-            padding: 10px 12px;
-            border-radius: 10px;
-            background: var(--gray-50);
-            border: 1px solid var(--gray-200);
-            font-size: 14px;
-            color: var(--gray-600);
-            min-height: 42px;
-        }
-
-        .canvas-metric-label {
-            font-size: 12px;
-            color: var(--gray-500);
-            margin-top: 4px;
-        }
-
-        .marker-label {
-            font-size: 12px;
-            font-weight: 600;
-        }
-
-        @media (max-width: 768px) {
-            .container {
-                height: auto;
-            }
-
-            .main {
-                flex-direction: column;
-            }
-
-            .sidebar {
-                width: 100%;
-                flex-direction: row;
-                overflow-x: auto;
-                overflow-y: hidden;
-                gap: 8px;
-            }
-
-            .nav-btn {
-                flex: 0 0 auto;
-                width: auto;
-                white-space: nowrap;
-            }
-
-            .content {
-                overflow: visible;
-            }
-
-            .page-content {
-                grid-template-columns: minmax(0, 1fr);
-                height: auto;
-            }
-
-            .page-content.active {
-                display: grid;
-            }
-
-            .column {
-                overflow: visible;
-            }
+        .calculating {
+            animation: pulse 1.5s infinite;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <header class="header">
-            <h1>洛必达法则实验室</h1>
-            <div>把极限推导过程拆成可视化步骤</div>
-        </header>
+        <div class="header">
+            <h1>🔬 洛必达法则实验室</h1>
+            <div>探索极限计算的强大工具</div>
+        </div>
+        
         <div class="main">
-            <nav class="sidebar">
-                <button class="nav-btn active" data-section="zero">0/0 型</button>
-                <button class="nav-btn" data-section="infty">∞/∞ 型</button>
-                <button class="nav-btn" data-section="other">其他类型转化</button>
-            </nav>
-            <section class="content">
-                <!-- 0/0 型页面 -->
-                <div class="page-content active" id="zero">
-                    <div class="column">
-                        <div class="card card-scroll">
-                            <h3>学习指引</h3>
-                            <p>洛必达法则的关键是将极限化成 $\dfrac{0}{0}$ 或 $\dfrac{\infty}{\infty}$ 型，然后同步对分子、分母求导。实验区将每一步拆解为可视化节点，你可以分步推进或自动播放以观察公式的演变。</p>
-                            <div class="tag-list">
-                                <span class="tag">极限判断</span>
-                                <span class="tag">分步求导</span>
-                                <span class="tag">异常检测</span>
-                                <span class="tag">案例切换</span>
+            <div class="sidebar">
+                <button class="nav-btn active" data-page="intro">理论介绍</button>
+                <button class="nav-btn" data-page="calculator">计算器</button>
+                <button class="nav-btn" data-page="visualize">可视化</button>
+                <button class="nav-btn" data-page="examples">经典例题</button>
+                <button class="nav-btn" data-page="practice">练习模式</button>
+            </div>
+            
+            <div class="content">
+                <!-- 理论介绍页 -->
+                <div class="page-content active" id="intro">
+                    <div class="two-column">
+                        <div class="column">
+                            <div class="card">
+                                <h3>📚 什么是洛必达法则？</h3>
+                                <p>洛必达法则（L'Hôpital's Rule）是微积分中用于求解未定式极限的重要方法。当直接代入极限值得到 0/0 或 ∞/∞ 型未定式时，可以通过对分子分母分别求导来计算极限。</p>
+                                <div class="formula-display">
+                                    $$\lim_{x \to a} \frac{f(x)}{g(x)} = \lim_{x \to a} \frac{f'(x)}{g'(x)}$$
+                                </div>
                             </div>
-                            <div class="status-box" id="caseDescription">当前案例：$\displaystyle \lim_{x \to 0} \dfrac{\sin x}{x}$，原式直接代入得到 $\dfrac{0}{0}$ 型，可应用洛必达法则。</div>
+                            
+                            <div class="card">
+                                <h3>🎯 适用条件</h3>
+                                <ol style="padding-left: 20px; line-height: 1.8;">
+                                    <li>$f(x)$ 和 $g(x)$ 在点 $a$ 的某去心邻域内可导</li>
+                                    <li>$g'(x) \neq 0$ 在该邻域内</li>
+                                    <li>$\lim_{x \to a} f(x) = \lim_{x \to a} g(x) = 0$ 或 $\pm\infty$</li>
+                                    <li>$\lim_{x \to a} \frac{f'(x)}{g'(x)}$ 存在（有限或无穷）</li>
+                                </ol>
+                            </div>
                         </div>
-
-                        <div class="card card-scroll">
-                            <h3>典型不定式类型速查</h3>
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>类型</th>
-                                        <th>转化思路</th>
-                                        <th>示例</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="typeTable"></tbody>
-                            </table>
-                        </div>
-
-                        <div class="card">
-                            <h3>结论速记</h3>
-                            <div class="info-grid">
-                                <div class="info-item">
-                                    <strong>适用条件</strong>
-                                    分子、分母在点附近可导，且 $\dfrac{f'(x)}{g'(x)}$ 的极限存在或为 $\pm\infty$。
+                        
+                        <div class="column">
+                            <div class="card">
+                                <h3>🔍 未定式类型</h3>
+                                <div class="examples-grid">
+                                    <div class="example-card">
+                                        <strong>0/0 型</strong>
+                                        <div style="margin-top: 8px;">$\lim_{x \to 0} \frac{\sin x}{x}$</div>
+                                    </div>
+                                    <div class="example-card">
+                                        <strong>∞/∞ 型</strong>
+                                        <div style="margin-top: 8px;">$\lim_{x \to \infty} \frac{e^x}{x^2}$</div>
+                                    </div>
+                                    <div class="example-card">
+                                        <strong>0·∞ 型</strong>
+                                        <div style="margin-top: 8px;">转化为 0/0 或 ∞/∞</div>
+                                    </div>
+                                    <div class="example-card">
+                                        <strong>∞-∞ 型</strong>
+                                        <div style="margin-top: 8px;">通分后使用</div>
+                                    </div>
                                 </div>
-                                <div class="info-item">
-                                    <strong>重复使用</strong>
-                                    求导一次后仍是不定式时，可继续求导，注意保留条件检查。
-                                </div>
-                                <div class="info-item">
-                                    <strong>类型转化</strong>
-                                    $0 \cdot \infty, \infty - \infty, 1^{\infty}$ 等可以通过代数变形或取对数转化。
-                                </div>
-                                <div class="info-item">
-                                    <strong>工程意义</strong>
-                                    在传感、材料响应等领域，洛必达法则可快速估计极端状态的变化率。
+                            </div>
+                            
+                            <div class="card">
+                                <h3>⚡ 使用步骤</h3>
+                                <div class="flow-container">
+                                    <div class="flow-step">
+                                        <h4>步骤 1：验证未定式</h4>
+                                        <p>确认极限是 0/0 或 ∞/∞ 型</p>
+                                    </div>
+                                    <div class="flow-step">
+                                        <h4>步骤 2：求导</h4>
+                                        <p>分别对分子、分母求导</p>
+                                    </div>
+                                    <div class="flow-step">
+                                        <h4>步骤 3：计算新极限</h4>
+                                        <p>求导后的极限值</p>
+                                    </div>
+                                    <div class="flow-step">
+                                        <h4>步骤 4：重复或结束</h4>
+                                        <p>若仍为未定式，可重复使用</p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-
-                    <div class="column">
-                        <div class="card">
-                            <h3>分步推导流程</h3>
-                            <div class="controls">
-                                <div class="control-row">
-                                    <label>选择不定式类型</label>
-                                    <select id="caseSelector"></select>
-                                </div>
-                                <div class="control-row">
-                                    <label>推进控制</label>
-                                    <div class="btn-group">
-                                        <button class="action" id="startFlow">开始演示</button>
-                                        <button class="action secondary" id="nextStep">下一步</button>
-                                        <button class="action secondary" id="resetFlow">重置</button>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="flow-container" id="flowContainer"></div>
-                            <div class="derivation-visual" id="derivationVisual">
-                                <div class="derivation-stage" data-stage="original">
-                                    <div class="stage-title">原式判断</div>
-                                    <div class="stage-body">
-                                        <div class="fraction-preview">
-                                            <div class="fraction-numerator" id="originalNumerator"></div>
-                                            <div class="fraction-line"></div>
-                                            <div class="fraction-denominator" id="originalDenominator"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="flow-link" data-link="0"></div>
-                                <div class="derivation-stage" data-stage="derivative">
-                                    <div class="stage-title">同步求导</div>
-                                    <div class="stage-body">
-                                        <div class="derivative-box">
-                                            <span class="box-label">分子导数</span>
-                                            <div class="box-content" id="derivativeNumerator">?</div>
-                                        </div>
-                                        <div class="derivative-box">
-                                            <span class="box-label">分母导数</span>
-                                            <div class="box-content" id="derivativeDenominator">?</div>
-                                        </div>
-                                        <div class="derivative-result" id="derivativeEvaluation">等待求导结果</div>
-                                    </div>
-                                </div>
-                                <div class="flow-link" data-link="1"></div>
-                                <div class="derivation-stage" data-stage="result">
-                                    <div class="stage-title">极限判定</div>
-                                    <div class="stage-body">
-                                        <div class="result-expression" id="limitConclusion">点击开始查看极限结论</div>
-                                    </div>
-                                </div>
-                                <div class="animation-layer" id="derivationAnimationLayer"></div>
-                            </div>
-                            <div class="derivation-status" id="derivationStatus">点击“开始演示”体验推导过程。</div>
-                        </div>
-
-                        <div class="card">
-                            <h3>函数行为与数值对比</h3>
-                            <div class="canvas-wrapper">
-                                <canvas id="lhopitalCanvas"></canvas>
-                                <div class="legend">
-                                    <span><i style="background:#2563eb"></i> $y=f(x)$</span>
-                                    <span><i style="background:#ef4444"></i> $y=g(x)$</span>
-                                    <span><i style="background:#10b981"></i> $y=\dfrac{f(x)}{g(x)}$</span>
-                                </div>
+                </div>
+                
+                <!-- 计算器页 -->
+                <div class="page-content" id="calculator">
+                    <div class="two-column">
+                        <div class="column">
+                            <div class="card">
+                                <h3>🧮 极限计算器</h3>
                                 <div class="controls">
                                     <div class="control-row">
-                                        <label>接近点</label>
-                                        <input type="range" id="approachSlider" min="0.0001" max="0.5" step="0.0001" value="0.1">
-                                        <span id="approachValue">0.10</span>
-                                    </div>
-                                    <div class="control-row">
-                                        <label>方向</label>
-                                        <select id="directionSelector">
-                                            <option value="right">右侧接近</option>
-                                            <option value="left">左侧接近</option>
-                                            <option value="both">两侧对比</option>
+                                        <label>选择函数：</label>
+                                        <select id="funcSelect">
+                                            <option value="sinx/x">sin(x) / x</option>
+                                            <option value="(e^x-1)/x">(e^x - 1) / x</option>
+                                            <option value="ln(1+x)/x">ln(1+x) / x</option>
+                                            <option value="(1-cosx)/x^2">(1 - cos(x)) / x²</option>
+                                            <option value="custom">自定义...</option>
                                         </select>
                                     </div>
+                                    <div class="control-row">
+                                        <label>极限点 a：</label>
+                                        <input type="range" id="limitPoint" min="-5" max="5" step="0.1" value="0">
+                                        <span id="limitValue">0</span>
+                                    </div>
                                 </div>
-                                <div class="info-grid">
-                                    <div class="info-item">
-                                        <strong>函数值</strong>
-                                        <span id="valueInfo">$f(x)=0.0000$, $g(x)=0.0000$</span>
-                                    </div>
-                                    <div class="info-item">
-                                        <strong>比值变化</strong>
-                                        <span id="ratioInfo">$\dfrac{f(x)}{g(x)} = 1.0000$</span>
-                                    </div>
-                                    <div class="info-item">
-                                        <strong>导数比值</strong>
-                                        <span id="derivativeInfo">$\dfrac{f'(x)}{g'(x)} = 1.0000$</span>
-                                    </div>
-                                    <div class="info-item">
-                                        <strong>结论提示</strong>
-                                        <span id="hintInfo">导数比值极限存在，原极限等于 1。</span>
+                                <div class="btn-group">
+                                    <button class="action" onclick="calculate()">开始计算</button>
+                                    <button class="action secondary" onclick="reset()">重置</button>
+                                </div>
+                            </div>
+                            
+                            <div class="card">
+                                <h3>📊 图形展示</h3>
+                                <div class="canvas-wrapper">
+                                    <canvas id="graph"></canvas>
+                                    <div class="legend">
+                                        <span><i style="background: #3b82f6;"></i>原函数 f(x)/g(x)</span>
+                                        <span><i style="background: #ef4444;"></i>导数 f'(x)/g'(x)</span>
+                                        <span><i style="background: #10b981;"></i>极限点</span>
                                     </div>
                                 </div>
                             </div>
                         </div>
-
-                        <div class="card">
-                            <h3>实际应用案例</h3>
-                            <div class="info-grid">
-                                <div class="info-item">
-                                    <strong>物理应用</strong>
-                                    瞬时速度计算：$\lim_{t \to 0} \dfrac{s(t)-s(0)}{t}$
-                                </div>
-                                <div class="info-item">
-                                    <strong>经济学应用</strong>
-                                    边际成本分析：$\lim_{\Delta x \to 0} \dfrac{C(x+\Delta x)-C(x)}{\Delta x}$
-                                </div>
-                                <div class="info-item">
-                                    <strong>工程应用</strong>
-                                    材料应力分析：$\lim_{\varepsilon \to 0} \dfrac{\sigma(\varepsilon)}{\varepsilon}$
-                                </div>
-                                <div class="info-item">
-                                    <strong>生物医学</strong>
-                                    药物浓度变化：$\lim_{t \to 0} \dfrac{C(t)-C(0)}{t}$
+                        
+                        <div class="column">
+                            <div class="card">
+                                <h3>📝 计算步骤</h3>
+                                <div class="flow-container" id="calcSteps">
+                                    <div class="flow-step">
+                                        <h4>等待输入...</h4>
+                                        <p>请选择函数并点击"开始计算"</p>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="status-box">
-                                💡 提示：洛必达法则在解决实际工程问题时非常有用，特别是在需要分析系统在临界点附近的行为时。
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- ∞/∞ 型页面 -->
-                <div class="page-content" id="infty">
-                    <div class="column">
-                        <div class="card card-scroll">
-                            <h3>∞/∞ 型不定式</h3>
-                            <p>当分子和分母都趋于无穷大时，洛必达法则同样适用。这类问题常见于多项式、指数函数等比值形式。</p>
-                            <div class="tag-list">
-                                <span class="tag">多项式比值</span>
-                                <span class="tag">指数函数</span>
-                                <span class="tag">对数函数</span>
-                                <span class="tag">复合函数</span>
-                            </div>
-                            <div class="status-box">当前案例：$\displaystyle \lim_{x \to \infty} \dfrac{2x^2 - 3x}{x^2 + 1}$，原式为 $\dfrac{\infty}{\infty}$ 型。</div>
-                        </div>
-                        <div class="card">
-                            <h3>∞/∞ 型特点</h3>
-                            <div class="info-grid">
-                                <div class="info-item">
-                                    <strong>识别特征</strong>
-                                    分子分母同时趋于 $\pm\infty$，需要检查极限方向。
-                                </div>
-                                <div class="info-item">
-                                    <strong>处理方法</strong>
-                                    直接对分子分母求导，然后计算新极限。
-                                </div>
-                                <div class="info-item">
-                                    <strong>常见陷阱</strong>
-                                    注意 $x \to +\infty$ 和 $x \to -\infty$ 的区别。
-                                </div>
-                                <div class="info-item">
-                                    <strong>应用场景</strong>
-                                    经济学中的边际分析、工程中的渐近行为。
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="column">
-                        <div class="card">
-                            <h3>∞/∞ 型推导演示</h3>
-                            <div class="canvas-wrapper">
-                                <canvas id="inftyCanvas"></canvas>
-                                <div class="legend">
-                                    <span><i style="background:#2563eb"></i> $y=f(x)$</span>
-                                    <span><i style="background:#ef4444"></i> $y=g(x)$</span>
-                                    <span><i style="background:#10b981"></i> $y=\dfrac{f(x)}{g(x)}$</span>
+                            
+                            <div class="card">
+                                <h3>✅ 计算结果</h3>
+                                <div id="result" class="status-box" style="background: var(--gray-50);">
+                                    <p>等待计算...</p>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-
-                <!-- 其他类型转化页面 -->
-                <div class="page-content" id="other">
-                    <div class="column">
-                        <div class="card card-scroll">
-                            <h3>其他类型转化</h3>
-                            <p>对于 $0 \cdot \infty$、$\infty - \infty$、$1^{\infty}$ 等类型，需要通过代数变形或取对数转化为 $\dfrac{0}{0}$ 或 $\dfrac{\infty}{\infty}$ 型。</p>
-                            <div class="tag-list">
-                                <span class="tag">0·∞ 型</span>
-                                <span class="tag">∞-∞ 型</span>
-                                <span class="tag">1^∞ 型</span>
-                                <span class="tag">取对数法</span>
+                
+                <!-- 可视化页 -->
+                <div class="page-content" id="visualize">
+                    <div class="two-column">
+                        <div class="column">
+                            <div class="card">
+                                <h3>🎨 动态可视化</h3>
+                                <div class="controls">
+                                    <div class="control-row">
+                                        <label>选择函数：</label>
+                                        <select id="vizFunc">
+                                            <option value="sinx/x">sin(x) / x</option>
+                                            <option value="(e^x-1)/x">(e^x - 1) / x</option>
+                                            <option value="ln(1+x)/x">ln(1+x) / x</option>
+                                            <option value="(1-cosx)/x^2">(1 - cos(x)) / x²</option>
+                                        </select>
+                                    </div>
+                                    <div class="control-row">
+                                        <label>动画速度：</label>
+                                        <input type="range" id="animSpeed" min="1" max="10" value="5">
+                                        <span id="speedValue">5</span>
+                                    </div>
+                                    <div class="control-row">
+                                        <label>缩放级别：</label>
+                                        <input type="range" id="zoomLevel" min="20" max="100" value="50" step="10">
+                                        <span id="zoomValue">50</span>
+                                    </div>
+                                </div>
+                                <div class="btn-group">
+                                    <button class="action" onclick="startAnimation()">▶ 播放动画</button>
+                                    <button class="action secondary" onclick="pauseAnimation()">⏸ 暂停</button>
+                                    <button class="action danger" onclick="resetAnimation()">⏹ 重置</button>
+                                </div>
                             </div>
-                            <div class="status-box">当前案例：$\displaystyle \lim_{x \to 0^+} x^x$，原式为 $1^{\infty}$ 型，需要取对数转化。</div>
+                            
+                            <div class="card">
+                                <h3>📊 函数图像</h3>
+                                <div class="canvas-wrapper">
+                                    <canvas id="animCanvas"></canvas>
+                                    <div class="legend">
+                                        <span><i style="background: #3b82f6;"></i>原函数</span>
+                                        <span><i style="background: #ef4444;"></i>切线</span>
+                                        <span><i style="background: #10b981;"></i>逼近点</span>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="card">
-                            <h3>转化方法</h3>
-                            <div class="info-grid">
-                                <div class="info-item">
-                                    <strong>0·∞ 型</strong>
-                                    改写为 $\dfrac{0}{1/\infty}$ 或 $\dfrac{\infty}{1/0}$。
+                        
+                        <div class="column">
+                            <div class="card">
+                                <h3>📈 实时数值</h3>
+                                <div class="info-grid" style="display: grid; grid-template-columns: 1fr; gap: 10px;">
+                                    <div class="info-item" style="background: var(--gray-50); padding: 10px; border-radius: 8px;">
+                                        <strong>当前 x 值：</strong>
+                                        <span id="currentX" style="font-size: 20px;">0.00</span>
+                                    </div>
+                                    <div class="info-item" style="background: var(--gray-50); padding: 10px; border-radius: 8px;">
+                                        <strong>函数值 f(x)/g(x)：</strong>
+                                        <span id="currentY" style="font-size: 20px;">--</span>
+                                    </div>
+                                    <div class="info-item" style="background: var(--gray-50); padding: 10px; border-radius: 8px;">
+                                        <strong>导数值 f'(x)/g'(x)：</strong>
+                                        <span id="currentDeriv" style="font-size: 20px;">--</span>
+                                    </div>
+                                    <div class="info-item" style="background: #eef2ff; padding: 10px; border-radius: 8px;">
+                                        <strong>极限值：</strong>
+                                        <span id="limitResult" style="font-size: 20px; color: var(--primary);">1.00</span>
+                                    </div>
                                 </div>
-                                <div class="info-item">
-                                    <strong>∞-∞ 型</strong>
-                                    通分或乘以共轭，然后化简。
+                            </div>
+                            
+                            <div class="card">
+                                <h3>🔍 洛必达法则过程</h3>
+                                <div class="flow-container">
+                                    <div class="flow-step" id="viz-step1">
+                                        <h4>原始函数</h4>
+                                        <p id="viz-func-display">$\frac{\sin x}{x}$</p>
+                                    </div>
+                                    <div class="flow-step" id="viz-step2">
+                                        <h4>求导后</h4>
+                                        <p id="viz-deriv-display">$\frac{\cos x}{1}$</p>
+                                    </div>
+                                    <div class="flow-step" id="viz-step3">
+                                        <h4>x → 0 时的极限</h4>
+                                        <p id="viz-limit-display">$\lim_{x \to 0} \cos x = 1$</p>
+                                    </div>
                                 </div>
-                                <div class="info-item">
-                                    <strong>1^∞ 型</strong>
-                                    取对数：$\ln y = \infty \cdot \ln 1 = \infty \cdot 0$。
-                                </div>
-                                <div class="info-item">
-                                    <strong>0^0 型</strong>
-                                    取对数：$\ln y = 0 \cdot \ln 0 = 0 \cdot (-\infty)$。
-                                </div>
+                            </div>
+                            
+                            <div class="card">
+                                <h3>💡 观察要点</h3>
+                                <ul style="padding-left: 20px; line-height: 1.8;">
+                                    <li>注意函数在 x=0 附近的行为</li>
+                                    <li>观察函数值如何逼近极限值</li>
+                                    <li>比较原函数与导数的图像</li>
+                                    <li>理解为什么需要洛必达法则</li>
+                                </ul>
                             </div>
                         </div>
                     </div>
-                    <div class="column">
-                        <div class="card">
-                            <h3>转化演示</h3>
-                            <div class="canvas-wrapper">
-                                <canvas id="otherCanvas"></canvas>
-                                <div class="legend">
-                                    <span><i style="background:#f59e0b"></i> 原函数</span>
-                                    <span><i style="background:#10b981"></i> 转化后</span>
+                </div>
+                
+                <!-- 经典例题页 -->
+                <div class="page-content" id="examples">
+                    <div class="card">
+                        <h3>📖 经典例题库</h3>
+                        <div class="examples-grid">
+                            <div class="example-card">
+                                <h4>例题 1：基础 0/0 型</h4>
+                                <div class="formula-display">$$\lim_{x \to 0} \frac{\sin x}{x} = 1$$</div>
+                                <p style="margin-top: 10px;">这是洛必达法则最经典的例子</p>
+                            </div>
+                            <div class="example-card">
+                                <h4>例题 2：指数函数</h4>
+                                <div class="formula-display">$$\lim_{x \to 0} \frac{e^x - 1}{x} = 1$$</div>
+                                <p style="margin-top: 10px;">涉及指数函数的未定式</p>
+                            </div>
+                            <div class="example-card">
+                                <h4>例题 3：对数函数</h4>
+                                <div class="formula-display">$$\lim_{x \to 1} \frac{\ln x}{x - 1} = 1$$</div>
+                                <p style="margin-top: 10px;">对数函数的应用</p>
+                            </div>
+                            <div class="example-card">
+                                <h4>例题 4：多次使用</h4>
+                                <div class="formula-display">$$\lim_{x \to 0} \frac{x - \sin x}{x^3} = \frac{1}{6}$$</div>
+                                <p style="margin-top: 10px;">需要多次应用洛必达法则</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 练习模式页 -->
+                <div class="page-content" id="practice">
+                    <div class="two-column">
+                        <div class="column">
+                            <div class="card">
+                                <h3>✏️ 练习题目</h3>
+                                <div id="practiceQuestion" class="formula-display" style="min-height: 80px;">
+                                    点击"生成题目"开始练习
+                                </div>
+                                <div class="btn-group">
+                                    <button class="action" onclick="generateProblem()">生成题目</button>
+                                    <button class="action secondary" onclick="showHint()">提示</button>
+                                    <button class="action danger" onclick="showAnswer()">查看答案</button>
+                                </div>
+                            </div>
+                            
+                            <div class="card">
+                                <h3>💡 提示区域</h3>
+                                <div id="hintArea" style="min-height: 100px; padding: 10px; background: var(--gray-50); border-radius: 8px;">
+                                    提示将在这里显示...
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="column">
+                            <div class="card">
+                                <h3>📈 练习统计</h3>
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                                    <div style="padding: 10px; background: var(--gray-50); border-radius: 8px; text-align: center;">
+                                        <div style="font-size: 24px; font-weight: bold; color: var(--primary);">0</div>
+                                        <div style="font-size: 14px; color: var(--gray-600);">已完成</div>
+                                    </div>
+                                    <div style="padding: 10px; background: var(--gray-50); border-radius: 8px; text-align: center;">
+                                        <div style="font-size: 24px; font-weight: bold; color: var(--success);">0%</div>
+                                        <div style="font-size: 14px; color: var(--gray-600);">正确率</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="card">
+                                <h3>🎯 答案区域</h3>
+                                <div id="answerArea" class="formula-display" style="min-height: 80px;">
+                                    答案将在这里显示...
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </section>
+            </div>
         </div>
     </div>
 
-        <script>
-        function renderMath() {
-            if (window.MathJax && MathJax.typesetPromise) {
-                MathJax.typesetPromise().catch(err => console.log('渲染错误:', err));
-            }
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            setTimeout(renderMath, 120);
+    <script>
+        // 页面切换逻辑
+        const navBtns = document.querySelectorAll('.nav-btn');
+        const pages = document.querySelectorAll('.page-content');
+        
+        navBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const targetPage = btn.dataset.page;
+                
+                // 更新按钮状态
+                navBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                
+                // 更新页面显示
+                pages.forEach(page => page.classList.remove('active'));
+                document.getElementById(targetPage).classList.add('active');
+                
+                // 触发MathJax重新渲染
+                if (window.MathJax) {
+                    MathJax.typeset();
+                }
+                
+                // 如果切换到可视化页面，初始化图形
+                if (targetPage === 'visualize') {
+                    setTimeout(() => {
+                        drawAnimation();
+                        updateVisualizationFormulas();
+                    }, 100);
+                }
+            });
         });
-
-        function setupCanvas(canvas) {
-            const ctx = canvas.getContext('2d');
-            const rect = canvas.getBoundingClientRect();
-            const dpr = window.devicePixelRatio || 1;
-            canvas.width = rect.width * dpr;
-            canvas.height = rect.height * dpr;
-            canvas.style.width = `${rect.width}px`;
-            canvas.style.height = `${rect.height}px`;
-            ctx.resetTransform();
-            ctx.scale(dpr, dpr);
-            return { ctx, width: rect.width, height: rect.height };
+        
+        // 滑块值更新
+        const limitPoint = document.getElementById('limitPoint');
+        const limitValue = document.getElementById('limitValue');
+        if (limitPoint) {
+            limitPoint.addEventListener('input', () => {
+                limitValue.textContent = limitPoint.value;
+            });
         }
-
-        function drawAxes(ctx, width, height, padding = 40) {
-            ctx.save();
-            ctx.strokeStyle = '#e2e8f0';
-            ctx.lineWidth = 1;
-            for (let i = 0; i <= 8; i++) {
-                const x = padding + (i / 8) * (width - 2 * padding);
+        
+        // 可视化页面的滑块更新
+        const animSpeed = document.getElementById('animSpeed');
+        const speedValue = document.getElementById('speedValue');
+        if (animSpeed) {
+            animSpeed.addEventListener('input', () => {
+                speedValue.textContent = animSpeed.value;
+            });
+        }
+        
+        const zoomLevel = document.getElementById('zoomLevel');
+        const zoomValue = document.getElementById('zoomValue');
+        if (zoomLevel) {
+            zoomLevel.addEventListener('input', () => {
+                zoomValue.textContent = zoomLevel.value;
+                if (animationId) {
+                    drawAnimation();
+                }
+            });
+        }
+        
+        // 可视化动画变量
+        let animationId = null;
+        let animX = -3;
+        let animationPaused = false;
+        
+        // 函数定义
+        const functions = {
+            'sinx/x': {
+                f: (x) => Math.abs(x) < 0.001 ? 1 : Math.sin(x) / x,
+                df: (x) => Math.abs(x) < 0.001 ? 0 : (Math.cos(x) * x - Math.sin(x)) / (x * x),
+                fName: '\\sin x',
+                gName: 'x',
+                dfName: '\\cos x',
+                dgName: '1',
+                limit: 1
+            },
+            '(e^x-1)/x': {
+                f: (x) => Math.abs(x) < 0.001 ? 1 : (Math.exp(x) - 1) / x,
+                df: (x) => Math.abs(x) < 0.001 ? 1 : (Math.exp(x) * x - (Math.exp(x) - 1)) / (x * x),
+                fName: 'e^x - 1',
+                gName: 'x',
+                dfName: 'e^x',
+                dgName: '1',
+                limit: 1
+            },
+            'ln(1+x)/x': {
+                f: (x) => Math.abs(x) < 0.001 ? 1 : Math.log(1 + x) / x,
+                df: (x) => Math.abs(x) < 0.001 ? 0 : (1/(1+x) * x - Math.log(1+x)) / (x * x),
+                fName: '\\ln(1+x)',
+                gName: 'x',
+                dfName: '\\frac{1}{1+x}',
+                dgName: '1',
+                limit: 1
+            },
+            '(1-cosx)/x^2': {
+                f: (x) => Math.abs(x) < 0.001 ? 0.5 : (1 - Math.cos(x)) / (x * x),
+                df: (x) => Math.abs(x) < 0.001 ? 0 : Math.sin(x) / (2 * x),
+                fName: '1 - \\cos x',
+                gName: 'x^2',
+                dfName: '\\sin x',
+                dgName: '2x',
+                limit: 0.5
+            }
+        };
+        
+        // 绘制可视化动画
+        function drawAnimation() {
+            const canvas = document.getElementById('animCanvas');
+            if (!canvas) return;
+            
+            const ctx = canvas.getContext('2d');
+            canvas.width = canvas.offsetWidth;
+            canvas.height = canvas.offsetHeight;
+            
+            const width = canvas.width;
+            const height = canvas.height;
+            const centerX = width / 2;
+            const centerY = height / 2;
+            const scale = parseInt(zoomLevel?.value || 50);
+            
+            // 清空画布
+            ctx.clearRect(0, 0, width, height);
+            
+            // 绘制网格
+            ctx.strokeStyle = '#f0f0f0';
+            ctx.lineWidth = 0.5;
+            for (let i = 0; i <= width; i += scale) {
                 ctx.beginPath();
-                ctx.moveTo(x, padding);
-                ctx.lineTo(x, height - padding);
-                ctx.stroke();
-
-                const y = padding + (i / 8) * (height - 2 * padding);
-                ctx.beginPath();
-                ctx.moveTo(padding, y);
-                ctx.lineTo(width - padding, y);
+                ctx.moveTo(i, 0);
+                ctx.lineTo(i, height);
                 ctx.stroke();
             }
-
-            ctx.strokeStyle = '#1f2937';
-            ctx.lineWidth = 1.4;
-            ctx.beginPath();
-            ctx.moveTo(padding, height / 2);
-            ctx.lineTo(width - padding, height / 2);
-            ctx.stroke();
-
-            ctx.beginPath();
-            ctx.moveTo(width / 2, padding);
-            ctx.lineTo(width / 2, height - padding);
-            ctx.stroke();
-            ctx.restore();
-        }
-
-        function mathToCanvas(x, y, width, height, xRange, yRange, padding = 40) {
-            const plotWidth = width - 2 * padding;
-            const plotHeight = height - 2 * padding;
-            const cx = padding + ((x - xRange[0]) / (xRange[1] - xRange[0])) * plotWidth;
-            const cy = height - padding - ((y - yRange[0]) / (yRange[1] - yRange[0])) * plotHeight;
-            return { x: cx, y: cy };
-        }
-
-        function drawCurve(ctx, points, width, height, xRange, yRange, color) {
-            if (!points.length) return;
-            ctx.save();
-            ctx.strokeStyle = color;
+            for (let i = 0; i <= height; i += scale) {
+                ctx.beginPath();
+                ctx.moveTo(0, i);
+                ctx.lineTo(width, i);
+                ctx.stroke();
+            }
+            
+            // 绘制坐标轴
+            ctx.strokeStyle = '#9ca3af';
             ctx.lineWidth = 2;
             ctx.beginPath();
-            points.forEach((pt, index) => {
-                const { x, y } = mathToCanvas(pt.x, pt.y, width, height, xRange, yRange);
-                if (index === 0) {
-                    ctx.moveTo(x, y);
-                } else {
-                    ctx.lineTo(x, y);
-                }
-            });
+            ctx.moveTo(0, centerY);
+            ctx.lineTo(width, centerY);
+            ctx.moveTo(centerX, 0);
+            ctx.lineTo(centerX, height);
             ctx.stroke();
-            ctx.restore();
-        }
-
-        function ensureRange(range, fallback = [-4, 4]) {
-            if (!range || range.length !== 2) return fallback;
-            const [min, max] = range;
-            if (!Number.isFinite(min) || !Number.isFinite(max) || min === max) {
-                return fallback;
-            }
-            return [min, max];
-        }
-
-        const zeroCases = {
-            sin_over_x: {
-                key: 'sin_over_x',
-                name: '$\\dfrac{\\sin x}{x}$',
-                typeLabel: '标准 $0/0$ 型',
-                description: '当前案例：$\\displaystyle \\lim_{x \\to 0} \\dfrac{\\sin x}{x}$。分子分母同趋于 $0$，直接满足洛必达法则的适用条件。',
-                numerator: x => Math.sin(x),
-                denominator: x => x,
-                numeratorPrime: x => Math.cos(x),
-                denominatorPrime: () => 1,
-                limitPoint: 0,
-                displayInterval: [-3.5, 3.5],
-                yRange: [-2.2, 2.2],
-                ratioConclusion: '导数比值极限存在，原极限为 $1$。',
-                approach: { min: 0.01, max: 0.6, step: 0.01, defaultValue: 0.18, directions: ['right', 'left', 'both'], defaultDirection: 'right' },
-                visual: {
-                    expression: '$\\dfrac{\\sin x}{x}$',
-                    numerator: '$\\sin x$',
-                    denominator: '$x$',
-                    numeratorPrime: '$\\cos x$',
-                    denominatorPrime: '$1$',
-                    substitution: '$\\dfrac{\\cos 0}{1} = 1$',
-                    conclusion: '$\\displaystyle \\lim_{x \\to 0} \\dfrac{\\sin x}{x} = 1$',
-                    messages: {
-                        start: '代入 $x=0$ 后出现 $0/0$ 型，满足洛必达法则的前提条件。',
-                        derivative: '对分子和分母分别求导，构建新的比值。',
-                        substitute: '将极限点 $x=0$ 代入导数比值，可得 $1$。',
-                        conclude: '导数比值极限存在，因此原极限也等于 $1$。'
-                    }
-                },
-                steps: [
-                    { detail: '代入 $x=0$，分子分母同时为 $0$，判定为 $0/0$ 型。' },
-                    { detail: '分别求导：$f\\'(x)=\\cos x$，$g\\'(x)=1$。' },
-                    { detail: '带入极限点：$\\dfrac{f\\'(0)}{g\\'(0)} = 1$。' },
-                    { detail: '导数比值极限存在，因此原极限等于 $1$。' }
-                ]
-            },
-            exp_minus_one: {
-                key: 'exp_minus_one',
-                name: '$\\dfrac{e^x-1}{x}$',
-                typeLabel: '指数类 $0/0$ 型',
-                description: '当前案例：$\\displaystyle \\lim_{x \\to 0} \\dfrac{e^x-1}{x}$。指数函数减常数也会形成 $0/0$ 型，关键在于比较导数的变化率。',
-                numerator: x => Math.exp(x) - 1,
-                denominator: x => x,
-                numeratorPrime: x => Math.exp(x),
-                denominatorPrime: () => 1,
-                limitPoint: 0,
-                displayInterval: [-2.5, 3],
-                yRange: [-1.5, 4.5],
-                ratioConclusion: '导数比值恒为 $e^x$，在 $x=0$ 处取 $1$，原极限仍为 $1$。',
-                approach: { min: 0.02, max: 0.6, step: 0.01, defaultValue: 0.22, directions: ['right', 'left', 'both'], defaultDirection: 'right' },
-                visual: {
-                    expression: '$\\dfrac{e^x-1}{x}$',
-                    numerator: '$e^x-1$',
-                    denominator: '$x$',
-                    numeratorPrime: '$e^x$',
-                    denominatorPrime: '$1$',
-                    substitution: '$\\dfrac{e^{0}}{1}=1$',
-                    conclusion: '$\\displaystyle \\lim_{x \\to 0} \\dfrac{e^x-1}{x} = 1$',
-                    messages: {
-                        start: '确认 $x=0$ 时分子分母均为 $0$，属于 $0/0$ 型。',
-                        derivative: '同步求导：分子导数仍为指数函数，分母导数为常数。',
-                        substitute: '在导数比值中代入 $x=0$，得到 $1$。',
-                        conclude: '指数型案例同样满足洛必达法则，原极限取 $1$。'
-                    }
-                },
-                steps: [
-                    { detail: '检测不定式：$e^0-1=0$，分母也为 $0$。' },
-                    { detail: '求导：$f\\'(x)=e^x$，$g\\'(x)=1$。' },
-                    { detail: '代入 $x=0$，得到 $e^0 = 1$。' },
-                    { detail: '由洛必达法则知，原极限与导数比值极限一致。' }
-                ]
-            },
-            log_ratio: {
-                key: 'log_ratio',
-                name: '$\\dfrac{\\ln(1+x)}{x}$',
-                typeLabel: '对数型 $0/0$ 型',
-                description: '当前案例：$\\displaystyle \\lim_{x \\to 0} \\dfrac{\\ln(1+x)}{x}$。对数函数同样在 $x=0$ 形成 $0/0$ 型，需要注意定义域 $x>-1$。',
-                numerator: x => Math.log(1 + x),
-                denominator: x => x,
-                numeratorPrime: x => 1 / (1 + x),
-                denominatorPrime: () => 1,
-                limitPoint: 0,
-                displayInterval: [-0.6, 3.2],
-                yRange: [-1.5, 2.5],
-                ratioConclusion: '导数比值极限为 $1$，体现了 $\\ln(1+x)$ 在 $x=0$ 附近的线性化性质。',
-                approach: { min: 0.02, max: 0.5, step: 0.01, defaultValue: 0.16, directions: ['right', 'left'], defaultDirection: 'right' },
-                visual: {
-                    expression: '$\\dfrac{\\ln(1+x)}{x}$',
-                    numerator: '$\\ln(1+x)$',
-                    denominator: '$x$',
-                    numeratorPrime: '$\\dfrac{1}{1+x}$',
-                    denominatorPrime: '$1$',
-                    substitution: '$\\dfrac{1}{1}=1$',
-                    conclusion: '$\\displaystyle \\lim_{x \\to 0} \\dfrac{\\ln(1+x)}{x} = 1$',
-                    messages: {
-                        start: '分子与分母在 $x=0$ 同时为 $0$，满足 $0/0$ 型。',
-                        derivative: '对数函数求导需注意分母 $1+x$，分母导数为常数。',
-                        substitute: '令 $x=0$，导数比值化为 $1$。',
-                        conclude: '极限等于导数比值的极限，因此原极限为 $1$。'
-                    }
-                },
-                steps: [
-                    { detail: '确认极限类型：分子、分母代入 $0$ 均得 $0$。' },
-                    { detail: '求导：$f\\'(x)=\\dfrac{1}{1+x}$，$g\\'(x)=1$。' },
-                    { detail: '代入 $x=0$，比值为 $1$。' },
-                    { detail: '因此原极限等于 $1$，与导数比值一致。' }
-                ]
-            }
-        };
-
-        const typeSummary = [
-            { name: '$\\dfrac{0}{0}$ 型', hint: '直接检查分子、分母在极限点的值。', example: '$\\displaystyle \\lim_{x \\to 0} \\dfrac{\\sin x}{x}$' },
-            { name: '$\\dfrac{\\infty}{\\infty}$ 型', hint: '常见于高阶多项式或指数比值。', example: '$\\displaystyle \\lim_{x \\to \\infty} \\dfrac{2x^2-1}{x^2+3}$' },
-            { name: '$0 \\cdot \\infty$', hint: '通过改写为 $\\dfrac{0}{1/a}$ 或 $\\dfrac{\\infty}{1/b}$。', example: '$\\displaystyle \\lim_{x \\to 0^+} x\\ln x$' },
-            { name: '$\\infty - \\infty$', hint: '通分或乘以共轭后再判断类型。', example: '$\\displaystyle \\lim_{x \\to \\infty}(\\sqrt{x^2+x}-x)$' },
-            { name: '$1^{\\infty}$ 型', hint: '取对数，将幂指数转化为乘积形式。', example: '$\\displaystyle \\lim_{x \\to \\infty}\\left(1+\\frac{3}{x}\\right)^x$' }
-        ];
-
-        const navButtons = document.querySelectorAll('.nav-btn');
-        const pages = document.querySelectorAll('.page-content');
-        const caseSelector = document.getElementById('caseSelector');
-        const flowContainer = document.getElementById('flowContainer');
-        const startFlowBtn = document.getElementById('startFlow');
-        const nextStepBtn = document.getElementById('nextStep');
-        const resetFlowBtn = document.getElementById('resetFlow');
-        const caseDescription = document.getElementById('caseDescription');
-        const typeTable = document.getElementById('typeTable');
-
-        const approachSlider = document.getElementById('approachSlider');
-        const approachValue = document.getElementById('approachValue');
-        const directionSelector = document.getElementById('directionSelector');
-        const valueInfo = document.getElementById('valueInfo');
-        const ratioInfo = document.getElementById('ratioInfo');
-        const derivativeInfo = document.getElementById('derivativeInfo');
-        const hintInfo = document.getElementById('hintInfo');
-
-        const lhopitalCanvas = document.getElementById('lhopitalCanvas');
-        const derivationVisual = document.getElementById('derivationVisual');
-        const animationLayer = document.getElementById('derivationAnimationLayer');
-        const derivationStatus = document.getElementById('derivationStatus');
-        const originalNumerator = document.getElementById('originalNumerator');
-        const originalDenominator = document.getElementById('originalDenominator');
-        const derivativeNumerator = document.getElementById('derivativeNumerator');
-        const derivativeDenominator = document.getElementById('derivativeDenominator');
-        const derivativeEvaluation = document.getElementById('derivativeEvaluation');
-        const limitConclusion = document.getElementById('limitConclusion');
-        const stageElements = {
-            original: derivationVisual?.querySelector('[data-stage="original"]'),
-            derivative: derivationVisual?.querySelector('[data-stage="derivative"]'),
-            result: derivationVisual?.querySelector('[data-stage="result"]')
-        };
-        const flowLinks = derivationVisual ? derivationVisual.querySelectorAll('.flow-link') : [];
-
-        let currentCaseKey = 'sin_over_x';
-        let currentStepIndex = -1;
-        let animationTimer = null;
-
-        function populateTypeTable() {
-            typeTable.innerHTML = typeSummary.map(row => `
-                <tr>
-                    <td>${row.name}</td>
-                    <td>${row.hint}</td>
-                    <td>${row.example}</td>
-                </tr>
-            `).join('');
-            renderMath();
-        }
-
-        function populateCaseSelector() {
-            if (!caseSelector) return;
-            Object.values(zeroCases).forEach(item => {
-                const option = document.createElement('option');
-                option.value = item.key;
-                option.innerHTML = `${item.typeLabel}`;
-                caseSelector.appendChild(option);
-            });
-            caseSelector.value = currentCaseKey;
-        }
-
-        function buildFlowSteps() {
-            flowContainer.innerHTML = '';
-            const current = zeroCases[currentCaseKey];
-            current.steps.forEach((step, index) => {
-                const div = document.createElement('div');
-                div.className = 'flow-step';
-                div.dataset.stepIndex = index;
-                div.innerHTML = `
-                    <h4>步骤 ${index + 1}</h4>
-                    <p>${step.detail}</p>
-                `;
-                flowContainer.appendChild(div);
-            });
-            currentStepIndex = -1;
-            renderMath();
-        }
-
-        function clearAnimationLayer() {
-            if (animationLayer) {
-                animationLayer.innerHTML = '';
-            }
-        }
-
-        function updateDerivationView(current) {
-            if (!current || !current.visual || !derivationVisual) return;
-            const { visual } = current;
-            originalNumerator.innerHTML = visual.numerator || '';
-            originalDenominator.innerHTML = visual.denominator || '';
-            derivativeNumerator.innerHTML = '?';
-            derivativeDenominator.innerHTML = '?';
-            derivativeEvaluation.textContent = '等待求导结果';
-            limitConclusion.textContent = '点击开始查看极限结论';
-            derivationStatus.textContent = '点击“开始演示”体验推导过程。';
-            clearAnimationLayer();
-            Object.values(stageElements).forEach(stage => {
-                if (stage) {
-                    stage.classList.remove('active', 'completed');
+            
+            // 绘制刻度和标签
+            ctx.fillStyle = '#6b7280';
+            ctx.font = '12px Arial';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'top';
+            
+            for (let x = -5; x <= 5; x++) {
+                if (x !== 0) {
+                    const px = centerX + x * scale;
+                    ctx.fillText(x.toString(), px, centerY + 5);
+                    ctx.beginPath();
+                    ctx.moveTo(px, centerY - 3);
+                    ctx.lineTo(px, centerY + 3);
+                    ctx.stroke();
                 }
-            });
-            flowLinks.forEach(link => link.classList.remove('active', 'completed'));
-            renderMath();
-        }
-
-        function animateToken(sourceEl, targetEl, className = '', callback) {
-            if (!sourceEl || !targetEl || !derivationVisual || !animationLayer) {
-                if (typeof callback === 'function') callback();
-                return;
             }
-            const containerRect = derivationVisual.getBoundingClientRect();
-            const startRect = sourceEl.getBoundingClientRect();
-            const endRect = targetEl.getBoundingClientRect();
-            const token = document.createElement('div');
-            token.className = className ? `flying-token ${className}` : 'flying-token';
-            token.innerHTML = sourceEl.innerHTML;
-            token.style.left = `${startRect.left - containerRect.left}px`;
-            token.style.top = `${startRect.top - containerRect.top}px`;
-            animationLayer.appendChild(token);
-            requestAnimationFrame(() => {
-                token.style.opacity = '1';
-                token.style.transform = `translate(${endRect.left - startRect.left}px, ${endRect.top - startRect.top}px)`;
-            });
-            setTimeout(() => {
-                token.remove();
-                if (typeof callback === 'function') callback();
-            }, 500);
-        }
-
-        function updateStageClasses(index) {
-            if (!stageElements.original) return;
-            const originalActive = index === 0;
-            stageElements.original.classList.toggle('active', originalActive);
-            stageElements.original.classList.toggle('completed', index > 0);
-
-            if (stageElements.derivative) {
-                const derivativeActive = index === 1 || index === 2;
-                stageElements.derivative.classList.toggle('active', derivativeActive);
-                stageElements.derivative.classList.toggle('completed', index > 2);
-            }
-
-            if (stageElements.result) {
-                const resultActive = index >= 3;
-                stageElements.result.classList.toggle('active', resultActive);
-                stageElements.result.classList.toggle('completed', resultActive);
-            }
-
-            flowLinks.forEach((link, idx) => {
-                const isActive = (idx === 0 && index >= 1 && index < 2) || (idx === 1 && index >= 2 && index < 3);
-                const isCompleted = (idx === 0 && index >= 2) || (idx === 1 && index >= 3);
-                link.classList.toggle('active', isActive);
-                link.classList.toggle('completed', isCompleted);
-            });
-        }
-
-        function handleStageState(index) {
-            const current = zeroCases[currentCaseKey];
-            if (!current || !current.visual || !derivationVisual) return;
-            const { visual } = current;
-
-            if (index < 0) {
-                updateDerivationView(current);
-                return;
-            }
-
-            updateStageClasses(index);
-            clearAnimationLayer();
-
-            if (index === 0) {
-                derivationStatus.innerHTML = visual.messages.start;
-                derivativeNumerator.innerHTML = '?';
-                derivativeDenominator.innerHTML = '?';
-                derivativeEvaluation.textContent = '等待求导结果';
-                limitConclusion.textContent = '点击开始查看极限结论';
-                renderMath();
-                return;
-            }
-
-            if (index === 1) {
-                derivationStatus.innerHTML = visual.messages.derivative;
-                derivativeEvaluation.textContent = '正在同步求导…';
-                derivativeNumerator.innerHTML = '?';
-                derivativeDenominator.innerHTML = '?';
-                animateToken(originalNumerator, derivativeNumerator, '', () => {
-                    derivativeNumerator.innerHTML = visual.numeratorPrime;
-                    renderMath();
-                });
-                animateToken(originalDenominator, derivativeDenominator, 'denom', () => {
-                    derivativeDenominator.innerHTML = visual.denominatorPrime;
-                    renderMath();
-                });
-                return;
-            }
-
-            if (index === 2) {
-                derivationStatus.innerHTML = visual.messages.substitute;
-                derivativeEvaluation.innerHTML = visual.substitution;
-                renderMath();
-                return;
-            }
-
-            derivationStatus.innerHTML = visual.messages.conclude;
-            derivativeEvaluation.innerHTML = visual.substitution;
-            limitConclusion.innerHTML = visual.conclusion;
-            renderMath();
-        }
-
-        function highlightStep(index) {
-            const steps = flowContainer.querySelectorAll('.flow-step');
-            steps.forEach((step, stepIndex) => {
-                step.className = 'flow-step';
-                if (stepIndex < index) {
-                    step.classList.add('success');
+            
+            // 获取当前函数
+            const funcKey = document.getElementById('vizFunc')?.value || 'sinx/x';
+            const func = functions[funcKey];
+            
+            // 绘制函数曲线
+            ctx.strokeStyle = '#3b82f6';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            
+            let firstPoint = true;
+            for (let px = 0; px < width; px++) {
+                const x = (px - centerX) / scale;
+                if (Math.abs(x) > 5) continue;
+                
+                const y = func.f(x);
+                if (!isFinite(y) || Math.abs(y) > 10) continue;
+                
+                const py = centerY - y * scale;
+                
+                if (firstPoint) {
+                    ctx.moveTo(px, py);
+                    firstPoint = false;
+                } else {
+                    ctx.lineTo(px, py);
                 }
-            });
-            if (index >= 0 && index < steps.length) {
-                steps[index].classList.add('active');
-                if (index === steps.length - 1) {
-                    steps[index].classList.add('success');
+            }
+            ctx.stroke();
+            
+            // 绘制动画点
+            if (Math.abs(animX) <= 5) {
+                const y = func.f(animX);
+                if (isFinite(y)) {
+                    const px = centerX + animX * scale;
+                    const py = centerY - y * scale;
+                    
+                    // 绘制点
+                    ctx.fillStyle = '#10b981';
+                    ctx.beginPath();
+                    ctx.arc(px, py, 6, 0, 2 * Math.PI);
+                    ctx.fill();
+                    
+                    // 绘制垂直线
+                    ctx.strokeStyle = 'rgba(16, 185, 129, 0.3)';
+                    ctx.lineWidth = 1;
+                    ctx.setLineDash([5, 5]);
+                    ctx.beginPath();
+                    ctx.moveTo(px, py);
+                    ctx.lineTo(px, centerY);
+                    ctx.stroke();
+                    ctx.setLineDash([]);
+                    
+                    // 更新数值显示
+                    document.getElementById('currentX').textContent = animX.toFixed(3);
+                    document.getElementById('currentY').textContent = y.toFixed(4);
+                    
+                    const deriv = func.df(animX);
+                    document.getElementById('currentDeriv').textContent = isFinite(deriv) ? deriv.toFixed(4) : '--';
+                    
+                    // 高亮步骤
+                    if (Math.abs(animX) < 0.5) {
+                        document.getElementById('viz-step3').classList.add('active');
+                        document.getElementById('viz-step2').classList.add('success');
+                    } else if (Math.abs(animX) < 1.5) {
+                        document.getElementById('viz-step2').classList.add('active');
+                        document.getElementById('viz-step1').classList.add('success');
+                        document.getElementById('viz-step3').classList.remove('active');
+                    } else {
+                        document.getElementById('viz-step1').classList.add('active');
+                        document.getElementById('viz-step2').classList.remove('active', 'success');
+                        document.getElementById('viz-step3').classList.remove('active');
+                    }
                 }
-                steps[index].scrollIntoView({ block: 'nearest' });
             }
-            currentStepIndex = index;
-            handleStageState(index);
+            
+            // 绘制极限点
+            ctx.fillStyle = '#ef4444';
+            ctx.beginPath();
+            ctx.arc(centerX, centerY - func.limit * scale, 5, 0, 2 * Math.PI);
+            ctx.fill();
+            
+            // 添加极限值标签
+            ctx.fillStyle = '#ef4444';
+            ctx.font = '14px Arial';
+            ctx.fillText(`极限值: ${func.limit}`, centerX + 30, centerY - func.limit * scale);
         }
-
-        function advanceStep() {
-            const total = zeroCases[currentCaseKey].steps.length;
-            if (currentStepIndex >= total - 1) return;
-            highlightStep(currentStepIndex + 1);
-            renderMath();
-        }
-
-        function stopAnimation() {
-            if (animationTimer) {
-                clearInterval(animationTimer);
-                animationTimer = null;
-            }
-            startFlowBtn.textContent = '开始演示';
-        }
-
-        function resetFlow() {
-            stopAnimation();
-            buildFlowSteps();
-            highlightStep(-1);
-        }
-
-        function toggleAnimation() {
-            if (animationTimer) {
-                stopAnimation();
-                return;
-            }
-            advanceStep();
-            startFlowBtn.textContent = '暂停演示';
-            animationTimer = setInterval(() => {
-                const total = zeroCases[currentCaseKey].steps.length;
-                if (currentStepIndex >= total - 1) {
-                    stopAnimation();
+        
+        // 开始动画
+        function startAnimation() {
+            if (animationId) return;
+            
+            animationPaused = false;
+            const speed = parseInt(animSpeed?.value || 5);
+            
+            function animate() {
+                if (animationPaused) {
+                    animationId = null;
                     return;
                 }
-                advanceStep();
-            }, 2200);
-        }
-
-        function configureApproachControls() {
-            const config = zeroCases[currentCaseKey].approach;
-            if (!config) {
-                approachSlider.disabled = true;
-                directionSelector.disabled = true;
-                return;
-            }
-            approachSlider.disabled = false;
-            approachSlider.min = config.min;
-            approachSlider.max = config.max;
-            approachSlider.step = config.step;
-            approachSlider.value = config.defaultValue;
-            approachValue.textContent = Number(config.defaultValue).toFixed(2);
-
-            directionSelector.innerHTML = '';
-            config.directions.forEach(dir => {
-                const option = document.createElement('option');
-                option.value = dir;
-                option.textContent = dir === 'right' ? '右侧接近' : dir === 'left' ? '左侧接近' : '两侧对比';
-                directionSelector.appendChild(option);
-            });
-            directionSelector.value = config.defaultDirection || config.directions[0];
-            directionSelector.disabled = config.directions.length === 1;
-        }
-
-        function derivativeLimit(current) {
-            try {
-                const value = current.numeratorPrime(current.limitPoint) / current.denominatorPrime(current.limitPoint);
-                if (Number.isFinite(value)) {
-                    return value;
+                
+                drawAnimation();
+                
+                animX += 0.01 * speed;
+                if (animX > 3) {
+                    animX = -3;
                 }
-                return null;
-            } catch (e) {
-                return null;
+                
+                animationId = requestAnimationFrame(animate);
+            }
+            
+            animate();
+            updateVisualizationFormulas();
+        }
+        
+        // 暂停动画
+        function pauseAnimation() {
+            animationPaused = true;
+            if (animationId) {
+                cancelAnimationFrame(animationId);
+                animationId = null;
             }
         }
-
-        function formatNumber(value) {
-            if (Number.isNaN(value)) return '未定义';
-            if (!Number.isFinite(value)) return '∞';
-            if (Math.abs(value) >= 1000 || Math.abs(value) < 0.0001) {
-                return value.toExponential(2);
-            }
-            return value.toFixed(4);
+        
+        // 重置动画
+        function resetAnimation() {
+            pauseAnimation();
+            animX = -3;
+            drawAnimation();
+            
+            // 重置步骤高亮
+            document.getElementById('viz-step1')?.classList.remove('active', 'success');
+            document.getElementById('viz-step2')?.classList.remove('active', 'success');
+            document.getElementById('viz-step3')?.classList.remove('active', 'success');
+            
+            // 重置数值显示
+            document.getElementById('currentX').textContent = '0.00';
+            document.getElementById('currentY').textContent = '--';
+            document.getElementById('currentDeriv').textContent = '--';
         }
-
-        function buildValueLine(values) {
-            return values.map(item => `${item.prefix}${item.value}`).join('<br>');
+        
+        // 更新可视化页面的公式显示
+        function updateVisualizationFormulas() {
+            const funcKey = document.getElementById('vizFunc')?.value || 'sinx/x';
+            const func = functions[funcKey];
+            
+            document.getElementById('viz-func-display').innerHTML = `$\\frac{${func.fName}}{${func.gName}}$`;
+            document.getElementById('viz-deriv-display').innerHTML = `$\\frac{${func.dfName}}{${func.dgName}}$`;
+            document.getElementById('viz-limit-display').innerHTML = `$\\lim_{x \\to 0} \\frac{${func.dfName}}{${func.dgName}} = ${func.limit}$`;
+            document.getElementById('limitResult').textContent = func.limit.toString();
+            
+            if (window.MathJax) {
+                MathJax.typeset();
+            }
         }
-
-        function updateNumericalInfo(current) {
-            const config = current.approach;
-            if (!config) return;
-            const epsilon = parseFloat(approachSlider.value);
-            const direction = directionSelector.value;
-            const points = [];
-            const limitPoint = current.limitPoint;
-
-            if (direction === 'left' || direction === 'both') {
-                points.push({ prefix: '左侧：', sample: limitPoint - epsilon });
+        
+        // 函数选择改变时更新
+        document.getElementById('vizFunc')?.addEventListener('change', () => {
+            updateVisualizationFormulas();
+            if (animationId) {
+                drawAnimation();
             }
-            if (direction === 'right' || direction === 'both') {
-                points.push({ prefix: direction === 'both' ? '右侧：' : '', sample: limitPoint + epsilon });
-            }
-
-            const fLines = [];
-            const ratioLines = [];
-            points.forEach(point => {
-                const fx = current.numerator(point.sample);
-                const gx = current.denominator(point.sample);
-                const ratio = Math.abs(gx) < 1e-6 ? NaN : fx / gx;
-                const displayX = formatNumber(point.sample);
-                fLines.push({ prefix: point.prefix, value: `$f(${displayX})=${formatNumber(fx)}, g(${displayX})=${formatNumber(gx)}` });
-                ratioLines.push({ prefix: point.prefix, value: `$\\dfrac{f(${displayX})}{g(${displayX})}=${formatNumber(ratio)}` });
+        });
+        
+        // 计算器功能
+        function calculate() {
+            const stepsContainer = document.getElementById('calcSteps');
+            const resultContainer = document.getElementById('result');
+            const funcSelect = document.getElementById('funcSelect');
+            
+            // 清空之前的步骤
+            stepsContainer.innerHTML = '';
+            
+            // 模拟计算步骤
+            const steps = [
+                { title: '步骤 1：识别未定式类型', content: '代入 x = 0，得到 0/0 型未定式', status: 'active' },
+                { title: '步骤 2：应用洛必达法则', content: '对分子分母分别求导', status: '' },
+                { title: '步骤 3：求导计算', content: '分子导数：cos(x)，分母导数：1', status: '' },
+                { title: '步骤 4：计算极限', content: '$$\\lim_{x \\to 0} \\cos(x) = 1$$', status: '' }
+            ];
+            
+            // 逐步显示计算过程
+            steps.forEach((step, index) => {
+                setTimeout(() => {
+                    const stepDiv = document.createElement('div');
+                    stepDiv.className = 'flow-step ' + (index === 0 ? 'active' : '');
+                    stepDiv.innerHTML = `
+                        <h4>${step.title}</h4>
+                        <p>${step.content}</p>
+                    `;
+                    stepsContainer.appendChild(stepDiv);
+                    
+                    // 更新前一个步骤的状态
+                    if (index > 0) {
+                        stepsContainer.children[index - 1].classList.remove('active');
+                        stepsContainer.children[index - 1].classList.add('success');
+                        stepDiv.classList.add('active');
+                    }
+                    
+                    // 最后一步时显示结果
+                    if (index === steps.length - 1) {
+                        setTimeout(() => {
+                            stepDiv.classList.remove('active');
+                            stepDiv.classList.add('success');
+                            resultContainer.className = 'status-box complete';
+                            resultContainer.innerHTML = '<h4>极限值 = 1</h4><p>计算完成！</p>';
+                            MathJax.typeset();
+                        }, 1000);
+                    }
+                    
+                    MathJax.typeset();
+                }, index * 1500);
             });
-
-            valueInfo.innerHTML = buildValueLine(fLines);
-            ratioInfo.innerHTML = buildValueLine(ratioLines);
-
-            const derivativeValue = derivativeLimit(current);
-            derivativeInfo.innerHTML = derivativeValue !== null
-                ? `$\\dfrac{f'(x_0)}{g'(x_0)} = ${formatNumber(derivativeValue)}`
-                : '导数比值无法直接计算，需进一步分析。';
-
-            hintInfo.innerHTML = current.ratioConclusion;
-            renderMath();
+            
+            // 绘制图形
+            drawGraph();
         }
-
-        function updateCanvas() {
-            if (!lhopitalCanvas) return;
-            const current = zeroCases[currentCaseKey];
-            const { ctx, width, height } = setupCanvas(lhopitalCanvas);
+        
+        function reset() {
+            document.getElementById('calcSteps').innerHTML = `
+                <div class="flow-step">
+                    <h4>等待输入...</h4>
+                    <p>请选择函数并点击"开始计算"</p>
+                </div>
+            `;
+            document.getElementById('result').className = 'status-box';
+            document.getElementById('result').innerHTML = '<p>等待计算...</p>';
+            
+            const canvas = document.getElementById('graph');
+            if (canvas) {
+                const ctx = canvas.getContext('2d');
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+            }
+        }
+        
+        function drawGraph() {
+            const canvas = document.getElementById('graph');
+            if (!canvas) return;
+            
+            const ctx = canvas.getContext('2d');
+            canvas.width = canvas.offsetWidth;
+            canvas.height = canvas.offsetHeight;
+            
+            const width = canvas.width;
+            const height = canvas.height;
+            const centerX = width / 2;
+            const centerY = height / 2;
+            
+            // 清空画布
             ctx.clearRect(0, 0, width, height);
-
-            const xRange = ensureRange(current.displayInterval, [-3, 3]);
-            const yRange = ensureRange(current.yRange, [-3, 3]);
-
-            drawAxes(ctx, width, height);
-
-            const samples = 320;
-            const fPoints = [];
-            const gPoints = [];
-            const ratioPoints = [];
-
-            for (let i = 0; i <= samples; i++) {
-                const x = xRange[0] + (i / samples) * (xRange[1] - xRange[0]);
-                const fx = current.numerator(x);
-                const gx = current.denominator(x);
-                if (Number.isFinite(fx)) {
-                    fPoints.push({ x, y: fx });
-                }
-                if (Number.isFinite(gx)) {
-                    gPoints.push({ x, y: gx });
-                }
-                if (Number.isFinite(fx) && Number.isFinite(gx) && Math.abs(gx) > 1e-4) {
-                    const ratio = fx / gx;
-                    if (Number.isFinite(ratio) && Math.abs(ratio) < 1e6) {
-                        ratioPoints.push({ x, y: ratio });
-                    }
-                }
-            }
-
-            drawCurve(ctx, fPoints, width, height, xRange, yRange, '#2563eb');
-            drawCurve(ctx, gPoints, width, height, xRange, yRange, '#ef4444');
-            drawCurve(ctx, ratioPoints, width, height, xRange, yRange, '#10b981');
-
-            updateNumericalInfo(current);
-            drawApproachMarkers(current, ctx, width, height, xRange, yRange);
-        }
-
-        function drawApproachMarkers(current, ctx, width, height, xRange, yRange) {
-            if (!current || !current.approach) return;
-            const epsilon = parseFloat(approachSlider.value);
-            if (Number.isNaN(epsilon)) return;
-            const direction = directionSelector.value;
-            const limitPoint = current.limitPoint;
-            const padding = 40;
-
-            const samplePoints = [];
-            if (direction === 'left' || direction === 'both') {
-                samplePoints.push({
-                    x: limitPoint - epsilon,
-                    label: direction === 'both' ? '左侧取样' : '左侧接近'
-                });
-            }
-            if (direction === 'right' || direction === 'both') {
-                samplePoints.push({
-                    x: limitPoint + epsilon,
-                    label: direction === 'both' ? '右侧取样' : '右侧接近'
-                });
-            }
-
-            ctx.save();
-            ctx.lineWidth = 1.2;
-            ctx.setLineDash([5, 4]);
-            ctx.strokeStyle = '#94a3b8';
-
-            samplePoints.forEach(point => {
-                if (point.x < xRange[0] || point.x > xRange[1]) return;
-                const canvasPoint = mathToCanvas(point.x, yRange[0], width, height, xRange, yRange, padding);
-                ctx.beginPath();
-                ctx.moveTo(canvasPoint.x, padding);
-                ctx.lineTo(canvasPoint.x, height - padding);
-                ctx.stroke();
-            });
-
-            if (limitPoint >= xRange[0] && limitPoint <= xRange[1]) {
-                const centerPoint = mathToCanvas(limitPoint, yRange[0], width, height, xRange, yRange, padding);
-                ctx.setLineDash([3, 6]);
-                ctx.strokeStyle = '#6366f1';
-                ctx.beginPath();
-                ctx.moveTo(centerPoint.x, padding);
-                ctx.lineTo(centerPoint.x, height - padding);
-                ctx.stroke();
-            }
-
-            ctx.restore();
-
-            ctx.save();
-            ctx.font = '12px "Segoe UI", "PingFang SC", sans-serif';
-            ctx.fillStyle = '#475569';
-            samplePoints.forEach(point => {
-                if (point.x < xRange[0] || point.x > xRange[1]) return;
-                const labelPoint = mathToCanvas(point.x, yRange[1], width, height, xRange, yRange, padding);
-                ctx.fillText(`${point.label} (x=${formatNumber(point.x)})`, labelPoint.x + 6, padding + 12);
-
-                const fx = current.numerator(point.x);
-                const gx = current.denominator(point.x);
-                const ratio = Math.abs(gx) < 1e-8 ? NaN : fx / gx;
-
-                if (Number.isFinite(fx)) {
-                    const marker = mathToCanvas(point.x, fx, width, height, xRange, yRange, padding);
-                    if (marker.y >= padding && marker.y <= height - padding) {
-                        drawMarker(ctx, marker, '#2563eb');
-                    }
-                }
-                if (Number.isFinite(gx)) {
-                    const marker = mathToCanvas(point.x, gx, width, height, xRange, yRange, padding);
-                    if (marker.y >= padding && marker.y <= height - padding) {
-                        drawMarker(ctx, marker, '#ef4444');
-                    }
-                }
-                if (Number.isFinite(ratio) && Math.abs(ratio) < 1e6) {
-                    const marker = mathToCanvas(point.x, ratio, width, height, xRange, yRange, padding);
-                    if (marker.y >= padding && marker.y <= height - padding) {
-                        drawMarker(ctx, marker, '#10b981');
-                    }
-                }
-            });
-            ctx.restore();
-        }
-
-        function drawMarker(ctx, point, color) {
-            if (!point) return;
-            ctx.save();
-            ctx.fillStyle = color;
-            ctx.strokeStyle = '#ffffff';
+            
+            // 绘制坐标轴
+            ctx.strokeStyle = '#d1d5db';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(0, centerY);
+            ctx.lineTo(width, centerY);
+            ctx.moveTo(centerX, 0);
+            ctx.lineTo(centerX, height);
+            ctx.stroke();
+            
+            // 绘制函数曲线 sin(x)/x
+            ctx.strokeStyle = '#3b82f6';
             ctx.lineWidth = 2;
             ctx.beginPath();
-            ctx.arc(point.x, point.y, 5, 0, Math.PI * 2);
-            ctx.fill();
+            
+            for (let px = 0; px < width; px++) {
+                const x = (px - centerX) / 50;
+                let y;
+                if (Math.abs(x) < 0.001) {
+                    y = 1; // 极限值
+                } else {
+                    y = Math.sin(x) / x;
+                }
+                const py = centerY - y * 50;
+                
+                if (px === 0) {
+                    ctx.moveTo(px, py);
+                } else {
+                    ctx.lineTo(px, py);
+                }
+            }
             ctx.stroke();
-            ctx.restore();
+            
+            // 绘制极限点
+            ctx.fillStyle = '#10b981';
+            ctx.beginPath();
+            ctx.arc(centerX, centerY - 50, 5, 0, 2 * Math.PI);
+            ctx.fill();
         }
-
-        function switchPage(section) {
-            pages.forEach(page => {
-                page.classList.toggle('active', page.id === section);
-            });
-            navButtons.forEach(btn => {
-                btn.classList.toggle('active', btn.dataset.section === section);
-            });
-
-            if (section === 'zero') {
-                stopAnimation();
-                configureApproachControls();
-                caseDescription.innerHTML = zeroCases[currentCaseKey].description;
-                renderMath();
-                updateCanvas();
-            } else if (section === 'infty') {
-                stopAnimation();
-                setTimeout(updateInftyCanvas, 60);
-            } else {
-                stopAnimation();
-                setTimeout(updateOtherCanvas, 60);
+        
+        // 练习模式功能
+        const problems = [
+            { question: '\\lim_{x \\to 0} \\frac{\\sin x}{x}', answer: '1', hint: '这是最基础的0/0型，直接应用洛必达法则' },
+            { question: '\\lim_{x \\to 0} \\frac{e^x - 1}{x}', answer: '1', hint: '指数函数的导数是它本身' },
+            { question: '\\lim_{x \\to 0} \\frac{\\ln(1+x)}{x}', answer: '1', hint: 'ln(1+x)的导数是1/(1+x)' },
+            { question: '\\lim_{x \\to 0} \\frac{1 - \\cos x}{x^2}', answer: '\\frac{1}{2}', hint: '可能需要应用两次洛必达法则' }
+        ];
+        
+        let currentProblem = null;
+        
+        function generateProblem() {
+            currentProblem = problems[Math.floor(Math.random() * problems.length)];
+            const questionDiv = document.getElementById('practiceQuestion');
+            questionDiv.innerHTML = `$$${currentProblem.question} = ?$$`;
+            document.getElementById('hintArea').innerHTML = '提示将在这里显示...';
+            document.getElementById('answerArea').innerHTML = '答案将在这里显示...';
+            MathJax.typeset();
+        }
+        
+        function showHint() {
+            if (currentProblem) {
+                document.getElementById('hintArea').innerHTML = `<strong>提示：</strong>${currentProblem.hint}`;
             }
-
-            setTimeout(renderMath, 100);
         }
-
-        navButtons.forEach(btn => {
-            btn.addEventListener('click', () => {
-                switchPage(btn.dataset.section);
-            });
-        });
-
-        if (caseSelector) {
-            caseSelector.addEventListener('change', () => {
-                currentCaseKey = caseSelector.value;
-                resetFlow();
-                const current = zeroCases[currentCaseKey];
-                caseDescription.innerHTML = `${current.description}`;
-                renderMath();
-                configureApproachControls();
-                updateCanvas();
-            });
-        }
-
-        startFlowBtn.addEventListener('click', toggleAnimation);
-        nextStepBtn.addEventListener('click', advanceStep);
-        resetFlowBtn.addEventListener('click', () => {
-            resetFlow();
-            updateCanvas();
-        });
-
-        approachSlider.addEventListener('input', () => {
-            approachValue.textContent = Number(approachSlider.value).toFixed(2);
-            updateCanvas();
-        });
-
-        directionSelector.addEventListener('change', updateCanvas);
-
-        function updateInftyCanvas() {
-            const canvas = document.getElementById('inftyCanvas');
-            if (!canvas) return;
-            const { ctx, width, height } = setupCanvas(canvas);
-            ctx.clearRect(0, 0, width, height);
-
-            const xRange = [-1, 6];
-            const yRange = [-6, 8];
-            drawAxes(ctx, width, height);
-
-            const samples = 280;
-            const fPoints = [];
-            const gPoints = [];
-            const ratioPoints = [];
-
-            for (let i = 0; i <= samples; i++) {
-                const x = xRange[0] + (i / samples) * (xRange[1] - xRange[0]);
-                const fx = 2 * x * x - 3 * x;
-                const gx = x * x + 1;
-                const ratio = gx === 0 ? NaN : fx / gx;
-                fPoints.push({ x, y: fx });
-                gPoints.push({ x, y: gx });
-                if (Number.isFinite(ratio)) {
-                    ratioPoints.push({ x, y: ratio });
-                }
+        
+        function showAnswer() {
+            if (currentProblem) {
+                document.getElementById('answerArea').innerHTML = `$$${currentProblem.question} = ${currentProblem.answer}$$`;
+                MathJax.typeset();
             }
-
-            drawCurve(ctx, fPoints, width, height, xRange, yRange, '#2563eb');
-            drawCurve(ctx, gPoints, width, height, xRange, yRange, '#ef4444');
-            drawCurve(ctx, ratioPoints, width, height, xRange, yRange, '#10b981');
         }
-
-        function updateOtherCanvas() {
-            const canvas = document.getElementById('otherCanvas');
-            if (!canvas) return;
-            const { ctx, width, height } = setupCanvas(canvas);
-            ctx.clearRect(0, 0, width, height);
-
-            const xRange = [0.05, 3.2];
-            const yRange = [-0.5, 3.2];
-            drawAxes(ctx, width, height);
-
-            const samples = 320;
-            const originalPoints = [];
-            const transformedPoints = [];
-
-            for (let i = 0; i <= samples; i++) {
-                const x = xRange[0] + (i / samples) * (xRange[1] - xRange[0]);
-                const original = Math.pow(x, x);
-                const transformed = Math.log(x) / (1 / x);
-                originalPoints.push({ x, y: original });
-                if (Number.isFinite(transformed)) {
-                    transformedPoints.push({ x, y: transformed });
-                }
+        
+        // 页面加载完成后初始化
+        window.addEventListener('load', () => {
+            // 触发MathJax渲染
+            if (window.MathJax) {
+                MathJax.typeset();
             }
-
-            drawCurve(ctx, originalPoints, width, height, xRange, yRange, '#f59e0b');
-            drawCurve(ctx, transformedPoints, width, height, xRange, yRange, '#10b981');
-        }
-
-        populateTypeTable();
-        populateCaseSelector();
-        caseDescription.innerHTML = zeroCases[currentCaseKey].description;
-        configureApproachControls();
-        resetFlow();
-        updateCanvas();
-        switchPage('zero');
-        renderMath();
-
+        });
     </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-

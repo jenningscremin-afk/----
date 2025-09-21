@@ -546,6 +546,11 @@
             angle: 0,
             animating: false
         };
+        
+        // 性能优化：限制动画帧率
+        let lastFrameTime = 0;
+        const targetFPS = 30;
+        const frameInterval = 1000 / targetFPS;
 
         const rotationProfiles = {
             parabola: {
@@ -679,19 +684,29 @@
         function toggleRotationAnimation() {
             rotationState.animating = !rotationState.animating;
             if (rotationState.animating) {
+                // 重置动画状态
+                lastFrameTime = 0;
                 animateRotation();
             } else {
                 cancelAnimationFrame(animationFrameId);
+                animationFrameId = null;
             }
         }
 
-        function animateRotation() {
+        function animateRotation(currentTime = 0) {
             if (!rotationState.animating) {
                 cancelAnimationFrame(animationFrameId);
+                animationFrameId = null;
                 return;
             }
-            rotationState.angle = (rotationState.angle + 0.04) % (Math.PI * 2);
-            drawRotationScene();
+            
+            // 帧率限制：只在达到目标帧率时才更新
+            if (currentTime - lastFrameTime >= frameInterval) {
+                rotationState.angle = (rotationState.angle + 0.04) % (Math.PI * 2);
+                drawRotationScene();
+                lastFrameTime = currentTime;
+            }
+            
             animationFrameId = requestAnimationFrame(animateRotation);
         }
 
@@ -762,12 +777,14 @@
 
             drawAxis(rotationCtx, width, height, xMax, yMax, 0, 0, 5, 5);
 
-            // draw original curve and area
+            // draw original curve and area (优化：减少计算点)
             rotationCtx.save();
             rotationCtx.beginPath();
-            for (let x = a; x <= b; x += (b - a) / 240) {
+            const curveSteps = Math.min(120, Math.max(60, Math.floor((b - a) * 30))); // 动态调整步数
+            for (let i = 0; i <= curveSteps; i++) {
+                const x = a + (b - a) * (i / curveSteps);
                 const [cx, cy] = mapToCanvas(x, profile.func(x), width, height, xMax, yMax);
-                if (x === a) {
+                if (i === 0) {
                     rotationCtx.moveTo(cx, cy);
                 } else {
                     rotationCtx.lineTo(cx, cy);
@@ -810,9 +827,9 @@
             }
             rotationCtx.restore();
 
-            // draw rotated geometry
+            // draw rotated geometry (优化：减少旋转体绘制步骤)
             rotationCtx.save();
-            const steps = 30;
+            const steps = rotationState.animating ? 20 : 30; // 动画时减少步骤
             for (let i = 0; i < steps; i++) {
                 const t = i / (steps - 1);
                 const x = a + t * (b - a);
@@ -966,13 +983,15 @@
 
             const func = getWorkFunction;
 
-            // draw curve
+            // draw curve (优化：减少计算点)
             workCtx.save();
             workCtx.beginPath();
-            for (let x = 0; x <= maxX; x += maxX / 200) {
+            const workSteps = Math.min(100, Math.max(50, Math.floor(maxX * 20))); // 动态调整步数
+            for (let i = 0; i <= workSteps; i++) {
+                const x = maxX * (i / workSteps);
                 const y = func(x);
                 const [cx, cy] = mapToCanvas(x, y, width, height, maxX, yMax);
-                if (x === 0) workCtx.moveTo(cx, cy);
+                if (i === 0) workCtx.moveTo(cx, cy);
                 else workCtx.lineTo(cx, cy);
             }
             workCtx.strokeStyle = 'rgba(79, 70, 229, 0.9)';
@@ -980,12 +999,14 @@
             workCtx.stroke();
             workCtx.restore();
 
-            // shade area up to progress
+            // shade area up to progress (优化：减少填充计算点)
             const progress = workAnimation.progress || 0;
             workCtx.save();
             workCtx.beginPath();
             workCtx.moveTo(...mapToCanvas(0, 0, width, height, maxX, yMax));
-            for (let x = 0; x <= progress; x += progress / 100) {
+            const fillSteps = Math.min(50, Math.max(20, Math.floor(progress * 15))); // 动态调整步数
+            for (let i = 0; i <= fillSteps; i++) {
+                const x = progress * (i / fillSteps);
                 const y = func(x);
                 workCtx.lineTo(...mapToCanvas(x, y, width, height, maxX, yMax));
             }
@@ -1105,15 +1126,18 @@
 
             drawAxis(pressureCtx, width, height, xMax, yMax, xMin, yMin, 5, 5);
 
-            // draw outline
+            // draw outline (优化：减少轮廓绘制点)
             pressureCtx.save();
             pressureCtx.beginPath();
             pressureCtx.moveTo(...mapToCanvas(0, 0, width, height, xMax, yMax, xMin, yMin));
-            for (let y = 0; y <= depth; y += depth / 60) {
+            const outlineSteps = Math.min(40, Math.max(20, Math.floor(depth * 10))); // 动态调整步数
+            for (let i = 0; i <= outlineSteps; i++) {
+                const y = depth * (i / outlineSteps);
                 const half = widthFunction(y) / 2;
                 pressureCtx.lineTo(...mapToCanvas(half, y, width, height, xMax, yMax, xMin, yMin));
             }
-            for (let y = depth; y >= 0; y -= depth / 60) {
+            for (let i = outlineSteps; i >= 0; i--) {
+                const y = depth * (i / outlineSteps);
                 const half = -widthFunction(y) / 2;
                 pressureCtx.lineTo(...mapToCanvas(half, y, width, height, xMax, yMax, xMin, yMin));
             }
@@ -1125,17 +1149,19 @@
             pressureCtx.fill();
             pressureCtx.restore();
 
-            // highlight filled area
+            // highlight filled area (优化：减少填充计算点)
             pressureCtx.save();
             pressureCtx.beginPath();
             pressureCtx.moveTo(...mapToCanvas(0, 0, width, height, xMax, yMax, xMin, yMin));
             const fillDepth = Math.min(depth, tankState.depth);
-            const step = Math.max(fillDepth / 50, 0.05);
-            for (let y = 0; y <= fillDepth; y += step) {
+            const fillSteps = Math.min(30, Math.max(15, Math.floor(fillDepth * 8))); // 动态调整步数
+            for (let i = 0; i <= fillSteps; i++) {
+                const y = fillDepth * (i / fillSteps);
                 const half = widthFunction(y) / 2;
                 pressureCtx.lineTo(...mapToCanvas(half, y, width, height, xMax, yMax, xMin, yMin));
             }
-            for (let y = fillDepth; y >= 0; y -= step) {
+            for (let i = fillSteps; i >= 0; i--) {
+                const y = fillDepth * (i / fillSteps);
                 const half = -widthFunction(y) / 2;
                 pressureCtx.lineTo(...mapToCanvas(half, y, width, height, xMax, yMax, xMin, yMin));
             }
@@ -1205,6 +1231,21 @@
             drawWorkScene();
             drawPressureScene();
         }
+
+        // 页面可见性检测：页面不可见时暂停动画以节省性能
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                // 页面不可见时暂停所有动画
+                if (rotationState.animating) {
+                    rotationState.animating = false;
+                    cancelAnimationFrame(animationFrameId);
+                    animationFrameId = null;
+                }
+                if (workAnimation.active) {
+                    workAnimation.active = false;
+                }
+            }
+        });
 
         document.addEventListener('DOMContentLoaded', init);
     </script>
