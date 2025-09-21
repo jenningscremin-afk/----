@@ -980,6 +980,7 @@
                 stopAnimation();
                 configureApproachControls();
                 caseDescription.innerHTML = zeroCases[currentCaseKey].description;
+                renderMath();
                 updateCanvas();
             } else if (section === 'infty') {
                 stopAnimation();
@@ -1004,6 +1005,7 @@
                 resetFlow();
                 const current = zeroCases[currentCaseKey];
                 caseDescription.innerHTML = `${current.description}`;
+                renderMath();
                 configureApproachControls();
                 updateCanvas();
             });
