@@ -237,9 +237,11 @@
             max-width: 1400px;
             gap: 20px;
             align-items: center;
+            justify-content: center;
+            height: 100vh;
             position: relative;
             z-index: 2;
-            padding: 10px 40px 20px;
+            padding: 0;
         }
 
         .welcome-title-section {
@@ -409,9 +411,45 @@
         }
 
         .content-iframe {
-            width: 100%;
-            height: 100%;
+            width: 100% !important;
+            height: calc(100% - 60px) !important; /* 为顶部导航留出空间 */
             border: none;
+            position: absolute;
+            top: 60px; /* 从顶部导航下方开始 */
+            left: 0;
+            z-index: 1;
+            opacity: 1 !important;
+        }
+        
+        .preview-controls {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            z-index: 10001; /* 确保在顶部导航之上 */
+        }
+        
+        .close-preview-btn {
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: white;
+            transition: all 0.3s ease;
+        }
+        
+        .close-preview-btn:hover {
+            background: rgba(255, 0, 0, 0.8);
+            border-color: rgba(255, 255, 255, 0.8);
+        }
+        
+        .close-preview-btn svg {
+            width: 20px;
+            height: 20px;
         }
 
         /* 导航栏 */
@@ -563,7 +601,7 @@
             }
             
             .welcome-content {
-                padding: 5px 15px;
+                padding: 0;
             }
             
             .welcome-items-grid {
@@ -708,68 +746,9 @@
     <div class="welcome-page" id="welcomePage">
         <div class="welcome-content">
             <div class="welcome-title-section">
-                <div class="welcome-title">高等数学习题集</div>
+                <div class="welcome-title">Math to Be</div>
                 <div class="welcome-subtitle" id="subtitle">
-                    <span class="autumn-subtitle" style="display: none;">🍂 在知识的森林里，拾起智慧的金叶 🍂</span>
-                    <span class="space-subtitle">✨ 数学宇宙 - 在无限中寻找真理的足迹 ✨</span>
-                </div>
-            </div>
-            <div class="welcome-items-grid">
-                <div class="welcome-item" onclick="showChapter(0)">
-                    <span class="welcome-item-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/>
-                        </svg>
-                    </span>
-                    <span class="welcome-item-text">代数与函数</span>
-                </div>
-                <div class="welcome-item" onclick="showChapter(1)">
-                    <span class="welcome-item-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.94-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
-                        </svg>
-                    </span>
-                    <span class="welcome-item-text">极限与连续</span>
-                </div>
-                <div class="welcome-item" onclick="showChapter(2)">
-                    <span class="welcome-item-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/>
-                        </svg>
-                    </span>
-                    <span class="welcome-item-text">导数与微分</span>
-                </div>
-                <div class="welcome-item" onclick="showChapter(3)">
-                    <span class="welcome-item-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
-                        </svg>
-                    </span>
-                    <span class="welcome-item-text">导数的应用</span>
-                </div>
-                <div class="welcome-item" onclick="showChapter(4)">
-                    <span class="welcome-item-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
-                        </svg>
-                    </span>
-                    <span class="welcome-item-text">不定积分</span>
-                </div>
-                <div class="welcome-item" onclick="showChapter(5)">
-                    <span class="welcome-item-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M18 4H6v2l6.5 6L6 18v2h12v-3h-7l5-5-5-5h7z"/>
-                        </svg>
-                    </span>
-                    <span class="welcome-item-text">定积分及其应用</span>
-                </div>
-                <div class="welcome-item" onclick="showChapter(6)">
-                    <span class="welcome-item-icon">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M3.5 18.5c1.33-2.67 2.67-4.67 4-6 1.33-1.33 2.67-2 4-2s2.67.67 4 2c1.33 1.33 2.67 3.33 4 6"/>
-                        </svg>
-                    </span>
-                    <span class="welcome-item-text">常微分方程</span>
+                    <span class="space-subtitle">Mathematical Laboratory</span>
                 </div>
             </div>
         </div>
@@ -777,6 +756,13 @@
 
     <!-- 内容显示区域 -->
     <div class="content-display" id="contentDisplay">
+        <div class="preview-controls">
+            <button class="close-preview-btn" onclick="closePreview()" title="关闭预览">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+                </svg>
+            </button>
+        </div>
         <iframe class="content-iframe" id="contentFrame"></iframe>
     </div>
 </div>
@@ -811,16 +797,11 @@
     function switchTheme() {
         const body = document.body;
         const switchText = document.getElementById('theme-switch-text');
-        const autumnSubtitle = document.querySelector('.autumn-subtitle');
-        const spaceSubtitle = document.querySelector('.space-subtitle');
-        
         if (currentTheme === 'autumn') {
             // 切换到星空主题
             body.classList.remove('autumn-theme');
             body.classList.add('space-theme');
             switchText.textContent = '切换到金秋主题';
-            autumnSubtitle.style.display = 'none';
-            spaceSubtitle.style.display = 'inline';
             currentTheme = 'space';
             
             // 停止树叶动画，启动星空动画
@@ -834,8 +815,6 @@
             body.classList.remove('space-theme');
             body.classList.add('autumn-theme');
             switchText.textContent = '切换到星空主题';
-            autumnSubtitle.style.display = 'inline';
-            spaceSubtitle.style.display = 'none';
             currentTheme = 'autumn';
             
             // 停止星空动画，启动树叶动画
@@ -1095,22 +1074,33 @@
     function showChapter(categoryId) {
         const chapter = chapters[categoryId];
         if (!chapter) return;
-        window.location.href = chapter.url;
+        
+        // 目录点击：预览模式
+        currentIndex = categoryId;
+        previewContent(chapter.url, chapter.title);
     }
 
     function goPrev() {
+        console.log('goPrev 被调用, currentIndex:', currentIndex);
         if (currentIndex > 0) {
             currentIndex--;
             const chapter = Object.values(chapters)[currentIndex];
-            loadContent(chapter.url, chapter.title);
+            console.log('上一页:', chapter);
+            previewContent(chapter.url, chapter.title);
+        } else {
+            showNavigationHint('已经是第一章了');
         }
     }
 
     function goNext() {
+        console.log('goNext 被调用, currentIndex:', currentIndex);
         if (currentIndex < Object.keys(chapters).length - 1) {
             currentIndex++;
             const chapter = Object.values(chapters)[currentIndex];
-            loadContent(chapter.url, chapter.title);
+            console.log('下一页:', chapter);
+            previewContent(chapter.url, chapter.title);
+        } else {
+            showNavigationHint('已经是最后一章了');
         }
     }
 
@@ -1141,18 +1131,201 @@
     }
 
     function loadContent(url, title) {
+        // 直接跳转到页面
+        window.location.href = url;
+    }
+
+    function previewContent(url, title) {
+        console.log('previewContent 被调用:', url, title);
+        
         const frame = document.getElementById('contentFrame');
         const welcome = document.getElementById('welcomePage');
         const contentDisplay = document.getElementById('contentDisplay');
         const keyboardHint = document.getElementById('keyboardHint');
-        
-        frame.src = url;
+
+        console.log('DOM元素检查:', {
+            frame: !!frame,
+            welcome: !!welcome,
+            contentDisplay: !!contentDisplay,
+            keyboardHint: !!keyboardHint
+        });
+
+        if (!frame || !welcome || !contentDisplay || !keyboardHint) {
+            console.error('缺少必要的DOM元素');
+            return;
+        }
+
+        // 先显示内容区域（全屏预览）
         contentDisplay.classList.add('active');
         welcome.style.display = 'none';
-        keyboardHint.classList.remove('hidden');
+        keyboardHint.classList.add('hidden'); // 全屏时隐藏键盘提示
         
+        // 然后加载iframe内容
+        frame.src = url;
+        console.log('iframe src 设置为:', url);
+
         currentUrl = url;
+        const displayTitle = title || getChineseTitle(url);
+        
+        // 更新顶部导航栏标题
+        const navBrandH1 = document.querySelector('.nav-brand h1');
+        if (navBrandH1) {
+            navBrandH1.textContent = displayTitle;
+        }
+        
+        console.log('预览内容已加载:', displayTitle);
+        
+        // 检查iframe是否加载完成
+        frame.onload = function() {
+            console.log('iframe 加载完成');
+        };
+        
+        frame.onerror = function() {
+            console.error('iframe 加载失败');
+        };
+
+        // 更新currentIndex
         currentIndex = Object.values(chapters).findIndex(ch => ch.url === url);
+    }
+
+    // 关闭预览
+    function closePreview() {
+        console.log('关闭预览');
+        const contentDisplay = document.getElementById('contentDisplay');
+        const welcome = document.getElementById('welcomePage');
+        const keyboardHint = document.getElementById('keyboardHint');
+        
+        if (contentDisplay && welcome && keyboardHint) {
+            contentDisplay.classList.remove('active');
+            welcome.style.display = 'flex';
+            keyboardHint.classList.remove('hidden');
+            
+            // 恢复原始标题
+            const navBrandH1 = document.querySelector('.nav-brand h1');
+            if (navBrandH1) {
+                navBrandH1.textContent = '智能题库';
+            }
+        }
+    }
+
+    // 显示章节列表
+    function showChapterList() {
+        console.log('显示章节列表');
+        const welcome = document.getElementById('welcomePage');
+        const contentDisplay = document.getElementById('contentDisplay');
+        const keyboardHint = document.getElementById('keyboardHint');
+        
+        // 检查是否已经在显示目录
+        if (contentDisplay.classList.contains('active')) {
+            // 如果已经在显示目录，则收回（回到欢迎页面）
+            console.log('收回目录，回到欢迎页面');
+            welcome.style.display = 'flex';
+            contentDisplay.classList.remove('active');
+            keyboardHint.classList.add('hidden');
+            
+            // 恢复原始标题
+            const navBrandH1 = document.querySelector('.nav-brand h1');
+            if (navBrandH1) {
+                navBrandH1.textContent = '智能题库';
+            }
+            return;
+        }
+        
+        if (welcome && contentDisplay && keyboardHint) {
+            // 隐藏欢迎页面，显示内容区域
+            welcome.style.display = 'none';
+            contentDisplay.classList.add('active');
+            keyboardHint.classList.remove('hidden');
+            
+            // 创建章节列表内容
+            const frame = document.getElementById('contentFrame');
+            if (frame) {
+                frame.src = 'about:blank'; // 清空iframe
+                
+                // 创建章节列表HTML
+                const chapterListHTML = `
+                    <!DOCTYPE html>
+                    <html lang="zh-CN">
+                    <head>
+                        <meta charset="UTF-8">
+                        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                        <title>智能题库 - 章节列表</title>
+                        <style>
+                            body {
+                                font-family: 'Microsoft YaHei', sans-serif;
+                                background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+                                color: #e2e8f0;
+                                margin: 0;
+                                padding: 40px;
+                                min-height: 100vh;
+                            }
+                            .container {
+                                max-width: 800px;
+                                margin: 0 auto;
+                            }
+                            h1 {
+                                text-align: center;
+                                color: #06ffa5;
+                                margin-bottom: 40px;
+                                font-size: 2.5em;
+                            }
+                            .chapter-grid {
+                                display: grid;
+                                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                                gap: 20px;
+                            }
+                            .chapter-item {
+                                background: rgba(255, 255, 255, 0.1);
+                                border: 1px solid rgba(255, 255, 255, 0.2);
+                                border-radius: 12px;
+                                padding: 20px;
+                                cursor: pointer;
+                                transition: all 0.3s ease;
+                                backdrop-filter: blur(10px);
+                            }
+                            .chapter-item:hover {
+                                background: rgba(6, 255, 165, 0.2);
+                                border-color: #06ffa5;
+                                transform: translateY(-2px);
+                            }
+                            .chapter-title {
+                                font-size: 1.2em;
+                                font-weight: 600;
+                                margin-bottom: 10px;
+                                color: #ffffff;
+                            }
+                            .chapter-desc {
+                                color: #94a3b8;
+                                font-size: 0.9em;
+                            }
+                        </style>
+                    </head>
+                    <body>
+                        <div class="container">
+                            <h1>智能题库 - 章节列表</h1>
+                            <div class="chapter-grid">
+                                ${Object.values(chapters).map((chapter, index) => `
+                                    <div class="chapter-item" onclick="parent.previewContent('${chapter.url}', '${chapter.title}'); parent.currentIndex = ${index};">
+                                        <div class="chapter-title">${chapter.title}</div>
+                                        <div class="chapter-desc">点击开始练习</div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </body>
+                    </html>
+                `;
+                
+                // 将HTML写入iframe
+                frame.srcdoc = chapterListHTML;
+            }
+            
+            // 更新顶部标题
+            const navBrandH1 = document.querySelector('.nav-brand h1');
+            if (navBrandH1) {
+                navBrandH1.textContent = '章节列表';
+            }
+        }
     }
 
     // 键盘导航
