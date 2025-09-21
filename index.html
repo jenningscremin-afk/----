@@ -5,21 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>高等应用数学在线课堂</title>
     
+    <!-- 字体预加载 -->
+    <link rel="preload" href="./common-assets/fonts/jf-openhuninn-2.1.ttf" as="font" type="font/ttf" crossorigin>
+    <link rel="preload" href="./common-assets/fonts/WD-XLLubrifontSC-Regular.otf" as="font" type="font/otf" crossorigin>
+    <link rel="preload" href="./common-assets/fonts/dinglieciweifont.ttf" as="font" type="font/ttf" crossorigin>
+    <link rel="preload" href="./common-assets/fonts/ChenYuluoyan-Thin.ttf" as="font" type="font/ttf" crossorigin>
+    <link rel="preload" href="./common-assets/fonts/Iansui-Regular.ttf" as="font" type="font/ttf" crossorigin>
+    
+    <!-- 带刺字体样式 -->
+    <link rel="stylesheet" href="./common-assets/css/spiky-fonts.css">
+    
     <!-- 本地字体配置 -->
     <style>
-        @font-face {
-            font-family: 'DingLieCiWei';
-            src: url('./common-assets/fonts/dinglieciweifont.ttf') format('truetype');
-            font-weight: 400;
-            font-style: normal;
-        }
-        
-        @font-face {
-            font-family: 'OpenHuninn';
-            src: url('./common-assets/fonts/jf-openhuninn-2.1.ttf') format('truetype');
-            font-weight: 400;
-            font-style: normal;
-        }
+        /* 字体定义已移至 spiky-fonts.css */
+        /* 这里只保留页面特定的字体样式 */
     </style>
     
     <!-- Three.js 导入映射 -->
@@ -40,7 +39,6 @@
         }
 
         body {
-            font-family: 'OpenHuninn', 'DingLieCiWei', sans-serif;
             overflow: hidden;
             background: #000;
             color: white;
@@ -171,27 +169,28 @@
         }
 
         .main-title {
-            font-family: 'DingLieCiWei', 'OpenHuninn', sans-serif;
-            font-size: 4.2rem;
-            font-weight: 400;
+            font-size: 4.8rem;
+            font-weight: 500;
             font-style: normal;
-            letter-spacing: 0.2em;
-            color: #ffffff;
-            text-shadow: 
-                0 2px 4px rgba(0, 0, 0, 0.8),
-                0 4px 8px rgba(0, 0, 0, 0.6);
-            position: relative;
+            letter-spacing: 0.1em;
+            color: #ffffff !important;
             text-transform: uppercase;
+            line-height: 1.1;
+            text-shadow: 
+                0 3px 6px rgba(0, 0, 0, 0.9),
+                0 6px 12px rgba(0, 0, 0, 0.8),
+                0 12px 24px rgba(0, 0, 0, 0.6);
         }
 
         .subtitle {
-            font-family: 'OpenHuninn', 'DingLieCiWei', sans-serif;
-            font-size: 1.4rem;
-            font-weight: 400;
-            letter-spacing: 0.5em;
-            color: rgba(255, 255, 255, 0.6);
-            margin-top: 10px;
+            font-size: 1.6rem;
+            font-weight: 500;
+            letter-spacing: 0.2em;
+            color: rgba(255, 255, 255, 0.9) !important;
+            margin-top: 20px;
             text-transform: uppercase;
+            line-height: 1.2;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
         }
 
         /* 导航容器 */
@@ -214,59 +213,61 @@
         }
 
         .nav-title {
-            font-family: 'DingLieCiWei', 'OpenHuninn', sans-serif;
-            font-size: 2.2rem;
-            font-weight: 400;
-            background: linear-gradient(135deg, #ffffff 0%, #00ffff 100%);
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 8px;
-            letter-spacing: 0.1em;
+            font-size: 2.4rem;
+            font-weight: 500;
+            color: #ffffff !important;
+            margin-bottom: 12px;
+            letter-spacing: 0.05em;
+            line-height: 1.2;
+            text-shadow: 
+                0 2px 4px rgba(0, 0, 0, 0.9),
+                0 4px 8px rgba(0, 0, 0, 0.7);
         }
 
         .nav-subtitle {
-            font-family: 'OpenHuninn', 'DingLieCiWei', sans-serif;
-            font-size: 0.9rem;
-            font-weight: 400;
-            color: rgba(255, 255, 255, 0.5);
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.8) !important;
             text-transform: uppercase;
-            letter-spacing: 0.3em;
+            letter-spacing: 0.15em;
+            line-height: 1.3;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
         }
 
         .nav-item:hover .nav-title {
-            background: linear-gradient(135deg, #ffffff 0%, #00ffff 100%);
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
+            color: #ffffff !important;
+            text-shadow: 
+                0 3px 6px rgba(0, 0, 0, 0.9),
+                0 6px 12px rgba(0, 0, 0, 0.8);
         }
 
         .nav-item:hover .nav-subtitle {
-            color: rgba(255, 255, 255, 0.9);
+            color: rgba(255, 255, 255, 0.9) !important;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
         }
 
-        /* 导航项定位 */
+        /* 导航项定位 - 往中间聚拢 */
         .nav-1 {
-            top: 25%;
-            left: 20%;
+            top: 40%;
+            left: 40%;
             transform: translate(-50%, -50%);
         }
 
         .nav-2 {
-            top: 25%;
-            right: 20%;
+            top: 40%;
+            right: 40%;
             transform: translate(50%, -50%);
         }
 
         .nav-3 {
-            bottom: 25%;
-            left: 20%;
+            bottom: 35%;
+            left: 40%;
             transform: translate(-50%, 50%);
         }
 
         .nav-4 {
-            bottom: 25%;
-            right: 20%;
+            bottom: 35%;
+            right: 40%;
             transform: translate(50%, 50%);
         }
 
@@ -287,6 +288,8 @@
             0% { top: -2px; }
             100% { top: 100%; }
         }
+
+        /* 带刺字体效果已移至 spiky-fonts.css */
 
         /* 响应式设计 */
         @media (max-width: 768px) {
@@ -310,8 +313,8 @@
                 right: auto;
                 bottom: auto;
                 transform: none;
-                margin: 20px auto;
-                max-width: 300px;
+                margin: 15px auto;
+                max-width: 280px;
             }
             
             .nav-container {
@@ -360,30 +363,30 @@
     <div class="main-container">
         <!-- 标题区域 -->
         <header class="header-section">
-            <h1 class="main-title">高等应用数学</h1>
-            <p class="subtitle">Online Learning Platform</p>
+            <h1 class="main-title spiky-title">高等应用数学</h1>
+            <p class="subtitle spiky-font">Online Learning Platform</p>
         </header>
         
         <!-- 导航容器 -->
         <nav class="nav-container">
             <div class="nav-item nav-1" onclick="window.location.href='课件/index.html'">
-                <h2 class="nav-title">课程中心</h2>
-                <p class="nav-subtitle">Course Center</p>
+                <h2 class="nav-title xingshu-font">课程中心</h2>
+                <p class="nav-subtitle spiky-font">Course Center</p>
             </div>
 
             <div class="nav-item nav-2" onclick="window.location.href='网页资源/index.html'">
-                <h2 class="nav-title">仿真实验平台</h2>
-                <p class="nav-subtitle">Simulation Lab</p>
+                <h2 class="nav-title xingshu-font">仿真实验平台</h2>
+                <p class="nav-subtitle spiky-font">Simulation Lab</p>
             </div>
 
             <div class="nav-item nav-3" onclick="window.location.href='习题/index.html'">
-                <h2 class="nav-title">智能题库</h2>
-                <p class="nav-subtitle">Smart Question Bank</p>
+                <h2 class="nav-title xingshu-font">智能题库</h2>
+                <p class="nav-subtitle spiky-font">Smart Question Bank</p>
             </div>
 
             <div class="nav-item nav-4" onclick="window.location.href='故事书/index.html'">
-                <h2 class="nav-title">数学画廊</h2>
-                <p class="nav-subtitle">Math Gallery</p>
+                <h2 class="nav-title xingshu-font">数学画廊</h2>
+                <p class="nav-subtitle spiky-font">Math Gallery</p>
             </div>
         </nav>
     </div>
