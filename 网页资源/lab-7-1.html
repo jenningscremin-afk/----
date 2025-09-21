@@ -540,6 +540,35 @@
                 max-height: none;
             }
         }
+    
+        /* 内联公式排版 */
+        .formula-box {
+            display: inline-flex;
+            flex-wrap: wrap;
+            align-items: baseline;
+            gap: 8px;
+            margin: 4px 12px 4px 0;
+            width: auto;
+            max-width: 100%;
+            text-align: left;
+        }
+
+        .formula-box::before {
+            content: attr(data-prefix);
+            font-weight: 600;
+            color: var(--primary, #4f46e5);
+            margin-right: 6px;
+        }
+
+        .formula-box[data-prefix=""]::before,
+        .formula-box:not([data-prefix])::before {
+            content: none;
+        }
+
+        .formula-box mjx-container {
+            margin: 0;
+        }
+
     </style>
 </head>
 <body>
@@ -572,7 +601,7 @@
                             </select>
                         </div>
                         <div class="info-box" id="sepInfo">这是可分离变量方程：将所有含$y$的项放左侧，含$x$的项放右侧即可。</div>
-                        <div class="formula-box" id="sepFormula">$\int \frac{1}{y}\,dy = \int \frac{x}{1+x^2}\,dx$</div>
+                        <p class="formula-box" id="sepFormula" data-prefix="公式：">$\int \frac{1}{y}\,dy = \int \frac{x}{1+x^2}\,dx$</p>
                     </div>
                     <div class="card">
                         <h3>变量分离拖拽练习</h3>
@@ -643,7 +672,7 @@
                             </select>
                         </div>
                         <div class="info-box" id="homInfo">将方程写成 $y' = F(\frac{y}{x})$ 即可判断其齐次性，常用替换是 $y = vx$。</div>
-                        <div class="formula-box" id="homFormula">$y = vx \Rightarrow y' = v + x\frac{dv}{dx}$</div>
+                        <p class="formula-box" id="homFormula" data-prefix="公式：">$y = vx \Rightarrow y' = v + x\frac{dv}{dx}$</p>
                     </div>
                     <div class="card">
                         <h3>$v$-方程构建器</h3>

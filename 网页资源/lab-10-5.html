@@ -326,6 +326,35 @@
             padding: 6px;
             font-size: var(--text-size);
         }
+    
+        /* 内联公式排版 */
+        .formula-box {
+            display: inline-flex;
+            flex-wrap: wrap;
+            align-items: baseline;
+            gap: 8px;
+            margin: 4px 12px 4px 0;
+            width: auto;
+            max-width: 100%;
+            text-align: left;
+        }
+
+        .formula-box::before {
+            content: attr(data-prefix);
+            font-weight: 600;
+            color: var(--primary, #4f46e5);
+            margin-right: 6px;
+        }
+
+        .formula-box[data-prefix=""]::before,
+        .formula-box:not([data-prefix])::before {
+            content: none;
+        }
+
+        .formula-box mjx-container {
+            margin: 0;
+        }
+
     </style>
 </head>
 <body>
@@ -395,7 +424,7 @@
                         <div class="info-box">
                             将矩阵化为阶梯形（Row Echelon Form, REF）或最简形（Reduced Row Echelon Form, RREF）有助于快速读取秩：非零行的数量即为矩阵秩。
                         </div>
-                        <div class="formula-box">$\operatorname{rank}(A) = r \iff A \sim \begin{bmatrix} I_r & 0 \\ 0 & 0 \end{bmatrix}$</div>
+                        <p class="formula-box" data-prefix="公式：">$\operatorname{rank}(A) = r \iff A \sim \begin{bmatrix} I_r & 0 \\ 0 & 0 \end{bmatrix}$</p>
                     </div>
                     <div class="card">
                         <h3>选择标准形类型</h3>

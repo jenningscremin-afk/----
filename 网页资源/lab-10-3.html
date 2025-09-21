@@ -339,6 +339,35 @@
             color: var(--primary);
             font-size: 14px;
         }
+    
+        /* 内联公式排版 */
+        .formula-box {
+            display: inline-flex;
+            flex-wrap: wrap;
+            align-items: baseline;
+            gap: 8px;
+            margin: 4px 12px 4px 0;
+            width: auto;
+            max-width: 100%;
+            text-align: left;
+        }
+
+        .formula-box::before {
+            content: attr(data-prefix);
+            font-weight: 600;
+            color: var(--primary, #4f46e5);
+            margin-right: 6px;
+        }
+
+        .formula-box[data-prefix=""]::before,
+        .formula-box:not([data-prefix])::before {
+            content: none;
+        }
+
+        .formula-box mjx-container {
+            margin: 0;
+        }
+
     </style>
 </head>
 <body>
@@ -379,7 +408,7 @@
                     <div class="card">
                         <h3>计算步骤提示</h3>
                         <div class="info-box" id="stepDescription">选择示例后，观察“行·列”乘法法则，逐项累加得到结果矩阵 $C$。</div>
-                        <div class="formula-box">$c_{ij} = \sum_{k=1}^{n} a_{ik}b_{kj}$</div>
+                        <p class="formula-box" data-prefix="公式：">$c_{ij} = \sum_{k=1}^{n} a_{ik}b_{kj}$</p>
                     </div>
                 </div>
                 <div class="column">

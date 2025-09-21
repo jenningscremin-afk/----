@@ -344,6 +344,35 @@
                 height: 220px;
             }
         }
+    
+        /* 内联公式排版 */
+        .formula-box {
+            display: inline-flex;
+            flex-wrap: wrap;
+            align-items: baseline;
+            gap: 8px;
+            margin: 4px 12px 4px 0;
+            width: auto;
+            max-width: 100%;
+            text-align: left;
+        }
+
+        .formula-box::before {
+            content: attr(data-prefix);
+            font-weight: 600;
+            color: var(--primary, #4f46e5);
+            margin-right: 6px;
+        }
+
+        .formula-box[data-prefix=""]::before,
+        .formula-box:not([data-prefix])::before {
+            content: none;
+        }
+
+        .formula-box mjx-container {
+            margin: 0;
+        }
+
     </style>
 </head>
 <body>
@@ -390,7 +419,7 @@
                     </div>
                     <div class="card">
                         <h3>解析解与定量指标</h3>
-                        <div class="formula-box" id="coolSolution">$T(t)=20+(90-20)e^{-0.25t}$</div>
+                        <p class="formula-box" id="coolSolution" data-prefix="公式：">$T(t)=20+(90-20)e^{-0.25t}$</p>
                         <div class="metrics" id="coolMetrics"></div>
                     </div>
                 </div>
@@ -430,7 +459,7 @@
                     </div>
                     <div class="card">
                         <h3>解析解与定量指标</h3>
-                        <div class="formula-box" id="mixSolution">$C(t)=8+(2-8)e^{-0.025t}$</div>
+                        <p class="formula-box" id="mixSolution" data-prefix="公式：">$C(t)=8+(2-8)e^{-0.025t}$</p>
                         <div class="metrics" id="mixMetrics"></div>
                     </div>
                 </div>
@@ -466,7 +495,7 @@
                     </div>
                     <div class="card">
                         <h3>解析解与特征量</h3>
-                        <div class="formula-box" id="oscSolution">$y(t)=e^{-0.90t}\big(1.00\cos(2.81t)+0.32\sin(2.81t)\big)$</div>
+                        <p class="formula-box" id="oscSolution" data-prefix="公式：">$y(t)=e^{-0.90t}\big(1.00\cos(2.81t)+0.32\sin(2.81t)\big)$</p>
                         <div class="metrics" id="oscMetrics"></div>
                     </div>
                 </div>

@@ -326,6 +326,35 @@
             padding: 6px;
             font-size: var(--text-size);
         }
+    
+        /* 内联公式排版 */
+        .formula-box {
+            display: inline-flex;
+            flex-wrap: wrap;
+            align-items: baseline;
+            gap: 8px;
+            margin: 4px 12px 4px 0;
+            width: auto;
+            max-width: 100%;
+            text-align: left;
+        }
+
+        .formula-box::before {
+            content: attr(data-prefix);
+            font-weight: 600;
+            color: var(--primary, #4f46e5);
+            margin-right: 6px;
+        }
+
+        .formula-box[data-prefix=""]::before,
+        .formula-box:not([data-prefix])::before {
+            content: none;
+        }
+
+        .formula-box mjx-container {
+            margin: 0;
+        }
+
     </style>
 </head>
 <body>
@@ -369,7 +398,7 @@
                     <div class="card">
                         <h3>判定结果</h3>
                         <div class="info-box" id="rankConclusion">请选择方程组并执行分析。</div>
-                        <div class="formula-box">$\begin{cases} \operatorname{rank}(A) = \operatorname{rank}([A|b]) = n & \Rightarrow \text{唯一解} \\ \operatorname{rank}(A) = \operatorname{rank}([A|b]) < n & \Rightarrow \text{无穷多解} \\ \operatorname{rank}(A) < \operatorname{rank}([A|b]) & \Rightarrow \text{无解} \end{cases}$</div>
+                        <p class="formula-box" data-prefix="公式：">$\begin{cases} \operatorname{rank}(A) = \operatorname{rank}([A|b]) = n & \Rightarrow \text{唯一解} \\ \operatorname{rank}(A) = \operatorname{rank}([A|b]) < n & \Rightarrow \text{无穷多解} \\ \operatorname{rank}(A) < \operatorname{rank}([A|b]) & \Rightarrow \text{无解} \end{cases}$</p>
                     </div>
                 </div>
                 <div class="column">
