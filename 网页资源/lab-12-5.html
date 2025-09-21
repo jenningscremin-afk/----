@@ -455,7 +455,7 @@
                             </div>
                         </div>
                         <div class="input-group">
-                            <label>法向量 $ec{n}=(A,B,C)$</label>
+                            <label>法向量 $\vec{n}=(A,B,C)$</label>
                             <div class="input-group">
                                 <span>$A$ = <span id="aVal" class="highlight">2</span></span>
                                 <input type="range" id="aRange" min="-5" max="5" value="2">
@@ -506,7 +506,7 @@
                             </div>
                         </div>
                         <div class="input-group">
-                            <label>方向向量 $ec{d}=(m,n,p)$</label>
+                            <label>方向向量 $\vec{d}=(m,n,p)$</label>
                             <div class="input-group">
                                 <span>$m$ = <span id="mVal" class="highlight">1</span></span>
                                 <input type="range" id="mRange" min="-5" max="5" value="1">
@@ -520,8 +520,12 @@
                                 <input type="range" id="pRange" min="-5" max="5" value="1">
                             </div>
                         </div>
-                        <div class="equation-box" id="lineEquation">\left\{egin{aligned}x&=0+t\ y&=1+2t\ z&=-1+t\end{aligned}
+<<<<<<< ours
+                        <div class="equation-box" id="lineEquation">\left\{\begin{aligned}x&=0+t\ y&=1+2t\ z&=-1+t\end{aligned}
 ight.</div>
+=======
+                        <div class="equation-box" id="lineEquation">\left\{\begin{aligned}x&=0+t\\ y&=1+2t\\ z&=-1+t\end{aligned}\right.</div>
+>>>>>>> theirs
                         <div class="info-box">
                             <p>同时显示对称式：$\dfrac{x-x_1}{m}=\dfrac{y-y_1}{n}=\dfrac{z-z_1}{p}$。</p>
                         </div>
@@ -544,7 +548,7 @@ ight.</div>
                         <h3>平面与直线的位置关系</h3>
                         <div class="stat-grid">
                             <div class="stat-card">
-                                <h4>点积 $ec{n}\cdotec{d}$</h4>
+                                <h4>点积 $\vec{n}\cdot\vec{d}$</h4>
                                 <p id="ndotd">1</p>
                             </div>
                             <div class="stat-card">
@@ -554,7 +558,7 @@ ight.</div>
                         </div>
                         <div class="equation-box" id="intersection">交点：(-0.50, 0.00, -0.50)</div>
                         <div class="info-box">
-                            <p>若 $ec{n}\cdotec{d}=0$，则直线与平面平行或包含于平面。</p>
+                            <p>若 $\vec{n}\cdot\vec{d}=0$，则直线与平面平行或包含于平面。</p>
                         </div>
                     </div>
                 </div>
@@ -581,9 +585,9 @@ ight.</div>
 
                 (typeof event !== 'undefined' && event?.currentTarget instanceof HTMLElement ? event.currentTarget :
 
-                    document.querySelector(.nav-btn[data-panel="{id}"]) ||
+                    document.querySelector(`.nav-btn[data-panel="${id}"]`) ||
 
-                    document.querySelector(.nav-btn[data-target="{id}"]) ||
+                    document.querySelector(`.nav-btn[data-target="${id}"]`) ||
 
                     null);
 

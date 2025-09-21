@@ -435,7 +435,7 @@
                     <div class="card">
                         <h3>向量投影参数</h3>
                         <div class="input-group">
-                            <label>$ec{a}=(a_x,a_y)$</label>
+                            <label>$\vec{a}=(a_x,a_y)$</label>
                             <div class="input-group">
                                 <span>$a_x$ = <span id="axVal" class="highlight">4</span></span>
                                 <input type="range" id="axRange" min="-6" max="6" value="4">
@@ -446,7 +446,7 @@
                             </div>
                         </div>
                         <div class="input-group">
-                            <label>$ec{b}=(b_x,b_y)$</label>
+                            <label>$\vec{b}=(b_x,b_y)$</label>
                             <div class="input-group">
                                 <span>$b_x$ = <span id="bxVal" class="highlight">1</span></span>
                                 <input type="range" id="bxRange" min="-6" max="6" value="1">
@@ -458,7 +458,7 @@
                         </div>
                         <div class="stat-grid">
                             <div class="stat-card">
-                                <h4>点积 $ec{a}\cdotec{b}$</h4>
+                                <h4>点积 $\vec{a}\cdot\vec{b}$</h4>
                                 <p id="dotVal">14</p>
                             </div>
                             <div class="stat-card">
@@ -471,7 +471,7 @@
                             </div>
                         </div>
                         <div class="formula-box">
-                            <p>投影公式：$\operatorname{proj}_{ec{a}}ec{b}=\dfrac{ec{a}\cdotec{b}}{|ec{a}|^2}ec{a}$，长度为 $\dfrac{|ec{a}\cdotec{b}|}{|ec{a}|}$。</p>
+                            <p>投影公式：$\operatorname{proj}_{\vec{a}}\vec{b}=\dfrac{\vec{a}\cdot\vec{b}}{|\vec{a}|^2}\vec{a}$，长度为 $\dfrac{|\vec{a}\cdot\vec{b}|}{|\vec{a}|}$。</p>
                         </div>
                     </div>
                 </div>
@@ -480,8 +480,8 @@
                         <h3>平面上的投影示意</h3>
                         <canvas id="projectionCanvas" width="520" height="320"></canvas>
                         <ul class="bullet-list">
-                            <li>蓝色：$ec{a}$ 的方向。</li>
-                            <li>紫色：$ec{b}$，绿色虚线为在 $ec{a}$ 上的投影。</li>
+                            <li>蓝色：$\vec{a}$ 的方向。</li>
+                            <li>紫色：$\vec{b}$，绿色虚线为在 $\vec{a}$ 上的投影。</li>
                         </ul>
                     </div>
                 </div>
@@ -492,17 +492,17 @@
                     <div class="card">
                         <h3>功的计算参数</h3>
                         <div class="input-group">
-                            <label>力的大小 $|ec{F}|$ (N)</label>
+                            <label>力的大小 $|\vec{F}|$ (N)</label>
                             <input type="range" id="forceRange" min="0" max="20" value="10">
                             <div>当前力：<span id="forceVal" class="highlight">10 N</span></div>
                         </div>
                         <div class="input-group">
-                            <label>位移大小 $|ec{s}|$ (m)</label>
+                            <label>位移大小 $|\vec{s}|$ (m)</label>
                             <input type="range" id="dispRange" min="0" max="15" value="8">
                             <div>当前位移：<span id="dispVal" class="highlight">8 m</span></div>
                         </div>
                         <div class="input-group">
-                            <label>夹角 $	heta$</label>
+                            <label>夹角 $\theta$</label>
                             <input type="range" id="thetaRange" min="0" max="180" value="45">
                             <div>当前角度：<span id="thetaVal" class="highlight">45°</span></div>
                         </div>
@@ -512,12 +512,12 @@
                                 <p id="workVal">56.57</p>
                             </div>
                             <div class="stat-card">
-                                <h4>$\cos	heta$</h4>
+                                <h4>$\cos\theta$</h4>
                                 <p id="cosThetaVal">0.71</p>
                             </div>
                         </div>
                         <div class="info-box">
-                            <p>公式：$W=ec{F}\cdotec{s}=|ec{F}|\,|ec{s}|\cos	heta$。</p>
+                            <p>公式：$W=\vec{F}\cdot\vec{s}=|\vec{F}|\,|\vec{s}|\cos\theta$。</p>
                             <p>角度越小，力在位移方向上的分量越大，做功越多。</p>
                         </div>
                     </div>
@@ -545,9 +545,9 @@
 
                 (typeof event !== 'undefined' && event?.currentTarget instanceof HTMLElement ? event.currentTarget :
 
-                    document.querySelector(.nav-btn[data-panel="{id}"]) ||
+                    document.querySelector(`.nav-btn[data-panel="${id}"]`) ||
 
-                    document.querySelector(.nav-btn[data-target="{id}"]) ||
+                    document.querySelector(`.nav-btn[data-target="${id}"]`) ||
 
                     null);
 

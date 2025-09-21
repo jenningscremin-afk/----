@@ -4,7 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>高等应用数学虚拟实验室 - 网页资源</title>
+<title>仿真实验平台 - 高等应用数学在线课堂</title>
+
+<!-- FontAwesome Icons -->
+<link rel="stylesheet" href="../common-assets/fontawesome/css/all.min.css">
 
 <style>
 /* 极简性能优化设计 */
@@ -30,17 +33,33 @@
 }
 
 @font-face {
-    font-family: 'DingLieCiWei';
-    src: url('../common-assets/fonts/dinglieciweifont.ttf') format('truetype');
+    font-family: 'SourceHanSans';
+    src: url('../common-assets/fonts/SourceHanSansSC-Regular.otf') format('opentype');
     font-weight: 400;
     font-style: normal;
     font-display: swap;
 }
 
 @font-face {
-    font-family: 'WDLubrifont';
-    src: url('../common-assets/fonts/WD-XLLubrifontSC-Regular.otf') format('opentype');
+    font-family: 'SourceHanSerif';
+    src: url('../common-assets/fonts/SourceHanSerifSC-Regular.otf') format('opentype');
     font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'NotoSerif';
+    src: url('../common-assets/fonts/noto-serif-sc-400.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'NotoSerif';
+    src: url('../common-assets/fonts/noto-serif-sc-700.ttf') format('truetype');
+    font-weight: 700;
     font-style: normal;
     font-display: swap;
 }
@@ -52,7 +71,7 @@
 }
 
 body {
-    font-family: 'Microsoft YaHei', 'SimHei', sans-serif;
+    font-family: 'SourceHanSans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     font-size: 18px;
     background-color: #000;
     width: 100vw;
@@ -183,34 +202,34 @@ body {
 }
 
 .welcome-title {
-    font-family: 'DingLieCiWei', 'WDLubrifont', sans-serif;
-    font-size: 48px;
-    font-weight: 400;
+    font-family: 'NotoSerif', 'SourceHanSerif', serif;
+    font-size: 64px;
+    font-weight: 700;
     margin: 0;
-    letter-spacing: 3px;
-    background: linear-gradient(135deg, var(--accent), #67e8f9, var(--accent-warm));
+    letter-spacing: 1px;
+    background: linear-gradient(135deg, #ffffff 0%, #06ffa5 50%, #67e8f9 100%);
     -webkit-background-clip: text;
     background-clip: text;
-    line-height: 1.1;
     -webkit-text-fill-color: transparent;
-    filter: drop-shadow(0 0 10px rgba(6, 255, 165, 0.3));
+    line-height: 1.1;
+    filter: drop-shadow(0 0 30px rgba(6, 255, 165, 0.4));
 }
 
 .welcome-subtitle {
-    font-family: 'WDLubrifont', 'DingLieCiWei', sans-serif;
+    font-family: 'SourceHanSans', -apple-system, BlinkMacSystemFont, sans-serif;
     font-size: 22px;
-    opacity: 0.95;
+    opacity: 0.9;
     margin: 0;
     line-height: 1.4;
-    font-weight: 400;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-    color: var(--accent);
+    font-weight: 300;
+    color: var(--text-muted);
     text-align: center;
-    letter-spacing: 1px;
+    letter-spacing: 0.5px;
     display: flex;
     align-items: center;
     justify-content: center;
     width: 100%;
+    text-transform: uppercase;
 }
 
 
@@ -630,6 +649,77 @@ body {
     will-change: transform;
 }
 
+/* 统一顶部导航栏 */
+.unified-top-nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    background: rgba(15, 23, 42, 0.95);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border);
+    padding: 15px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.nav-brand h1 {
+    font-family: 'NotoSerif', 'SourceHanSerif', serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: #ffffff;
+    margin: 0;
+    letter-spacing: 0.5px;
+    background: linear-gradient(135deg, #ffffff 0%, #06ffa5 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.nav-brand p {
+    font-family: 'SourceHanSans', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 12px;
+    color: var(--text-muted);
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-weight: 300;
+}
+
+.nav-actions {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+.nav-action-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.nav-action-btn:hover {
+    background: rgba(6, 255, 165, 0.1);
+    border-color: var(--accent);
+    color: var(--accent);
+    transform: translateY(-2px);
+}
+
+.nav-action-btn svg {
+    width: 16px;
+    height: 16px;
+}
+
 /* 极简右下角导航栏 */
 .floating-nav-sidebar {
     position: fixed;
@@ -842,8 +932,8 @@ body {
     <div class="welcome-page" id="welcomePage">
         <div class="welcome-content">
             <div class="welcome-title-section">
-                <div class="welcome-title">网页资源</div>
-                <div class="welcome-subtitle">✨ 数学宇宙 - 在无限中寻找真理的足迹 ✨</div>
+                 <div class="welcome-title">Math to Be</div>
+                 <div class="welcome-subtitle">Mathematical Laboratory</div>
             </div>
         </div>
     </div>
@@ -851,9 +941,46 @@ body {
     <iframe id="contentFrame" style="display: none;"></iframe>
 </div>
 
-<!-- 悬浮右上角标题 -->
-<div class="floating-topbar" id="topbar" style="position: fixed; top: 20px; right: 20px; left: auto; width: auto; z-index: 1002; text-align: right;">
-    欢迎使用数学虚拟实验室
+<!-- 移除悬浮标题，避免与顶部导航重复 -->
+
+<!-- 简化顶部导航栏 -->
+<div class="unified-top-nav">
+    <div class="nav-brand">
+        <h1>仿真实验平台</h1>
+        <p>Simulation Lab</p>
+    </div>
+    <div class="nav-actions">
+        <button class="nav-action-btn" onclick="goPrev()" title="上一页">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+            </svg>
+            上一页
+        </button>
+        <button class="nav-action-btn" onclick="goNext()" title="下一页">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+            </svg>
+            下一页
+        </button>
+        <button class="nav-action-btn" onclick="showChapterList()" title="目录">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M4 6h16v2H4V6zm0 5h16v2H4v-2zm0 5h16v2H4v-2z"/>
+            </svg>
+            目录
+        </button>
+        <button class="nav-action-btn" onclick="showQuickNav()" title="快速跳转">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+            </svg>
+            跳转
+        </button>
+        <button class="nav-action-btn" onclick="goMainSite()" title="返回主页">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8h5z"/>
+            </svg>
+            主页
+        </button>
+    </div>
 </div>
 
 <!-- 键盘提示 -->
@@ -872,35 +999,55 @@ body {
         <div class="chapter-nav" id="chapterNav">
             <button class="chapter-nav-btn" data-category="0" onclick="showChapter(0)">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/></svg>
-                函数基础 (8个实验)
+                函数基础 (9个实验)
             </button>
             <button class="chapter-nav-btn" data-category="1" onclick="showChapter(1)">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.94-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
-                函数与极限 (12个实验)
+                函数与极限 (13个实验)
             </button>
             <button class="chapter-nav-btn" data-category="2" onclick="showChapter(2)">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>
-                导数与微分 (即将推出)
+                导数与微分 (6个实验)
             </button>
             <button class="chapter-nav-btn" data-category="3" onclick="showChapter(3)">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-                积分学 (即将推出)
+                导数应用 (4个实验)
             </button>
             <button class="chapter-nav-btn" data-category="4" onclick="showChapter(4)">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
-                多元函数 (即将推出)
+                不定积分 (5个实验)
             </button>
             <button class="chapter-nav-btn" data-category="5" onclick="showChapter(5)">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-                向量与空间 (即将推出)
+                定积分 (5个实验)
             </button>
             <button class="chapter-nav-btn" data-category="6" onclick="showChapter(6)">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M3 3h18v2H3V3zm0 4h18v2H3V7zm0 4h18v2H3v-2zm0 4h18v2H3v-2zm0 4h18v2H3v-2z"/></svg>
-                线性代数 (即将推出)
+                多元函数微分学 (6个实验)
             </button>
             <button class="chapter-nav-btn" data-category="7" onclick="showChapter(7)">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                向量与空间解析几何 (6个实验)
+            </button>
+            <button class="chapter-nav-btn" data-category="8" onclick="showChapter(8)">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M3 3h18v2H3V3zm0 4h18v2H3V7zm0 4h18v2H3v-2zm0 4h18v2H3v-2zm0 4h18v2H3v-2z"/></svg>
+                线性代数 (7个实验)
+            </button>
+            <button class="chapter-nav-btn" data-category="9" onclick="showChapter(9)">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>
-                概率统计 (即将推出)
+                概率与统计 (6个实验)
+            </button>
+            <button class="chapter-nav-btn" data-category="10" onclick="showChapter(10)">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.94-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+                常微分方程 (5个实验)
+            </button>
+            <button class="chapter-nav-btn" data-category="11" onclick="showChapter(11)">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                多元函数积分学 (5个实验)
+            </button>
+            <button class="chapter-nav-btn" data-category="12" onclick="showChapter(12)">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                无穷级数 (5个实验)
             </button>
         </div>
         
@@ -919,58 +1066,12 @@ body {
     <div id="chapterList"></div>
 </div>
 
-<!-- 目录按钮 -->
-<div class="directory-toggle-btn" onclick="toggleDirectory()">
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-        <path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/>
-    </svg>
-    <span>目录</span>
-</div>
+<!-- 目录按钮已移至顶部导航栏 -->
 
-<!-- 极简右下角导航栏 -->
-<div class="floating-nav-sidebar" id="navSidebar">
-
-    <button class="nav-btn" onclick="goPrev()" title="上一页">
-
-        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
-
-    </button>
-
-    <button class="nav-btn" onclick="goHome()" title="返回目录">
-
-        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M4 6h16v2H4V6zm0 5h16v2H4v-2zm0 5h16v2H4v-2z"/></svg>
-
-    </button>
-
-    <button class="nav-btn" onclick="goMainSite()" title="返回主站">
-
-        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="currentColor"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8h5z"/></svg>
-
-    </button>
-
-    <button class="nav-btn" onclick="goNext()" title="下一页">
-
-        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
-
-    </button>
-
-    <div class="nav-divider"></div>
-
-   <button class="sidebar-action-btn" id="quickNavBtn" onclick="showQuickNav()" title="跳转">
-        跳转
-    </button>
-    <button class="sidebar-action-btn" id="feedbackBtn" onclick="showFeedback()" title="反馈">
-        反馈
-        <span class="feedback-badge" id="feedbackBadge" style="display: none;">0</span>
-    </button>
-    <button class="nav-collapse-btn" id="navCollapseBtn" onclick="toggleNavSidebar()" title="收缩">
-        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="currentColor"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6 1.41 1.41z"/></svg>
-    </button>
-</div>
+<!-- 移除右下角侧边栏，避免遮挡内容 -->
 
 <!-- 快速菜单 -->
 <div class="quick-menu" id="quickMenu">
-    <button class="nav-btn" onclick="goHome()" title="返回目录">
     <div class="menu-item" onclick="showQuickNav()">在新窗口打开</div>
 </div>
 
@@ -982,6 +1083,146 @@ body {
     <div class="menu-item" onclick="exportIssues()">导出反馈(JSON)</div>
     <div class="menu-item" onclick="clearIssues()">清空记录</div>
 </div>
+
+<script>
+// 预览功能 - 放在模块脚本之前确保全局可用
+
+// 性能检测函数 - 全局定义
+window.isLowPerformanceDevice = function() {
+    return navigator.hardwareConcurrency <= 2 || 
+           /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+};
+
+// 预览功能 - 立即定义以确保按钮可用
+window.goPrev = function() {
+    console.log('goPrev 被调用');
+    console.log('当前状态 - pageSequence:', window.pageSequence);
+    console.log('当前状态 - currentIndex:', window.currentIndex);
+    
+    // 等待模块脚本加载完成
+    if (typeof window.pageSequence === 'undefined') {
+        console.log('等待模块脚本加载...');
+        setTimeout(() => {
+            if (window.pageSequence && window.pageSequence.length > 0) {
+                window.goPrev();
+            } else {
+                alert('页面序列未初始化，请稍后再试');
+            }
+        }, 100);
+        return;
+    }
+    
+    let pageSeq = window.pageSequence || [];
+    let currentIdx = window.currentIndex;
+    
+    // 如果currentIndex是undefined，说明还没有加载任何内容
+    if (currentIdx === undefined) {
+        currentIdx = -1;
+    }
+    
+    if (pageSeq.length === 0) {
+        if (window.initSequence) {
+            window.initSequence();
+            pageSeq = window.pageSequence || [];
+            if (pageSeq.length === 0) {
+                alert('暂无可用内容');
+                return;
+            }
+        } else {
+            alert('页面序列未初始化');
+            return;
+        }
+    }
+    
+    console.log('页面序列长度:', pageSeq.length);
+    console.log('当前索引:', currentIdx);
+    
+    // 如果当前没有加载任何内容，从第一个开始
+    if (currentIdx === -1) {
+        currentIdx = 0;
+    } else {
+        currentIdx = (currentIdx > 0) ? currentIdx - 1 : pageSeq.length - 1;
+    }
+    
+    console.log('计算后的索引:', currentIdx);
+    console.log('目标页面:', pageSeq[currentIdx]);
+    
+    // 更新全局索引
+    window.currentIndex = currentIdx;
+    
+    if (window.loadContent) {
+        window.loadContent(pageSeq[currentIdx], window.getChineseTitle ? window.getChineseTitle(pageSeq[currentIdx]) : '');
+    } else {
+        alert('loadContent函数未找到');
+    }
+};
+
+window.goNext = function() {
+    console.log('goNext 被调用');
+    console.log('当前状态 - pageSequence:', window.pageSequence);
+    console.log('当前状态 - currentIndex:', window.currentIndex);
+    
+    // 等待模块脚本加载完成
+    if (typeof window.pageSequence === 'undefined') {
+        console.log('等待模块脚本加载...');
+        setTimeout(() => {
+            if (window.pageSequence && window.pageSequence.length > 0) {
+                window.goNext();
+            } else {
+                alert('页面序列未初始化，请稍后再试');
+            }
+        }, 100);
+        return;
+    }
+    
+    let pageSeq = window.pageSequence || [];
+    let currentIdx = window.currentIndex;
+    
+    // 如果currentIndex是undefined，说明还没有加载任何内容
+    if (currentIdx === undefined) {
+        currentIdx = -1;
+    }
+    
+    if (pageSeq.length === 0) {
+        if (window.initSequence) {
+            window.initSequence();
+            pageSeq = window.pageSequence || [];
+            if (pageSeq.length === 0) {
+                alert('暂无可用内容');
+                return;
+            }
+        } else {
+            alert('页面序列未初始化');
+            return;
+        }
+    }
+    
+    console.log('页面序列长度:', pageSeq.length);
+    console.log('当前索引:', currentIdx);
+    
+    // 如果当前没有加载任何内容，从第一个开始
+    if (currentIdx === -1) {
+        currentIdx = 0;
+    } else {
+        currentIdx = (currentIdx < pageSeq.length - 1) ? currentIdx + 1 : 0;
+    }
+    
+    console.log('计算后的索引:', currentIdx);
+    console.log('目标页面:', pageSeq[currentIdx]);
+    
+    // 更新全局索引
+    window.currentIndex = currentIdx;
+    
+    if (window.loadContent) {
+        window.loadContent(pageSeq[currentIdx], window.getChineseTitle ? window.getChineseTitle(pageSeq[currentIdx]) : '');
+    } else {
+        alert('loadContent函数未找到');
+    }
+};
+
+
+// 全局变量将在模块脚本中设置
+</script>
 
 <script type="module">
 // 性能优化的3D背景
@@ -1498,11 +1739,7 @@ const chapters = {
             { name: "导数运算法则实验室", url: "lab 3-3.html", type: "single" },
             { name: "复合函数求导实验室", url: "lab 3-4.html", type: "single" },
             { name: "微分实验室", url: "lab 3-5.html", type: "single" },
-            { name: "求导练习游戏", url: "lab 3-6.html", type: "single" },
-            { name: "高阶导数实验室", url: "lab 3-7.html", type: "single" },
-            { name: "隐函数求导实验室", url: "lab 3-8.html", type: "single" },
-            { name: "参数方程求导实验室", url: "lab 3-9.html", type: "single" },
-            { name: "对数求导实验室", url: "lab 3-10.html", type: "single" }
+            { name: "求导练习游戏", url: "lab 3-6.html", type: "single" }
         ]
     },
     3: {
@@ -1535,27 +1772,78 @@ const chapters = {
         ]
     },
     6: {
-        title: "多元函数",
+        title: "多元函数微分学",
         items: [
-            { name: "即将推出...", url: "#", type: "coming-soon" }
+            { name: "二元函数概念实验室", url: "lab 8-1.html", type: "single" },
+            { name: "二元函数极限实验室", url: "lab 8-2.html", type: "single" },
+            { name: "偏导数实验室", url: "lab 8-3.html", type: "single" },
+            { name: "全微分实验室", url: "lab 8-4.html", type: "single" },
+            { name: "复合函数求导实验室", url: "lab 8-5.html", type: "single" },
+            { name: "隐函数求导实验室", url: "lab 8-6.html", type: "single" }
         ]
     },
     7: {
-        title: "向量与空间",
+        title: "向量代数与空间解析几何",
         items: [
-            { name: "即将推出...", url: "#", type: "coming-soon" }
+            { name: "向量概念实验室", url: "lab 12-1.html", type: "single" },
+            { name: "向量运算实验室", url: "lab 12-2.html", type: "single" },
+            { name: "空间直线实验室", url: "lab 12-3.html", type: "single" },
+            { name: "空间平面实验室", url: "lab 12-4.html", type: "single" },
+            { name: "二次曲面实验室", url: "lab 12-5.html", type: "single" },
+            { name: "空间曲线实验室", url: "lab 12-6.html", type: "single" }
         ]
     },
     8: {
         title: "线性代数",
         items: [
-            { name: "即将推出...", url: "#", type: "coming-soon" }
+            { name: "行列式实验室", url: "lab 10-1.html", type: "single" },
+            { name: "矩阵运算实验室", url: "lab 10-2.html", type: "single" },
+            { name: "矩阵逆实验室", url: "lab 10-3.html", type: "single" },
+            { name: "线性方程组实验室", url: "lab 10-4.html", type: "single" },
+            { name: "向量空间实验室", url: "lab 10-5.html", type: "single" },
+            { name: "特征值实验室", url: "lab 10-6.html", type: "single" },
+            { name: "二次型实验室", url: "lab 10-7.html", type: "single" }
         ]
     },
     9: {
         title: "概率与统计",
         items: [
-            { name: "即将推出...", url: "#", type: "coming-soon" }
+            { name: "随机事件实验室", url: "lab 13-1.html", type: "single" },
+            { name: "概率计算实验室", url: "lab 13-2.html", type: "single" },
+            { name: "随机变量实验室", url: "lab 13-3.html", type: "single" },
+            { name: "分布函数实验室", url: "lab 13-4.html", type: "single" },
+            { name: "数字特征实验室", url: "lab 13-5.html", type: "single" },
+            { name: "抽样分布实验室", url: "lab 13-6.html", type: "single" }
+        ]
+    },
+    10: {
+        title: "常微分方程",
+        items: [
+            { name: "微分方程概念实验室", url: "lab 7-1.html", type: "single" },
+            { name: "可分离变量方程实验室", url: "lab 7-2.html", type: "single" },
+            { name: "齐次方程实验室", url: "lab 7-3.html", type: "single" },
+            { name: "一阶线性方程实验室", url: "lab 7-4.html", type: "single" },
+            { name: "二阶常系数方程实验室", url: "lab 7-5.html", type: "single" }
+        ]
+    },
+    11: {
+        title: "多元函数积分学",
+        items: [
+            { name: "二重积分概念实验室", url: "lab 9-1.html", type: "single" },
+            { name: "二重积分计算实验室", url: "lab 9-2.html", type: "single" },
+            { name: "三重积分实验室", url: "lab 9-3.html", type: "single" },
+            { name: "曲线积分实验室", url: "lab 9-4.html", type: "single" },
+            { name: "曲面积分实验室", url: "lab 9-5.html", type: "single" }
+        ]
+    },
+    12: {
+        title: "无穷级数",
+        items: [
+            { name: "数项级数实验室", url: "lab 11-1.html", type: "single" },
+            { name: "正项级数实验室", url: "lab 11-2.html", type: "single" },
+            { name: "幂级数实验室", url: "lab 11-3.html", type: "single" },
+            { name: "泰勒级数实验室", url: "lab 11-4.html", type: "single" },
+            { name: "傅里叶级数实验室", url: "lab 11-5.html", type: "single" }
         ]
     }
 };
@@ -1592,10 +1880,21 @@ function initDOMCache() {
 
 // 全局变量
 let currentUrl = '';
-let pageSequence = [];
-let currentIndex = -1;
+let pageSequence = window.pageSequence || [];
+let currentIndex = window.currentIndex || -1;
 let pageIssues = {};
 let currentOpenChapter = -1;
+
+// 更新全局变量
+window.pageSequence = pageSequence;
+window.currentIndex = currentIndex;
+
+// 暴露必要的函数到全局作用域
+window.initSequence = initSequence;
+window.loadContent = loadContent;
+window.getChineseTitle = getChineseTitle;
+window.chapters = chapters;
+window.domCache = domCache;
 
 function initSequence() {
     if (pageSequence.length > 0) return; // 避免重复初始化
@@ -1608,6 +1907,11 @@ function initSequence() {
             }
         });
     });
+    
+    // 更新全局变量
+    window.pageSequence = pageSequence;
+    
+    console.log('页面序列初始化完成，共', pageSequence.length, '个页面');
 }
 
 function showChapter(categoryId) {
@@ -1666,12 +1970,23 @@ function getItemIcon(item, categoryId, itemIndex) {
     if (item.type === 'coming-soon') return '🔒';
     
     const icons = {
-        0: ['🧮', '📊', '📐', '🔢', '📈', '🎯', '🔄', '🔗'],
-        1: ['🖼️', '🔍', '📊', '⚖️', '♾️', '⭐', '🔍', '📏', '💧', '🎮', '📊', '🔍']
+        0: ['<i class="fas fa-calculator"></i>', '<i class="fas fa-chart-bar"></i>', '<i class="fas fa-drafting-compass"></i>', '<i class="fas fa-hashtag"></i>', '<i class="fas fa-chart-line"></i>', '<i class="fas fa-bullseye"></i>', '<i class="fas fa-sync"></i>', '<i class="fas fa-link"></i>', '<i class="fas fa-palette"></i>'],
+        1: ['<i class="fas fa-image"></i>', '<i class="fas fa-search"></i>', '<i class="fas fa-chart-bar"></i>', '<i class="fas fa-balance-scale"></i>', '<i class="fas fa-infinity"></i>', '<i class="fas fa-star"></i>', '<i class="fas fa-search"></i>', '<i class="fas fa-ruler"></i>', '<i class="fas fa-tint"></i>', '<i class="fas fa-gamepad"></i>', '<i class="fas fa-chart-bar"></i>', '<i class="fas fa-search"></i>', '<i class="fas fa-bullseye"></i>'],
+        2: ['<i class="fas fa-chart-line"></i>', '<i class="fas fa-drafting-compass"></i>', '<i class="fas fa-cog"></i>', '<i class="fas fa-link"></i>', '<i class="fas fa-ruler"></i>', '<i class="fas fa-bullseye"></i>'],
+        3: ['<i class="fas fa-chart-bar"></i>', '<i class="fas fa-balance-scale"></i>', '<i class="fas fa-chart-line"></i>', '<i class="fas fa-search"></i>'],
+        4: ['<i class="fas fa-hashtag"></i>', '<i class="fas fa-sync"></i>', '<i class="fas fa-drafting-compass"></i>', '<i class="fas fa-chart-bar"></i>', '<i class="fas fa-cog"></i>'],
+        5: ['<i class="fas fa-chart-bar"></i>', '<i class="fas fa-chart-line"></i>', '<i class="fas fa-sync"></i>', '<i class="fas fa-drafting-compass"></i>', '<i class="fas fa-search"></i>'],
+        6: ['<i class="fas fa-chart-bar"></i>', '<i class="fas fa-search"></i>', '<i class="fas fa-drafting-compass"></i>', '<i class="fas fa-ruler"></i>', '<i class="fas fa-link"></i>', '<i class="fas fa-search"></i>'],
+        7: ['<i class="fas fa-arrow-right"></i>', '<i class="fas fa-plus"></i>', '<i class="fas fa-ruler"></i>', '<i class="fas fa-drafting-compass"></i>', '<i class="fas fa-globe"></i>', '<i class="fas fa-sync"></i>'],
+        8: ['<i class="fas fa-chart-bar"></i>', '<i class="fas fa-cog"></i>', '<i class="fas fa-sync"></i>', '<i class="fas fa-drafting-compass"></i>', '<i class="fas fa-bullseye"></i>', '<i class="fas fa-star"></i>', '<i class="fas fa-clipboard"></i>'],
+        9: ['<i class="fas fa-dice"></i>', '<i class="fas fa-chart-bar"></i>', '<i class="fas fa-chart-line"></i>', '<i class="fas fa-clipboard"></i>', '<i class="fas fa-chart-bar"></i>', '<i class="fas fa-ruler"></i>'],
+        10: ['<i class="fas fa-chart-bar"></i>', '<i class="fas fa-search"></i>', '<i class="fas fa-balance-scale"></i>', '<i class="fas fa-drafting-compass"></i>', '<i class="fas fa-bullseye"></i>'],
+        11: ['<i class="fas fa-chart-bar"></i>', '<i class="fas fa-search"></i>', '<i class="fas fa-drafting-compass"></i>', '<i class="fas fa-sync"></i>', '<i class="fas fa-globe"></i>'],
+        12: ['<i class="fas fa-infinity"></i>', '<i class="fas fa-chart-bar"></i>', '<i class="fas fa-star"></i>', '<i class="fas fa-chart-line"></i>', '<i class="fas fa-clipboard"></i>']
     };
     
-    const chapterIcons = icons[categoryId] || ['🧪'];
-    return chapterIcons[itemIndex] || '🧪';
+    const chapterIcons = icons[categoryId] || ['<i class="fas fa-flask"></i>'];
+    return chapterIcons[itemIndex] || '<i class="fas fa-flask"></i>';
 }
 
 function loadContent(url, title) {
@@ -1685,9 +2000,19 @@ function loadContent(url, title) {
 
     currentUrl = url;
     const displayTitle = getChineseTitle(url);
-    domCache.topbar.textContent = displayTitle;
+    // 更新页面标题
+    document.title = `${displayTitle} - 仿真实验平台`;
+    
+    // 如果有顶部标题元素，更新它
+    const titleElement = document.querySelector('.nav-brand h1');
+    if (titleElement) {
+        titleElement.textContent = displayTitle;
+    }
 
     currentIndex = pageSequence.indexOf(url);
+    // 更新全局变量
+    window.currentIndex = currentIndex;
+    
     domCache.contentFrame.src = url;
     closeAllPanels();
 }
@@ -1729,22 +2054,21 @@ function toggleDirectory() {
     domCache.frontDirectoryPanel.classList.toggle('show');
 }
 
-function goPrev() {
-    if (pageSequence.length === 0) initSequence();
-    currentIndex = (currentIndex > 0) ? currentIndex - 1 : pageSequence.length - 1;
-    loadContent(pageSequence[currentIndex], getChineseTitle(pageSequence[currentIndex]));
-}
+// 函数已移至全局作用域定义
 
-function goNext() {
-    if (pageSequence.length === 0) initSequence();
-    currentIndex = (currentIndex < pageSequence.length - 1) ? currentIndex + 1 : 0;
-    loadContent(pageSequence[currentIndex], getChineseTitle(pageSequence[currentIndex]));
-}
+// 预览函数已在模块脚本之前定义
 
 function goHome() {
     domCache.contentFrame.style.display = 'none';
     domCache.welcomePage.style.display = 'flex';
-    domCache.topbar.textContent = '欢迎使用数学虚拟实验室';
+    
+    // 恢复原始标题
+    document.title = '仿真实验平台 - 高等应用数学在线课堂';
+    const titleElement = document.querySelector('.nav-brand h1');
+    if (titleElement) {
+        titleElement.textContent = '仿真实验平台';
+    }
+    
     domCache.keyboardHint.classList.add('hidden');
     currentUrl = '';
     currentIndex = -1;
@@ -1822,6 +2146,10 @@ function updateFeedbackBadge() {
 
 function showQuickNav() {
     if (currentUrl) window.open(currentUrl, '_blank');
+}
+
+function showChapterList() {
+    toggleDirectory();
 }
 
 function closeAllPanels() {

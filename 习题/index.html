@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>高等数学习题集</title>
+    <title>智能题库 - 高等应用数学在线课堂</title>
     <style>
         /* 共享样式变量 */
         :root {
@@ -78,6 +78,74 @@
         body.space-theme {
             background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #312e81 100%);
             color: var(--space-text);
+        }
+
+        /* 统一顶部导航栏 */
+        .unified-top-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--space-border);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-brand h1 {
+            font-family: 'WDLubrifont', sans-serif;
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--space-text);
+            margin: 0;
+            background: linear-gradient(135deg, #ffffff 0%, #06ffa5 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-brand p {
+            font-size: 12px;
+            color: var(--space-text-muted);
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .nav-actions {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .nav-action-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--space-border);
+            border-radius: 8px;
+            color: var(--space-text);
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .nav-action-btn:hover {
+            background: rgba(6, 255, 165, 0.1);
+            border-color: var(--space-accent);
+            color: var(--space-accent);
+            transform: translateY(-2px);
+        }
+
+        .nav-action-btn svg {
+            width: 16px;
+            height: 16px;
         }
 
         /* 主题切换按钮 */
@@ -585,13 +653,51 @@
 </head>
 
 <body class="space-theme">
-<!-- 主题切换按钮 -->
-<button class="theme-switch-btn" onclick="switchTheme()">
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-    </svg>
-    <span id="theme-switch-text">切换到金秋主题</span>
-</button>
+<!-- 简化顶部导航栏 -->
+<div class="unified-top-nav">
+    <div class="nav-brand">
+        <h1>智能题库</h1>
+        <p>Smart Question Bank</p>
+    </div>
+    <div class="nav-actions">
+        <button class="nav-action-btn" onclick="goPrev()" title="上一页">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+            </svg>
+            上一页
+        </button>
+        <button class="nav-action-btn" onclick="goNext()" title="下一页">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+            </svg>
+            下一页
+        </button>
+        <button class="nav-action-btn" onclick="showChapterList()" title="目录">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M4 6h16v2H4V6zm0 5h16v2H4v-2zm0 5h16v2H4v-2z"/>
+            </svg>
+            目录
+        </button>
+        <button class="nav-action-btn" onclick="showQuickNav()" title="快速跳转">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+            </svg>
+            跳转
+        </button>
+        <button class="nav-action-btn" onclick="switchTheme()" title="切换主题">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+            </svg>
+            <span id="theme-switch-text">金秋主题</span>
+        </button>
+        <button class="nav-action-btn" onclick="goMainSite()" title="返回主页">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8h5z"/>
+            </svg>
+            主页
+        </button>
+    </div>
+</div>
 
 <!-- 背景画布 -->
 <canvas id="bg-canvas"></canvas>
@@ -680,40 +786,7 @@
     使用 ← → 键导航，Home 键返回目录，End 键回主站，T 键切换主题
 </div>
 
-<!-- 右下角导航栏 -->
-<div class="floating-nav-sidebar" id="navSidebar">
-    <button class="nav-btn" onclick="goPrev()" title="上一章">
-        <svg viewBox="0 0 24 24" fill="currentColor">
-            <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
-        </svg>
-    </button>
-    <button class="nav-btn" onclick="goHome()" title="返回目录">
-        <svg viewBox="0 0 24 24" fill="currentColor">
-            <path d="M4 6h16v2H4V6zm0 5h16v2H4v-2zm0 5h16v2H4v-2z"/>
-        </svg>
-    </button>
-    <button class="nav-btn" onclick="goMainSite()" title="返回主站">
-        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="currentColor">
-            <path d="M0 0h24v24H0V0z" fill="none"/>
-            <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8h5z"/>
-        </svg>
-    </button>
-    <button class="nav-btn" onclick="goNext()" title="下一章">
-        <svg viewBox="0 0 24 24" fill="currentColor">
-            <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
-        </svg>
-    </button>
-    <div class="nav-divider"></div>
-    <button class="sidebar-action-btn" id="quickNavBtn" onclick="showQuickNav()" title="跳转">
-        跳转
-    </button>
-    <button class="nav-collapse-btn" id="navCollapseBtn" onclick="toggleNavSidebar()" title="收缩">
-        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="currentColor">
-            <path d="M0 0h24v24H0V0z" fill="none"/>
-            <path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6 1.41 1.41z"/>
-        </svg>
-    </button>
-</div>
+<!-- 移除右下角侧边栏，避免遮挡内容 -->
 
 <script>
     // 章节数据

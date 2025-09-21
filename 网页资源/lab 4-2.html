@@ -256,6 +256,47 @@
             background: #eef2ff;
             color: var(--primary-dark);
         }
+
+        @media (max-width: 768px) {
+            .container {
+                height: auto;
+            }
+
+            .main {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                flex-direction: row;
+                overflow-x: auto;
+                overflow-y: hidden;
+                gap: 8px;
+            }
+
+            .nav-btn {
+                flex: 0 0 auto;
+                width: auto;
+                white-space: nowrap;
+            }
+
+            .content {
+                overflow: visible;
+            }
+
+            .page-content {
+                grid-template-columns: minmax(0, 1fr);
+                height: auto;
+            }
+
+            .page-content.active {
+                display: grid;
+            }
+
+            .column {
+                overflow: visible;
+            }
+        }
     </style>
 </head>
 <body>
@@ -519,16 +560,15 @@
         </div>
     </div>
 
-    <script>
+        <script>
         function renderMath() {
             if (window.MathJax && MathJax.typesetPromise) {
                 MathJax.typesetPromise().catch(err => console.log('渲染错误:', err));
             }
         }
 
-        // 确保页面加载完成后渲染数学公式
-        document.addEventListener('DOMContentLoaded', function() {
-            setTimeout(renderMath, 100);
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(renderMath, 120);
         });
 
         function setupCanvas(canvas) {
@@ -537,25 +577,25 @@
             const dpr = window.devicePixelRatio || 1;
             canvas.width = rect.width * dpr;
             canvas.height = rect.height * dpr;
-            canvas.style.width = rect.width + 'px';
-            canvas.style.height = rect.height + 'px';
+            canvas.style.width = `${rect.width}px`;
+            canvas.style.height = `${rect.height}px`;
+            ctx.resetTransform();
             ctx.scale(dpr, dpr);
             return { ctx, width: rect.width, height: rect.height };
         }
 
-        function drawAxes(ctx, width, height) {
-            const padding = 40;
+        function drawAxes(ctx, width, height, padding = 40) {
             ctx.save();
             ctx.strokeStyle = '#e2e8f0';
             ctx.lineWidth = 1;
             for (let i = 0; i <= 8; i++) {
-                const x = padding + i * (width - 2 * padding) / 8;
+                const x = padding + (i / 8) * (width - 2 * padding);
                 ctx.beginPath();
                 ctx.moveTo(x, padding);
                 ctx.lineTo(x, height - padding);
                 ctx.stroke();
 
-                const y = padding + i * (height - 2 * padding) / 8;
+                const y = padding + (i / 8) * (height - 2 * padding);
                 ctx.beginPath();
                 ctx.moveTo(padding, y);
                 ctx.lineTo(width - padding, y);
@@ -563,11 +603,12 @@
             }
 
             ctx.strokeStyle = '#1f2937';
-            ctx.lineWidth = 1.5;
+            ctx.lineWidth = 1.4;
             ctx.beginPath();
             ctx.moveTo(padding, height / 2);
             ctx.lineTo(width - padding, height / 2);
             ctx.stroke();
+
             ctx.beginPath();
             ctx.moveTo(width / 2, padding);
             ctx.lineTo(width / 2, height - padding);
@@ -578,61 +619,100 @@
         function mathToCanvas(x, y, width, height, xRange, yRange, padding = 40) {
             const plotWidth = width - 2 * padding;
             const plotHeight = height - 2 * padding;
-            const cx = padding + (x - xRange[0]) / (xRange[1] - xRange[0]) * plotWidth;
-            const cy = height - padding - (y - yRange[0]) / (yRange[1] - yRange[0]) * plotHeight;
+            const cx = padding + ((x - xRange[0]) / (xRange[1] - xRange[0])) * plotWidth;
+            const cy = height - padding - ((y - yRange[0]) / (yRange[1] - yRange[0])) * plotHeight;
             return { x: cx, y: cy };
         }
 
-        const cases = {
-            zero_zero: {
-                type: '0/0 型',
-                description: '当前案例：$\\displaystyle \\lim_{x \\to 0} \\dfrac{\\sin x}{x}$，原式代入得到 $\\dfrac{0}{0}$ 型，可直接应用洛必达法则。',
+        function drawCurve(ctx, points, width, height, xRange, yRange, color) {
+            if (!points.length) return;
+            ctx.save();
+            ctx.strokeStyle = color;
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            points.forEach((pt, index) => {
+                const { x, y } = mathToCanvas(pt.x, pt.y, width, height, xRange, yRange);
+                if (index === 0) {
+                    ctx.moveTo(x, y);
+                } else {
+                    ctx.lineTo(x, y);
+                }
+            });
+            ctx.stroke();
+            ctx.restore();
+        }
+
+        function ensureRange(range, fallback = [-4, 4]) {
+            if (!range || range.length !== 2) return fallback;
+            const [min, max] = range;
+            if (!Number.isFinite(min) || !Number.isFinite(max) || min === max) {
+                return fallback;
+            }
+            return [min, max];
+        }
+
+        const zeroCases = {
+            sin_over_x: {
+                key: 'sin_over_x',
+                name: '$\\dfrac{\\sin x}{x}$',
+                typeLabel: '标准 $0/0$ 型',
+                description: '当前案例：$\\displaystyle \\lim_{x \\to 0} \\dfrac{\\sin x}{x}$。分子分母同趋于 $0$，直接满足洛必达法则的适用条件。',
                 numerator: x => Math.sin(x),
                 denominator: x => x,
                 numeratorPrime: x => Math.cos(x),
                 denominatorPrime: () => 1,
                 limitPoint: 0,
-                displayInterval: [-4, 4],
-                ratioConclusion: '导数比值极限存在，原极限等于 1。',
+                displayInterval: [-3.5, 3.5],
+                yRange: [-2.2, 2.2],
+                ratioConclusion: '导数比值极限存在，原极限为 $1$。',
+                approach: { min: 0.01, max: 0.6, step: 0.01, defaultValue: 0.18, directions: ['right', 'left', 'both'], defaultDirection: 'right' },
                 steps: [
-                    { title: '检测不定式', detail: '代入 $x=0$ 得到 $\\dfrac{0}{0}$ 型，满足洛必达法则的形式。' },
-                    { title: '同步求导', detail: '计算 $f\\'(x)=\\cos x$, $g\\'(x)=1$。' },
-                    { title: '代入极限点', detail: '代入 $x=0$，有 $\\dfrac{f\\'(0)}{g\\'(0)} = 1$。' },
-                    { title: '给出结论', detail: '原极限 $=1$，与导数比值一致。' }
+                    { detail: '代入 $x=0$，分子分母同时为 $0$，判定为 $0/0$ 型。' },
+                    { detail: '分别求导：$f\\'(x)=\\cos x$，$g\\'(x)=1$。' },
+                    { detail: '带入极限点：$\\dfrac{f\\'(0)}{g\\'(0)} = 1$。' },
+                    { detail: '导数比值极限存在，因此原极限等于 $1$。' }
                 ]
             },
-            infinity_infinity: {
-                type: '∞/∞ 型',
-                description: '当前案例：$\\displaystyle \\lim_{x \\to \\infty} \\dfrac{2x^2 - 3x}{x^2 + 1}$，原式为 $\\dfrac{\\infty}{\\infty}$ 型，可对分子分母求导。',
-                numerator: x => 2 * x * x - 3 * x,
-                denominator: x => x * x + 1,
-                numeratorPrime: x => 4 * x - 3,
-                denominatorPrime: x => 2 * x,
-                limitPoint: Infinity,
-                displayInterval: [-2, 4],
-                ratioConclusion: '导数比值极限为 2，与原函数的水平渐近线一致。',
-                steps: [
-                    { title: '检测不定式', detail: '令 $x\\to\\infty$，分子分母同趋于 $\\infty$，为 $\\dfrac{\\infty}{\\infty}$ 型。' },
-                    { title: '同步求导', detail: '计算 $f\\'(x)=4x-3$, $g\\'(x)=2x$。' },
-                    { title: '化简比值', detail: '得到 $\\dfrac{4x-3}{2x}$，进一步化简为 $2-\\dfrac{3}{2x}$。' },
-                    { title: '取极限', detail: '令 $x\\to\\infty$，$\\dfrac{3}{2x}\\to 0$，原极限为 2。' }
-                ]
-            },
-            other: {
-                type: '其他类型转化',
-                description: '当前案例：$\\displaystyle \\lim_{x \\to 0^+} x^x$，原式为 $1^{\\infty}$ 型，先取对数转化为 $\\dfrac{0}{0}$ 型。',
-                numerator: x => Math.log(x),
-                denominator: x => 1 / x,
-                numeratorPrime: x => 1 / x,
-                denominatorPrime: x => -1 / (x * x),
+            exp_minus_one: {
+                key: 'exp_minus_one',
+                name: '$\\dfrac{e^x-1}{x}$',
+                typeLabel: '指数类 $0/0$ 型',
+                description: '当前案例：$\\displaystyle \\lim_{x \\to 0} \\dfrac{e^x-1}{x}$。指数函数减常数也会形成 $0/0$ 型，关键在于比较导数的变化率。',
+                numerator: x => Math.exp(x) - 1,
+                denominator: x => x,
+                numeratorPrime: x => Math.exp(x),
+                denominatorPrime: () => 1,
                 limitPoint: 0,
-                displayInterval: [0.05, 3],
-                ratioConclusion: '对数处理后极限为 0，原式极限为 1。',
+                displayInterval: [-2.5, 3],
+                yRange: [-1.5, 4.5],
+                ratioConclusion: '导数比值恒为 $e^x$，在 $x=0$ 处取 $1$，原极限仍为 $1$。',
+                approach: { min: 0.02, max: 0.6, step: 0.01, defaultValue: 0.22, directions: ['right', 'left', 'both'], defaultDirection: 'right' },
                 steps: [
-                    { title: '识别类型', detail: '原式是 $1^{\\infty}$ 型，直接使用洛必达不便处理。' },
-                    { title: '取对数', detail: '令 $y = x^x$，两边取对数得 $\\ln y = x\\ln x$。' },
-                    { title: '转化形式', detail: '将 $x\\ln x$ 写成 $\\dfrac{\\ln x}{1/x}$，变为 $\\dfrac{0}{\\infty}$ 型。' },
-                    { title: '应用法则', detail: '对分子与分母求导并求极限，得到 $\\lim x\\ln x = 0$，所以 $y = e^0 = 1$。' }
+                    { detail: '检测不定式：$e^0-1=0$，分母也为 $0$。' },
+                    { detail: '求导：$f\\'(x)=e^x$，$g\\'(x)=1$。' },
+                    { detail: '代入 $x=0$，得到 $e^0 = 1$。' },
+                    { detail: '由洛必达法则知，原极限与导数比值极限一致。' }
+                ]
+            },
+            log_ratio: {
+                key: 'log_ratio',
+                name: '$\\dfrac{\\ln(1+x)}{x}$',
+                typeLabel: '对数型 $0/0$ 型',
+                description: '当前案例：$\\displaystyle \\lim_{x \\to 0} \\dfrac{\\ln(1+x)}{x}$。对数函数同样在 $x=0$ 形成 $0/0$ 型，需要注意定义域 $x>-1$。',
+                numerator: x => Math.log(1 + x),
+                denominator: x => x,
+                numeratorPrime: x => 1 / (1 + x),
+                denominatorPrime: () => 1,
+                limitPoint: 0,
+                displayInterval: [-0.6, 3.2],
+                yRange: [-1.5, 2.5],
+                ratioConclusion: '导数比值极限为 $1$，体现了 $\\ln(1+x)$ 在 $x=0$ 附近的线性化性质。',
+                approach: { min: 0.02, max: 0.5, step: 0.01, defaultValue: 0.16, directions: ['right', 'left'], defaultDirection: 'right' },
+                steps: [
+                    { detail: '确认极限类型：分子、分母代入 $0$ 均得 $0$。' },
+                    { detail: '求导：$f\\'(x)=\\dfrac{1}{1+x}$，$g\\'(x)=1$。' },
+                    { detail: '代入 $x=0$，比值为 $1$。' },
+                    { detail: '因此原极限等于 $1$，与导数比值一致。' }
                 ]
             }
         };
@@ -640,9 +720,9 @@
         const typeSummary = [
             { name: '$\\dfrac{0}{0}$ 型', hint: '直接检查分子、分母在极限点的值。', example: '$\\displaystyle \\lim_{x \\to 0} \\dfrac{\\sin x}{x}$' },
             { name: '$\\dfrac{\\infty}{\\infty}$ 型', hint: '常见于高阶多项式或指数比值。', example: '$\\displaystyle \\lim_{x \\to \\infty} \\dfrac{2x^2-1}{x^2+3}$' },
-            { name: '$0 \cdot \\infty$', hint: '通过改写为 $\\dfrac{0}{1/a}$ 或 $\\dfrac{\\infty}{1/b}$。', example: '$\\displaystyle \\lim_{x \\to 0^+} x \cdot \ln x$' },
-            { name: '$\\infty - \\infty$', hint: '先通分或乘以共轭，再判断类型。', example: '$\\displaystyle \\lim_{x \\to \\infty} (\\sqrt{x^2+x}-x)$' },
-            { name: '$1^{\\infty}$ 型', hint: '取对数，将幂指数转化为乘积形式。', example: '$\\displaystyle \\lim_{x \\to \infty} \left(1+\frac{3}{x}\right)^x$' }
+            { name: '$0 \\cdot \\infty$', hint: '通过改写为 $\\dfrac{0}{1/a}$ 或 $\\dfrac{\\infty}{1/b}$。', example: '$\\displaystyle \\lim_{x \\to 0^+} x\\ln x$' },
+            { name: '$\\infty - \\infty$', hint: '通分或乘以共轭后再判断类型。', example: '$\\displaystyle \\lim_{x \\to \\infty}(\\sqrt{x^2+x}-x)$' },
+            { name: '$1^{\\infty}$ 型', hint: '取对数，将幂指数转化为乘积形式。', example: '$\\displaystyle \\lim_{x \\to \\infty}\\left(1+\\frac{3}{x}\\right)^x$' }
         ];
 
         const navButtons = document.querySelectorAll('.nav-btn');
@@ -663,9 +743,9 @@
         const derivativeInfo = document.getElementById('derivativeInfo');
         const hintInfo = document.getElementById('hintInfo');
 
-        const canvas = document.getElementById('lhopitalCanvas');
+        const lhopitalCanvas = document.getElementById('lhopitalCanvas');
 
-        let currentCaseKey = 'zero_zero';
+        let currentCaseKey = 'sin_over_x';
         let currentStepIndex = -1;
         let animationTimer = null;
 
@@ -681,18 +761,19 @@
         }
 
         function populateCaseSelector() {
-            Object.entries(cases).forEach(([key, item]) => {
+            if (!caseSelector) return;
+            Object.values(zeroCases).forEach(item => {
                 const option = document.createElement('option');
-                option.value = key;
-                option.innerHTML = item.type;
+                option.value = item.key;
+                option.innerHTML = `${item.typeLabel}`;
                 caseSelector.appendChild(option);
             });
             caseSelector.value = currentCaseKey;
         }
 
         function buildFlowSteps() {
-            const current = cases[currentCaseKey];
             flowContainer.innerHTML = '';
+            const current = zeroCases[currentCaseKey];
             current.steps.forEach((step, index) => {
                 const div = document.createElement('div');
                 div.className = 'flow-step';
@@ -715,53 +796,176 @@
                 if (index === steps.length - 1) {
                     steps[index].classList.add('success');
                 }
+                steps[index].scrollIntoView({ block: 'nearest' });
             }
             currentStepIndex = index;
         }
 
         function advanceStep() {
-            const current = cases[currentCaseKey];
-            const total = current.steps.length;
+            const total = zeroCases[currentCaseKey].steps.length;
             if (currentStepIndex >= total - 1) return;
             highlightStep(currentStepIndex + 1);
+            renderMath();
+        }
+
+        function stopAnimation() {
+            if (animationTimer) {
+                clearInterval(animationTimer);
+                animationTimer = null;
+            }
+            startFlowBtn.textContent = '开始演示';
         }
 
         function resetFlow() {
-            clearInterval(animationTimer);
-            animationTimer = null;
-            startFlowBtn.textContent = '开始演示';
+            stopAnimation();
             buildFlowSteps();
-            updateCaseSummary();
-            updateCanvas();
+            highlightStep(-1);
         }
 
         function toggleAnimation() {
             if (animationTimer) {
-                clearInterval(animationTimer);
-                animationTimer = null;
-                startFlowBtn.textContent = '开始演示';
+                stopAnimation();
                 return;
             }
-            startFlowBtn.textContent = '暂停演示';
             advanceStep();
+            startFlowBtn.textContent = '暂停演示';
             animationTimer = setInterval(() => {
-                const current = cases[currentCaseKey];
-                if (currentStepIndex >= current.steps.length - 1) {
-                    clearInterval(animationTimer);
-                    animationTimer = null;
-                    startFlowBtn.textContent = '开始演示';
+                const total = zeroCases[currentCaseKey].steps.length;
+                if (currentStepIndex >= total - 1) {
+                    stopAnimation();
                     return;
                 }
                 advanceStep();
-            }, 2000);
+            }, 2200);
         }
 
-        function updateCaseSummary(sectionKey) {
-            const item = cases[currentCaseKey];
-            caseDescription.innerHTML = item.description;
-            if (sectionKey) {
-                hintInfo.textContent = item.ratioConclusion;
+        function configureApproachControls() {
+            const config = zeroCases[currentCaseKey].approach;
+            if (!config) {
+                approachSlider.disabled = true;
+                directionSelector.disabled = true;
+                return;
             }
+            approachSlider.disabled = false;
+            approachSlider.min = config.min;
+            approachSlider.max = config.max;
+            approachSlider.step = config.step;
+            approachSlider.value = config.defaultValue;
+            approachValue.textContent = Number(config.defaultValue).toFixed(2);
+
+            directionSelector.innerHTML = '';
+            config.directions.forEach(dir => {
+                const option = document.createElement('option');
+                option.value = dir;
+                option.textContent = dir === 'right' ? '右侧接近' : dir === 'left' ? '左侧接近' : '两侧对比';
+                directionSelector.appendChild(option);
+            });
+            directionSelector.value = config.defaultDirection || config.directions[0];
+            directionSelector.disabled = config.directions.length === 1;
+        }
+
+        function derivativeLimit(current) {
+            try {
+                const value = current.numeratorPrime(current.limitPoint) / current.denominatorPrime(current.limitPoint);
+                if (Number.isFinite(value)) {
+                    return value;
+                }
+                return null;
+            } catch (e) {
+                return null;
+            }
+        }
+
+        function formatNumber(value) {
+            if (Number.isNaN(value)) return '未定义';
+            if (!Number.isFinite(value)) return '∞';
+            if (Math.abs(value) >= 1000 || Math.abs(value) < 0.0001) {
+                return value.toExponential(2);
+            }
+            return value.toFixed(4);
+        }
+
+        function buildValueLine(values) {
+            return values.map(item => `${item.prefix}${item.value}`).join('<br>');
+        }
+
+        function updateNumericalInfo(current) {
+            const config = current.approach;
+            if (!config) return;
+            const epsilon = parseFloat(approachSlider.value);
+            const direction = directionSelector.value;
+            const points = [];
+            const limitPoint = current.limitPoint;
+
+            if (direction === 'left' || direction === 'both') {
+                points.push({ prefix: '左侧：', sample: limitPoint - epsilon });
+            }
+            if (direction === 'right' || direction === 'both') {
+                points.push({ prefix: direction === 'both' ? '右侧：' : '', sample: limitPoint + epsilon });
+            }
+
+            const fLines = [];
+            const ratioLines = [];
+            points.forEach(point => {
+                const fx = current.numerator(point.sample);
+                const gx = current.denominator(point.sample);
+                const ratio = Math.abs(gx) < 1e-6 ? NaN : fx / gx;
+                const displayX = formatNumber(point.sample);
+                fLines.push({ prefix: point.prefix, value: `$f(${displayX})=${formatNumber(fx)}, g(${displayX})=${formatNumber(gx)}` });
+                ratioLines.push({ prefix: point.prefix, value: `$\\dfrac{f(${displayX})}{g(${displayX})}=${formatNumber(ratio)}` });
+            });
+
+            valueInfo.innerHTML = buildValueLine(fLines);
+            ratioInfo.innerHTML = buildValueLine(ratioLines);
+
+            const derivativeValue = derivativeLimit(current);
+            derivativeInfo.innerHTML = derivativeValue !== null
+                ? `$\\dfrac{f'(x_0)}{g'(x_0)} = ${formatNumber(derivativeValue)}`
+                : '导数比值无法直接计算，需进一步分析。';
+
+            hintInfo.innerHTML = current.ratioConclusion;
+            renderMath();
+        }
+
+        function updateCanvas() {
+            if (!lhopitalCanvas) return;
+            const current = zeroCases[currentCaseKey];
+            const { ctx, width, height } = setupCanvas(lhopitalCanvas);
+            ctx.clearRect(0, 0, width, height);
+
+            const xRange = ensureRange(current.displayInterval, [-3, 3]);
+            const yRange = ensureRange(current.yRange, [-3, 3]);
+
+            drawAxes(ctx, width, height);
+
+            const samples = 320;
+            const fPoints = [];
+            const gPoints = [];
+            const ratioPoints = [];
+
+            for (let i = 0; i <= samples; i++) {
+                const x = xRange[0] + (i / samples) * (xRange[1] - xRange[0]);
+                const fx = current.numerator(x);
+                const gx = current.denominator(x);
+                if (Number.isFinite(fx)) {
+                    fPoints.push({ x, y: fx });
+                }
+                if (Number.isFinite(gx)) {
+                    gPoints.push({ x, y: gx });
+                }
+                if (Number.isFinite(fx) && Number.isFinite(gx) && Math.abs(gx) > 1e-4) {
+                    const ratio = fx / gx;
+                    if (Number.isFinite(ratio) && Math.abs(ratio) < 1e6) {
+                        ratioPoints.push({ x, y: ratio });
+                    }
+                }
+            }
+
+            drawCurve(ctx, fPoints, width, height, xRange, yRange, '#2563eb');
+            drawCurve(ctx, gPoints, width, height, xRange, yRange, '#ef4444');
+            drawCurve(ctx, ratioPoints, width, height, xRange, yRange, '#10b981');
+
+            updateNumericalInfo(current);
         }
 
         function switchPage(section) {
@@ -773,27 +977,19 @@
             });
 
             if (section === 'zero') {
-                currentCaseKey = 'zero_zero';
+                stopAnimation();
+                configureApproachControls();
+                caseDescription.innerHTML = zeroCases[currentCaseKey].description;
+                updateCanvas();
             } else if (section === 'infty') {
-                currentCaseKey = 'infinity_infinity';
+                stopAnimation();
+                setTimeout(updateInftyCanvas, 60);
             } else {
-                currentCaseKey = 'other';
+                stopAnimation();
+                setTimeout(updateOtherCanvas, 60);
             }
-            caseSelector.value = currentCaseKey;
-            resetFlow();
-            updateCaseSummary(section);
 
-            setTimeout(renderMath, 80);
-
-            setTimeout(() => {
-                if (section === 'zero') {
-                    updateCanvas();
-                } else if (section === 'infty') {
-                    updateInftyCanvas();
-                } else if (section === 'other') {
-                    updateOtherCanvas();
-                }
-            }, 200);
+            setTimeout(renderMath, 100);
         }
 
         navButtons.forEach(btn => {
@@ -802,118 +998,100 @@
             });
         });
 
-\n        caseSelector.addEventListener('change', () => {
-            currentCaseKey = caseSelector.value;
-            resetFlow();
-            const btn = Array.from(navButtons).find(b => b.dataset.section === (currentCaseKey === 'zero_zero' ? 'zero' : currentCaseKey === 'infinity_infinity' ? 'infty' : 'other'));
-            if (btn) updateCaseSummary(btn.dataset.section);
-        });
+        if (caseSelector) {
+            caseSelector.addEventListener('change', () => {
+                currentCaseKey = caseSelector.value;
+                resetFlow();
+                const current = zeroCases[currentCaseKey];
+                caseDescription.innerHTML = `${current.description}`;
+                configureApproachControls();
+                updateCanvas();
+            });
+        }
 
         startFlowBtn.addEventListener('click', toggleAnimation);
-        nextStepBtn.addEventListener('click', () => { advanceStep(); });
-        resetFlowBtn.addEventListener('click', resetFlow);
+        nextStepBtn.addEventListener('click', advanceStep);
+        resetFlowBtn.addEventListener('click', () => {
+            resetFlow();
+            updateCanvas();
+        });
 
         approachSlider.addEventListener('input', () => {
-            approachValue.textContent = parseFloat(approachSlider.value).toFixed(2);
+            approachValue.textContent = Number(approachSlider.value).toFixed(2);
             updateCanvas();
         });
 
-        directionSelector.addEventListener('change', () => {
-            updateCanvas();
-        });
+        directionSelector.addEventListener('change', updateCanvas);
 
-        // 添加缺失的Canvas更新函数
         function updateInftyCanvas() {
             const canvas = document.getElementById('inftyCanvas');
             if (!canvas) return;
-            const ctx = canvas.getContext('2d');
-            const width = canvas.width = 400;
-            const height = canvas.height = 300;
+            const { ctx, width, height } = setupCanvas(canvas);
             ctx.clearRect(0, 0, width, height);
-            
-            // 绘制坐标轴
-            ctx.strokeStyle = '#374151';
-            ctx.lineWidth = 2;
-            ctx.beginPath();
-            ctx.moveTo(40, height - 40);
-            ctx.lineTo(width - 40, height - 40);
-            ctx.moveTo(40, 40);
-            ctx.lineTo(40, height - 40);
-            ctx.stroke();
-            
-            // 绘制函数曲线
-            ctx.strokeStyle = '#2563eb';
-            ctx.lineWidth = 2;
-            ctx.beginPath();
-            for (let x = 0; x <= 10; x += 0.1) {
-                const y = 2 * x * x - 3 * x;
-                const canvasX = 40 + (x / 10) * (width - 80);
-                const canvasY = height - 40 - (y / 100) * (height - 80);
-                if (x === 0) {
-                    ctx.moveTo(canvasX, canvasY);
-                } else {
-                    ctx.lineTo(canvasX, canvasY);
+
+            const xRange = [-1, 6];
+            const yRange = [-6, 8];
+            drawAxes(ctx, width, height);
+
+            const samples = 280;
+            const fPoints = [];
+            const gPoints = [];
+            const ratioPoints = [];
+
+            for (let i = 0; i <= samples; i++) {
+                const x = xRange[0] + (i / samples) * (xRange[1] - xRange[0]);
+                const fx = 2 * x * x - 3 * x;
+                const gx = x * x + 1;
+                const ratio = gx === 0 ? NaN : fx / gx;
+                fPoints.push({ x, y: fx });
+                gPoints.push({ x, y: gx });
+                if (Number.isFinite(ratio)) {
+                    ratioPoints.push({ x, y: ratio });
                 }
             }
-            ctx.stroke();
-            
-            // 添加标签
-            ctx.fillStyle = '#1f2937';
-            ctx.font = '14px Arial';
-            ctx.fillText('f(x) = 2x² - 3x', 50, 60);
+
+            drawCurve(ctx, fPoints, width, height, xRange, yRange, '#2563eb');
+            drawCurve(ctx, gPoints, width, height, xRange, yRange, '#ef4444');
+            drawCurve(ctx, ratioPoints, width, height, xRange, yRange, '#10b981');
         }
 
         function updateOtherCanvas() {
             const canvas = document.getElementById('otherCanvas');
             if (!canvas) return;
-            const ctx = canvas.getContext('2d');
-            const width = canvas.width = 400;
-            const height = canvas.height = 300;
+            const { ctx, width, height } = setupCanvas(canvas);
             ctx.clearRect(0, 0, width, height);
-            
-            // 绘制坐标轴
-            ctx.strokeStyle = '#374151';
-            ctx.lineWidth = 2;
-            ctx.beginPath();
-            ctx.moveTo(40, height - 40);
-            ctx.lineTo(width - 40, height - 40);
-            ctx.moveTo(40, 40);
-            ctx.lineTo(40, height - 40);
-            ctx.stroke();
-            
-            // 绘制函数曲线
-            ctx.strokeStyle = '#f59e0b';
-            ctx.lineWidth = 2;
-            ctx.beginPath();
-            for (let x = 0.1; x <= 3; x += 0.01) {
-                const y = Math.pow(x, x);
-                const canvasX = 40 + (x / 3) * (width - 80);
-                const canvasY = height - 40 - (y / 3) * (height - 80);
-                if (x === 0.1) {
-                    ctx.moveTo(canvasX, canvasY);
-                } else {
-                    ctx.lineTo(canvasX, canvasY);
+
+            const xRange = [0.05, 3.2];
+            const yRange = [-0.5, 3.2];
+            drawAxes(ctx, width, height);
+
+            const samples = 320;
+            const originalPoints = [];
+            const transformedPoints = [];
+
+            for (let i = 0; i <= samples; i++) {
+                const x = xRange[0] + (i / samples) * (xRange[1] - xRange[0]);
+                const original = Math.pow(x, x);
+                const transformed = Math.log(x) / (1 / x);
+                originalPoints.push({ x, y: original });
+                if (Number.isFinite(transformed)) {
+                    transformedPoints.push({ x, y: transformed });
                 }
             }
-            ctx.stroke();
-            
-            // 添加标签
-            ctx.fillStyle = '#1f2937';
-            ctx.font = '14px Arial';
-            ctx.fillText('f(x) = x^x', 50, 60);
+
+            drawCurve(ctx, originalPoints, width, height, xRange, yRange, '#f59e0b');
+            drawCurve(ctx, transformedPoints, width, height, xRange, yRange, '#10b981');
         }
 
         populateTypeTable();
         populateCaseSelector();
-        buildFlowSteps();
-        updateCaseSummary('zero');
+        caseDescription.innerHTML = zeroCases[currentCaseKey].description;
+        configureApproachControls();
+        resetFlow();
         updateCanvas();
-        initNavigation();
-        const firstNavButton = document.querySelector('.nav-btn[data-section]');
-        if (firstNavButton) {
-            switchPage(firstNavButton.dataset.section);
-        }
+        switchPage('zero');
         renderMath();
+
     </script>
 </body>
 </html>

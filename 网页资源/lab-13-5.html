@@ -441,7 +441,7 @@
                             </div>
                         </div>
                         <div class="info-box">
-                            <p>公式：$P(X=k)=inom{n}{k}p^k(1-p)^{n-k}$。</p>
+                            <p>公式：$P(X=k)=\binom{n}{k}p^k(1-p)^{n-k}$。</p>
                         </div>
                     </div>
                 </div>
@@ -502,9 +502,9 @@
 
                 (typeof event !== 'undefined' && event?.currentTarget instanceof HTMLElement ? event.currentTarget :
 
-                    document.querySelector(.nav-btn[data-panel="{id}"]) ||
+                    document.querySelector(`.nav-btn[data-panel="${id}"]`) ||
 
-                    document.querySelector(.nav-btn[data-target="{id}"]) ||
+                    document.querySelector(`.nav-btn[data-target="${id}"]`) ||
 
                     null);
 

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>教学课件 - 高等应用数学在线课堂</title>
+    <title>课程中心 - 高等应用数学在线课堂</title>
     <style>
         /* 极简性能优化设计 */
         :root {
@@ -96,6 +96,74 @@
             box-shadow: var(--glow);
         }
 
+        /* 统一顶部导航栏 */
+        .unified-top-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 10000; /* 确保在iframe之上 */
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-brand h1 {
+            font-family: 'Courier New', 'Microsoft YaHei', 'SimHei', monospace;
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--text);
+            margin: 0;
+            background: linear-gradient(135deg, #ffffff 0%, #00ff00 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-brand p {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .nav-actions {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .nav-action-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text);
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .nav-action-btn:hover {
+            background: rgba(0, 255, 0, 0.1);
+            border-color: var(--primary);
+            color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .nav-action-btn svg {
+            width: 16px;
+            height: 16px;
+        }
+
         /* 扫描线 */
         .scan-line {
             position: fixed;
@@ -179,18 +247,54 @@
             background: var(--dark);
             padding: 0;
             overflow: hidden;
-            z-index: 1000;
+            z-index: 9999;
         }
 
         .content-display.active {
-            display: block;
+            display: block !important;
         }
 
         .content-iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
+            width: 100% !important;
+            height: calc(100% - 60px) !important; /* 为顶部导航留出空间 */
+            border: 2px solid #00ff00 !important; /* 临时边框用于调试 */
             background: var(--dark);
+            position: absolute;
+            top: 60px; /* 从顶部导航下方开始 */
+            left: 0;
+            z-index: 1;
+            opacity: 1 !important;
+        }
+        
+        .preview-controls {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            z-index: 10001; /* 确保在顶部导航之上 */
+        }
+        
+        .close-preview-btn {
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: white;
+            transition: all 0.3s ease;
+        }
+        
+        .close-preview-btn:hover {
+            background: rgba(255, 0, 0, 0.8);
+            border-color: rgba(255, 255, 255, 0.8);
+        }
+        
+        .close-preview-btn svg {
+            width: 20px;
+            height: 20px;
         }
         
         .chapter-content {
@@ -683,13 +787,51 @@
     </style>
 </head>
 <body>
-<!-- 背景切换按钮 -->
-<button class="bg-switch-btn" onclick="switchBackground()">
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <path d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
-    </svg>
-    <span id="bg-switch-text">切换背景</span>
-</button>
+<!-- 简化顶部导航栏 -->
+<div class="unified-top-nav">
+    <div class="nav-brand">
+        <h1>课程中心</h1>
+        <p>Course Center</p>
+    </div>
+    <div class="nav-actions">
+        <button class="nav-action-btn" onclick="goPrev()" title="上一页">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+            </svg>
+            上一页
+        </button>
+        <button class="nav-action-btn" onclick="goNext()" title="下一页">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+            </svg>
+            下一页
+        </button>
+        <button class="nav-action-btn" onclick="showChapterList()" title="目录">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M4 6h16v2H4V6zm0 5h16v2H4v-2zm0 5h16v2H4v-2z"/>
+            </svg>
+            目录
+        </button>
+        <button class="nav-action-btn" onclick="showQuickNav()" title="快速跳转">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+            </svg>
+            跳转
+        </button>
+        <button class="nav-action-btn" onclick="switchBackground()" title="切换背景">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
+            </svg>
+            <span id="bg-switch-text">背景</span>
+        </button>
+        <button class="nav-action-btn" onclick="goMainSite()" title="返回主页">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8h5z"/>
+            </svg>
+            主页
+        </button>
+    </div>
+</div>
 
 <!-- 背景画布 -->
 <canvas id="starry-sky"></canvas>
@@ -716,6 +858,13 @@
 
     <!-- 内容显示区域 - 全屏预览 -->
     <div class="content-display" id="contentDisplay">
+        <div class="preview-controls">
+            <button class="close-preview-btn" onclick="closePreview()" title="关闭预览">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+                </svg>
+            </button>
+        </div>
         <iframe class="content-iframe" id="contentFrame"></iframe>
     </div>
 </div>
@@ -737,29 +886,7 @@
     </div>
 </div>
 
-<!-- 极简右下角导航栏 -->
-<div class="floating-nav-sidebar" id="navSidebar">
-    <button class="nav-btn" onclick="goPrev()" title="上一页">
-        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
-    </button>
-    <button class="nav-btn" onclick="goMainSite()" title="返回主站">
-        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="currentColor"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8h5z"/></svg>
-    </button>
-    <button class="nav-btn" onclick="goNext()" title="下一页">
-        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
-    </button>
-    <div class="nav-divider"></div>
-    <button class="sidebar-action-btn" id="quickNavBtn" onclick="showQuickNav()" title="跳转">
-        跳转
-    </button>
-    <button class="sidebar-action-btn" id="feedbackBtn" onclick="showFeedback()" title="反馈">
-        反馈
-        <span class="feedback-badge" id="feedbackBadge" style="display: none;">0</span>
-    </button>
-    <button class="nav-collapse-btn" id="navCollapseBtn" onclick="toggleNavSidebar()" title="收缩">
-        <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 0 24 24" width="24px" fill="currentColor"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6 1.41 1.41z"/></svg>
-    </button>
-</div>
+<!-- 移除右下角侧边栏，避免遮挡内容 -->
 
 <script>
 // 背景相关变量
@@ -961,13 +1088,29 @@ let currentOpenChapter = -1;
 let pageIssues = {};
 
 function loadContent(url, title) {
+    // 直接跳转到页面
+    window.location.href = url;
+}
+
+function previewContent(url, title) {
+    console.log('previewContent 被调用:', url, title);
+    
     const frame = document.getElementById('contentFrame');
     const welcome = document.getElementById('welcomePage');
     const contentDisplay = document.getElementById('contentDisplay');
     const topbar = document.getElementById('topbar');
     const keyboardHint = document.getElementById('keyboardHint');
 
+    console.log('DOM元素检查:', {
+        frame: !!frame,
+        welcome: !!welcome,
+        contentDisplay: !!contentDisplay,
+        topbar: !!topbar,
+        keyboardHint: !!keyboardHint
+    });
+
     if (!frame || !welcome || !contentDisplay || !topbar || !keyboardHint) {
+        console.error('缺少必要的DOM元素');
         return;
     }
 
@@ -976,22 +1119,64 @@ function loadContent(url, title) {
     welcome.style.display = 'none';
     keyboardHint.classList.add('hidden'); // 全屏时隐藏键盘提示
     
+    console.log('contentDisplay.classList:', contentDisplay.classList.toString());
+    console.log('contentDisplay.style.display:', contentDisplay.style.display);
+    console.log('contentDisplay.offsetWidth:', contentDisplay.offsetWidth);
+    console.log('contentDisplay.offsetHeight:', contentDisplay.offsetHeight);
+    
     // 然后加载iframe内容
     frame.src = url;
+    console.log('iframe src 设置为:', url);
 
     currentUrl = url;
     const displayTitle = title || getChineseTitle(url);
     topbar.textContent = displayTitle;
+    
+    console.log('预览内容已加载:', displayTitle);
+    
+    // 检查iframe是否加载完成
+    frame.onload = function() {
+        console.log('iframe 加载完成');
+        console.log('iframe contentWindow:', frame.contentWindow);
+        console.log('iframe contentDocument:', frame.contentDocument);
+        console.log('iframe src:', frame.src);
+    };
+    
+    frame.onerror = function() {
+        console.error('iframe 加载失败');
+    };
+    
+    // 添加超时检查
+    setTimeout(() => {
+        console.log('iframe 超时检查 - src:', frame.src);
+        console.log('iframe 超时检查 - contentWindow:', frame.contentWindow);
+        if (frame.contentWindow) {
+            try {
+                console.log('iframe 内容标题:', frame.contentWindow.document.title);
+            } catch (e) {
+                console.log('无法访问iframe内容（跨域限制）:', e.message);
+            }
+        }
+    }, 2000);
 
     // 如果currentIndex还没有设置，通过URL查找
     if (currentIndex === -1) {
         currentIndex = Object.values(chapters).findIndex(ch => ch.url === url);
     }
+}
+
+// 关闭预览
+function closePreview() {
+    console.log('关闭预览');
+    const contentDisplay = document.getElementById('contentDisplay');
+    const welcome = document.getElementById('welcomePage');
+    const keyboardHint = document.getElementById('keyboardHint');
     
-    // 更新导航按钮状态
-    updateNavigationButtons();
-    
-    closeAllPanels();
+    if (contentDisplay && welcome && keyboardHint) {
+        contentDisplay.classList.remove('active');
+        welcome.style.display = 'block';
+        keyboardHint.classList.remove('hidden');
+    }
 }
 
 function exitFullscreen() {
@@ -1037,8 +1222,9 @@ function showChapter(categoryId) {
     const chapter = chapters[categoryId];
     if (!chapter) return;
 
-    // 目录点击：整页跳转
-    window.location.href = chapter.url;
+    // 目录点击：预览模式
+    currentIndex = categoryId;
+    previewContent(chapter.url, chapter.title);
 }
 
 function showChapterList() {
@@ -1147,7 +1333,8 @@ function showChapterList() {
             <span>${chapter.title}</span>
         `;
         item.onclick = () => {
-            window.location.href = chapter.url;
+            currentIndex = parseInt(id);
+            previewContent(chapter.url, chapter.title);
         };
         item.onmouseover = () => {
             item.style.background = 'rgba(255, 255, 255, 0.1)';
@@ -1183,20 +1370,24 @@ function toggleSidebar() {
 }
 
 function goPrev() {
+    console.log('goPrev 被调用, currentIndex:', currentIndex);
     if (currentIndex > 0) {
         currentIndex--;
         const chapter = Object.values(chapters)[currentIndex];
-        loadContent(chapter.url, chapter.title);
+        console.log('上一页:', chapter);
+        previewContent(chapter.url, chapter.title);
     } else {
         showNavigationHint('已经是第一章了');
     }
 }
 
 function goNext() {
+    console.log('goNext 被调用, currentIndex:', currentIndex);
     if (currentIndex < Object.keys(chapters).length - 1) {
         currentIndex++;
         const chapter = Object.values(chapters)[currentIndex];
-        loadContent(chapter.url, chapter.title);
+        console.log('下一页:', chapter);
+        previewContent(chapter.url, chapter.title);
     } else {
         showNavigationHint('已经是最后一章了');
     }

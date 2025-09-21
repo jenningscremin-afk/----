@@ -453,7 +453,7 @@
                             <input type="range" id="cRange" min="1" max="5" value="2">
                             <div>$c=<span id="cVal" class="highlight">2</span>$</div>
                         </div>
-                        <div class="equation-box" id="surfaceEquation">rac{x^2}{9}+rac{y^2}{4}+rac{z^2}{4}=1</div>
+                        <div class="equation-box" id="surfaceEquation">\frac{x^2}{9}+\frac{y^2}{4}+\frac{z^2}{4}=1</div>
                         <div class="info-box">
                             <p>通过调节 $a,b,c$ 观察曲面轴向伸缩，识别是否封闭、是否含双重曲率等特性。</p>
                         </div>
@@ -491,7 +491,7 @@
                         <div class="stat-grid">
                             <div class="stat-card">
                                 <h4>截面方程</h4>
-                                <p id="sectionEquation">rac{x^2}{9}+rac{y^2}{4}=1</p>
+                                <p id="sectionEquation">\frac{x^2}{9}+\frac{y^2}{4}=1</p>
                             </div>
                             <div class="stat-card">
                                 <h4>曲线类型</h4>
@@ -526,9 +526,9 @@
 
                 (typeof event !== 'undefined' && event?.currentTarget instanceof HTMLElement ? event.currentTarget :
 
-                    document.querySelector(.nav-btn[data-panel="{id}"]) ||
+                    document.querySelector(`.nav-btn[data-panel="${id}"]`) ||
 
-                    document.querySelector(.nav-btn[data-target="{id}"]) ||
+                    document.querySelector(`.nav-btn[data-target="${id}"]`) ||
 
                     null);
 

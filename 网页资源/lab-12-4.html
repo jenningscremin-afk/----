@@ -428,7 +428,7 @@
                     <div class="card">
                         <h3>两个向量的叉积</h3>
                         <div class="input-group">
-                            <label>$ec{u}=(u_x,u_y,u_z)$</label>
+                            <label>$\vec{u}=(u_x,u_y,u_z)$</label>
                             <div class="input-group">
                                 <span>$u_x$ = <span id="uxVal" class="highlight">1</span></span>
                                 <input type="range" id="uxRange" min="-5" max="5" value="1">
@@ -443,7 +443,7 @@
                             </div>
                         </div>
                         <div class="input-group">
-                            <label>$ec{v}=(v_x,v_y,v_z)$</label>
+                            <label>$\vec{v}=(v_x,v_y,v_z)$</label>
                             <div class="input-group">
                                 <span>$v_x$ = <span id="vxVal" class="highlight">-2</span></span>
                                 <input type="range" id="vxRange" min="-5" max="5" value="-2">
@@ -459,7 +459,7 @@
                         </div>
                         <div class="stat-grid">
                             <div class="stat-card">
-                                <h4>叉积 $ec{u}	imesec{v}$</h4>
+                                <h4>叉积 $\vec{u}\times\vec{v}$</h4>
                                 <p id="crossVal">(5,-5,5)</p>
                             </div>
                             <div class="stat-card">
@@ -472,8 +472,8 @@
                             </div>
                         </div>
                         <div class="info-box">
-                            <p>叉积公式：$ec{u}	imesec{v}=(u_y v_z-u_z v_y, u_z v_x-u_x v_z, u_x v_y-u_y v_x)$。</p>
-                            <p>结果向量垂直于 $ec{u}$ 与 $ec{v}$ 所张成的平面。</p>
+                            <p>叉积公式：$\vec{u}\times\vec{v}=(u_y v_z-u_z v_y, u_z v_x-u_x v_z, u_x v_y-u_y v_x)$。</p>
+                            <p>结果向量垂直于 $\vec{u}$ 与 $\vec{v}$ 所张成的平面。</p>
                         </div>
                     </div>
                 </div>
@@ -496,7 +496,7 @@
                         <div class="input-group">
                             <label>第二组向量</label>
                             <div class="input-group">
-                                <span>$ec{r}=(r_x,r_y,r_z)$</span>
+                                <span>$\vec{r}=(r_x,r_y,r_z)$</span>
                                 <input type="range" id="rxRange" min="-4" max="4" value="2">
                                 <div>当前 $r_x$：<span id="rxVal" class="highlight">2</span></div>
                             </div>
@@ -510,7 +510,7 @@
                             </div>
                         </div>
                         <div class="input-group">
-                            <label>作用力 $ec{F}=(F_x,F_y,F_z)$</label>
+                            <label>作用力 $\vec{F}=(F_x,F_y,F_z)$</label>
                             <div class="input-group">
                                 <input type="range" id="fxRange" min="-4" max="4" value="1">
                                 <div>$F_x$：<span id="fxVal" class="highlight">1</span></div>
@@ -526,11 +526,11 @@
                         </div>
                         <div class="stat-grid">
                             <div class="stat-card">
-                                <h4>面积 $S=|ec{u}	imesec{v}|$</h4>
+                                <h4>面积 $S=|\vec{u}\times\vec{v}|$</h4>
                                 <p id="areaVal">8.66</p>
                             </div>
                             <div class="stat-card">
-                                <h4>力矩 $ec{M}=ec{r}	imesec{F}$</h4>
+                                <h4>力矩 $\vec{M}=\vec{r}\times\vec{F}$</h4>
                                 <p id="torqueVal">(-2, -4, 5)</p>
                             </div>
                             <div class="stat-card">
@@ -548,7 +548,7 @@
                         <h3>面积与力矩空间图</h3>
                         <canvas id="torqueCanvas" width="520" height="320"></canvas>
                         <ul class="info-list">
-                            <li>阴影平面展示由 $ec{r}$ 和 $ec{F}$ 张成的区域。</li>
+                            <li>阴影平面展示由 $\vec{r}$ 和 $\vec{F}$ 张成的区域。</li>
                             <li>红色箭头表示力矩方向。</li>
                         </ul>
                     </div>
@@ -566,9 +566,9 @@
 
                 (typeof event !== 'undefined' && event?.currentTarget instanceof HTMLElement ? event.currentTarget :
 
-                    document.querySelector(.nav-btn[data-panel="{id}"]) ||
+                    document.querySelector(`.nav-btn[data-panel="${id}"]`) ||
 
-                    document.querySelector(.nav-btn[data-target="{id}"]) ||
+                    document.querySelector(`.nav-btn[data-target="${id}"]`) ||
 
                     null);
 

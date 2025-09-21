@@ -449,7 +449,7 @@
             <div class="content active" id="module1">
                 <div class="column">
                     <div class="card">
-                        <h3>设置向量 $ec{u}=(u_x,u_y,u_z)$</h3>
+                        <h3>设置向量 $\vec{u}=(u_x,u_y,u_z)$</h3>
                         <div class="input-group">
                             <label>分量调整</label>
                             <div class="input-group">
@@ -467,7 +467,7 @@
                         </div>
                         <div class="stat-grid">
                             <div class="stat-card">
-                                <h4>模长 $|ec{u}|$</h4>
+                                <h4>模长 $|\vec{u}|$</h4>
                                 <p id="lenU">3.74</p>
                             </div>
                             <div class="stat-card">
@@ -480,8 +480,8 @@
                             </div>
                         </div>
                         <div class="info-box">
-                            <p>方向余弦满足：$\cos^2lpha+\cos^2eta+\cos^2\gamma=1$。</p>
-                            <p>单位向量反映方向纯量化：$\hat{u}=rac{1}{|ec{u}|}ec{u}$。</p>
+                            <p>方向余弦满足：$\cos^2\alpha+\cos^2\beta+\cos^2\gamma=1$。</p>
+                            <p>单位向量反映方向纯量化：$\hat{u}=\frac{1}{|\vec{u}|}\vec{u}$。</p>
                         </div>
                     </div>
                 </div>
@@ -502,7 +502,7 @@
                     <div class="card">
                         <h3>与另一个向量比较</h3>
                         <div class="input-group">
-                            <label>向量 $ec{v}=(v_x,v_y,v_z)$</label>
+                            <label>向量 $\vec{v}=(v_x,v_y,v_z)$</label>
                             <div class="input-group">
                                 <span>$v_x$ = <span id="vxValue" class="highlight">-2</span></span>
                                 <input type="range" id="vxRange" min="-6" max="6" value="-2">
@@ -519,7 +519,7 @@
                         <div class="angle-display" id="angleValue">57.0°</div>
                         <div class="stat-grid">
                             <div class="stat-card">
-                                <h4>点积 $ec{u}\cdotec{v}$</h4>
+                                <h4>点积 $\vec{u}\cdot\vec{v}$</h4>
                                 <p id="dotUV">5.00</p>
                             </div>
                             <div class="stat-card">
@@ -532,7 +532,7 @@
                             </div>
                         </div>
                         <div class="info-box">
-                            <p>夹角由公式 $\cos	heta=\dfrac{ec{u}\cdotec{v}}{|ec{u}||ec{v}|}$ 得到。</p>
+                            <p>夹角由公式 $\cos\theta=\dfrac{\vec{u}\cdot\vec{v}}{|\vec{u}||\vec{v}|}$ 得到。</p>
                             <p>当点积为零时两向量正交。</p>
                         </div>
                     </div>
@@ -542,7 +542,7 @@
                         <h3>夹角可视化</h3>
                         <canvas id="angleCanvas" width="520" height="320"></canvas>
                         <div class="info-box">
-                            <p>蓝色向量：$ec{u}$，紫色向量：$ec{v}$，填充扇形表示夹角区域。</p>
+                            <p>蓝色向量：$\vec{u}$，紫色向量：$\vec{v}$，填充扇形表示夹角区域。</p>
                         </div>
                     </div>
                 </div>
@@ -559,9 +559,9 @@
 
                 (typeof event !== 'undefined' && event?.currentTarget instanceof HTMLElement ? event.currentTarget :
 
-                    document.querySelector(.nav-btn[data-panel="{id}"]) ||
+                    document.querySelector(`.nav-btn[data-panel="${id}"]`) ||
 
-                    document.querySelector(.nav-btn[data-target="{id}"]) ||
+                    document.querySelector(`.nav-btn[data-target="${id}"]`) ||
 
                     null);
 
@@ -763,7 +763,7 @@
             document.getElementById('dotUV').textContent = dot.toFixed(2);
             document.getElementById('cosAngle').textContent = cos.toFixed(2);
             document.getElementById('angleValue').textContent = `${angle.toFixed(1)}°`;
-            const badge = angleCtx.canvas.parentElement.parentElement.querySelector('#orthogonalInfo');
+            const badge = document.getElementById('orthogonalInfo');
             badge.innerHTML = Math.abs(dot) < 1e-6 ? '<span class="badge">正交</span>' : '<span class="badge" style="background: rgba(239,68,68,0.15); color: var(--danger);">未正交</span>';
 
             const width = angleCtx.canvas.clientWidth;

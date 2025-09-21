@@ -210,8 +210,7 @@
             padding: 30px 40px;
             background: transparent;
             border: none;
-            transition: all 0.3s ease;
-            transform-style: preserve-3d;
+            text-decoration: none;
         }
 
         .nav-title {
@@ -224,7 +223,6 @@
             -webkit-text-fill-color: transparent;
             margin-bottom: 8px;
             letter-spacing: 0.1em;
-            transition: all 0.3s ease;
         }
 
         .nav-subtitle {
@@ -234,15 +232,13 @@
             color: rgba(255, 255, 255, 0.5);
             text-transform: uppercase;
             letter-spacing: 0.3em;
-            transition: all 0.3s ease;
         }
 
         .nav-item:hover .nav-title {
-            background: linear-gradient(135deg, #ffffff 0%, #ff00ff 100%);
+            background: linear-gradient(135deg, #ffffff 0%, #00ffff 100%);
             -webkit-background-clip: text;
             background-clip: text;
             -webkit-text-fill-color: transparent;
-            filter: drop-shadow(0 0 20px rgba(255, 0, 255, 0.5));
         }
 
         .nav-item:hover .nav-subtitle {
@@ -370,24 +366,24 @@
         
         <!-- 导航容器 -->
         <nav class="nav-container">
-            <div class="nav-item nav-1" onclick="window.location.href='网页资源/index.html'">
-                <h2 class="nav-title">网页资源</h2>
-                <p class="nav-subtitle">Web Resources</p>
+            <div class="nav-item nav-1" onclick="window.location.href='课件/index.html'">
+                <h2 class="nav-title">课程中心</h2>
+                <p class="nav-subtitle">Course Center</p>
             </div>
 
-            <div class="nav-item nav-2" onclick="window.location.href='故事书/index.html'">
-                <h2 class="nav-title">故事书</h2>
-                <p class="nav-subtitle">Story Book</p>
+            <div class="nav-item nav-2" onclick="window.location.href='网页资源/index.html'">
+                <h2 class="nav-title">仿真实验平台</h2>
+                <p class="nav-subtitle">Simulation Lab</p>
             </div>
 
-            <div class="nav-item nav-3" onclick="window.location.href='课件/index.html'">
-                <h2 class="nav-title">课件</h2>
-                <p class="nav-subtitle">Courseware</p>
+            <div class="nav-item nav-3" onclick="window.location.href='习题/index.html'">
+                <h2 class="nav-title">智能题库</h2>
+                <p class="nav-subtitle">Smart Question Bank</p>
             </div>
 
-            <div class="nav-item nav-4" onclick="window.location.href='习题/index.html'">
-                <h2 class="nav-title">习题</h2>
-                <p class="nav-subtitle">Exercises</p>
+            <div class="nav-item nav-4" onclick="window.location.href='故事书/index.html'">
+                <h2 class="nav-title">数学画廊</h2>
+                <p class="nav-subtitle">Math Gallery</p>
             </div>
         </nav>
     </div>
@@ -765,10 +761,10 @@
         document.addEventListener('DOMContentLoaded', function() {
             // 键盘导航
             document.addEventListener('keydown', function(e) {
-                if (e.key === '1') window.location.href = '网页资源/index.html';
-                if (e.key === '2') window.location.href = '故事书/index.html';
-                if (e.key === '3') window.location.href = '课件/index.html';
-                if (e.key === '4') window.location.href = '习题/index.html';
+                if (e.key === '1') window.location.href = '课件/index.html'; // 课程中心
+                if (e.key === '2') window.location.href = '网页资源/index.html'; // 仿真实验平台
+                if (e.key === '3') window.location.href = '习题/index.html'; // 智能题库
+                if (e.key === '4') window.location.href = '故事书/index.html'; // 数学画廊
                 if (e.key === 'b' || e.key === 'B') switchBackground(); // 按B键切换背景
             });
 

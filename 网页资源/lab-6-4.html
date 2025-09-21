@@ -342,9 +342,9 @@
 
                 (typeof event !== 'undefined' && event?.currentTarget instanceof HTMLElement ? event.currentTarget :
 
-                    document.querySelector(.nav-btn[data-panel="{id}"]) ||
+                    document.querySelector(`.nav-btn[data-panel="${id}"]`) ||
 
-                    document.querySelector(.nav-btn[data-target="{id}"]) ||
+                    document.querySelector(`.nav-btn[data-target="${id}"]`) ||
 
                     null);
 
@@ -679,7 +679,7 @@
             let correct = true;
 
             if (integrand === 'cost\cdotcost' || integrand === '(cost)^2' || integrand === 'cos^2t') {
-                feedback.push('<span class="status-tag success">被积函数正确</span> 使用 $x(t)=\cos t$ 与 $y'(t)=\cos t$。');
+                feedback.push("<span class=\"status-tag success\">被积函数正确</span> 使用 $x(t)=\\cos t$ 与 $y'(t)=\\cos t$。");
             } else if (integrand === '') {
                 feedback.push('<span class="status-tag warning">请填写被积函数</span> 建议写 cos t · cos t。');
                 correct = false;
