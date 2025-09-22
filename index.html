@@ -40,8 +40,8 @@
 
         body {
             overflow: hidden;
-            background: #000;
-            color: white;
+            background: #faf9f7;
+            color: #2c3e50;
             height: 100vh;
             position: relative;
         }
@@ -53,11 +53,11 @@
             right: 20px;
             z-index: 1000;
             padding: 12px 24px;
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(44, 62, 80, 0.1);
             backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.3);
+            border: 1px solid rgba(44, 62, 80, 0.3);
             border-radius: 30px;
-            color: white;
+            color: #2c3e50;
             cursor: pointer;
             font-size: 14px;
             transition: all 0.3s ease;
@@ -67,9 +67,9 @@
         }
 
         .bg-switch-btn:hover {
-            background: rgba(255, 255, 255, 0.2);
-            border-color: rgba(0, 255, 255, 0.8);
-            box-shadow: 0 0 20px rgba(0, 255, 255, 0.5);
+            background: rgba(44, 62, 80, 0.2);
+            border-color: rgba(52, 73, 94, 0.8);
+            box-shadow: 0 0 20px rgba(52, 73, 94, 0.3);
         }
 
         .bg-switch-icon {
@@ -86,11 +86,11 @@
             z-index: 1000;
             width: 40px;
             height: 40px;
-            background: rgba(0, 0, 0, 0.3);
+            background: rgba(44, 62, 80, 0.1);
             backdrop-filter: blur(5px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(44, 62, 80, 0.2);
             border-radius: 50%;
-            color: rgba(255, 255, 255, 0.6);
+            color: rgba(44, 62, 80, 0.6);
             cursor: pointer;
             transition: all 0.3s ease;
             display: flex;
@@ -100,9 +100,9 @@
         }
 
         .grade-btn:hover {
-            background: rgba(0, 0, 0, 0.5);
-            border-color: rgba(255, 255, 255, 0.3);
-            color: rgba(255, 255, 255, 0.9);
+            background: rgba(44, 62, 80, 0.2);
+            border-color: rgba(44, 62, 80, 0.4);
+            color: rgba(44, 62, 80, 0.9);
             opacity: 1;
             transform: scale(1.05);
         }
@@ -143,7 +143,7 @@
 
         /* 2D背景body样式 */
         body.bubble-bg {
-            background: linear-gradient(120deg, #0a2540 0%, #2074c8 40%, #00eaff 80%, #0a2540 100%);
+            background: linear-gradient(120deg, #f8f9fa 0%, #e9ecef 40%, #dee2e6 80%, #f8f9fa 100%);
         }
 
         /* 主容器 */
@@ -173,24 +173,24 @@
             font-weight: 500;
             font-style: normal;
             letter-spacing: 0.1em;
-            color: #ffffff !important;
+            color: #2c3e50 !important;
             text-transform: uppercase;
             line-height: 1.1;
             text-shadow: 
-                0 3px 6px rgba(0, 0, 0, 0.9),
-                0 6px 12px rgba(0, 0, 0, 0.8),
-                0 12px 24px rgba(0, 0, 0, 0.6);
+                0 3px 6px rgba(44, 62, 80, 0.2),
+                0 6px 12px rgba(44, 62, 80, 0.15),
+                0 12px 24px rgba(44, 62, 80, 0.1);
         }
 
         .subtitle {
             font-size: 1.6rem;
             font-weight: 500;
             letter-spacing: 0.2em;
-            color: rgba(255, 255, 255, 0.9) !important;
+            color: rgba(44, 62, 80, 0.8) !important;
             margin-top: 20px;
             text-transform: uppercase;
             line-height: 1.2;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+            text-shadow: 0 2px 4px rgba(44, 62, 80, 0.1);
         }
 
         /* 导航容器 */
@@ -215,35 +215,35 @@
         .nav-title {
             font-size: 2.4rem;
             font-weight: 500;
-            color: #ffffff !important;
+            color: #34495e !important;
             margin-bottom: 12px;
             letter-spacing: 0.05em;
             line-height: 1.2;
             text-shadow: 
-                0 2px 4px rgba(0, 0, 0, 0.9),
-                0 4px 8px rgba(0, 0, 0, 0.7);
+                0 2px 4px rgba(52, 73, 94, 0.2),
+                0 4px 8px rgba(52, 73, 94, 0.15);
         }
 
         .nav-subtitle {
             font-size: 1.1rem;
             font-weight: 500;
-            color: rgba(255, 255, 255, 0.8) !important;
+            color: rgba(52, 73, 94, 0.7) !important;
             text-transform: uppercase;
             letter-spacing: 0.15em;
             line-height: 1.3;
-            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+            text-shadow: 0 1px 3px rgba(52, 73, 94, 0.1);
         }
 
         .nav-item:hover .nav-title {
-            color: #ffffff !important;
+            color: #2c3e50 !important;
             text-shadow: 
-                0 3px 6px rgba(0, 0, 0, 0.9),
-                0 6px 12px rgba(0, 0, 0, 0.8);
+                0 3px 6px rgba(44, 62, 80, 0.3),
+                0 6px 12px rgba(44, 62, 80, 0.2);
         }
 
         .nav-item:hover .nav-subtitle {
-            color: rgba(255, 255, 255, 0.9) !important;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+            color: rgba(44, 62, 80, 0.9) !important;
+            text-shadow: 0 2px 4px rgba(44, 62, 80, 0.15);
         }
 
         /* 导航项定位 - 往中间聚拢 */
@@ -278,7 +278,7 @@
             height: 2px;
             background: linear-gradient(90deg, 
                 transparent,
-                rgba(0, 255, 255, 0.5),
+                rgba(52, 73, 94, 0.3),
                 transparent);
             animation: scan 8s linear infinite;
             pointer-events: none;
@@ -467,11 +467,11 @@
                 constructor() {
                     this.radius = Math.random() * 25 + 10;
                     const colorPalettes = [
-                        { h: 260, s: 80, l: 75 },
-                        { h: 280, s: 70, l: 80 },
-                        { h: 200, s: 70, l: 85 },
-                        { h: 320, s: 70, l: 85 },
-                        { h: 240, s: 60, l: 90 },
+                        { h: 210, s: 30, l: 25 },
+                        { h: 200, s: 35, l: 30 },
+                        { h: 220, s: 25, l: 35 },
+                        { h: 190, s: 40, l: 20 },
+                        { h: 240, s: 30, l: 25 },
                     ];
                     const color = colorPalettes[Math.floor(Math.random() * colorPalettes.length)];
                     this.hue = color.h + Math.random() * 20 - 10;
@@ -581,12 +581,13 @@
         function init() {
             // 场景
             scene = new THREE.Scene();
-            scene.fog = new THREE.FogExp2(0x000000, 0.001);
+            scene.fog = new THREE.FogExp2(0xfaf9f7, 0.001);
 
             // 渲染器
             renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
             renderer.setPixelRatio(window.devicePixelRatio);
             renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setClearColor(0xfaf9f7);
             document.getElementById('three-container').appendChild(renderer.domElement);
 
             // 相机
@@ -633,7 +634,7 @@
                 positions[i3 + 2] = radius * Math.cos(phi);
                 
                 const color = new THREE.Color();
-                color.setHSL(0.5 + Math.random() * 0.2, 0.7, 0.5 + Math.random() * 0.1);
+                color.setHSL(0.6 + Math.random() * 0.1, 0.4, 0.2 + Math.random() * 0.1);
                 colors[i3] = color.r;
                 colors[i3 + 1] = color.g;
                 colors[i3 + 2] = color.b;
@@ -665,7 +666,7 @@
         function createOuterShell() {
             const geometry = new THREE.IcosahedronGeometry(120, 1);
             const material = new THREE.MeshBasicMaterial({ 
-                color: 0x00ffff, 
+                color: 0x34495e, 
                 wireframe: true, 
                 transparent: true, 
                 opacity: 0.1 
@@ -677,10 +678,10 @@
         // --- 添加灯光 ---
         function createLights() {
             scene.add(new THREE.AmbientLight(0x404040));
-            const pointLight1 = new THREE.PointLight(0xff00ff, 1);
+            const pointLight1 = new THREE.PointLight(0x2c3e50, 1);
             pointLight1.position.set(100, 100, 100);
             scene.add(pointLight1);
-            const pointLight2 = new THREE.PointLight(0x00ffff, 1);
+            const pointLight2 = new THREE.PointLight(0x34495e, 1);
             pointLight2.position.set(-100, -100, -100);
             scene.add(pointLight2);
         }
