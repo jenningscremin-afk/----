@@ -320,10 +320,11 @@
         /* 翻页按钮样式 - 透明版 */
         .nav-buttons {
             position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
+            top: 50%;
+            right: 20px;
+            transform: translateY(-50%);
             display: flex;
+            flex-direction: column;
             gap: 12px;
             z-index: 1000;
         }
@@ -385,128 +386,6 @@
         }
 
 
-        /* 全局播放控制面板样式 */
-        .global-player-control {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            z-index: 10000;
-            font-family: var(--heading-font);
-        }
-
-        .player-toggle {
-            width: 32px;
-            height: 32px;
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            backdrop-filter: blur(8px);
-        }
-
-        .player-toggle:hover {
-            background: rgba(0, 0, 0, 0.8);
-            border-color: rgba(255, 255, 255, 0.5);
-            transform: scale(1.1);
-        }
-
-        .player-icon {
-            color: rgba(255, 255, 255, 0.7);
-            font-size: 12px;
-            transition: all 0.3s ease;
-        }
-
-        .player-panel {
-            position: absolute;
-            bottom: 40px;
-            right: 0;
-            background: rgba(0, 0, 0, 0.8);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 6px;
-            padding: 8px;
-            backdrop-filter: blur(10px);
-            opacity: 0;
-            visibility: hidden;
-            transform: translateY(20px);
-            transition: all 0.3s ease;
-            min-width: 120px;
-        }
-
-        .global-player-control.expanded .player-panel {
-            opacity: 1;
-            visibility: visible;
-            transform: translateY(0);
-        }
-
-        .global-player-control.expanded .player-icon {
-            transform: rotate(180deg);
-        }
-
-        .player-controls {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-
-        .player-btn {
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: rgba(255, 255, 255, 0.8);
-            padding: 4px 8px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 11px;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            backdrop-filter: blur(5px);
-            min-width: 40px;
-        }
-
-        .player-btn:hover {
-            background: rgba(255, 255, 255, 0.2);
-            border-color: rgba(255, 255, 255, 0.4);
-            color: #ffffff;
-            transform: translateY(-2px);
-        }
-
-        .player-btn:active {
-            transform: translateY(0);
-        }
-
-        .play-btn.playing {
-            background: rgba(255, 107, 107, 0.3);
-            border-color: rgba(255, 107, 107, 0.4);
-        }
-
-        .play-btn.playing:hover {
-            background: rgba(255, 107, 107, 0.5);
-        }
-
-        .speed-btn {
-            background: rgba(0, 255, 255, 0.1);
-            border-color: rgba(0, 255, 255, 0.3);
-            color: #00ffff;
-        }
-
-        .speed-btn:hover {
-            background: rgba(0, 255, 255, 0.2);
-            border-color: rgba(0, 255, 255, 0.6);
-        }
-
-        .reset-btn {
-            background: rgba(255, 193, 7, 0.1);
-            border-color: rgba(255, 193, 7, 0.3);
-            color: #ffc107;
-        }
-
-        .reset-btn:hover {
-            background: rgba(255, 193, 7, 0.2);
-            border-color: rgba(255, 193, 7, 0.6);
-        }
 
         /* 统一控制面板样式 */
         .unified-control-panel {
@@ -1128,6 +1007,11 @@
             <div class="visualization white-bg" style="flex: 1;" id="vis-interactive-trig"></div>
         </div>
 
+        <!-- 幻灯片23：六种三角与余函数图像总览 -->
+        <div class="slide">
+            <div class="visualization white-bg" style="flex: 1;" id="vis-trig-all"></div>
+        </div>
+
         <!-- 幻灯片23：反三角函数可视化 (优化版) -->
         <div class="slide">
             <div class="chalkboard" style="flex: 0 0 30%; padding: 20px; overflow-y: auto;">
@@ -1332,23 +1216,11 @@
             <button class="nav-btn" id="next-btn" onclick="nextSlide()" title="下一页 (→)">›</button>
         </div>
 
-        <div class="page-indicator" id="page-indicator">1 / 36</div>
+        <div class="page-indicator" id="page-indicator">1 / 37</div>
 </div>
 
 
-<!-- 全局播放控制面板 -->
-<div id="global-player-control" class="global-player-control">
-    <div id="player-toggle" class="player-toggle">
-        <span class="player-icon">▶</span>
-    </div>
-    <div id="player-panel" class="player-panel">
-        <div class="player-controls">
-            <button id="play-pause-btn" class="player-btn play-btn">⏸</button>
-            <button id="speed-btn" class="player-btn speed-btn">1.0x</button>
-            <button id="reset-btn" class="player-btn reset-btn">🔄</button>
-        </div>
-    </div>
-</div>
+ 
 
 <!-- 统一控制面板 -->
 <div class="unified-control-panel">
@@ -1536,153 +1408,7 @@
 
 
 
-        // 全局播放控制变量
-        let globalPlayerState = {
-            isPlaying: false,
-            speed: 1.0,
-            speedOptions: [0.5, 1.0, 1.5, 2.0, 3.0, 4.0, 6.0],
-            currentSpeedIndex: 1
-        };
-
-        // 初始化全局播放控制
-        function initGlobalPlayerControl() {
-            const playerToggle = document.getElementById('player-toggle');
-            const playerPanel = document.getElementById('player-panel');
-            const playPauseBtn = document.getElementById('play-pause-btn');
-            const speedBtn = document.getElementById('speed-btn');
-            const resetBtn = document.getElementById('reset-btn');
-            const playerControl = document.getElementById('global-player-control');
-
-            // 切换面板显示
-            playerToggle.addEventListener('click', () => {
-                playerControl.classList.toggle('expanded');
-            });
-
-            // 播放/暂停按钮
-            playPauseBtn.addEventListener('click', () => {
-                globalPlayerState.isPlaying = !globalPlayerState.isPlaying;
-                updatePlayPauseButton();
-                controlAllAnimations();
-                globalAnimationPlaying = !globalAnimationPlaying;
-                playPauseBtn.textContent = globalAnimationPlaying ? '暂停' : '播放';
-                playPauseBtn.className = globalAnimationPlaying ? 'global-control-btn' : 'global-control-btn pause';
-
-                // 更新动画状态
-                animationState.isPaused = !globalAnimationPlaying;
-                if (currentAnimation) {
-                    if (animationState.isPaused) {
-                        currentAnimation.pause();
-                    } else {
-                        currentAnimation.resume();
-                    }
-                }
-            });
-
-            // 速度按钮
-            speedBtn.addEventListener('click', () => {
-                globalPlayerState.currentSpeedIndex = (globalPlayerState.currentSpeedIndex + 1) % globalPlayerState.speedOptions.length;
-                globalPlayerState.speed = globalPlayerState.speedOptions[globalPlayerState.currentSpeedIndex];
-                speedBtn.textContent = globalPlayerState.speed.toFixed(1) + 'x';
-                controlAllAnimations();
-            });
-
-            // 重置按钮
-            resetBtn.addEventListener('click', () => {
-                globalPlayerState.isPlaying = false;
-                globalPlayerState.speed = 1.0;
-                globalPlayerState.currentSpeedIndex = 1;
-                updatePlayPauseButton();
-                speedBtn.textContent = '1.0x';
-                resetAllAnimations();
-            });
-
-            // 点击外部关闭面板
-            document.addEventListener('click', (e) => {
-                if (!playerControl.contains(e.target)) {
-                    playerControl.classList.remove('expanded');
-                }
-            });
-        }
-
-        // 更新播放/暂停按钮状态
-        function updatePlayPauseButton() {
-            const playPauseBtn = document.getElementById('play-pause-btn');
-            if (globalPlayerState.isPlaying) {
-                playPauseBtn.textContent = '⏸';
-                playPauseBtn.classList.add('playing');
-            } else {
-                playPauseBtn.textContent = '▶';
-                playPauseBtn.classList.remove('playing');
-            }
-        }
-
-        // 控制所有动画
-        function controlAllAnimations() {
-            const iframes = [
-                'iframe-exp', 
-                'iframe-log',
-                'iframe-trig',
-                'iframe-inv-trig',
-                'iframe-inverse'
-            ];
-
-            iframes.forEach(iframeId => {
-                const iframe = document.getElementById(iframeId);
-                if (iframe && iframe.contentWindow) {
-                    try {
-                        iframe.contentWindow.postMessage({
-                            type: 'globalPlayerControl',
-                            action: globalPlayerState.isPlaying ? 'play' : 'pause',
-                            speed: globalPlayerState.speed
-                        }, '*');
-                    } catch (e) {
-                        console.log('无法控制iframe:', iframeId);
-                    }
-                }
-            });
-
-            // 速度控制按钮
-            speedBtn.addEventListener('click', () => {
-                currentSpeedIndex = (currentSpeedIndex + 1) % speedOptions.length;
-                globalAnimationSpeed = speedOptions[currentSpeedIndex];
-                speedBtn.textContent = globalAnimationSpeed.toFixed(1) + 'x';
-                animationState.speed = globalAnimationSpeed;
-                if (currentAnimation) {
-                    currentAnimation.setSpeed(globalAnimationSpeed);
-                }
-            });
-
-            // 控制页面内的动画
-            controlPageAnimations();
-        }
-
-        // 重置所有动画
-        function resetAllAnimations() {
-            const iframes = [
-                'iframe-exp', 
-                'iframe-log',
-                'iframe-trig',
-                'iframe-inv-trig',
-                'iframe-inverse'
-            ];
-
-            iframes.forEach(iframeId => {
-                const iframe = document.getElementById(iframeId);
-                if (iframe && iframe.contentWindow) {
-                    try {
-                        iframe.contentWindow.postMessage({
-                            type: 'globalPlayerControl',
-                            action: 'reset'
-                        }, '*');
-                    } catch (e) {
-                        console.log('无法控制iframe:', iframeId);
-                    }
-                }
-            });
-
-            // 重置页面内的动画
-            resetPageAnimations();
-        }
+        
 
         // 控制页面内的动画
         function controlPageAnimations() {
@@ -1772,8 +1498,7 @@
             counter = document.getElementById('page-indicator');
             
             
-            // 初始化全局播放控制
-            initGlobalPlayerControl();
+            
             
             // 初始化悬浮菜单
             initFloatingMenus();
@@ -1802,12 +1527,11 @@
                 }
             });
             
-            // 鼠标滚轮导航
+            // 鼠标滚轮导航（循环翻页）
             document.addEventListener('wheel', (e) => {
                 let target = e.target;
-                // Check if the target or any of its parents is a scrollable element
+                // 若在可滚动容器内，允许默认滚动
                 while (target && target !== document.body) {
-                    // If the element has a scrollbar, let the default scroll behavior happen
                     if (target.scrollHeight > target.clientHeight) {
                         return;
                     }
@@ -1816,9 +1540,13 @@
 
                 e.preventDefault();
                 if (e.deltaY > 0) {
-                    nextSlide();
+                    // 下滚：到末页后回到首页
+                    currentSlide = (currentSlide + 1) % totalSlides;
+                    showSlide(currentSlide);
                 } else {
-                    previousSlide();
+                    // 上滚：到首页前一页跳到末页
+                    currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
+                    showSlide(currentSlide);
                 }
             }, { passive: false });
         });
@@ -3274,7 +3002,7 @@ const denominator = fraction.selectAll(".den").data("aaaaa".split("")).enter().a
                 .style("opacity", 1);
 
             // 流动的时间线
-            const timeline = g.append("line")
+            g.append("line")
                 .attr("x1", width * 0.1)
                 .attr("y1", height/2)
                 .attr("x2", width * 0.9)
@@ -3291,7 +3019,7 @@ const denominator = fraction.selectAll(".den").data("aaaaa".split("")).enter().a
             timelineGradient.append("stop").attr("offset", "50%").style("stop-color", "#f1c40f");
             timelineGradient.append("stop").attr("offset", "100%").style("stop-color", "#e74c3c");
 
-            timeline.transition()
+            g.select("line").transition()
                 .delay(800)
                 .duration(2000)
                 .style("opacity", 0.8);
@@ -3564,7 +3292,7 @@ const denominator = fraction.selectAll(".den").data("aaaaa".split("")).enter().a
                 .style("opacity", 1);
 
             // 播放/暂停按钮
-            const playButton = controls.append("circle")
+            controls.append("circle")
                 .attr("r", 20)
                 .attr("fill", "#3498db")
                 .attr("stroke", "#fff")
@@ -3578,7 +3306,7 @@ const denominator = fraction.selectAll(".den").data("aaaaa".split("")).enter().a
                 .style("fill", "white")
                 .text("▶");
 
-            playButton.on("click", function() {
+            controls.select("circle").on("click", function() {
                 // 重新播放动画
                 location.reload();
             });
@@ -3861,7 +3589,7 @@ const denominator = fraction.selectAll(".den").data("aaaaa".split("")).enter().a
                 });
         }
   /**
-     * 第9页：对数运算法则可视化
+     * 第21页：对数运算法则可视化
      * 功能：动画演示对数运算法则的应用
      * 内容：乘积、商、幂的对数运算法则
      * 动画：数字变换，运算过程展示，支持播放控制
@@ -5740,86 +5468,313 @@ function visualizeCompositeMachine(containerId) {
             update(-Math.PI / 4);
         }
 
+        // 六种三角与余函数图像总览
+        function visualizeTrigAll(containerId) {
+            const setup = setupD3(containerId, {top: 50, right: 40, bottom: 50, left: 50});
+            if (!setup) return;
+            const { svg, g, width, height } = setup;
+
+            const xScale = d3.scaleLinear().domain([-Math.PI * 2, Math.PI * 2]).range([0, width]);
+            const yScale = d3.scaleLinear().domain([-2.2, 2.2]).range([height, 0]);
+
+            // 坐标轴
+            g.append('g').attr('transform', `translate(0, ${yScale(0)})`)
+                .call(d3.axisBottom(xScale)
+                    .ticks(9)
+                    .tickFormat(d => {
+                        const k = Math.round(d / (Math.PI / 2));
+                        const map = {
+                            '-4': '-2π','-3': '-3π/2','-2': '-π','-1': '-π/2','0': '0','1': 'π/2','2': 'π','3': '3π/2','4': '2π'
+                        };
+                        return map[String(k)] ?? '';
+                    })
+                );
+            g.append('g').call(d3.axisLeft(yScale).tickValues([-2,-1,0,1,2]));
+
+            const funcs = [
+                { key: 'sin', color: 'var(--danger-color)', f: x => Math.sin(x) },
+                { key: 'cos', color: 'var(--primary-color)', f: x => Math.cos(x) },
+                { key: 'tan', color: '#8e44ad', f: x => Math.tan(x), clip: true },
+                { key: 'csc', color: '#16a085', f: x => 1/Math.sin(x), clip: true },
+                { key: 'sec', color: '#d35400', f: x => 1/Math.cos(x), clip: true },
+                { key: 'cot', color: '#2c3e50', f: x => 1/Math.tan(x), clip: true },
+            ];
+
+            svg.append('text')
+                .attr('x', width/2)
+                .attr('y', 24)
+                .attr('text-anchor', 'middle')
+                .style('font-size', '18px')
+                .style('font-weight', 'bold')
+                .text('sin x, cos x, tan x, csc x, sec x, cot x');
+
+            funcs.forEach(({key, color, f, clip}) => {
+                const data = [];
+                const step = 0.01;
+                for (let x = -Math.PI*2; x <= Math.PI*2; x += step) {
+                    let y = f(x);
+                    if (!isFinite(y)) {
+                        data.push({break: true});
+                        continue;
+                    }
+                    if (clip && Math.abs(y) > 2.2) {
+                        data.push({break: true});
+                        continue;
+                    }
+                    data.push({x,y});
+                }
+
+                // 将含有断点的数据分段绘制
+                let seg = [];
+                data.forEach(p => {
+                    if (p.break) {
+                        if (seg.length) {
+                            draw(seg);
+                            seg = [];
+                        }
+                    } else {
+                        seg.push(p);
+                    }
+                });
+                if (seg.length) draw(seg);
+
+                function draw(segment) {
+                    const line = d3.line()
+                        .x(d => xScale(d.x))
+                        .y(d => yScale(d.y));
+                    g.append('path')
+                        .datum(segment)
+                        .attr('fill', 'none')
+                        .attr('stroke', color)
+                        .attr('stroke-width', 2)
+                        .attr('d', line)
+                        .attr('opacity', 0.95);
+                }
+            });
+
+            // 图例
+            const legend = g.append('g').attr('transform', `translate(${width-120}, 10)`);
+            const legendItems = [
+                {label: 'sin x', color: 'var(--danger-color)'},
+                {label: 'cos x', color: 'var(--primary-color)'},
+                {label: 'tan x', color: '#8e44ad'},
+                {label: 'csc x', color: '#16a085'},
+                {label: 'sec x', color: '#d35400'},
+                {label: 'cot x', color: '#2c3e50'},
+            ];
+            legendItems.forEach((item, i) => {
+                const row = legend.append('g').attr('transform', `translate(0, ${i*18})`);
+                row.append('line').attr('x1',0).attr('y1',6).attr('x2',20).attr('y2',6).attr('stroke', item.color).attr('stroke-width', 3);
+                row.append('text').attr('x',26).attr('y',9).text(item.label).style('font-size', '12px').style('fill', '#333');
+            });
+        }
+
         function visualizeInteractiveInvTrig(containerId) {
             const setup = setupD3(containerId, {top: 60, right: 40, bottom: 60, left: 60});
             if (!setup) return;
             const { container, svg, g, width, height } = setup;
 
-            svg.append('text')
+            // 清理旧的按钮容器（若重复进入此页）
+            d3.select(`#${containerId}`).selectAll('.invtrig-controls').remove();
+
+            const title = svg.append('text')
                 .attr('x', width / 2 + 30)
                 .attr('y', 30)
                 .attr('text-anchor', 'middle')
                 .style('font-size', '20px')
-                .style('font-weight', 'bold')
-                .text('Sine 与 Arcsine');
+                .style('font-weight', 'bold');
 
             const pi = Math.PI;
             const xScale = d3.scaleLinear().domain([-pi, pi]).range([0, width]);
             const yScale = d3.scaleLinear().domain([-1.6, 1.6]).range([height, 0]);
 
-            const xAxis = g.append('g').attr('transform', `translate(0, ${yScale(0)})`)
+            g.append('g').attr('transform', `translate(0, ${yScale(0)})`)
                 .call(d3.axisBottom(xScale)
                     .tickValues([-pi, -pi/2, 0, pi/2, pi])
-                    .tickFormat(d => ({'-3.141592653589793': '-π', '-1.5707963267948966': '-π/2', '0': '0', '1.5707963267948966': 'π/2', '3.141592653589793': 'π'}[d]))
+                    .tickFormat(d => ({
+                        '-3.141592653589793': '-π',
+                        '-1.5707963267948966': '-π/2',
+                        '0': '0',
+                        '1.5707963267948966': 'π/2',
+                        '3.141592653589793': 'π'
+                    }[d]))
                 );
-            const yAxis = g.append('g').call(d3.axisLeft(yScale).tickValues([-1, 0, 1]));
-            
-            const sineLine = d3.line().x(d => xScale(d)).y(d => yScale(Math.sin(d)));
-            const data = d3.range(-pi, pi, 0.01);
-            g.append("path").datum(data).attr("fill", "none").attr("stroke", "#ccc").attr("stroke-width", 2).attr("d", sineLine);
+            g.append('g').call(d3.axisLeft(yScale).tickValues([-1, 0, 1]));
 
-            const restrictedData = d3.range(-pi / 2, pi / 2 + 0.01, 0.01);
-            const restrictedPath = g.append("path").datum(restrictedData).attr("fill", "none").attr("stroke", "var(--danger-color)").attr("stroke-width", 4).attr("d", sineLine);
+            // 底图网格：三角函数曲线（灰色）
+            const dataFull = d3.range(-pi, pi + 0.001, 0.005);
+            const sinLine = d3.line().x(d => xScale(d)).y(d => yScale(Math.sin(d)));
+            const cosLine = d3.line().x(d => xScale(d)).y(d => yScale(Math.cos(d)));
+            const tanLine = d3.line().x(d => xScale(d)).y(d => yScale(Math.tan(d)));
 
-            const invXScale = d3.scaleLinear().domain([-1, 1]).range([xScale(-pi/2), xScale(pi/2)]);
-            const invYScale = d3.scaleLinear().domain([-pi/2, pi/2]).range([yScale(-1), yScale(1)]);
-            
-            const arcsinLine = d3.line().x(d => invXScale(d)).y(d => invYScale(Math.asin(d)));
-            const invData = d3.range(-1, 1.01, 0.01);
-            const arcsinPath = g.append("path").datum(invData).attr("fill", "none").attr("stroke", "var(--primary-color)").attr("stroke-width", 4).attr("d", arcsinLine).style('opacity', 0);
+            const baseCurve = g.append('path')
+                .attr('fill', 'none')
+                .attr('stroke', '#ccc')
+                .attr('stroke-width', 2);
 
-            const yLine = g.append("line").attr("x1", 0).attr("x2", width).attr("stroke", "var(--accent-color)").attr("stroke-width", 2).style("cursor", "row-resize");
-            const intersections = g.append("g");
+            // 受限区间高亮
+            const restrictedCurve = g.append('path')
+                .attr('fill', 'none')
+                .attr('stroke', 'var(--danger-color)')
+                .attr('stroke-width', 4);
 
-            function updateIntersections(yVal) {
-                yLine.attr("y1", yScale(yVal)).attr("y2", yScale(yVal));
-                const xVals = data.filter(d => Math.abs(Math.sin(d) - yVal) < 0.01);
-                
-                intersections.selectAll("circle").remove();
-                intersections.selectAll("circle")
+            // 反函数曲线
+            const inverseCurve = g.append('path')
+                .attr('fill', 'none')
+                .attr('stroke', 'var(--primary-color)')
+                .attr('stroke-width', 4)
+                .style('opacity', 0);
+
+            // 可拖动水平线与交点
+            const yLine = g.append('line')
+                .attr('x1', 0)
+                .attr('x2', width)
+                .attr('stroke', 'var(--accent-color)')
+                .attr('stroke-width', 2)
+                .style('cursor', 'row-resize');
+            const intersections = g.append('g');
+
+            function updateIntersections(yVal, mode) {
+                yLine.attr('y1', yScale(yVal)).attr('y2', yScale(yVal));
+                let xVals = [];
+                const eps = 0.01;
+                if (mode === 'arcsin') {
+                    xVals = dataFull.filter(t => Math.abs(Math.sin(t) - yVal) < eps);
+                } else if (mode === 'arccos') {
+                    xVals = dataFull.filter(t => Math.abs(Math.cos(t) - yVal) < eps);
+                } else {
+                    xVals = dataFull.filter(t => Math.abs(Math.tan(t) - yVal) < 0.05 && Math.abs(t) < pi/2 - 0.05);
+                }
+                intersections.selectAll('circle').remove();
+                intersections.selectAll('circle')
                     .data(xVals)
-                    .enter().append("circle")
-                    .attr("cx", d => xScale(d))
-                    .attr("cy", yScale(yVal))
-                    .attr("r", 5)
-                    .attr("fill", "var(--accent-color)");
+                    .enter().append('circle')
+                    .attr('cx', d => xScale(d))
+                    .attr('cy', yScale(yVal))
+                    .attr('r', 5)
+                    .attr('fill', 'var(--accent-color)');
             }
 
-            const drag = d3.drag().on("drag", function(event) {
+            // 控件：模式切换
+            const controls = container.append('div')
+                .attr('class', 'invtrig-controls')
+                .style('position', 'absolute')
+                .style('top', '20px')
+                .style('right', '20px')
+                .style('display', 'flex')
+                .style('gap', '8px');
+
+            const modes = [
+                { key: 'arcsin', label: 'arcsin', func: 'sin', restrict: [-pi/2, pi/2], invY: [-pi/2, pi/2] },
+                { key: 'arccos', label: 'arccos', func: 'cos', restrict: [0, pi], invY: [0, pi] },
+                { key: 'arctan', label: 'arctan', func: 'tan', restrict: [-pi/2, pi/2], invY: [-pi/2, pi/2] }
+            ];
+
+            let currentMode = 'arcsin';
+
+            const buttons = controls.selectAll('button')
+                .data(modes)
+                .enter()
+                .append('button')
+                .attr('class', 'nav-btn')
+                .style('width', 'auto')
+                .style('padding', '5px 10px')
+                .style('border-radius', '5px')
+                .style('opacity', d => d.key === currentMode ? 1 : 0.7)
+                .text(d => d.label)
+                .on('click', (event, d) => {
+                    currentMode = d.key;
+                    buttons.style('opacity', b => b.key === currentMode ? 1 : 0.7);
+                    inverseCurve.style('opacity', 0);
+                    render(currentMode);
+                });
+
+            // 第二个按钮：显示/隐藏反函数
+            const toggleInverseBtn = controls.append('button')
+                .attr('class', 'nav-btn')
+                .style('width', 'auto')
+                .style('padding', '5px 10px')
+                .style('border-radius', '5px')
+                .text('显示反函数')
+                .on('click', function() {
+                    const visible = inverseCurve.style('opacity') !== '0';
+                    inverseCurve.transition().duration(300).style('opacity', visible ? 0 : 1);
+                    d3.select(this).text(visible ? '显示反函数' : '隐藏反函数');
+                });
+
+            const drag = d3.drag().on('drag', function(event) {
                 const yVal = yScale.invert(event.y);
-                if (yVal >= -1 && yVal <= 1) {
-                    updateIntersections(yVal);
+                const limit = currentMode === 'arctan' ? 1.5 : 1;
+                if (yVal >= -limit && yVal <= limit) {
+                    updateIntersections(yVal, currentMode);
                 }
             });
 
             yLine.call(drag);
-            updateIntersections(0.5);
 
-            const buttonContainer = container.append('div')
-                .style('position', 'absolute')
-                .style('top', '20px')
-                .style('right', '20px');
+            function render(mode) {
+                // 基础曲线
+                if (mode === 'arcsin') {
+                    title.text('Sine 与 Arcsine');
+                    baseCurve.attr('d', sinLine(dataFull));
+                } else if (mode === 'arccos') {
+                    title.text('Cosine 与 Arccosine');
+                    baseCurve.attr('d', cosLine(dataFull));
+                } else {
+                    title.text('Tangent 与 Arctangent');
+                    // 限制显示，避免 tan 奇异点
+                    const segments = [];
+                    let seg = [];
+                    for (let t = -pi/2 + 0.05; t <= pi/2 - 0.05; t += 0.01) seg.push(t);
+                    segments.push(seg);
+                    baseCurve.attr('d', tanLine(segments[0]));
+                }
 
-            buttonContainer.append('button')
-                .attr('class', 'nav-btn')
-                .style('width', 'auto').style('padding', '5px 10px').style('border-radius', '5px')
-                .text('显示反函数')
-                .on('click', function() {
-                    arcsinPath.transition().duration(500).style('opacity', 1);
-                    yLine.transition().duration(500).style("opacity", 0);
-                    intersections.transition().duration(500).style("opacity", 0);
-                    d3.select(this).remove();
-                });
+                // 受限区间
+                const spec = modes.find(m => m.key === mode);
+                const restricted = d3.range(spec.restrict[0], spec.restrict[1] + 0.0001, 0.005);
+                if (mode === 'arcsin') restrictedCurve.attr('d', sinLine(restricted));
+                if (mode === 'arccos') restrictedCurve.attr('d', cosLine(restricted));
+                if (mode === 'arctan') restrictedCurve.attr('d', tanLine(restricted));
+
+                // 反函数曲线映射到同一坐标系（通过自定义缩放到受限区间横向，[-1,1] 纵向）
+                let invXDom, invXRange, invYDom;
+                if (mode === 'arcsin') {
+                    invXDom = [-1, 1];
+                    invXRange = [xScale(-pi/2), xScale(pi/2)];
+                    invYDom = [-pi/2, pi/2];
+                } else if (mode === 'arccos') {
+                    invXDom = [-1, 1];
+                    invXRange = [xScale(0), xScale(pi)];
+                    invYDom = [0, pi];
+                } else { // arctan
+                    invXDom = [-1.5, 1.5];
+                    invXRange = [xScale(-pi/2), xScale(pi/2)];
+                    invYDom = [-pi/2, pi/2];
+                }
+
+                const invXScale = d3.scaleLinear().domain(invXDom).range(invXRange);
+                const invYScale = d3.scaleLinear().domain(invYDom).range([yScale(-1), yScale(1)]);
+
+                let invData, invLine;
+                if (mode === 'arcsin') {
+                    invData = d3.range(-1, 1.001, 0.002);
+                    invLine = d3.line().x(d => invXScale(d)).y(d => invYScale(Math.asin(d)));
+                } else if (mode === 'arccos') {
+                    invData = d3.range(-1, 1.001, 0.002);
+                    invLine = d3.line().x(d => invXScale(d)).y(d => invYScale(Math.acos(d)));
+                } else {
+                    invData = d3.range(invXDom[0], invXDom[1] + 0.001, 0.002);
+                    invLine = d3.line().x(d => invXScale(d)).y(d => invYScale(Math.atan(d)));
+                }
+                inverseCurve.attr('d', invLine(invData));
+
+                // 初始化水平线与交点
+                const initY = mode === 'arctan' ? 0.5 : 0.5;
+                updateIntersections(initY, mode);
+            }
+
+            render(currentMode);
         }
 
         function visualizeInteractiveInverseExpLog(containerId) {
@@ -5936,19 +5891,20 @@ function visualizeCompositeMachine(containerId) {
                 case 20: handlers = visualizeCommonLogs('vis-common-logs'); break;
                 case 21: handlers = visualizeLogOperations('vis-log-operations'); break;
                 case 22: handlers = visualizeInteractiveTrig('vis-interactive-trig'); break;
-                case 23: handlers = visualizeInteractiveInvTrig('vis-interactive-inv-trig'); break;
-                case 24: handlers = visualizePropertiesIntro('vis-properties-intro'); break;
-                case 25: handlers = visualizeMonotonicityInc('vis-monotonicity-inc'); break;
-                case 26: handlers = visualizeMonotonicityDec('vis-monotonicity-dec'); break;
-                case 27: handlers = visualizeMonotonicityIntervals('vis-monotonicity-intervals'); break;
-                case 28: handlers = visualizeParityIntro('vis-parity-intro'); break;
-                case 29: handlers = visualizeEvenFunction('vis-even-function'); break;
-                case 30: handlers = visualizeOddFunction('vis-odd-function'); break;
-                case 31: handlers = visualizeBoundedness('vis-boundedness'); break;
-                case 32: handlers = visualizeInverseMachine('vis-inverse-machine'); break;
-                case 33: handlers = visualizeInverseGraph('vis-inverse-graph'); break;
-                case 34: handlers = visualizeInteractiveInverseExpLog('vis-interactive-inverse-exp-log'); break;
-                case 35: handlers = visualizeCompositeMachine('vis-composite-machine'); break;
+                case 23: handlers = visualizeTrigAll('vis-trig-all'); break;
+                case 24: handlers = visualizeInteractiveInvTrig('vis-interactive-inv-trig'); break;
+                case 25: handlers = visualizePropertiesIntro('vis-properties-intro'); break;
+                case 26: handlers = visualizeMonotonicityInc('vis-monotonicity-inc'); break;
+                case 27: handlers = visualizeMonotonicityDec('vis-monotonicity-dec'); break;
+                case 28: handlers = visualizeMonotonicityIntervals('vis-monotonicity-intervals'); break;
+                case 29: handlers = visualizeParityIntro('vis-parity-intro'); break;
+                case 30: handlers = visualizeEvenFunction('vis-even-function'); break;
+                case 31: handlers = visualizeOddFunction('vis-odd-function'); break;
+                case 32: handlers = visualizeBoundedness('vis-boundedness'); break;
+                case 33: handlers = visualizeInverseMachine('vis-inverse-machine'); break;
+                case 34: handlers = visualizeInverseGraph('vis-inverse-graph'); break;
+                case 35: handlers = visualizeInteractiveInverseExpLog('vis-interactive-inverse-exp-log'); break;
+                case 36: handlers = visualizeCompositeMachine('vis-composite-machine'); break;
             }
 
             applyCurrentAnimation(handlers);
