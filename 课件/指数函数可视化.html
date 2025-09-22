@@ -405,6 +405,7 @@
         .return-home-panel .return-link.return-main {
             background: rgba(79, 70, 229, 0.85);
         }
+        
         @media (max-width: 640px) {
             .return-home-panel {
                 top: 12px;
@@ -492,6 +493,7 @@
         
         <!-- 爆发效果层 -->
         <div id="explosion-container" style="position: absolute; width: 100%; height: 100%; pointer-events: none;"></div>
+        
     </div>
 
     <script>
@@ -503,11 +505,13 @@
         let svg, g, xScale, yScale, width, height;
         let energyCore, curve, glowGroup;
         let trails = [];
+        let lastUpdateTime = 0; // 性能优化变量
 
         // 全局控制变量
-        window.isPlaying = true;
+        window.isPlaying = false; // 默认关闭自动播放
         window.speed = 2;
         window.animationSpeed = 2;
+        let manualMode = true; // 手动控制模式
         
         // 初始化
         document.addEventListener('DOMContentLoaded', function() {
@@ -860,12 +864,18 @@
         // 主动画循环
         function animate() {
             if (!window.isPlaying) {
-                animationId = requestAnimationFrame(animate);
                 return;
             }
 
             // 使用全局速度变量
             const currentSpeed = window.speed || 1;
+            
+            // 性能优化：减少不必要的重绘
+            if (Date.now() - lastUpdateTime < 16) {
+                animationId = requestAnimationFrame(animate);
+                return;
+            }
+            lastUpdateTime = Date.now();
 
             // 第一幕：衰减之舞 (1 -> 0.2)
             if (phase === 1) {
@@ -889,9 +899,10 @@
             else if (phase === 3) {
                 currentA = Math.min(5, currentA + 0.04 * currentSpeed);
 
-                // 在关键点微停顿
+                // 在关键点微停顿（优化性能）
                 if (Math.abs(currentA - 2) < 0.02 || Math.abs(currentA - Math.E) < 0.02) {
-                    setTimeout(() => {}, 500);
+                    // 减少停顿时间，提高流畅度
+                    setTimeout(() => {}, 200);
                 }
 
                 if (currentA >= 5) {
@@ -945,35 +956,69 @@
             document.getElementById('phase-subtitle').textContent = subtitle;
         }
 
-        // 设置控制按钮
-        function setupControls() {
-            // 使用全局变量 isPlaying 和 speed
-            // 监听来自主页面的控制消息
-            window.addEventListener('message', (event) => {
-                if (event.data.type === 'animationControl') {
-                    // 更新播放状态
-                    window.isPlaying = event.data.playing;
+        // 手动控制函数
+        function togglePlayPause() {
+            window.isPlaying = !window.isPlaying;
+            manualMode = !window.isPlaying;
+            document.getElementById('play-pause-btn').textContent = window.isPlaying ? '暂停' : '播放';
+            
+            if (window.isPlaying) {
+                animate();
+            } else {
+                cancelAnimationFrame(animationId);
+            }
+        }
 
-                    // 更新速度
-                    window.speed = event.data.speed;
-                    window.animationSpeed = event.data.speed;
+        function stepForward() {
+            currentA = Math.min(5, currentA + 0.1);
+            updateDisplay(currentA);
+            updateCurve(currentA);
+        }
 
-                    // 根据播放状态控制动画
-                    if (window.isPlaying) {
+        function stepBackward() {
+            currentA = Math.max(0.1, currentA - 0.1);
+            updateDisplay(currentA);
+            updateCurve(currentA);
+        }
+
+        function resetFunction() {
+            currentA = 1;
+            phase = 1;
+            updateDisplay(currentA);
+            updateCurve(currentA);
+            updatePhaseDisplay('重置完成', '手动控制模式');
+        }
+
+        // 监听全局播放控制消息
+        window.addEventListener('message', (event) => {
+            if (event.data.type === 'globalPlayerControl') {
+                switch(event.data.action) {
+                    case 'play':
+                        window.isPlaying = true;
+                        if (event.data.speed) {
+                            window.speed = event.data.speed;
+                            window.animationSpeed = event.data.speed;
+                        }
                         autoMode = true;
                         animate();
-                    } else {
+                        break;
+                    case 'pause':
+                        window.isPlaying = false;
                         autoMode = false;
-                        cancelAnimationFrame(animationId);
-                    }
+                        if (animationId) cancelAnimationFrame(animationId);
+                        break;
+                    case 'reset':
+                        resetFunction();
+                        break;
+                    case 'stepForward':
+                        stepForward();
+                        break;
+                    case 'stepBackward':
+                        stepBackward();
+                        break;
                 }
-            });
-
-            // 页面加载时请求当前动画状态
-            window.parent.postMessage({
-                type: 'requestAnimationState'
-            }, '*');
-        }
+            }
+        });
 
         // 清理函数
         window.addEventListener('beforeunload', () => {

@@ -225,45 +225,6 @@
             font-style: italic;
         }
 
-        /* 控制面板 */
-        .control-panel {
-            position: absolute;
-            bottom: 30px;
-            right: 30px;
-            display: flex;
-            gap: 10px;
-            z-index: 100;
-        }
-
-        .control-btn {
-            padding: 10px 20px;
-            background: linear-gradient(135deg, 
-                rgba(255, 255, 255, 0.1), 
-                rgba(255, 255, 255, 0.05));
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            color: #ffffff;
-            font-family: 'Orbitron', monospace;
-            font-size: 12px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            cursor: pointer;
-            transition: all 0.3s;
-            border-radius: 5px;
-        }
-
-        .control-btn:hover {
-            background: linear-gradient(135deg, 
-                rgba(255, 255, 255, 0.2), 
-                rgba(255, 255, 255, 0.1));
-            box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
-        }
-
-        .control-btn.active {
-            background: linear-gradient(135deg, 
-                rgba(255, 255, 255, 0.3), 
-                rgba(255, 255, 255, 0.2));
-            box-shadow: 0 0 30px rgba(255, 255, 255, 0.5);
-        }
 
         /* 反射光线 */
         .reflection-line {
@@ -493,11 +454,6 @@
             <div class="conclusion-subtitle">指数函数与对数函数</div>
         </div>
 
-        <!-- 控制面板 -->
-        <div class="control-panel">
-            <button class="control-btn active" id="play-pause-btn">暂停</button>
-            <button class="control-btn" id="speed-btn">速度: 2x</button>
-        </div>
         
         <!-- 主画布 -->
         <div id="canvas-container">
@@ -727,7 +683,11 @@
 
         // 动画序列
         function startAnimation() {
-            if (!isPlaying) return;
+            if (!isPlaying) {
+                // 如果不在播放状态，延迟重试（优化性能）
+                setTimeout(() => startAnimation(), 500);
+                return;
+            }
             
             switch(animationPhase) {
                 case 0:
@@ -1133,6 +1093,32 @@
                 this.textContent = '速度: ' + speedTexts[currentIndex];
             });
         }
+
+        // 监听全局播放控制消息
+        window.addEventListener('message', (event) => {
+            if (event.data.type === 'globalPlayerControl') {
+                switch(event.data.action) {
+                    case 'play':
+                        isPlaying = true;
+                        if (event.data.speed) {
+                            animationSpeed = event.data.speed;
+                        }
+                        break;
+                    case 'pause':
+                        isPlaying = false;
+                        break;
+                    case 'reset':
+                        resetAnimation();
+                        break;
+                    case 'stepForward':
+                        nextPhase();
+                        break;
+                    case 'stepBackward':
+                        prevPhase();
+                        break;
+                }
+            }
+        });
     </script>
 
 </body>

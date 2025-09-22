@@ -207,6 +207,42 @@
             }
             ctx.stroke();
         }
+
+        // 监听全局播放控制消息
+        window.addEventListener('message', (event) => {
+            if (event.data.type === 'globalPlayerControl') {
+                switch(event.data.action) {
+                    case 'play':
+                        isAnimating = true;
+                        if (event.data.speed) {
+                            animationSpeed = event.data.speed;
+                        }
+                        animate();
+                        break;
+                    case 'pause':
+                        isAnimating = false;
+                        if (animationId) cancelAnimationFrame(animationId);
+                        break;
+                    case 'reset':
+                        resetAnimation();
+                        break;
+                    case 'stepForward':
+                        // 幂函数没有步进功能，可以调整指数
+                        if (exponent < 4) {
+                            exponent += 0.1;
+                            updateExponent();
+                        }
+                        break;
+                    case 'stepBackward':
+                        // 幂函数没有步进功能，可以调整指数
+                        if (exponent > -4) {
+                            exponent -= 0.1;
+                            updateExponent();
+                        }
+                        break;
+                }
+            }
+        });
     </script>
 </body>
 </html>

@@ -193,6 +193,7 @@
         }
 
 
+
     </style>
 
     <style>
@@ -281,6 +282,7 @@
         </div>
     </div>
 
+
     <script>
         const canvas = document.getElementById('trigCanvas');
         const ctx = canvas.getContext('2d');
@@ -337,7 +339,7 @@
         let animationProgress = 0;
         let isAnimating = false;
         let pauseTimeout = null;
-        let isPlaying = true;
+        let isPlaying = false; // 默认关闭自动播放
         let animationSpeed = 1.0;
         let animationId = null;
 
@@ -664,29 +666,84 @@
             }, 8000);
         }
 
-        // 监听来自主页面的控制消息
-        window.addEventListener('message', (event) => {
-            if (event.data.type === 'animationControl') {
-                // 更新播放状态
-                isPlaying = event.data.playing;
-
-                // 更新速度
-                animationSpeed = event.data.speed;
-
-                // 根据播放状态控制动画
-                if (isPlaying) {
-                    if (!isAnimating) {
-                        animateFunction();
-                    } else {
-                        animationId = requestAnimationFrame(animateFunction);
-                    }
+        // 手动控制函数
+        function togglePlayPause() {
+            isPlaying = !isPlaying;
+            document.getElementById('play-pause-btn').textContent = isPlaying ? '暂停' : '播放';
+            
+            if (isPlaying) {
+                if (!isAnimating) {
+                    animateFunction();
                 } else {
-                    if (animationId) {
-                        cancelAnimationFrame(animationId);
-                    }
-                    if (pauseTimeout) {
-                        clearTimeout(pauseTimeout);
-                    }
+                    animationId = requestAnimationFrame(animateFunction);
+                }
+            } else {
+                if (animationId) {
+                    cancelAnimationFrame(animationId);
+                }
+            }
+        }
+
+        function stepForward() {
+            currentFunctionIndex = (currentFunctionIndex + 1) % functions.length;
+            updateFunctionDisplay();
+            drawCurrentFunction();
+            drawCurrentReciprocal();
+        }
+
+        function stepBackward() {
+            currentFunctionIndex = (currentFunctionIndex - 1 + functions.length) % functions.length;
+            updateFunctionDisplay();
+            drawCurrentFunction();
+            drawCurrentReciprocal();
+        }
+
+        function resetFunction() {
+            currentFunctionIndex = 0;
+            animationProgress = 0;
+            isAnimating = false;
+            if (pauseTimeout) {
+                clearTimeout(pauseTimeout);
+                pauseTimeout = null;
+            }
+            updateFunctionDisplay();
+            drawCurrentFunction();
+            drawCurrentReciprocal();
+        }
+
+        // 监听全局播放控制消息
+        window.addEventListener('message', (event) => {
+            if (event.data.type === 'globalPlayerControl') {
+                switch(event.data.action) {
+                    case 'play':
+                        isPlaying = true;
+                        if (event.data.speed) {
+                            animationSpeed = event.data.speed;
+                        }
+                        if (!isAnimating) {
+                            animateFunction();
+                        } else {
+                            animationId = requestAnimationFrame(animateFunction);
+                        }
+                        break;
+                    case 'pause':
+                        isPlaying = false;
+                        if (animationId) {
+                            cancelAnimationFrame(animationId);
+                        }
+                        if (pauseTimeout) {
+                            clearTimeout(pauseTimeout);
+                        }
+                        break;
+                    case 'reset':
+                        resetFunction();
+                        break;
+                    case 'stepForward':
+                        stepForward();
+                        break;
+                    case 'stepBackward':
+                        stepBackward();
+                        break;
                 }
             }
         });

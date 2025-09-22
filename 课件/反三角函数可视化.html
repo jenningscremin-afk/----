@@ -177,65 +177,6 @@
             height: 3px;
         }
 
-        .control-panel {
-            position: absolute;
-            bottom: 20px;
-            right: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            z-index: 20;
-        }
-
-        .control-group {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            background: rgba(0, 0, 0, 0.8);
-            padding: 10px 15px;
-            border-radius: 8px;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .control-btn {
-            background: linear-gradient(135deg, #4dabf7, #339af0);
-            border: none;
-            color: white;
-            padding: 8px 16px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: bold;
-            transition: all 0.3s ease;
-            box-shadow: 0 2px 8px rgba(77, 171, 247, 0.3);
-        }
-
-        .control-btn:hover {
-            background: linear-gradient(135deg, #339af0, #228be6);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(77, 171, 247, 0.4);
-        }
-
-        .control-btn:active {
-            transform: translateY(0);
-        }
-
-        .control-btn.pause {
-            background: linear-gradient(135deg, #ff6b6b, #fa5252);
-        }
-
-        .control-btn.pause:hover {
-            background: linear-gradient(135deg, #fa5252, #e03131);
-        }
-
-        .speed-control {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            color: white;
-            font-size: 14px;
-        }
 
         .speed-slider {
             width: 100px;
@@ -353,18 +294,6 @@
         </div>
     </div>
 
-    <div class="control-panel">
-        <div class="control-group">
-            <button class="control-btn" id="playPauseBtn">暂停</button>
-        </div>
-        <div class="control-group">
-            <div class="speed-control">
-                <span>速度:</span>
-                <input type="range" class="speed-slider" id="speedSlider" min="0.5" max="3" step="0.1" value="1">
-                <span class="speed-value" id="speedValue">1.0x</span>
-            </div>
-        </div>
-    </div>
 
     <script>
         const canvas = document.getElementById('mainCanvas');
@@ -422,7 +351,7 @@
         let animationStage = 0;
         let rotationProgress = 0;
         let drawProgress = 0;
-        let isPlaying = true;
+        let isPlaying = false; // 默认关闭自动播放
         let animationSpeed = 1.0;
         let animationId = null;
 
@@ -795,29 +724,68 @@
             animationId = requestAnimationFrame(animate);
         }
 
-        // 控制按钮事件
-        const playPauseBtn = document.getElementById('playPauseBtn');
-        const speedSlider = document.getElementById('speedSlider');
-        const speedValue = document.getElementById('speedValue');
+        // 手动控制函数
+        function stepForward() {
+            currentFunctionIndex = (currentFunctionIndex + 1) % functions.length;
+            updateFunctionDisplay();
+            resetAnimation();
+            drawCurrentFunction();
+        }
 
-        playPauseBtn.addEventListener('click', () => {
-            isPlaying = !isPlaying;
-            if (isPlaying) {
-                playPauseBtn.textContent = '暂停';
-                playPauseBtn.classList.remove('pause');
-                animationId = requestAnimationFrame(animate);
-            } else {
-                playPauseBtn.textContent = '播放';
-                playPauseBtn.classList.add('pause');
-                if (animationId) {
-                    cancelAnimationFrame(animationId);
+        function stepBackward() {
+            currentFunctionIndex = (currentFunctionIndex - 1 + functions.length) % functions.length;
+            updateFunctionDisplay();
+            resetAnimation();
+            drawCurrentFunction();
+        }
+
+        function resetFunction() {
+            currentFunctionIndex = 0;
+            resetAnimation();
+            updateFunctionDisplay();
+            drawCurrentFunction();
+        }
+
+        function resetAnimation() {
+            animationStage = 0;
+            rotationProgress = 0;
+            drawProgress = 0;
+            if (animationId) {
+                cancelAnimationFrame(animationId);
+                animationId = null;
+            }
+        }
+
+
+
+        // 监听全局控制消息
+        window.addEventListener('message', (event) => {
+            if (event.data.type === 'globalPlayerControl') {
+                switch(event.data.action) {
+                    case 'play':
+                        isPlaying = true;
+                        if (event.data.speed) {
+                            animationSpeed = event.data.speed;
+                        }
+                        animationId = requestAnimationFrame(animate);
+                        break;
+                    case 'pause':
+                        isPlaying = false;
+                        if (animationId) {
+                            cancelAnimationFrame(animationId);
+                        }
+                        break;
+                    case 'reset':
+                        resetFunction();
+                        break;
+                    case 'stepForward':
+                        stepForward();
+                        break;
+                    case 'stepBackward':
+                        stepBackward();
+                        break;
                 }
             }
-        });
-
-        speedSlider.addEventListener('input', (e) => {
-            animationSpeed = parseFloat(e.target.value);
-            speedValue.textContent = animationSpeed.toFixed(1) + 'x';
         });
 
         // 等待MathJax完全加载后开始动画

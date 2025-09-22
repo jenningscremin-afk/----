@@ -224,34 +224,6 @@
             font-weight: 600;
         }
 
-        /* 控制按钮 */
-        .control-panel {
-            position: absolute;
-            bottom: 20px;
-            right: 20px;
-            display: flex;
-            gap: 10px;
-            z-index: 100;
-        }
-
-        .control-btn {
-            padding: 6px 12px;
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: rgba(255, 255, 255, 0.8);
-            font-family: 'Orbitron', monospace;
-            font-size: 10px;
-            cursor: pointer;
-            transition: all 0.2s;
-            border-radius: 4px;
-            backdrop-filter: blur(5px);
-        }
-
-        .control-btn:hover {
-            background: rgba(0, 0, 0, 0.5);
-            color: rgba(255, 255, 255, 1);
-            border-color: rgba(255, 255, 255, 0.4);
-        }
 
         /* 粒子容器 */
         .particles-container {
@@ -449,11 +421,6 @@
             </div>
         </div>
         
-        <!-- 控制面板 -->
-        <div class="control-panel">
-            <button class="control-btn" id="animation-btn" onclick="toggleAnimation()">暂停</button>
-            <button class="control-btn" id="speed-btn" onclick="toggleSpeed()">1.0x</button>
-        </div>
         
         <!-- 特效提示 -->
         <div class="effect-hint" id="effect-hint"></div>
@@ -479,8 +446,8 @@
         let animationTime = 0;
         let animationId;
 
-        // 自动播放相关变量
-        let autoPlayEnabled = true;
+        // 手动控制相关变量
+        let autoPlayEnabled = false; // 默认关闭自动播放
         let autoPlayDirection = 1; // 1为正向，-1为反向
         let autoPlaySpeed = 1; // 每帧变化量，步长为1
         let autoPlayMin = -10;
@@ -501,7 +468,7 @@
             createParticles();
             setupSliders();
 
-            // 显示两个面板，开始自动播放
+            // 显示两个面板，手动控制模式
             setTimeout(() => {
                 // 显示常数函数和幂函数面板
                 document.getElementById('panel-constant').classList.remove('hidden');
@@ -511,7 +478,7 @@
                 updateConstantFunction(constantC);
                 updatePowerFunction(powerN);
 
-                autoPlayEnabled = true;
+                autoPlayEnabled = false; // 默认手动控制
             }, 500);
 
             animate();
@@ -944,9 +911,9 @@
             // 幂指数滑块
             const nSlider = document.getElementById('n-slider');
             nSlider.addEventListener('input', function() {
-                // 用户手动调整时暂时停止自动播放
+                // 用户手动调整时停止自动播放
                 autoPlayEnabled = false;
-                document.getElementById('autoplay-btn').textContent = '开启自动';
+                document.getElementById('animation-btn').textContent = '播放';
 
                 powerN = parseFloat(this.value);
                 document.getElementById('n-display').textContent = powerN.toFixed(2);
@@ -1075,10 +1042,73 @@
             document.getElementById('speed-btn').textContent = speedMultiplier + 'x';
         }
 
+        // 手动控制函数
+        function stepForward() {
+            powerN += 1;
+            if (powerN > autoPlayMax) powerN = autoPlayMax;
+            
+            document.getElementById('n-display').textContent = powerN.toFixed(0);
+            document.getElementById('power-value').textContent = powerN.toFixed(0);
+            document.getElementById('n-slider').value = powerN;
+            updatePowerFunction(powerN);
+        }
+
+        function stepBackward() {
+            powerN -= 1;
+            if (powerN < autoPlayMin) powerN = autoPlayMin;
+            
+            document.getElementById('n-display').textContent = powerN.toFixed(0);
+            document.getElementById('power-value').textContent = powerN.toFixed(0);
+            document.getElementById('n-slider').value = powerN;
+            updatePowerFunction(powerN);
+        }
+
+        function resetFunction() {
+            powerN = 0;
+            constantC = 3;
+            
+            document.getElementById('n-display').textContent = powerN.toFixed(0);
+            document.getElementById('power-value').textContent = powerN.toFixed(0);
+            document.getElementById('n-slider').value = powerN;
+            
+            document.getElementById('c-display').textContent = constantC.toFixed(2);
+            document.getElementById('constant-value').textContent = constantC.toFixed(2);
+            document.getElementById('c-slider').value = constantC;
+            
+            updatePowerFunction(powerN);
+            updateConstantFunction(constantC);
+        }
+
 
         
 
         
+        // 监听全局播放控制消息
+        window.addEventListener('message', (event) => {
+            if (event.data.type === 'globalPlayerControl') {
+                switch(event.data.action) {
+                    case 'play':
+                        animationRunning = true;
+                        if (event.data.speed) {
+                            animationSpeed = event.data.speed;
+                        }
+                        break;
+                    case 'pause':
+                        animationRunning = false;
+                        break;
+                    case 'reset':
+                        resetFunction();
+                        break;
+                    case 'stepForward':
+                        stepForward();
+                        break;
+                    case 'stepBackward':
+                        stepBackward();
+                        break;
+                }
+            }
+        });
+
         // 清理
         window.addEventListener('beforeunload', () => {
             if (animationId) cancelAnimationFrame(animationId);

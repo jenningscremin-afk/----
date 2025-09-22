@@ -89,6 +89,36 @@
             background: transparent;
         }
 
+        /* 全局控制面板样式 */
+        .global-control-panel {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.9);
+            border: 2px solid rgba(0, 255, 255, 0.5);
+            border-radius: 10px;
+            padding: 15px;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+        }
+
+        .control-title {
+            color: #00ffff;
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-align: center;
+            font-family: 'Orbitron', monospace;
+        }
+
+        .control-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+
         /* 添加导航提示 */
         .iframe-nav-hint {
             position: absolute;
@@ -181,47 +211,22 @@
             background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
         }
         
+        .visualization.fullscreen {
+            background: white;
+            width: 100vw;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+            padding: 0;
+            margin: 0;
+        }
+        
         .visualization.white-bg {
             background: white;
         }
 
-        /* 翻页按钮样式 */
-        .nav-buttons {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            z-index: 100;
-        }
-
-        .nav-btn {
-            background: rgba(0, 0, 0, 0.6);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            color: white;
-            padding: 4px 8px;
-            border-radius: 15px;
-            font-size: 10px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            backdrop-filter: blur(10px);
-            user-select: none;
-            min-width: 30px;
-            text-align: center;
-        }
-
-        .nav-btn:hover {
-            background: rgba(0, 0, 0, 0.8);
-            border-color: rgba(255, 255, 255, 0.6);
-            transform: translateY(-1px);
-        }
-
-        .nav-btn:disabled {
-            opacity: 0.4;
-            cursor: not-allowed;
-            transform: none;
-        }
 
         /* 页码指示器 */
         .page-indicator {
@@ -271,90 +276,87 @@
             background: rgba(79, 70, 229, 0.85);
         }
 
-        /* 首页导航按钮样式 */
+        /* 首页导航按钮样式 - 简化版 */
         .home-nav-buttons {
             display: flex;
             justify-content: center;
-            gap: 20px;
-            margin-top: 40px;
+            gap: 12px;
+            margin-top: 1.5rem;
             flex-wrap: wrap;
         }
 
         .home-nav-btn {
             display: flex;
-            flex-direction: column;
             align-items: center;
-            padding: 15px 20px;
-            background: rgba(255, 255, 255, 0.1);
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            border-radius: 15px;
+            padding: 6px 12px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 6px;
             text-decoration: none;
-            color: white;
+            color: rgba(255, 255, 255, 0.8);
             transition: all 0.3s ease;
-            backdrop-filter: blur(10px);
-            min-width: 120px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-        }
-
-        .home-nav-btn:hover {
-            background: rgba(255, 255, 255, 0.2);
-            border-color: rgba(255, 255, 255, 0.5);
-            transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
-        }
-
-        .home-nav-btn .btn-icon {
-            font-size: 1.2rem;
-            margin-bottom: 8px;
-            font-weight: bold;
-            letter-spacing: 1px;
-        }
-
-        .home-nav-btn .btn-text {
-            font-size: 1.1rem;
+            backdrop-filter: blur(8px);
+            font-size: 0.85rem;
             font-weight: 500;
         }
 
-        /* 翻页按钮样式 */
+        .home-nav-btn:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.4);
+            color: white;
+            transform: translateY(-1px);
+        }
+
+        .home-nav-btn .btn-icon {
+            font-size: 0.8rem;
+            margin-right: 6px;
+            font-weight: bold;
+        }
+
+        .home-nav-btn .btn-text {
+            font-size: 0.8rem;
+        }
+
+        /* 翻页按钮样式 - 透明版 */
         .nav-buttons {
             position: fixed;
-            bottom: 30px;
+            bottom: 20px;
             left: 50%;
             transform: translateX(-50%);
             display: flex;
-            gap: 15px;
+            gap: 12px;
             z-index: 1000;
         }
 
         .nav-btn {
-            width: 50px;
-            height: 50px;
-            border: none;
+            width: 36px;
+            height: 36px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
             border-radius: 50%;
-            background: rgba(52, 152, 219, 0.9);
-            color: white;
+            background: rgba(0, 0, 0, 0.3);
+            color: rgba(255, 255, 255, 0.7);
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 24px;
+            font-size: 14px;
             font-weight: bold;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(8px);
         }
 
         .nav-btn:hover {
-            background: rgba(41, 128, 185, 0.9);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(52, 152, 219, 0.5);
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            border-color: rgba(255, 255, 255, 0.4);
+            transform: translateY(-1px);
         }
 
         .nav-btn:disabled {
-            background: rgba(149, 165, 166, 0.5);
+            background: rgba(0, 0, 0, 0.2);
+            color: rgba(255, 255, 255, 0.3);
             cursor: not-allowed;
             transform: none;
-            box-shadow: none;
         }
 
         /* 页面指示器样式 */
@@ -382,70 +384,164 @@
             z-index: 1000;
         }
 
-        .global-control-btn {
+
+        /* 全局播放控制面板样式 */
+        .global-player-control {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 10000;
+            font-family: var(--heading-font);
+        }
+
+        .player-toggle {
+            width: 32px;
+            height: 32px;
             background: rgba(0, 0, 0, 0.3);
             border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(8px);
+        }
+
+        .player-toggle:hover {
+            background: rgba(0, 0, 0, 0.8);
+            border-color: rgba(255, 255, 255, 0.5);
+            transform: scale(1.1);
+        }
+
+        .player-icon {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .player-panel {
+            position: absolute;
+            bottom: 40px;
+            right: 0;
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 6px;
+            padding: 8px;
+            backdrop-filter: blur(10px);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(20px);
+            transition: all 0.3s ease;
+            min-width: 120px;
+        }
+
+        .global-player-control.expanded .player-panel {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .global-player-control.expanded .player-icon {
+            transform: rotate(180deg);
+        }
+
+        .player-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .player-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
             color: rgba(255, 255, 255, 0.8);
-            padding: 6px 12px;
+            padding: 4px 8px;
             border-radius: 4px;
             cursor: pointer;
-            font-size: 12px;
-            font-weight: normal;
-            transition: all 0.2s ease;
+            font-size: 11px;
+            font-weight: 500;
+            transition: all 0.3s ease;
             backdrop-filter: blur(5px);
-            min-width: 50px;
-            text-align: center;
+            min-width: 40px;
         }
 
-        .global-control-btn:hover {
-            background: rgba(0, 0, 0, 0.5);
-            color: rgba(255, 255, 255, 1);
+        .player-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
             border-color: rgba(255, 255, 255, 0.4);
+            color: #ffffff;
+            transform: translateY(-2px);
         }
 
-        .global-control-btn:active {
-            transform: scale(0.95);
+        .player-btn:active {
+            transform: translateY(0);
         }
 
-        .global-control-btn.pause {
+        .play-btn.playing {
             background: rgba(255, 107, 107, 0.3);
             border-color: rgba(255, 107, 107, 0.4);
         }
 
-        .global-control-btn.pause:hover {
+        .play-btn.playing:hover {
             background: rgba(255, 107, 107, 0.5);
         }
 
-        /* 浮动菜单样式 */
-        #floating-menu {
-            position: fixed;
-            bottom: 20px;
-            right: 200px;
-            z-index: 9999;
-            font-family: var(--heading-font);
+        .speed-btn {
+            background: rgba(0, 255, 255, 0.1);
+            border-color: rgba(0, 255, 255, 0.3);
+            color: #00ffff;
         }
 
-        /* 章节目录菜单样式 */
-        #chapter-menu {
+        .speed-btn:hover {
+            background: rgba(0, 255, 255, 0.2);
+            border-color: rgba(0, 255, 255, 0.6);
+        }
+
+        .reset-btn {
+            background: rgba(255, 193, 7, 0.1);
+            border-color: rgba(255, 193, 7, 0.3);
+            color: #ffc107;
+        }
+
+        .reset-btn:hover {
+            background: rgba(255, 193, 7, 0.2);
+            border-color: rgba(255, 193, 7, 0.6);
+        }
+
+        /* 统一控制面板样式 */
+        .unified-control-panel {
             position: fixed;
             bottom: 20px;
             right: 20px;
             z-index: 9999;
             font-family: var(--heading-font);
+            display: flex;
+            gap: 10px;
+            align-items: flex-end;
+        }
+
+        /* 浮动菜单样式 - 简化版 */
+        #floating-menu {
+            position: relative;
+        }
+
+        /* 章节目录菜单样式 */
+        #chapter-menu {
+            position: relative;
         }
 
         .menu-toggle {
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: rgba(255, 255, 255, 0.8);
-            padding: 6px 12px;
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: rgba(255, 255, 255, 0.6);
+            padding: 5px 8px;
             border-radius: 4px;
             cursor: pointer;
-            font-size: 12px;
+            font-size: 11px;
             font-weight: normal;
             transition: all 0.2s ease;
             backdrop-filter: blur(5px);
-            min-width: 50px;
+            min-width: 32px;
             text-align: center;
             display: flex;
             align-items: center;
@@ -474,20 +570,19 @@
 
         .menu-content {
             position: absolute;
-            bottom: 50px;
+            bottom: 40px;
             right: 0;
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 15px;
-            padding: 10px 0;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            padding: 8px 0;
             backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.3);
             opacity: 0;
             visibility: hidden;
             transform: translateY(20px);
             transition: all 0.3s ease;
-            min-width: 220px;
-            max-height: 400px;
+            min-width: 160px;
+            max-height: 300px;
             overflow-y: auto;
         }
 
@@ -519,18 +614,18 @@
         .menu-item {
             display: flex;
             align-items: center;
-            padding: 10px 15px;
+            padding: 6px 12px;
             text-decoration: none;
-            color: #333;
+            color: rgba(255, 255, 255, 0.8);
             transition: all 0.3s ease;
-            border-radius: 10px;
-            margin: 0 8px;
+            border-radius: 4px;
+            margin: 0 4px;
         }
 
         .menu-item:hover {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: rgba(255, 255, 255, 0.1);
             color: white;
-            transform: translateX(5px);
+            transform: translateX(2px);
         }
 
         .menu-item .menu-icon {
@@ -543,6 +638,26 @@
         .menu-item .menu-text {
             font-size: 13px;
             font-weight: 500;
+        }
+
+        /* 二级菜单样式 */
+        .menu-section {
+            margin-bottom: 8px;
+        }
+
+        .menu-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .menu-section-title {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 10px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 4px 12px;
+            margin-bottom: 4px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
     </style>
 </head>
@@ -732,12 +847,9 @@
             <div class="visualization full-width" id="vis-elementary-intro"></div>
         </div>
 
-        <!-- 幻灯片9：常数与幂函数 (iframe) -->
+        <!-- 幻灯片9：幂函数可视化 -->
         <div class="slide">
-            <div class="iframe-container">
-                <iframe id="iframe-power-constant" src="常数函数与幂函数.html" style="width: 100%; height: 100%; border: none;"></iframe>
-                <div class="iframe-nav-overlay" data-slide="9"></div>
-            </div>
+            <div class="visualization fullscreen" id="vis-power-function"></div>
         </div>
 
         <!-- 幻灯片10：指数定义 -->
@@ -1142,54 +1254,59 @@
         <div class="page-indicator" id="page-indicator">1 / 36</div>
 </div>
 
-<!-- 全局动画控制面板 -->
-<div class="global-animation-controls" id="globalAnimationControls">
-    <button class="global-control-btn" id="globalPlayPauseBtn">暂停</button>
-    <button class="global-control-btn" id="globalSpeedBtn">1.0x</button>
+
+<!-- 全局播放控制面板 -->
+<div id="global-player-control" class="global-player-control">
+    <div id="player-toggle" class="player-toggle">
+        <span class="player-icon">▶</span>
+    </div>
+    <div id="player-panel" class="player-panel">
+        <div class="player-controls">
+            <button id="play-pause-btn" class="player-btn play-btn">⏸</button>
+            <button id="speed-btn" class="player-btn speed-btn">1.0x</button>
+            <button id="reset-btn" class="player-btn reset-btn">🔄</button>
+        </div>
+    </div>
 </div>
 
+<!-- 统一控制面板 -->
+<div class="unified-control-panel">
 <!-- 浮动菜单按钮 -->
 <div id="floating-menu">
     <div id="menu-toggle" class="menu-toggle">
         <span class="menu-icon">☰</span>
     </div>
     <div id="menu-content" class="menu-content">
+        <div class="menu-section">
+            <div class="menu-section-title">实验室</div>
         <a href="../网页资源/lab 1-1.html" target="_blank" class="menu-item">
-            <span class="menu-icon">LAB</span>
+                <span class="menu-icon">📊</span>
             <span class="menu-text">指数运算实验室</span>
         </a>
         <a href="../网页资源/lab 1-2.html" target="_blank" class="menu-item">
-            <span class="menu-icon">LAB</span>
+                <span class="menu-icon">📈</span>
             <span class="menu-text">对数运算实验室</span>
         </a>
         <a href="../网页资源/lab 1-3.html" target="_blank" class="menu-item">
-            <span class="menu-icon">LAB</span>
-            <span class="menu-text">区间分类实验室</span>
+                <span class="menu-icon">🌊</span>
+                <span class="menu-text">三角函数实验室</span>
         </a>
         <a href="../网页资源/lab 1-4.html" target="_blank" class="menu-item">
-            <span class="menu-icon">LAB</span>
-            <span class="menu-text">函数概念实验室</span>
-        </a>
-        <a href="../网页资源/lab 1-5.html" target="_blank" class="menu-item">
-            <span class="menu-icon">LAB</span>
-            <span class="menu-text">函数性质实验室</span>
-        </a>
-        <a href="../网页资源/lab 1-6.html" target="_blank" class="menu-item">
-            <span class="menu-icon">LAB</span>
-            <span class="menu-text">基本初等函数实验室</span>
-        </a>
-        <a href="../网页资源/lab 1-7.html" target="_blank" class="menu-item">
-            <span class="menu-icon">LAB</span>
-            <span class="menu-text">复合函数实验室</span>
-        </a>
-        <a href="../网页资源/lab 1-8.html" target="_blank" class="menu-item">
-            <span class="menu-icon">LAB</span>
-            <span class="menu-text">函数艺术与运动</span>
-        </a>
-        <a href="../网页资源/lab 1-9.html" target="_blank" class="menu-item">
-            <span class="menu-icon">LAB</span>
-            <span class="menu-text">函数游戏</span>
-        </a>
+                <span class="menu-icon">🔄</span>
+                <span class="menu-text">反三角函数实验室</span>
+            </a>
+        </div>
+        <div class="menu-section">
+            <div class="menu-section-title">其他资源</div>
+            <a href="../故事书/index.html" target="_blank" class="menu-item">
+                <span class="menu-icon">📚</span>
+                <span class="menu-text">故事书</span>
+            </a>
+            <a href="../习题/index.html" target="_blank" class="menu-item">
+                <span class="menu-icon">📝</span>
+                <span class="menu-text">习题</span>
+            </a>
+        </div>
     </div>
 </div>
 
@@ -1199,6 +1316,8 @@
         <span class="menu-icon">📚</span>
     </div>
     <div id="chapter-content" class="menu-content">
+        <div class="menu-section">
+            <div class="menu-section-title">基础概念</div>
         <a href="#" class="menu-item" onclick="goToSlide(0); toggleChapterMenu();">
             <span class="menu-icon">🏠</span>
             <span class="menu-text">标题页</span>
@@ -1223,6 +1342,9 @@
             <span class="menu-icon">4</span>
             <span class="menu-text">定义域与值域</span>
         </a>
+        </div>
+        <div class="menu-section">
+            <div class="menu-section-title">函数类型</div>
         <a href="#" class="menu-item" onclick="goToSlide(10); toggleChapterMenu();">
             <span class="menu-icon">5</span>
             <span class="menu-text">指数运算</span>
@@ -1243,11 +1365,13 @@
             <span class="menu-icon">9</span>
             <span class="menu-text">复合函数</span>
         </a>
+        </div>
+    </div>
     </div>
 </div>
 
 <script>
-        // ========== 基础导航功能 ==========
+        // === 基础导航功能 ===
         let slides, totalSlides, counter, currentSlide = 0;
         let currentAnimation;
 
@@ -1261,6 +1385,33 @@
             speed: 1,
             resumeCallback: null,
         };
+
+        function stopCurrentAnimation() {
+            if (currentAnimation && typeof currentAnimation.interrupt === 'function') {
+                currentAnimation.interrupt();
+            }
+            currentAnimation = null;
+        }
+
+        function applyCurrentAnimation(handlers) {
+            if (!handlers || typeof handlers !== 'object') {
+                currentAnimation = null;
+                return;
+            }
+
+            currentAnimation = {
+                pause: typeof handlers.pause === 'function' ? handlers.pause : () => {},
+                resume: typeof handlers.resume === 'function' ? handlers.resume : () => {},
+                setSpeed: typeof handlers.setSpeed === 'function' ? handlers.setSpeed : () => {},
+                interrupt: typeof handlers.interrupt === 'function' ? handlers.interrupt : () => {},
+            };
+
+            currentAnimation.setSpeed(animationState.speed);
+
+            if (animationState.isPaused) {
+                currentAnimation.pause();
+            }
+        }
 
         function nextSlide() {
             if (!slides || totalSlides === 0) return;
@@ -1284,8 +1435,6 @@
             counter.textContent = `${currentSlide + 1} / ${totalSlides}`;
             updateNavButtons();
             
-            // 更新控制面板可见性
-            updateControlPanelVisibility();
             
             // 运行当前幻灯片的可视化
             runVisualization(currentSlide);
@@ -1304,31 +1453,59 @@
             }
         }
 
-        // 全局动画控制函数
-        function initGlobalAnimationControls() {
-            const playPauseBtn = document.getElementById('globalPlayPauseBtn');
-            const speedBtn = document.getElementById('globalSpeedBtn');
 
-            // 速度选项：0.5x, 1x, 1.5x, 2x, 3x, 4x, 6x
-            const speedOptions = [0.5, 1, 1.5, 2, 3, 4, 6];
-            let currentSpeedIndex = 1; // 默认1x
+
+        // 全局播放控制变量
+        let globalPlayerState = {
+            isPlaying: false,
+            speed: 1.0,
+            speedOptions: [0.5, 1.0, 1.5, 2.0, 3.0, 4.0, 6.0],
+            currentSpeedIndex: 1
+        };
+
+        // 初始化全局播放控制
+        function initGlobalPlayerControl() {
+            const playerToggle = document.getElementById('player-toggle');
+            const playerPanel = document.getElementById('player-panel');
+            const playPauseBtn = document.getElementById('play-pause-btn');
+            const speedBtn = document.getElementById('speed-btn');
+            const resetBtn = document.getElementById('reset-btn');
+            const playerControl = document.getElementById('global-player-control');
+
+            // 切换面板显示
+            playerToggle.addEventListener('click', () => {
+                playerControl.classList.toggle('expanded');
+            });
 
             // 播放/暂停按钮
             playPauseBtn.addEventListener('click', () => {
+                globalPlayerState.isPlaying = !globalPlayerState.isPlaying;
+                updatePlayPauseButton();
+                controlAllAnimations();
                 globalAnimationPlaying = !globalAnimationPlaying;
                 playPauseBtn.textContent = globalAnimationPlaying ? '暂停' : '播放';
                 playPauseBtn.className = globalAnimationPlaying ? 'global-control-btn' : 'global-control-btn pause';
 
                 // 更新动画状态
                 animationState.isPaused = !globalAnimationPlaying;
+                if (currentAnimation) {
+                    if (animationState.isPaused) {
+                        currentAnimation.pause();
+                    } else {
+                        currentAnimation.resume();
+                    }
+                }
             });
 
-            // 速度按钮（循环切换）
+            // 速度按钮
             speedBtn.addEventListener('click', () => {
                 currentSpeedIndex = (currentSpeedIndex + 1) % speedOptions.length;
                 globalAnimationSpeed = speedOptions[currentSpeedIndex];
                 speedBtn.textContent = globalAnimationSpeed.toFixed(1) + 'x';
                 animationState.speed = globalAnimationSpeed;
+                if (currentAnimation) {
+                    currentAnimation.setSpeed(globalAnimationSpeed);
+                }
             });
         }
 
@@ -1422,8 +1599,9 @@
             totalSlides = slides.length;
             counter = document.getElementById('page-indicator');
             
-            // 初始化全局动画控制
-            initGlobalAnimationControls();
+            
+            // 初始化全局播放控制
+            initGlobalPlayerControl();
             
             // 初始化悬浮菜单
             initFloatingMenus();
@@ -1463,7 +1641,7 @@
             }, { passive: false });
         });
 
-        // ========== MathJax 渲染函数 ==========
+        // === MathJax 渲染函数 ===
         const renderMathJax = async (container) => {
             if (window.MathJax && window.MathJax.typesetPromise) {
                 try {
@@ -1487,7 +1665,7 @@
             }
         };
 
-        // ========== D3.js 辅助函数 ==========
+        // === D3.js 辅助函数 ===
         function setupD3(containerId, margins = {top: 40, right: 40, bottom: 40, left: 40}) {
             const container = d3.select(`#${containerId}`);
             if (container.empty()) {
@@ -1537,7 +1715,7 @@
                 .attr("stroke-dashoffset", 0);
         }
 
-        // ========== 可视化函数 ==========
+        // === 可视化函数 ===
         
         // 幻灯片3：常量与变量可视化
         function visualizeVariables(containerId) {
@@ -1572,7 +1750,7 @@
                 .attr("cy", height * 0.5)
                 .attr("r", 10)
                 .attr("fill", "var(--primary-color)");
-            
+
             g.append("text")
                 .attr("x", width * 0.75)
                 .attr("y", height * 0.5 + 40)
@@ -1580,13 +1758,65 @@
                 .attr("text-anchor", "middle")
                 .attr("font-size", "1.2em");
 
-            function movePoint() {
-                variablePoint.attr("cx", width * 0.6)
-                    .transition().duration(2000).attr("cx", width * 0.9)
-                    .transition().duration(2000).attr("cx", width * 0.6)
-                    .on("end", movePoint);
+            const leftX = width * 0.6;
+            const rightX = width * 0.9;
+            let movingRight = true;
+            let currentTransition = null;
+            let isAnimating = false;
+            let paused = animationState.isPaused;
+            let speed = animationState.speed || 1;
+            let active = true;
+
+            function cancelTransition() {
+                if (currentTransition) {
+                    variablePoint.interrupt();
+                    currentTransition = null;
+                }
+                isAnimating = false;
             }
-            movePoint();
+
+            function runTransition() {
+                if (!active || paused || isAnimating) return;
+                isAnimating = true;
+                const targetX = movingRight ? rightX : leftX;
+                currentTransition = variablePoint.transition()
+                    .duration(2000 / speed)
+                    .attr("cx", targetX)
+                    .on("end", () => {
+                        if (!active) return;
+                        currentTransition = null;
+                        isAnimating = false;
+                        movingRight = !movingRight;
+                        runTransition();
+                    });
+            }
+
+            runTransition();
+
+            return {
+                pause() {
+                    if (paused) return;
+                    paused = true;
+                    cancelTransition();
+                },
+                resume() {
+                    if (!active || !paused) return;
+                    paused = false;
+                    runTransition();
+                },
+                setSpeed(newSpeed) {
+                    speed = newSpeed || 1;
+                    if (!paused && active) {
+                        cancelTransition();
+                        runTransition();
+                    }
+                },
+                interrupt() {
+                    active = false;
+                    cancelTransition();
+                    g.selectAll("*").interrupt();
+                }
+            };
         }
 
         // 幻灯片4：区间可视化
@@ -1671,8 +1901,28 @@
                 .attr("height", 30)
                 .attr("fill", "#a2cffe");
 
-            // 动画：数字通过机器
+            const timeouts = new Set();
+            let paused = animationState.isPaused;
+            let speed = animationState.speed || 1;
+            let active = true;
+
+            function clearTimers() {
+                timeouts.forEach(id => clearTimeout(id));
+                timeouts.clear();
+            }
+
+            function scheduleTask(fn, baseDelay) {
+                const id = setTimeout(() => {
+                    timeouts.delete(id);
+                    if (!active || paused) return;
+                    fn();
+                }, baseDelay / speed);
+                timeouts.add(id);
+            }
+
             function animateNumber() {
+                if (!active || paused) return;
+
                 const input = Math.floor(Math.random() * 10) - 5;
                 const output = 2 * input + 1;
 
@@ -1685,13 +1935,18 @@
                     .style("font-size", "20px")
                     .style("font-weight", "bold");
 
+                const moveDuration = 1000 / speed;
+                const fadeInDuration = 500 / speed;
+                const holdDuration = 1500 / speed;
+                const fadeOutDuration = 500 / speed;
+
                 inputText.transition()
-                    .duration(1000)
+                    .duration(moveDuration)
                     .attr("y", machine.y)
                     .style("opacity", 0)
                     .remove();
 
-                setTimeout(() => {
+                scheduleTask(() => {
                     const outputText = svg.append("text")
                         .text(output)
                         .attr("x", machine.x)
@@ -1703,19 +1958,46 @@
                         .style("opacity", 0);
 
                     outputText.transition()
-                        .duration(500)
+                        .duration(fadeInDuration)
                         .style("opacity", 1)
                         .transition()
-                        .delay(1500)
-                        .duration(500)
+                        .delay(holdDuration)
+                        .duration(fadeOutDuration)
                         .style("opacity", 0)
                         .remove();
-                }, 1000);
+                }, moveDuration);
+
+                scheduleTask(animateNumber, 3000);
             }
 
-            // 每2秒运行一次动画
             animateNumber();
-            setInterval(animateNumber, 3000);
+
+            return {
+                pause() {
+                    if (paused) return;
+                    paused = true;
+                    clearTimers();
+                    svg.selectAll("*").interrupt();
+                },
+                resume() {
+                    if (!active || !paused) return;
+                    paused = false;
+                    animateNumber();
+                },
+                setSpeed(newSpeed) {
+                    speed = newSpeed || 1;
+                    if (!paused && active) {
+                        clearTimers();
+                        svg.selectAll("*").interrupt();
+                        animateNumber();
+                    }
+                },
+                interrupt() {
+                    active = false;
+                    clearTimers();
+                    svg.selectAll("*").interrupt();
+                }
+            };
         }
 
         // 幻灯片6：定义域可视化
@@ -1777,18 +2059,38 @@
                 .style("font-weight", "bold")
                 .style("fill", "#2c3e50");
 
-            // 粒子动画
+            const timeouts = new Set();
+            let paused = animationState.isPaused;
+            let speed = animationState.speed || 1;
+            let active = true;
+
+            function clearTimers() {
+                timeouts.forEach(id => clearTimeout(id));
+                timeouts.clear();
+            }
+
+            function scheduleNext() {
+                const id = setTimeout(() => {
+                    timeouts.delete(id);
+                    if (!active || paused) return;
+                    generateParticle();
+                }, 1500 / speed);
+                timeouts.add(id);
+            }
+
             function generateParticle() {
+                if (!active || paused) return;
+
                 const value = Math.floor(Math.random() * 12) - 1;
                 const isValid = value >= 2;
-                
+
                 const particle = svg.append("g")
                     .attr("transform", `translate(${width * 0.2}, ${height * 0.2})`);
 
                 particle.append("circle")
                     .attr("r", 15)
                     .attr("fill", isValid ? "#50e3c2" : "#e74c3c");
-                
+
                 particle.append("text")
                     .text(value)
                     .attr("text-anchor", "middle")
@@ -1796,28 +2098,60 @@
                     .attr("fill", "white")
                     .style("font-size", "14px");
 
+                const travelDuration = 2000 / speed;
+                const exitDuration = 1000 / speed;
+
                 particle.transition()
-                    .duration(2000)
+                    .duration(travelDuration)
                     .attr("transform", `translate(${machine.x}, ${machine.y - machine.height/2 - 20})`);
 
                 if (isValid) {
                     particle.transition()
-                        .delay(2000)
-                        .duration(1000)
+                        .delay(travelDuration)
+                        .duration(exitDuration)
                         .attr("transform", `translate(${machine.x}, ${machine.y + machine.height/2 + 20})`)
                         .style("opacity", 0)
                         .remove();
                 } else {
                     particle.transition()
-                        .delay(2000)
-                        .duration(1000)
+                        .delay(travelDuration)
+                        .duration(exitDuration)
                         .attr("transform", `translate(${machine.x + 100}, ${machine.y - machine.height - 50})`)
                         .style("opacity", 0)
                         .remove();
                 }
+
+                scheduleNext();
             }
 
-            setInterval(generateParticle, 1500);
+            scheduleNext();
+
+            return {
+                pause() {
+                    if (paused) return;
+                    paused = true;
+                    clearTimers();
+                    svg.selectAll("*").interrupt();
+                },
+                resume() {
+                    if (!active || !paused) return;
+                    paused = false;
+                    generateParticle();
+                },
+                setSpeed(newSpeed) {
+                    speed = newSpeed || 1;
+                    if (!paused && active) {
+                        clearTimers();
+                        svg.selectAll("*").interrupt();
+                        generateParticle();
+                    }
+                },
+                interrupt() {
+                    active = false;
+                    clearTimers();
+                    svg.selectAll("*").interrupt();
+                }
+            };
         }
 
         // 幻灯片7：值域可视化
@@ -1875,8 +2209,28 @@
                 .style("font-weight", "bold")
                 .style("fill", "#2c3e50");
 
-            // 粒子动画
+            const timeouts = new Set();
+            let paused = animationState.isPaused;
+            let speed = animationState.speed || 1;
+            let active = true;
+
+            function clearTimers() {
+                timeouts.forEach(id => clearTimeout(id));
+                timeouts.clear();
+            }
+
+            function scheduleNext() {
+                const id = setTimeout(() => {
+                    timeouts.delete(id);
+                    if (!active || paused) return;
+                    generateParticle();
+                }, 2000 / speed);
+                timeouts.add(id);
+            }
+
             function generateParticle() {
+                if (!active || paused) return;
+
                 const value = (Math.random() * 6) - 3;
                 const outputValue = value * value;
 
@@ -1886,28 +2240,33 @@
                 particle.append("circle")
                     .attr("r", 15)
                     .attr("fill", "#50e3c2");
-                
+
                 particle.append("text")
                     .text(value.toFixed(1))
                     .attr("text-anchor", "middle")
                     .attr("dy", ".3em")
                     .attr("fill", "white");
 
+                const moveDuration = 1500 / speed;
+                const fadeDuration = 500 / speed;
+
                 particle.transition()
-                    .duration(1500)
+                    .duration(moveDuration)
                     .attr("transform", `translate(${machine.x - machine.width/2 - 20}, ${machine.y})`)
                     .transition()
-                    .duration(500)
+                    .duration(fadeDuration)
                     .style("opacity", 0)
                     .remove()
                     .on("end", () => {
+                        if (!active || paused) return;
+
                         const outputParticle = svg.append("g")
                             .attr("transform", `translate(${machine.x + machine.width/2 + 20}, ${machine.y})`);
-                        
+
                         outputParticle.append("circle")
                             .attr("r", 15)
                             .attr("fill", "#f5a623");
-                        
+
                         outputParticle.append("text")
                             .text(outputValue.toFixed(1))
                             .attr("text-anchor", "middle")
@@ -1915,16 +2274,52 @@
                             .attr("fill", "white");
 
                         outputParticle.transition()
-                            .duration(1500)
-                            .attr("transform", `translate(${numLineX}, ${scaleY(outputValue)})`)
+                            .duration(moveDuration)
+                            .attr("transform", `translate(${numLineX}, ${scaleY(outputValue)})`);
+
+                        outputParticle.select("circle")
                             .transition()
-                            .duration(500)
-                            .attr("r", 5)
+                            .delay(moveDuration)
+                            .duration(fadeDuration)
+                            .attr("r", 5);
+
+                        outputParticle.transition()
+                            .delay(moveDuration)
+                            .duration(fadeDuration)
                             .style("opacity", 0.7);
                     });
+
+                scheduleNext();
             }
 
-            setInterval(generateParticle, 2000);
+            scheduleNext();
+
+            return {
+                pause() {
+                    if (paused) return;
+                    paused = true;
+                    clearTimers();
+                    svg.selectAll("*").interrupt();
+                },
+                resume() {
+                    if (!active || !paused) return;
+                    paused = false;
+                    generateParticle();
+                },
+                setSpeed(newSpeed) {
+                    speed = newSpeed || 1;
+                    if (!paused && active) {
+                        clearTimers();
+                        svg.selectAll("*").interrupt();
+                        generateParticle();
+                    }
+                },
+                interrupt() {
+                    active = false;
+                    clearTimers();
+                    svg.selectAll("*").interrupt();
+                }
+            };
         }
 
         // 幻灯片8：基本初等函数星系可视化
@@ -2040,17 +2435,70 @@
 
             // 行星运行动画
             let angle = 0;
-            function animate() {
-                angle += 0.01;
+            let frameId = null;
+            let lastTimestamp = null;
+            let paused = animationState.isPaused;
+            let speed = animationState.speed || 1;
+            let active = true;
+            const baseAngularVelocity = 0.6; // radian per second baseline
+
+            function step(timestamp) {
+                if (!active) return;
+
+                if (paused) {
+                    lastTimestamp = timestamp;
+                    frameId = requestAnimationFrame(step);
+                    return;
+                }
+
+                if (lastTimestamp === null) {
+                    lastTimestamp = timestamp;
+                }
+
+                const deltaSeconds = (timestamp - lastTimestamp) / 1000;
+                lastTimestamp = timestamp;
+                angle += deltaSeconds * baseAngularVelocity * speed;
+
                 planets.attr("transform", d => {
                     const planetAngle = angle * d.speed;
                     const x = centerX + d.orbitRadius * Math.cos(planetAngle);
                     const y = centerY + d.orbitRadius * Math.sin(planetAngle);
                     return `translate(${x}, ${y})`;
                 });
-                requestAnimationFrame(animate);
+
+                frameId = requestAnimationFrame(step);
             }
-            animate();
+
+            if (!paused) {
+                frameId = requestAnimationFrame(step);
+            }
+
+            return {
+                pause() {
+                    if (paused) return;
+                    paused = true;
+                    if (frameId !== null) {
+                        cancelAnimationFrame(frameId);
+                        frameId = null;
+                    }
+                },
+                resume() {
+                    if (!active || !paused) return;
+                    paused = false;
+                    lastTimestamp = null;
+                    frameId = requestAnimationFrame(step);
+                },
+                setSpeed(newSpeed) {
+                    speed = newSpeed || 1;
+                },
+                interrupt() {
+                    active = false;
+                    if (frameId !== null) {
+                        cancelAnimationFrame(frameId);
+                        frameId = null;
+                    }
+                }
+            };
         }
 
         // 幻灯片10：指数定义可视化
@@ -2318,7 +2766,7 @@ const numerator = fraction.selectAll(".num").data("aa".split("")).enter().append
 const denominator = fraction.selectAll(".den").data("aaaaa".split("")).enter().append("text").attr("class", "den").text("a").attr("x", (d,i) => -60 + i * 25).attr("y", 25).attr("font-size", "1.5em");
 
 
-    // ========== 负指数部分 ==========
+    // === 负指数部分 ===
     const negGroup = g.append("g")
         .attr("transform", `translate(0, ${height/2 + 30})`);
 
@@ -3398,6 +3846,15 @@ function visualizeLogOperations(containerId) {
             { type: 'power', num1: 8, num2: 3, log1: 3, log2: 3, title: '幂运算', desc: '8³ = ?' }
         ];
 
+        let resumeIndex = 0;
+        let cycleRunning = false;
+
+        const getSpeed = () => animationState.speed || 1;
+        const scaledDuration = value => value / getSpeed();
+        const scaledDelay = value => value / getSpeed();
+
+        const waitForResume = () => Promise.resolve();
+
         async function animateOperation(op) {
             return new Promise(resolve => {
                 svg.selectAll(".animation-element").remove();
@@ -3635,24 +4092,26 @@ function visualizeLogOperations(containerId) {
             });
         }
 
-        async function cycleAnimations() {
+        async function cycleAnimations(startIndex = 0) {
+            if (cycleRunning) return;
+            cycleRunning = true;
             animationState.cycleActive = true;
-            currentAnimation = {
-                interrupt: () => {
-                    animationState.cycleActive = false;
-                    svg.selectAll("*").interrupt();
-                }
-            };
+
+            let index = startIndex;
 
             while (animationState.cycleActive) {
-                for (let i = 0; i < operations.length; i++) {
+                for (let i = index; i < operations.length; i++) {
                     if (!animationState.cycleActive) break;
                     animationState.currentOperationIndex = i;
                     await animateOperation(operations[i]);
                     if (!animationState.cycleActive) break;
                     await new Promise(resolve => setTimeout(resolve, scaledDelay(2000)));
                 }
+                index = 0;
             }
+
+            cycleRunning = false;
+            resumeIndex = animationState.currentOperationIndex || 0;
         }
 
         cycleAnimations();
@@ -3679,449 +4138,30 @@ function visualizeLogOperations(containerId) {
             childList: true,
             subtree: true
         });
+
+        const animationHandlers = {
+            pause() {
+                if (!animationState.cycleActive) return;
+                resumeIndex = animationState.currentOperationIndex || 0;
+                animationState.cycleActive = false;
+                svg.selectAll("*").interrupt();
+            },
+            resume() {
+                if (animationState.cycleActive) return;
+                cycleAnimations(resumeIndex);
+            },
+            setSpeed(newSpeed) {
+                animationState.speed = newSpeed || 1;
+            },
+            interrupt() {
+                animationState.cycleActive = false;
+                resumeIndex = 0;
+                svg.selectAll("*").interrupt();
+            }
+        };
+
+        return animationHandlers;
     }
-
-// 幻灯片21（显示第22页）：对数运算可视化 - 增强版
-function visualizeLogOperations(containerId) {
-    const setup = setupD3(containerId);
-    if (!setup) return;
-    const { svg, g, width, height } = setup;
-
-    // 清除之前的内容
-    g.selectAll("*").remove();
-
-    const innerWidth = width - 100;
-    const innerHeight = height - 100;
-
-    // 创建背景区域
-    const upperBg = g.append("rect")
-        .attr("x", 20)
-        .attr("y", 20)
-        .attr("width", innerWidth)
-        .attr("height", 120)
-        .attr("fill", "#ecf8ff")
-        .attr("rx", 10)
-        .style("opacity", 0.3);
-
-    const lowerBg = g.append("rect")
-        .attr("x", 20)
-        .attr("y", 200)
-        .attr("width", innerWidth)
-        .attr("height", 120)
-        .attr("fill", "#f0f9e8")
-        .attr("rx", 10)
-        .style("opacity", 0.3);
-
-    const numbers = [2, 4, 8, 16, 32, 64, 128, 256, 512];
-    const logs = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-
-    const scaleNumbers = d3.scalePoint().domain(numbers).range([50, innerWidth - 50]).padding(0.5);
-    const scaleLogs = d3.scalePoint().domain(logs).range([50, innerWidth - 50]).padding(0.5);
-
-    // 数字轴
-    const numberAxis = g.append("g").attr("class", "number-axis").attr("transform", "translate(0, 80)");
-    numberAxis.call(d3.axisBottom(scaleNumbers));
-    numberAxis.selectAll("text").style("font-size", "14px").style("font-weight", "bold");
-
-    // 为数字轴添加节点 - 显示2的幂次方
-    numbers.forEach((num, i) => {
-        const nodeG = numberAxis.append("g")
-            .attr("class", "number-node")
-            .attr("transform", `translate(${scaleNumbers(num)}, 0)`);
-        nodeG.append("circle")
-            .attr("r", 18)
-            .attr("cy", -30)
-            .attr("fill", "#3498db")
-            .attr("fill-opacity", 0.2)
-            .attr("stroke", "#3498db")
-            .attr("stroke-width", 2);
-
-        // 使用外置文本标签来显示公式
-        const textElement = nodeG.append("foreignObject")
-            .attr("x", -15)
-            .attr("y", -38)
-            .attr("width", 30)
-            .attr("height", 20)
-            .html(`<div style="font-size: 12px; text-align: center; color: #2c3e50; font-weight: bold;">$2^{${i+1}}$</div>`);
-
-        // 渲染这个节点的数学公式
-        if (window.MathJax && window.MathJax.typesetPromise) {
-            setTimeout(() => {
-                window.MathJax.typesetPromise([textElement.node()]).catch(error => {
-                    console.warn('MathJax rendering failed for number node:', error);
-                });
-            }, 50);
-        }
-    });
-
-    // 对数轴
-    const logAxis = g.append("g").attr("transform", `translate(0, 260)`).attr("class", "log-axis");
-    logAxis.call(d3.axisBottom(scaleLogs));
-    logAxis.selectAll("text").style("font-size", "14px").style("font-weight", "bold");
-
-    // 为对数轴添加节点
-    logs.forEach(log => {
-        const nodeG = logAxis.append("g")
-            .attr("class", "number-node")
-            .attr("transform", `translate(${scaleLogs(log)}, 0)`);
-        nodeG.append("rect")
-            .attr("x", -25)
-            .attr("y", -42)
-            .attr("width", 50)
-            .attr("height", 24)
-            .attr("fill", "#2ecc71")
-            .attr("fill-opacity", 0.2)
-            .attr("stroke", "#2ecc71")
-            .attr("stroke-width", 2)
-            .attr("rx", 5);
-
-        // 使用外置文本标签来显示公式
-        const textElement = nodeG.append("foreignObject")
-            .attr("x", -25)
-            .attr("y", -38)
-            .attr("width", 50)
-            .attr("height", 20)
-            .html(`<div style="font-size: 10px; text-align: center; color: #2c3e50; font-weight: bold;">$\\log_2(${Math.pow(2, log)})$</div>`);
-
-        // 渲染这个节点的数学公式
-        if (window.MathJax && window.MathJax.typesetPromise) {
-            setTimeout(() => {
-                window.MathJax.typesetPromise([textElement.node()]).catch(error => {
-                    console.warn('MathJax rendering failed for log node:', error);
-                });
-            }, 50);
-        }
-    });
-
-    g.append("text")
-        .attr("x", 20)
-        .attr("y", 40)
-        .attr("class", "world-description")
-        .attr("text-anchor", "start")
-        .style("font-weight", "bold")
-        .style("font-size", "18px")
-        .text("(乘法、除法、幂运算)");
-
-    g.append("text")
-        .attr("x", 20)
-        .attr("y", 220)
-        .attr("class", "world-description")
-        .attr("text-anchor", "start")
-        .style("font-weight", "bold")
-        .style("font-size", "18px")
-        .text("(加法、减法、乘法)");
-
-    // 添加垂直连接线（虚线）
-    numbers.forEach((num, i) => {
-        g.append("line")
-            .attr("x1", scaleNumbers(num))
-            .attr("y1", 100)
-            .attr("x2", scaleLogs(logs[i]))
-            .attr("y2", 220)
-            .attr("stroke", "#9b59b6")
-            .attr("stroke-width", 1)
-            .attr("stroke-dasharray", "3,3")
-            .style("opacity", 0.3);
-    });
-
-    // 渲染数学公式
-    setTimeout(async () => {
-        if (window.MathJax && window.MathJax.typesetPromise) {
-            try {
-                // 先渲染整个SVG
-                await window.MathJax.typesetPromise([svg.node()]);
-                // 再专门渲染SVG中的公式
-                await renderMathJaxInContainer(containerId);
-            } catch (error) {
-                console.warn('MathJax rendering failed:', error);
-            }
-        }
-    }, 200);
-
-    const operations = [
-        { type: 'multiply', num1: 16, num2: 32, log1: 4, log2: 5, title: '乘法运算', desc: '16 × 32 = ?' },
-        { type: 'divide', num1: 256, num2: 16, log1: 8, log2: 4, title: '除法运算', desc: '256 ÷ 16 = ?' },
-        { type: 'power', num1: 8, num2: 3, log1: 3, log2: 3, title: '幂运算', desc: '8³ = ?' }
-    ];
-
-    async function animateOperation(op) {
-        return new Promise(resolve => {
-            g.selectAll(".animation-element").remove();
-
-            let logResult, numResult, opSymbol, logOpSymbol, logFormula, numFormula;
-            switch(op.type) {
-                case 'multiply':
-                    logResult = op.log1 + op.log2;
-                    numResult = op.num1 * op.num2;
-                    opSymbol = '×';
-                    logOpSymbol = '+';
-                    logFormula = `${op.num1}\\times ${op.num2}=2^{${op.log1}}\\times 2^{${op.log2}}=2^{(${op.log1}+${op.log2})}=2^{${logResult}}=${numResult}`;
-                    numFormula = `${op.num1} \\times ${op.num2} = ${numResult}`;
-                    break;
-                case 'divide':
-                    logResult = op.log1 - op.log2;
-                    numResult = op.num1 / op.num2;
-                    opSymbol = '÷';
-                    logOpSymbol = '−';
-                    logFormula = `${op.num1}\\div ${op.num2}=\\frac{2^{${op.log1}}}{2^{${op.log2}}}=2^{(${op.log1}-${op.log2})}=2^{${logResult}}=${numResult}`;
-                    numFormula = `${op.num1} \\div ${op.num2} = ${numResult}`;
-                    break;
-                case 'power':
-                    logResult = op.log1 * op.log2;
-                    numResult = Math.pow(op.num1, op.num2);
-                    opSymbol = '^';
-                    logOpSymbol = '×';
-                    logFormula = `${op.num1}^{${op.num2}}=(2^{${op.log1}})^{${op.num2}}=2^{${op.log1}\\times ${op.log2}}=2^{${logResult}}=${numResult}`;
-                    numFormula = `${op.num1}^{${op.num2}} = ${numResult}`;
-                    break;
-            }
-
-            const animGroup = g.append("g").attr("class", "animation-element");
-
-            // 问题框
-            const questionBox = animGroup.append("g");
-            questionBox.append("rect")
-                .attr("x", innerWidth/2 - 150)
-                .attr("y", 20)
-                .attr("width", 300)
-                .attr("height", 50)
-                .attr("fill", "#e8f4f8")
-                .attr("stroke", "#2980b9")
-                .attr("stroke-width", 2)
-                .attr("rx", 8);
-
-            const mainText = questionBox.append("text")
-                .attr("x", innerWidth/2)
-                .attr("y", 50)
-                .attr("text-anchor", "middle")
-                .style("font-size", "24px")
-                .style("font-weight", "bold")
-                .style("fill", "#2980b9");
-
-            async function step1() {
-                mainText.text(op.desc)
-                    .style("opacity", 0)
-                    .transition().duration(1000).style("opacity", 1);
-                await new Promise(resolve => setTimeout(resolve, 1000));
-            }
-
-            async function step2() {
-                // 创建移动的圆点
-                const mover1 = animGroup.append("circle")
-                    .attr("r", 10)
-                    .attr("fill", "#e67e22")
-                    .attr("cx", scaleNumbers(op.num1))
-                    .attr("cy", 80)
-                    .attr("class", "highlight-path");
-
-                let mover2;
-                if (op.type !== 'power') {
-                    mover2 = animGroup.append("circle")
-                        .attr("r", 10)
-                        .attr("fill", "#3498db")
-                        .attr("cx", scaleNumbers(op.num2))
-                        .attr("cy", 80)
-                        .attr("class", "highlight-path");
-                }
-
-                // 下移动画
-                const pathDown1 = animGroup.append("path")
-                    .attr("d", `M${scaleNumbers(op.num1)},80 Q${scaleNumbers(op.num1)},140 ${scaleLogs(op.log1)},260`)
-                    .attr("stroke", "#e67e22")
-                    .attr("stroke-width", 2)
-                    .attr("fill", "none")
-                    .attr("class", "highlight-path");
-
-                const len1 = pathDown1.node().getTotalLength();
-                pathDown1.attr("stroke-dasharray", len1 + " " + len1)
-                    .attr("stroke-dashoffset", len1)
-                    .transition().delay(500).duration(1000).attr("stroke-dashoffset", 0);
-
-                mover1.transition().delay(500).duration(1000)
-                    .attr("cx", scaleLogs(op.log1))
-                    .attr("cy", 260);
-
-                if (mover2) {
-                    const pathDown2 = animGroup.append("path")
-                        .attr("d", `M${scaleNumbers(op.num2)},80 Q${scaleNumbers(op.num2)},140 ${scaleLogs(op.log2)},260`)
-                        .attr("stroke", "#3498db")
-                        .attr("stroke-width", 2)
-                        .attr("fill", "none")
-                        .attr("class", "highlight-path");
-
-                    const len2 = pathDown2.node().getTotalLength();
-                    pathDown2.attr("stroke-dasharray", len2 + " " + len2)
-                        .attr("stroke-dashoffset", len2)
-                        .transition().delay(500).duration(1000).attr("stroke-dashoffset", 0);
-
-                    mover2.transition().delay(500).duration(1000)
-                        .attr("cx", scaleLogs(op.log2))
-                        .attr("cy", 260);
-                }
-
-                await new Promise(resolve => setTimeout(resolve, 1500));
-            }
-
-            async function step3() {
-                // 显示对数公式
-                const formulaG = animGroup.append("g");
-                formulaG.append("rect")
-                    .attr("x", innerWidth/2 - 180)
-                    .attr("y", 320)
-                    .attr("width", 360)
-                    .attr("height", 40)
-                    .attr("fill", "#e8f4f8")
-                    .attr("stroke", "#2980b9")
-                    .attr("stroke-width", 2)
-                    .attr("rx", 8);
-
-                let latexFormula = (logFormula || "")
-                    .replace(/×/g, "\\times")
-                    .replace(/÷/g, "\\div")
-                    .replace(/−/g, "-");
-
-                const formulaFO = formulaG.append("foreignObject")
-                    .attr("x", innerWidth/2 - 180)
-                    .attr("y", 320)
-                    .attr("width", 360)
-                    .attr("height", 40)
-                    .style("opacity", 0);
-
-                formulaFO.html(`<div xmlns="http://www.w3.org/1999/xhtml" style="font-size:16px;font-weight:bold;color:#2980b9;text-align:center;line-height:40px;">$${latexFormula}$</div>`);
-
-                if (window.MathJax && window.MathJax.typesetPromise) {
-                    try {
-                        await window.MathJax.typesetPromise([formulaFO.node()]);
-        } catch (error) {
-                        console.warn('MathJax rendering failed:', error);
-                    }
-                }
-
-                formulaFO.transition().duration(1000).style("opacity", 1);
-                await new Promise(resolve => setTimeout(resolve, 1500));
-            }
-
-            async function step4() {
-                // 移动到结果位置
-                const mover1 = animGroup.select("circle");
-                mover1.transition().duration(1000)
-                    .attr("cx", scaleLogs(logResult))
-                    .attr("fill", "#2ecc71");
-
-                const mover2 = animGroup.selectAll("circle").filter((d, i) => i === 1);
-                if (!mover2.empty()) {
-                    mover2.transition().duration(1000)
-                        .attr("cx", scaleLogs(logResult))
-                        .style("opacity", 0);
-                }
-
-                await new Promise(resolve => setTimeout(resolve, 1500));
-            }
-
-            async function step5() {
-                // 上移动画
-                const pathUp = animGroup.append("path")
-                    .attr("d", `M${scaleLogs(logResult)},260 Q${scaleLogs(logResult)},140 ${scaleNumbers(numResult)},80`)
-                    .attr("stroke", "#2ecc71")
-                    .attr("stroke-width", 2)
-                    .attr("fill", "none")
-                    .attr("class", "highlight-path");
-
-                const lenUp = pathUp.node().getTotalLength();
-                pathUp.attr("stroke-dasharray", lenUp + " " + lenUp)
-                    .attr("stroke-dashoffset", lenUp)
-                    .transition().duration(1000).attr("stroke-dashoffset", 0);
-
-                const mover1 = animGroup.select("circle");
-                mover1.transition().duration(1000)
-                    .attr("cy", 80)
-                    .attr("cx", scaleNumbers(numResult));
-
-                await new Promise(resolve => setTimeout(resolve, 1000));
-            }
-
-            async function step6() {
-                // 显示最终结果
-                const resultBox = animGroup.append("g");
-                resultBox.append("rect")
-                    .attr("x", innerWidth/2 + 300)
-                    .attr("y", 20)
-                    .attr("width", 200)
-                    .attr("height", 50)
-                    .attr("fill", "#2ecc71")
-                    .attr("stroke", "#27ae60")
-                    .attr("stroke-width", 2)
-                    .attr("rx", 8)
-                    .style("opacity", 0)
-                    .transition().duration(1000).style("opacity", 1);
-
-                resultBox.append("text")
-                    .attr("x", innerWidth/2 + 400)
-                    .attr("y", 50)
-                    .attr("text-anchor", "middle")
-                    .style("font-size", "26px")
-                    .style("font-weight", "bold")
-                    .style("fill", "white")
-                    .text(`答案: ${numResult}`)
-                    .style("opacity", 0)
-                    .transition().duration(1000).style("opacity", 1);
-
-                await new Promise(resolve => setTimeout(resolve, 2000));
-                resolve();
-            }
-
-            // 依次执行所有步骤
-            (async () => {
-                await step1();
-                await step2();
-                await step3();
-                await step4();
-                await step5();
-                await step6();
-            })();
-        });
-    }
-
-    // 循环播放动画
-    let currentOpIndex = 0;
-    function cycleAnimations() {
-        if (currentOpIndex < operations.length) {
-            animateOperation(operations[currentOpIndex]).then(() => {
-                currentOpIndex = (currentOpIndex + 1) % operations.length;
-                setTimeout(cycleAnimations, 2000);
-            });
-        }
-    }
-
-    // 开始动画
-    setTimeout(cycleAnimations, 1000);
-    
-    // 添加解释说明（纯文本描述）
-    const explanationFO = g.append("foreignObject")
-        .attr("x", 50)
-        .attr("y", height - 120)
-        .attr("width", width - 100)
-        .attr("height", 500)
-        .html(`<div style="color: #2c3e50; font-size: 18px; line-height: 1.8; text-align: center; padding: 20px;">
-            <div style="font-size: 20px; color: #34495e;">
-                如果我们有一把尺子，上面全部是关于2的幂次方（2¹, 2², 2³, 2⁴...），那么对数就是这把尺子的"刻度读数"。
-                当我们要计算16×32时，我们不需要直接相乘，而是先找到16和32在尺子上的位置（分别是4和5），
-                然后简单相加得到9，最后再回到尺子上找到2⁹=512。这就是对数将复杂乘法转化为简单加法的神奇过程！
-            </div>
-        </div>`)
-        .style("opacity", 0);
-
-    // 延迟显示解释，确保动画先开始
-    explanationFO.transition()
-        .delay(3000)
-        .duration(1000)
-        .style("opacity", 1);
-    
-    // 渲染MathJax
-    setTimeout(() => {
-        renderMathJaxInContainer(containerId);
-    }, 100);
-}
 
 // 幻灯片24：函数性质介绍可视化
 function visualizePropertiesIntro(containerId) {
@@ -5193,43 +5233,42 @@ function visualizeCompositeMachine(containerId) {
 
         // 运行可视化函数映射
         function runVisualization(slideIndex) {
-            // 清理之前的动画
-            if (currentAnimation && typeof currentAnimation.interrupt === 'function') {
-                currentAnimation.interrupt();
-                currentAnimation = null;
-            }
+            stopCurrentAnimation();
 
+            let handlers;
 
             switch (slideIndex) {
-                case 3: visualizeVariables('vis-variables'); break;
-                case 4: visualizeIntervals('vis-intervals'); break;
-                case 5: visualizeFunctionMachine('vis-function-machine'); break;
-                case 6: visualizeDomain('vis-domain'); break;
-                case 7: visualizeRange('vis-range'); break;
-                case 8: visualizeElementaryIntro('vis-elementary-intro'); break;
-                case 10: visualizeExponents('vis-exponents'); break;
-                case 11: visualizeExponentRules1('vis-exponent-rules-1'); break;
-                case 12: visualizeExponentRules2('vis-exponent-rules-2'); break;
-                case 13: visualizeSpecialExponentsNew('vis-special-exponents'); break;
-                case 14: visualizeFractionalExponents('vis-fractional-exponents'); break;
-                case 16: visualizeLogHistory('vis-log-history'); break;
-                case 17: visualizeLogDefinition('vis-log-definition'); break;
-                case 19: visualizeLogProperties('vis-log-properties'); break;
-                case 20: visualizeCommonLogs('vis-common-logs'); break;
-             // 在runVisualization函数的switch语句中添加：
-case 21: visualizeLogOperations('vis-log-operations'); break;
-case 24: visualizePropertiesIntro('vis-properties-intro'); break;
-case 25: visualizeMonotonicityInc('vis-monotonicity-inc'); break;
-case 26: visualizeMonotonicityDec('vis-monotonicity-dec'); break;
-case 27: visualizeMonotonicityIntervals('vis-monotonicity-intervals'); break;
-case 28: visualizeParityIntro('vis-parity-intro'); break;
-case 29: visualizeEvenFunction('vis-even-function'); break;
-case 30: visualizeOddFunction('vis-odd-function'); break;
-case 31: visualizeBoundedness('vis-boundedness'); break;
-case 32: visualizeInverseMachine('vis-inverse-machine'); break;
-case 33: visualizeInverseGraph('vis-inverse-graph'); break;
-case 35: visualizeCompositeMachine('vis-composite-machine'); break;
+                case 3: handlers = visualizeVariables('vis-variables'); break;
+                case 4: handlers = visualizeIntervals('vis-intervals'); break;
+                case 5: handlers = visualizeFunctionMachine('vis-function-machine'); break;
+                case 6: handlers = visualizeDomain('vis-domain'); break;
+                case 7: handlers = visualizeRange('vis-range'); break;
+                case 8: handlers = visualizeElementaryIntro('vis-elementary-intro'); break;
+                case 10: handlers = visualizeExponents('vis-exponents'); break;
+                case 11: handlers = visualizeExponentRules1('vis-exponent-rules-1'); break;
+                case 12: handlers = visualizeExponentRules2('vis-exponent-rules-2'); break;
+                case 13: handlers = visualizeSpecialExponentsNew('vis-special-exponents'); break;
+                case 14: handlers = visualizeFractionalExponents('vis-fractional-exponents'); break;
+                case 16: handlers = visualizeLogHistory('vis-log-history'); break;
+                case 17: handlers = visualizeLogDefinition('vis-log-definition'); break;
+                case 19: handlers = visualizeLogProperties('vis-log-properties'); break;
+                case 20: handlers = visualizeCommonLogs('vis-common-logs'); break;
+                // 在runVisualization函数的switch语句中添加：
+                case 21: handlers = visualizeLogOperations('vis-log-operations'); break;
+                case 24: handlers = visualizePropertiesIntro('vis-properties-intro'); break;
+                case 25: handlers = visualizeMonotonicityInc('vis-monotonicity-inc'); break;
+                case 26: handlers = visualizeMonotonicityDec('vis-monotonicity-dec'); break;
+                case 27: handlers = visualizeMonotonicityIntervals('vis-monotonicity-intervals'); break;
+                case 28: handlers = visualizeParityIntro('vis-parity-intro'); break;
+                case 29: handlers = visualizeEvenFunction('vis-even-function'); break;
+                case 30: handlers = visualizeOddFunction('vis-odd-function'); break;
+                case 31: handlers = visualizeBoundedness('vis-boundedness'); break;
+                case 32: handlers = visualizeInverseMachine('vis-inverse-machine'); break;
+                case 33: handlers = visualizeInverseGraph('vis-inverse-graph'); break;
+                case 35: handlers = visualizeCompositeMachine('vis-composite-machine'); break;
             }
+
+            applyCurrentAnimation(handlers);
         }
     </script>
 </body>

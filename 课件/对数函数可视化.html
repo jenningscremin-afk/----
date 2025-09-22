@@ -302,45 +302,6 @@
             letter-spacing: 1px;
         }
 
-        /* 控制按钮 */
-        .control-panel {
-            position: absolute;
-            bottom: 30px;
-            right: 30px;
-            display: flex;
-            gap: 10px;
-            z-index: 100;
-        }
-
-        .control-btn {
-            padding: 10px 20px;
-            background: linear-gradient(135deg, 
-                rgba(255, 0, 255, 0.2), 
-                rgba(255, 0, 255, 0.1));
-            border: 1px solid rgba(255, 0, 255, 0.5);
-            color: #ff00ff;
-            font-family: 'Orbitron', monospace;
-            font-size: 12px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            cursor: pointer;
-            transition: all 0.3s;
-            border-radius: 5px;
-        }
-
-        .control-btn:hover {
-            background: linear-gradient(135deg, 
-                rgba(255, 0, 255, 0.3), 
-                rgba(255, 0, 255, 0.2));
-            box-shadow: 0 0 20px rgba(255, 0, 255, 0.5);
-        }
-
-        .control-btn.active {
-            background: linear-gradient(135deg, 
-                rgba(255, 0, 255, 0.4), 
-                rgba(255, 0, 255, 0.3));
-            box-shadow: 0 0 30px rgba(255, 0, 255, 0.7);
-        }
 
         /* 轨迹效果 */
         .trail {
@@ -480,11 +441,6 @@
         <!-- 奇点警告 -->
         <div class="singularity-warning" id="singularity-warning">维度奇点！</div>
 
-        <!-- 控制面板 -->
-        <div class="control-panel">
-            <button class="control-btn active" id="play-pause-btn">暂停</button>
-            <button class="control-btn" id="speed-btn">速度: 2x</button>
-        </div>
         
         <!-- 主画布 -->
         <div id="canvas-container">
@@ -502,7 +458,7 @@
         // 全局变量
         let currentA = 10;
         let animationId;
-        let autoMode = true;
+        let autoMode = false; // 默认手动控制
         let phase = 1;
         let svg, g, xScale, yScale, width, height;
         let energyCore, curve, glowGroup;
@@ -957,9 +913,30 @@
             document.getElementById('phase-subtitle').textContent = subtitle;
         }
 
+        // 手动控制函数
+        function stepForward() {
+            currentA = Math.min(20, currentA + 0.1);
+            updateDisplay(currentA);
+            updateCurve(currentA);
+        }
+
+        function stepBackward() {
+            currentA = Math.max(0.1, currentA - 0.1);
+            updateDisplay(currentA);
+            updateCurve(currentA);
+        }
+
+        function resetFunction() {
+            currentA = 10;
+            phase = 1;
+            updateDisplay(currentA);
+            updateCurve(currentA);
+            updatePhaseDisplay('重置完成', '手动控制模式');
+        }
+
         // 设置控制按钮
         function setupControls() {
-            let isPlaying = true;
+            let isPlaying = false; // 默认关闭自动播放
             let speed = 2;
             const speeds = [1, 2, 4, 8];
             const speedTexts = ['1x', '2x', '4x', '8x'];
@@ -990,6 +967,34 @@
                 window.animationSpeed = speed;
             });
         }
+
+        // 监听全局播放控制消息
+        window.addEventListener('message', (event) => {
+            if (event.data.type === 'globalPlayerControl') {
+                switch(event.data.action) {
+                    case 'play':
+                        isPlaying = true;
+                        if (event.data.speed) {
+                            animationSpeed = event.data.speed;
+                        }
+                        animate();
+                        break;
+                    case 'pause':
+                        isPlaying = false;
+                        if (animationId) cancelAnimationFrame(animationId);
+                        break;
+                    case 'reset':
+                        resetFunction();
+                        break;
+                    case 'stepForward':
+                        stepForward();
+                        break;
+                    case 'stepBackward':
+                        stepBackward();
+                        break;
+                }
+            }
+        });
 
         // 清理函数
         window.addEventListener('beforeunload', () => {

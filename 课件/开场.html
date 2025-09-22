@@ -416,7 +416,7 @@
              z-index: 100;
          }
          
-         .nav-btn {
+         .slide-nav-btn {
              background: rgba(0, 0, 0, 0.6);
              border: 1px solid rgba(255, 255, 255, 0.3);
              color: white;
@@ -431,24 +431,24 @@
              text-align: center;
          }
 
-         .nav-btn:hover {
+         .slide-nav-btn:hover {
              background: rgba(0, 0, 0, 0.8);
              border-color: rgba(255, 255, 255, 0.6);
              transform: translateY(-1px);
          }
 
-         .nav-btn:active {
+         .slide-nav-btn:active {
              transform: translateY(0);
              background: rgba(0, 0, 0, 0.9);
          }
 
-         .nav-btn:disabled {
+         .slide-nav-btn:disabled {
              opacity: 0.4;
              cursor: not-allowed;
              transform: none;
          }
 
-         .nav-btn:disabled:hover {
+         .slide-nav-btn:disabled:hover {
              background: rgba(0, 0, 0, 0.6);
              border-color: rgba(255, 255, 255, 0.3);
              transform: none;
@@ -913,6 +913,11 @@
          
          .nav-btn .btn-text {
              font-size: 1rem;
+         }
+         
+         .slide-nav-btn {
+             padding: 6px 10px;
+             font-size: 12px;
          }
      }
 
@@ -1592,9 +1597,9 @@
     </div>
 
     <div class="navigation">
-        <button class="nav-btn" onclick="previousSlide()" title="上一页 (← / ↑ / PageUp)">‹</button>
+        <button class="slide-nav-btn" onclick="previousSlide()" title="上一页 (← / ↑ / PageUp)">‹</button>
         <span class="page-info"><span id="current-page">1</span>/<span id="total-pages">15</span></span>
-        <button class="nav-btn" onclick="nextSlide()" title="下一页 (→ / ↓ / PageDown)">›</button>
+        <button class="slide-nav-btn" onclick="nextSlide()" title="下一页 (→ / ↓ / PageDown)">›</button>
     </div>
 </div>
 
@@ -3128,19 +3133,22 @@
         }
     }
     
+    // 全局函数定义
+    window.previousSlide = previousSlide;
+    window.nextSlide = nextSlide;
+    window.goToSlide = goToSlide;
+    window.toggleChapterMenu = function() {
+        const toggle = document.getElementById('chapter-toggle');
+        const content = document.getElementById('chapter-content');
+        
+        if (toggle && content) {
+            toggle.classList.toggle('active');
+            content.classList.toggle('active');
+        }
+    };
+
     // 浮动菜单功能
     document.addEventListener('DOMContentLoaded', function() {
-        // 章节菜单功能
-        window.toggleChapterMenu = function() {
-            const toggle = document.getElementById('chapter-toggle');
-            const content = document.getElementById('chapter-content');
-            
-            if (toggle && content) {
-                toggle.classList.toggle('active');
-                content.classList.toggle('active');
-            }
-        };
-        
         // 点击外部关闭菜单
         document.addEventListener('click', function(e) {
             const menu = document.getElementById('chapter-menu');
