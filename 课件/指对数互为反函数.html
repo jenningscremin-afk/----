@@ -474,10 +474,12 @@
         
         // 初始化
         document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOMContentLoaded - starting initialization');
             initializeAudio();
             initializeVisualization();
             createSymmetricParticles();
             setupControls();
+            console.log('About to start animation, isPlaying:', isPlaying);
             startAnimation();
         });
 
@@ -676,13 +678,15 @@
                 }
             }
             
-            // 淡入动画
-            xAxis.transition().duration(1000).style('opacity', 1);
-            yAxis.transition().duration(1000).style('opacity', 1);
+            // 坐标轴初始隐藏，等待动画开始
+            // xAxis.transition().duration(1000).style('opacity', 1);
+            // yAxis.transition().duration(1000).style('opacity', 1);
         }
 
         // 动画序列
         function startAnimation() {
+            console.log('startAnimation called, isPlaying:', isPlaying, 'animationPhase:', animationPhase);
+            
             if (!isPlaying) {
                 // 如果不在播放状态，延迟重试（优化性能）
                 setTimeout(() => startAnimation(), 500);
@@ -691,18 +695,23 @@
             
             switch(animationPhase) {
                 case 0:
+                    console.log('Starting phase 1: mirrorUnfolds');
                     phase1_mirrorUnfolds();
                     break;
                 case 1:
+                    console.log('Starting phase 2: originalDance');
                     phase2_originalDance();
                     break;
                 case 2:
+                    console.log('Starting phase 3: reflection');
                     phase3_reflection();
                     break;
                 case 3:
+                    console.log('Starting phase 4: mirroredDance');
                     phase4_mirroredDance();
                     break;
                 case 4:
+                    console.log('Starting phase 5: harmony');
                     phase5_harmony();
                     break;
                 default:
@@ -715,7 +724,17 @@
         function phase1_mirrorUnfolds() {
             updatePhase('镜界展开', '镜面正在展开');
             
+            // 显示坐标轴
+            g.select('.x-axis').transition().duration(1000).style('opacity', 1);
+            g.select('.y-axis').transition().duration(1000).style('opacity', 1);
+            
             const mirrorGroup = g.select('.mirror-group');
+            
+            // 添加调试信息
+            console.log('mirrorGroup:', mirrorGroup);
+            console.log('g:', g);
+            console.log('xScale:', xScale);
+            console.log('yScale:', yScale);
             
             // 绘制y=x镜面线
             const mirrorData = [];

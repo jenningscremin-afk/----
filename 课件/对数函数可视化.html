@@ -974,6 +974,7 @@
                 switch(event.data.action) {
                     case 'play':
                         isPlaying = true;
+                        autoMode = true;
                         if (event.data.speed) {
                             animationSpeed = event.data.speed;
                         }
@@ -981,6 +982,7 @@
                         break;
                     case 'pause':
                         isPlaying = false;
+                        autoMode = false;
                         if (animationId) cancelAnimationFrame(animationId);
                         break;
                     case 'reset':

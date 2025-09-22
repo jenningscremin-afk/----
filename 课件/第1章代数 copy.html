@@ -1371,7 +1371,7 @@
 </div>
 
 <script>
-        // === 基础导航功能 ===
+        // ========== 基础导航功能 ==========
         let slides, totalSlides, counter, currentSlide = 0;
         let currentAnimation;
 
@@ -1385,33 +1385,6 @@
             speed: 1,
             resumeCallback: null,
         };
-
-        function stopCurrentAnimation() {
-            if (currentAnimation && typeof currentAnimation.interrupt === 'function') {
-                currentAnimation.interrupt();
-            }
-            currentAnimation = null;
-        }
-
-        function applyCurrentAnimation(handlers) {
-            if (!handlers || typeof handlers !== 'object') {
-                currentAnimation = null;
-                return;
-            }
-
-            currentAnimation = {
-                pause: typeof handlers.pause === 'function' ? handlers.pause : () => {},
-                resume: typeof handlers.resume === 'function' ? handlers.resume : () => {},
-                setSpeed: typeof handlers.setSpeed === 'function' ? handlers.setSpeed : () => {},
-                interrupt: typeof handlers.interrupt === 'function' ? handlers.interrupt : () => {},
-            };
-
-            currentAnimation.setSpeed(animationState.speed);
-
-            if (animationState.isPaused) {
-                currentAnimation.pause();
-            }
-        }
 
         function nextSlide() {
             if (!slides || totalSlides === 0) return;
@@ -1482,19 +1455,6 @@
                 globalPlayerState.isPlaying = !globalPlayerState.isPlaying;
                 updatePlayPauseButton();
                 controlAllAnimations();
-                globalAnimationPlaying = !globalAnimationPlaying;
-                playPauseBtn.textContent = globalAnimationPlaying ? '暂停' : '播放';
-                playPauseBtn.className = globalAnimationPlaying ? 'global-control-btn' : 'global-control-btn pause';
-
-                // 更新动画状态
-                animationState.isPaused = !globalAnimationPlaying;
-                if (currentAnimation) {
-                    if (animationState.isPaused) {
-                        currentAnimation.pause();
-                    } else {
-                        currentAnimation.resume();
-                    }
-                }
             });
 
             // 速度按钮
@@ -1557,17 +1517,6 @@
                     } catch (e) {
                         console.log('无法控制iframe:', iframeId);
                     }
-                }
-            });
-
-            // 速度控制按钮
-            speedBtn.addEventListener('click', () => {
-                currentSpeedIndex = (currentSpeedIndex + 1) % speedOptions.length;
-                globalAnimationSpeed = speedOptions[currentSpeedIndex];
-                speedBtn.textContent = globalAnimationSpeed.toFixed(1) + 'x';
-                animationState.speed = globalAnimationSpeed;
-                if (currentAnimation) {
-                    currentAnimation.setSpeed(globalAnimationSpeed);
                 }
             });
 
@@ -1732,7 +1681,7 @@
             }, { passive: false });
         });
 
-        // === MathJax 渲染函数 ===
+        // ========== MathJax 渲染函数 ==========
         const renderMathJax = async (container) => {
             if (window.MathJax && window.MathJax.typesetPromise) {
                 try {
@@ -1756,7 +1705,7 @@
             }
         };
 
-        // === D3.js 辅助函数 ===
+        // ========== D3.js 辅助函数 ==========
         function setupD3(containerId, margins = {top: 40, right: 40, bottom: 40, left: 40}) {
             const container = d3.select(`#${containerId}`);
             if (container.empty()) {
@@ -1806,7 +1755,7 @@
                 .attr("stroke-dashoffset", 0);
         }
 
-        // === 可视化函数 ===
+        // ========== 可视化函数 ==========
         
         // 幻灯片3：常量与变量可视化
         function visualizeVariables(containerId) {
@@ -1849,65 +1798,13 @@
                 .attr("text-anchor", "middle")
                 .attr("font-size", "1.2em");
 
-            const leftX = width * 0.6;
-            const rightX = width * 0.9;
-            let movingRight = true;
-            let currentTransition = null;
-            let isAnimating = false;
-            let paused = animationState.isPaused;
-            let speed = animationState.speed || 1;
-            let active = true;
-
-            function cancelTransition() {
-                if (currentTransition) {
-                    variablePoint.interrupt();
-                    currentTransition = null;
-                }
-                isAnimating = false;
+            function movePoint() {
+                variablePoint.attr("cx", width * 0.6)
+                    .transition().duration(2000).attr("cx", width * 0.9)
+                    .transition().duration(2000).attr("cx", width * 0.6)
+                    .on("end", movePoint);
             }
-
-            function runTransition() {
-                if (!active || paused || isAnimating) return;
-                isAnimating = true;
-                const targetX = movingRight ? rightX : leftX;
-                currentTransition = variablePoint.transition()
-                    .duration(2000 / speed)
-                    .attr("cx", targetX)
-                    .on("end", () => {
-                        if (!active) return;
-                        currentTransition = null;
-                        isAnimating = false;
-                        movingRight = !movingRight;
-                        runTransition();
-                    });
-            }
-
-            runTransition();
-
-            return {
-                pause() {
-                    if (paused) return;
-                    paused = true;
-                    cancelTransition();
-                },
-                resume() {
-                    if (!active || !paused) return;
-                    paused = false;
-                    runTransition();
-                },
-                setSpeed(newSpeed) {
-                    speed = newSpeed || 1;
-                    if (!paused && active) {
-                        cancelTransition();
-                        runTransition();
-                    }
-                },
-                interrupt() {
-                    active = false;
-                    cancelTransition();
-                    g.selectAll("*").interrupt();
-                }
-            };
+            movePoint();
         }
 
         // 幻灯片4：区间可视化
@@ -1992,28 +1889,8 @@
                 .attr("height", 30)
                 .attr("fill", "#a2cffe");
 
-            const timeouts = new Set();
-            let paused = animationState.isPaused;
-            let speed = animationState.speed || 1;
-            let active = true;
-
-            function clearTimers() {
-                timeouts.forEach(id => clearTimeout(id));
-                timeouts.clear();
-            }
-
-            function scheduleTask(fn, baseDelay) {
-                const id = setTimeout(() => {
-                    timeouts.delete(id);
-                    if (!active || paused) return;
-                    fn();
-                }, baseDelay / speed);
-                timeouts.add(id);
-            }
-
+            // 动画：数字通过机器
             function animateNumber() {
-                if (!active || paused) return;
-
                 const input = Math.floor(Math.random() * 10) - 5;
                 const output = 2 * input + 1;
 
@@ -2026,18 +1903,13 @@
                     .style("font-size", "20px")
                     .style("font-weight", "bold");
 
-                const moveDuration = 1000 / speed;
-                const fadeInDuration = 500 / speed;
-                const holdDuration = 1500 / speed;
-                const fadeOutDuration = 500 / speed;
-
                 inputText.transition()
-                    .duration(moveDuration)
+                    .duration(1000)
                     .attr("y", machine.y)
                     .style("opacity", 0)
                     .remove();
 
-                scheduleTask(() => {
+                setTimeout(() => {
                     const outputText = svg.append("text")
                         .text(output)
                         .attr("x", machine.x)
@@ -2049,46 +1921,19 @@
                         .style("opacity", 0);
 
                     outputText.transition()
-                        .duration(fadeInDuration)
+                        .duration(500)
                         .style("opacity", 1)
                         .transition()
-                        .delay(holdDuration)
-                        .duration(fadeOutDuration)
+                        .delay(1500)
+                        .duration(500)
                         .style("opacity", 0)
                         .remove();
-                }, moveDuration);
-
-                scheduleTask(animateNumber, 3000);
+                }, 1000);
             }
 
+            // 每2秒运行一次动画
             animateNumber();
-
-            return {
-                pause() {
-                    if (paused) return;
-                    paused = true;
-                    clearTimers();
-                    svg.selectAll("*").interrupt();
-                },
-                resume() {
-                    if (!active || !paused) return;
-                    paused = false;
-                    animateNumber();
-                },
-                setSpeed(newSpeed) {
-                    speed = newSpeed || 1;
-                    if (!paused && active) {
-                        clearTimers();
-                        svg.selectAll("*").interrupt();
-                        animateNumber();
-                    }
-                },
-                interrupt() {
-                    active = false;
-                    clearTimers();
-                    svg.selectAll("*").interrupt();
-                }
-            };
+            setInterval(animateNumber, 3000);
         }
 
         // 幻灯片6：定义域可视化
@@ -2150,28 +1995,8 @@
                 .style("font-weight", "bold")
                 .style("fill", "#2c3e50");
 
-            const timeouts = new Set();
-            let paused = animationState.isPaused;
-            let speed = animationState.speed || 1;
-            let active = true;
-
-            function clearTimers() {
-                timeouts.forEach(id => clearTimeout(id));
-                timeouts.clear();
-            }
-
-            function scheduleNext() {
-                const id = setTimeout(() => {
-                    timeouts.delete(id);
-                    if (!active || paused) return;
-                    generateParticle();
-                }, 1500 / speed);
-                timeouts.add(id);
-            }
-
+            // 粒子动画
             function generateParticle() {
-                if (!active || paused) return;
-
                 const value = Math.floor(Math.random() * 12) - 1;
                 const isValid = value >= 2;
                 
@@ -2189,60 +2014,28 @@
                     .attr("fill", "white")
                     .style("font-size", "14px");
 
-                const travelDuration = 2000 / speed;
-                const exitDuration = 1000 / speed;
-
                 particle.transition()
-                    .duration(travelDuration)
+                    .duration(2000)
                     .attr("transform", `translate(${machine.x}, ${machine.y - machine.height/2 - 20})`);
 
                 if (isValid) {
                     particle.transition()
-                        .delay(travelDuration)
-                        .duration(exitDuration)
+                        .delay(2000)
+                        .duration(1000)
                         .attr("transform", `translate(${machine.x}, ${machine.y + machine.height/2 + 20})`)
                         .style("opacity", 0)
                         .remove();
                 } else {
                     particle.transition()
-                        .delay(travelDuration)
-                        .duration(exitDuration)
+                        .delay(2000)
+                        .duration(1000)
                         .attr("transform", `translate(${machine.x + 100}, ${machine.y - machine.height - 50})`)
                         .style("opacity", 0)
                         .remove();
                 }
-
-                scheduleNext();
             }
 
-            scheduleNext();
-
-            return {
-                pause() {
-                    if (paused) return;
-                    paused = true;
-                    clearTimers();
-                    svg.selectAll("*").interrupt();
-                },
-                resume() {
-                    if (!active || !paused) return;
-                    paused = false;
-                    generateParticle();
-                },
-                setSpeed(newSpeed) {
-                    speed = newSpeed || 1;
-                    if (!paused && active) {
-                        clearTimers();
-                        svg.selectAll("*").interrupt();
-                        generateParticle();
-                    }
-                },
-                interrupt() {
-                    active = false;
-                    clearTimers();
-                    svg.selectAll("*").interrupt();
-                }
-            };
+            setInterval(generateParticle, 1500);
         }
 
         // 幻灯片7：值域可视化
@@ -2300,28 +2093,8 @@
                 .style("font-weight", "bold")
                 .style("fill", "#2c3e50");
 
-            const timeouts = new Set();
-            let paused = animationState.isPaused;
-            let speed = animationState.speed || 1;
-            let active = true;
-
-            function clearTimers() {
-                timeouts.forEach(id => clearTimeout(id));
-                timeouts.clear();
-            }
-
-            function scheduleNext() {
-                const id = setTimeout(() => {
-                    timeouts.delete(id);
-                    if (!active || paused) return;
-                    generateParticle();
-                }, 2000 / speed);
-                timeouts.add(id);
-            }
-
+            // 粒子动画
             function generateParticle() {
-                if (!active || paused) return;
-
                 const value = (Math.random() * 6) - 3;
                 const outputValue = value * value;
 
@@ -2338,19 +2111,14 @@
                     .attr("dy", ".3em")
                     .attr("fill", "white");
 
-                const moveDuration = 1500 / speed;
-                const fadeDuration = 500 / speed;
-
                 particle.transition()
-                    .duration(moveDuration)
+                    .duration(1500)
                     .attr("transform", `translate(${machine.x - machine.width/2 - 20}, ${machine.y})`)
                     .transition()
-                    .duration(fadeDuration)
+                    .duration(500)
                     .style("opacity", 0)
                     .remove()
                     .on("end", () => {
-                        if (!active || paused) return;
-
                         const outputParticle = svg.append("g")
                             .attr("transform", `translate(${machine.x + machine.width/2 + 20}, ${machine.y})`);
                         
@@ -2365,52 +2133,16 @@
                             .attr("fill", "white");
 
                         outputParticle.transition()
-                            .duration(moveDuration)
-                            .attr("transform", `translate(${numLineX}, ${scaleY(outputValue)})`);
-
-                        outputParticle.select("circle")
+                            .duration(1500)
+                            .attr("transform", `translate(${numLineX}, ${scaleY(outputValue)})`)
                             .transition()
-                            .delay(moveDuration)
-                            .duration(fadeDuration)
-                            .attr("r", 5);
-
-                        outputParticle.transition()
-                            .delay(moveDuration)
-                            .duration(fadeDuration)
+                            .duration(500)
+                            .attr("r", 5)
                             .style("opacity", 0.7);
                     });
-
-                scheduleNext();
             }
 
-            scheduleNext();
-
-            return {
-                pause() {
-                    if (paused) return;
-                    paused = true;
-                    clearTimers();
-                    svg.selectAll("*").interrupt();
-                },
-                resume() {
-                    if (!active || !paused) return;
-                    paused = false;
-                    generateParticle();
-                },
-                setSpeed(newSpeed) {
-                    speed = newSpeed || 1;
-                    if (!paused && active) {
-                        clearTimers();
-                        svg.selectAll("*").interrupt();
-                        generateParticle();
-                    }
-                },
-                interrupt() {
-                    active = false;
-                    clearTimers();
-                    svg.selectAll("*").interrupt();
-                }
-            };
+            setInterval(generateParticle, 2000);
         }
 
         // 幻灯片8：基本初等函数星系可视化
@@ -2526,70 +2258,17 @@
 
             // 行星运行动画
             let angle = 0;
-            let frameId = null;
-            let lastTimestamp = null;
-            let paused = animationState.isPaused;
-            let speed = animationState.speed || 1;
-            let active = true;
-            const baseAngularVelocity = 0.6; // radian per second baseline
-
-            function step(timestamp) {
-                if (!active) return;
-
-                if (paused) {
-                    lastTimestamp = timestamp;
-                    frameId = requestAnimationFrame(step);
-                    return;
-                }
-
-                if (lastTimestamp === null) {
-                    lastTimestamp = timestamp;
-                }
-
-                const deltaSeconds = (timestamp - lastTimestamp) / 1000;
-                lastTimestamp = timestamp;
-                angle += deltaSeconds * baseAngularVelocity * speed;
-
+            function animate() {
+                angle += 0.01;
                 planets.attr("transform", d => {
                     const planetAngle = angle * d.speed;
                     const x = centerX + d.orbitRadius * Math.cos(planetAngle);
                     const y = centerY + d.orbitRadius * Math.sin(planetAngle);
                     return `translate(${x}, ${y})`;
                 });
-
-                frameId = requestAnimationFrame(step);
+                requestAnimationFrame(animate);
             }
-
-            if (!paused) {
-                frameId = requestAnimationFrame(step);
-            }
-
-            return {
-                pause() {
-                    if (paused) return;
-                    paused = true;
-                    if (frameId !== null) {
-                        cancelAnimationFrame(frameId);
-                        frameId = null;
-                    }
-                },
-                resume() {
-                    if (!active || !paused) return;
-                    paused = false;
-                    lastTimestamp = null;
-                    frameId = requestAnimationFrame(step);
-                },
-                setSpeed(newSpeed) {
-                    speed = newSpeed || 1;
-                },
-                interrupt() {
-                    active = false;
-                    if (frameId !== null) {
-                        cancelAnimationFrame(frameId);
-                        frameId = null;
-                    }
-                }
-            };
+            animate();
         }
 
         // 幻灯片10：指数定义可视化
@@ -2857,7 +2536,7 @@ const numerator = fraction.selectAll(".num").data("aa".split("")).enter().append
 const denominator = fraction.selectAll(".den").data("aaaaa".split("")).enter().append("text").attr("class", "den").text("a").attr("x", (d,i) => -60 + i * 25).attr("y", 25).attr("font-size", "1.5em");
 
 
-    // === 负指数部分 ===
+    // ========== 负指数部分 ==========
     const negGroup = g.append("g")
         .attr("transform", `translate(0, ${height/2 + 30})`);
 
@@ -3937,15 +3616,6 @@ function visualizeLogOperations(containerId) {
             { type: 'power', num1: 8, num2: 3, log1: 3, log2: 3, title: '幂运算', desc: '8³ = ?' }
         ];
 
-        let resumeIndex = 0;
-        let cycleRunning = false;
-
-        const getSpeed = () => animationState.speed || 1;
-        const scaledDuration = value => value / getSpeed();
-        const scaledDelay = value => value / getSpeed();
-
-        const waitForResume = () => Promise.resolve();
-
         async function animateOperation(op) {
             return new Promise(resolve => {
                 svg.selectAll(".animation-element").remove();
@@ -4183,26 +3853,24 @@ function visualizeLogOperations(containerId) {
             });
         }
 
-        async function cycleAnimations(startIndex = 0) {
-            if (cycleRunning) return;
-            cycleRunning = true;
+        async function cycleAnimations() {
             animationState.cycleActive = true;
-
-            let index = startIndex;
+            currentAnimation = {
+                interrupt: () => {
+                    animationState.cycleActive = false;
+                    svg.selectAll("*").interrupt();
+                }
+            };
 
             while (animationState.cycleActive) {
-                for (let i = index; i < operations.length; i++) {
+                for (let i = 0; i < operations.length; i++) {
                     if (!animationState.cycleActive) break;
                     animationState.currentOperationIndex = i;
                     await animateOperation(operations[i]);
                     if (!animationState.cycleActive) break;
                     await new Promise(resolve => setTimeout(resolve, scaledDelay(2000)));
                 }
-                index = 0;
             }
-
-            cycleRunning = false;
-            resumeIndex = animationState.currentOperationIndex || 0;
         }
 
         cycleAnimations();
@@ -4229,29 +3897,448 @@ function visualizeLogOperations(containerId) {
             childList: true,
             subtree: true
         });
+    }
 
-        const animationHandlers = {
-            pause() {
-                if (!animationState.cycleActive) return;
-                resumeIndex = animationState.currentOperationIndex || 0;
-                animationState.cycleActive = false;
-                svg.selectAll("*").interrupt();
-            },
-            resume() {
-                if (animationState.cycleActive) return;
-                cycleAnimations(resumeIndex);
-            },
-            setSpeed(newSpeed) {
-                animationState.speed = newSpeed || 1;
-            },
-            interrupt() {
-                animationState.cycleActive = false;
-                resumeIndex = 0;
-                svg.selectAll("*").interrupt();
+// 幻灯片21（显示第22页）：对数运算可视化 - 增强版
+function visualizeLogOperations(containerId) {
+    const setup = setupD3(containerId);
+    if (!setup) return;
+    const { svg, g, width, height } = setup;
+
+    // 清除之前的内容
+    g.selectAll("*").remove();
+
+    const innerWidth = width - 100;
+    const innerHeight = height - 100;
+
+    // 创建背景区域
+    const upperBg = g.append("rect")
+        .attr("x", 20)
+        .attr("y", 20)
+        .attr("width", innerWidth)
+        .attr("height", 120)
+        .attr("fill", "#ecf8ff")
+        .attr("rx", 10)
+        .style("opacity", 0.3);
+
+    const lowerBg = g.append("rect")
+        .attr("x", 20)
+        .attr("y", 200)
+        .attr("width", innerWidth)
+        .attr("height", 120)
+        .attr("fill", "#f0f9e8")
+        .attr("rx", 10)
+        .style("opacity", 0.3);
+
+    const numbers = [2, 4, 8, 16, 32, 64, 128, 256, 512];
+    const logs = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+
+    const scaleNumbers = d3.scalePoint().domain(numbers).range([50, innerWidth - 50]).padding(0.5);
+    const scaleLogs = d3.scalePoint().domain(logs).range([50, innerWidth - 50]).padding(0.5);
+
+    // 数字轴
+    const numberAxis = g.append("g").attr("class", "number-axis").attr("transform", "translate(0, 80)");
+    numberAxis.call(d3.axisBottom(scaleNumbers));
+    numberAxis.selectAll("text").style("font-size", "14px").style("font-weight", "bold");
+
+    // 为数字轴添加节点 - 显示2的幂次方
+    numbers.forEach((num, i) => {
+        const nodeG = numberAxis.append("g")
+            .attr("class", "number-node")
+            .attr("transform", `translate(${scaleNumbers(num)}, 0)`);
+        nodeG.append("circle")
+            .attr("r", 18)
+            .attr("cy", -30)
+            .attr("fill", "#3498db")
+            .attr("fill-opacity", 0.2)
+            .attr("stroke", "#3498db")
+            .attr("stroke-width", 2);
+
+        // 使用外置文本标签来显示公式
+        const textElement = nodeG.append("foreignObject")
+            .attr("x", -15)
+            .attr("y", -38)
+            .attr("width", 30)
+            .attr("height", 20)
+            .html(`<div style="font-size: 12px; text-align: center; color: #2c3e50; font-weight: bold;">$2^{${i+1}}$</div>`);
+
+        // 渲染这个节点的数学公式
+        if (window.MathJax && window.MathJax.typesetPromise) {
+            setTimeout(() => {
+                window.MathJax.typesetPromise([textElement.node()]).catch(error => {
+                    console.warn('MathJax rendering failed for number node:', error);
+                });
+            }, 50);
+        }
+    });
+
+    // 对数轴
+    const logAxis = g.append("g").attr("transform", `translate(0, 260)`).attr("class", "log-axis");
+    logAxis.call(d3.axisBottom(scaleLogs));
+    logAxis.selectAll("text").style("font-size", "14px").style("font-weight", "bold");
+
+    // 为对数轴添加节点
+    logs.forEach(log => {
+        const nodeG = logAxis.append("g")
+            .attr("class", "number-node")
+            .attr("transform", `translate(${scaleLogs(log)}, 0)`);
+        nodeG.append("rect")
+            .attr("x", -25)
+            .attr("y", -42)
+            .attr("width", 50)
+            .attr("height", 24)
+            .attr("fill", "#2ecc71")
+            .attr("fill-opacity", 0.2)
+            .attr("stroke", "#2ecc71")
+            .attr("stroke-width", 2)
+            .attr("rx", 5);
+
+        // 使用外置文本标签来显示公式
+        const textElement = nodeG.append("foreignObject")
+            .attr("x", -25)
+            .attr("y", -38)
+            .attr("width", 50)
+            .attr("height", 20)
+            .html(`<div style="font-size: 10px; text-align: center; color: #2c3e50; font-weight: bold;">$\\log_2(${Math.pow(2, log)})$</div>`);
+
+        // 渲染这个节点的数学公式
+        if (window.MathJax && window.MathJax.typesetPromise) {
+            setTimeout(() => {
+                window.MathJax.typesetPromise([textElement.node()]).catch(error => {
+                    console.warn('MathJax rendering failed for log node:', error);
+                });
+            }, 50);
+        }
+    });
+
+    g.append("text")
+        .attr("x", 20)
+        .attr("y", 40)
+        .attr("class", "world-description")
+        .attr("text-anchor", "start")
+        .style("font-weight", "bold")
+        .style("font-size", "18px")
+        .text("(乘法、除法、幂运算)");
+
+    g.append("text")
+        .attr("x", 20)
+        .attr("y", 220)
+        .attr("class", "world-description")
+        .attr("text-anchor", "start")
+        .style("font-weight", "bold")
+        .style("font-size", "18px")
+        .text("(加法、减法、乘法)");
+
+    // 添加垂直连接线（虚线）
+    numbers.forEach((num, i) => {
+        g.append("line")
+            .attr("x1", scaleNumbers(num))
+            .attr("y1", 100)
+            .attr("x2", scaleLogs(logs[i]))
+            .attr("y2", 220)
+            .attr("stroke", "#9b59b6")
+            .attr("stroke-width", 1)
+            .attr("stroke-dasharray", "3,3")
+            .style("opacity", 0.3);
+    });
+
+    // 渲染数学公式
+    setTimeout(async () => {
+        if (window.MathJax && window.MathJax.typesetPromise) {
+            try {
+                // 先渲染整个SVG
+                await window.MathJax.typesetPromise([svg.node()]);
+                // 再专门渲染SVG中的公式
+                await renderMathJaxInContainer(containerId);
+            } catch (error) {
+                console.warn('MathJax rendering failed:', error);
             }
-        };
+        }
+    }, 200);
 
-        return animationHandlers;
+    const operations = [
+        { type: 'multiply', num1: 16, num2: 32, log1: 4, log2: 5, title: '乘法运算', desc: '16 × 32 = ?' },
+        { type: 'divide', num1: 256, num2: 16, log1: 8, log2: 4, title: '除法运算', desc: '256 ÷ 16 = ?' },
+        { type: 'power', num1: 8, num2: 3, log1: 3, log2: 3, title: '幂运算', desc: '8³ = ?' }
+    ];
+
+    async function animateOperation(op) {
+        return new Promise(resolve => {
+            g.selectAll(".animation-element").remove();
+
+            let logResult, numResult, opSymbol, logOpSymbol, logFormula, numFormula;
+            switch(op.type) {
+                case 'multiply':
+                    logResult = op.log1 + op.log2;
+                    numResult = op.num1 * op.num2;
+                    opSymbol = '×';
+                    logOpSymbol = '+';
+                    logFormula = `${op.num1}\\times ${op.num2}=2^{${op.log1}}\\times 2^{${op.log2}}=2^{(${op.log1}+${op.log2})}=2^{${logResult}}=${numResult}`;
+                    numFormula = `${op.num1} \\times ${op.num2} = ${numResult}`;
+                    break;
+                case 'divide':
+                    logResult = op.log1 - op.log2;
+                    numResult = op.num1 / op.num2;
+                    opSymbol = '÷';
+                    logOpSymbol = '−';
+                    logFormula = `${op.num1}\\div ${op.num2}=\\frac{2^{${op.log1}}}{2^{${op.log2}}}=2^{(${op.log1}-${op.log2})}=2^{${logResult}}=${numResult}`;
+                    numFormula = `${op.num1} \\div ${op.num2} = ${numResult}`;
+                    break;
+                case 'power':
+                    logResult = op.log1 * op.log2;
+                    numResult = Math.pow(op.num1, op.num2);
+                    opSymbol = '^';
+                    logOpSymbol = '×';
+                    logFormula = `${op.num1}^{${op.num2}}=(2^{${op.log1}})^{${op.num2}}=2^{${op.log1}\\times ${op.log2}}=2^{${logResult}}=${numResult}`;
+                    numFormula = `${op.num1}^{${op.num2}} = ${numResult}`;
+                    break;
+            }
+
+            const animGroup = g.append("g").attr("class", "animation-element");
+
+            // 问题框
+            const questionBox = animGroup.append("g");
+            questionBox.append("rect")
+                .attr("x", innerWidth/2 - 150)
+                .attr("y", 20)
+                .attr("width", 300)
+                .attr("height", 50)
+                .attr("fill", "#e8f4f8")
+                .attr("stroke", "#2980b9")
+                .attr("stroke-width", 2)
+                .attr("rx", 8);
+
+            const mainText = questionBox.append("text")
+                .attr("x", innerWidth/2)
+                .attr("y", 50)
+                .attr("text-anchor", "middle")
+                .style("font-size", "24px")
+                .style("font-weight", "bold")
+                .style("fill", "#2980b9");
+
+            async function step1() {
+                mainText.text(op.desc)
+                    .style("opacity", 0)
+                    .transition().duration(1000).style("opacity", 1);
+                await new Promise(resolve => setTimeout(resolve, 1000));
+            }
+
+            async function step2() {
+                // 创建移动的圆点
+                const mover1 = animGroup.append("circle")
+                    .attr("r", 10)
+                    .attr("fill", "#e67e22")
+                    .attr("cx", scaleNumbers(op.num1))
+                    .attr("cy", 80)
+                    .attr("class", "highlight-path");
+
+                let mover2;
+                if (op.type !== 'power') {
+                    mover2 = animGroup.append("circle")
+                        .attr("r", 10)
+                        .attr("fill", "#3498db")
+                        .attr("cx", scaleNumbers(op.num2))
+                        .attr("cy", 80)
+                        .attr("class", "highlight-path");
+                }
+
+                // 下移动画
+                const pathDown1 = animGroup.append("path")
+                    .attr("d", `M${scaleNumbers(op.num1)},80 Q${scaleNumbers(op.num1)},140 ${scaleLogs(op.log1)},260`)
+                    .attr("stroke", "#e67e22")
+                    .attr("stroke-width", 2)
+                    .attr("fill", "none")
+                    .attr("class", "highlight-path");
+
+                const len1 = pathDown1.node().getTotalLength();
+                pathDown1.attr("stroke-dasharray", len1 + " " + len1)
+                    .attr("stroke-dashoffset", len1)
+                    .transition().delay(500).duration(1000).attr("stroke-dashoffset", 0);
+
+                mover1.transition().delay(500).duration(1000)
+                    .attr("cx", scaleLogs(op.log1))
+                    .attr("cy", 260);
+
+                if (mover2) {
+                    const pathDown2 = animGroup.append("path")
+                        .attr("d", `M${scaleNumbers(op.num2)},80 Q${scaleNumbers(op.num2)},140 ${scaleLogs(op.log2)},260`)
+                        .attr("stroke", "#3498db")
+                        .attr("stroke-width", 2)
+                        .attr("fill", "none")
+                        .attr("class", "highlight-path");
+
+                    const len2 = pathDown2.node().getTotalLength();
+                    pathDown2.attr("stroke-dasharray", len2 + " " + len2)
+                        .attr("stroke-dashoffset", len2)
+                        .transition().delay(500).duration(1000).attr("stroke-dashoffset", 0);
+
+                    mover2.transition().delay(500).duration(1000)
+                        .attr("cx", scaleLogs(op.log2))
+                        .attr("cy", 260);
+                }
+
+                await new Promise(resolve => setTimeout(resolve, 1500));
+            }
+
+            async function step3() {
+                // 显示对数公式
+                const formulaG = animGroup.append("g");
+                formulaG.append("rect")
+                    .attr("x", innerWidth/2 - 180)
+                    .attr("y", 320)
+                    .attr("width", 360)
+                    .attr("height", 40)
+                    .attr("fill", "#e8f4f8")
+                    .attr("stroke", "#2980b9")
+                    .attr("stroke-width", 2)
+                    .attr("rx", 8);
+
+                let latexFormula = (logFormula || "")
+                    .replace(/×/g, "\\times")
+                    .replace(/÷/g, "\\div")
+                    .replace(/−/g, "-");
+
+                const formulaFO = formulaG.append("foreignObject")
+                    .attr("x", innerWidth/2 - 180)
+                    .attr("y", 320)
+                    .attr("width", 360)
+                    .attr("height", 40)
+                    .style("opacity", 0);
+
+                formulaFO.html(`<div xmlns="http://www.w3.org/1999/xhtml" style="font-size:16px;font-weight:bold;color:#2980b9;text-align:center;line-height:40px;">$${latexFormula}$</div>`);
+
+                if (window.MathJax && window.MathJax.typesetPromise) {
+                    try {
+                        await window.MathJax.typesetPromise([formulaFO.node()]);
+        } catch (error) {
+                        console.warn('MathJax rendering failed:', error);
+                    }
+                }
+
+                formulaFO.transition().duration(1000).style("opacity", 1);
+                await new Promise(resolve => setTimeout(resolve, 1500));
+            }
+
+            async function step4() {
+                // 移动到结果位置
+                const mover1 = animGroup.select("circle");
+                mover1.transition().duration(1000)
+                    .attr("cx", scaleLogs(logResult))
+                    .attr("fill", "#2ecc71");
+
+                const mover2 = animGroup.selectAll("circle").filter((d, i) => i === 1);
+                if (!mover2.empty()) {
+                    mover2.transition().duration(1000)
+                        .attr("cx", scaleLogs(logResult))
+                        .style("opacity", 0);
+                }
+
+                await new Promise(resolve => setTimeout(resolve, 1500));
+            }
+
+            async function step5() {
+                // 上移动画
+                const pathUp = animGroup.append("path")
+                    .attr("d", `M${scaleLogs(logResult)},260 Q${scaleLogs(logResult)},140 ${scaleNumbers(numResult)},80`)
+                    .attr("stroke", "#2ecc71")
+                    .attr("stroke-width", 2)
+                    .attr("fill", "none")
+                    .attr("class", "highlight-path");
+
+                const lenUp = pathUp.node().getTotalLength();
+                pathUp.attr("stroke-dasharray", lenUp + " " + lenUp)
+                    .attr("stroke-dashoffset", lenUp)
+                    .transition().duration(1000).attr("stroke-dashoffset", 0);
+
+                const mover1 = animGroup.select("circle");
+                mover1.transition().duration(1000)
+                    .attr("cy", 80)
+                    .attr("cx", scaleNumbers(numResult));
+
+                await new Promise(resolve => setTimeout(resolve, 1000));
+            }
+
+            async function step6() {
+                // 显示最终结果
+                const resultBox = animGroup.append("g");
+                resultBox.append("rect")
+                    .attr("x", innerWidth/2 + 300)
+                    .attr("y", 20)
+                    .attr("width", 200)
+                    .attr("height", 50)
+                    .attr("fill", "#2ecc71")
+                    .attr("stroke", "#27ae60")
+                    .attr("stroke-width", 2)
+                    .attr("rx", 8)
+                    .style("opacity", 0)
+                    .transition().duration(1000).style("opacity", 1);
+
+                resultBox.append("text")
+                    .attr("x", innerWidth/2 + 400)
+                    .attr("y", 50)
+                    .attr("text-anchor", "middle")
+                    .style("font-size", "26px")
+                    .style("font-weight", "bold")
+                    .style("fill", "white")
+                    .text(`答案: ${numResult}`)
+                    .style("opacity", 0)
+                    .transition().duration(1000).style("opacity", 1);
+
+                await new Promise(resolve => setTimeout(resolve, 2000));
+                resolve();
+            }
+
+            // 依次执行所有步骤
+            (async () => {
+                await step1();
+                await step2();
+                await step3();
+                await step4();
+                await step5();
+                await step6();
+            })();
+        });
+    }
+
+    // 循环播放动画
+    let currentOpIndex = 0;
+    function cycleAnimations() {
+        if (currentOpIndex < operations.length) {
+            animateOperation(operations[currentOpIndex]).then(() => {
+                currentOpIndex = (currentOpIndex + 1) % operations.length;
+                setTimeout(cycleAnimations, 2000);
+            });
+        }
+    }
+
+    // 开始动画
+    setTimeout(cycleAnimations, 1000);
+    
+    // 添加解释说明（纯文本描述）
+    const explanationFO = g.append("foreignObject")
+        .attr("x", 50)
+        .attr("y", height - 120)
+        .attr("width", width - 100)
+        .attr("height", 500)
+        .html(`<div style="color: #2c3e50; font-size: 18px; line-height: 1.8; text-align: center; padding: 20px;">
+            <div style="font-size: 20px; color: #34495e;">
+                如果我们有一把尺子，上面全部是关于2的幂次方（2¹, 2², 2³, 2⁴...），那么对数就是这把尺子的"刻度读数"。
+                当我们要计算16×32时，我们不需要直接相乘，而是先找到16和32在尺子上的位置（分别是4和5），
+                然后简单相加得到9，最后再回到尺子上找到2⁹=512。这就是对数将复杂乘法转化为简单加法的神奇过程！
+            </div>
+        </div>`)
+        .style("opacity", 0);
+
+    // 延迟显示解释，确保动画先开始
+    explanationFO.transition()
+        .delay(3000)
+        .duration(1000)
+        .style("opacity", 1);
+    
+    // 渲染MathJax
+    setTimeout(() => {
+        renderMathJaxInContainer(containerId);
+    }, 100);
 }
 
 // 幻灯片24：函数性质介绍可视化
@@ -5324,9 +5411,12 @@ function visualizeCompositeMachine(containerId) {
 
         // 运行可视化函数映射
         function runVisualization(slideIndex) {
-            stopCurrentAnimation();
+            // 清理之前的动画
+            if (currentAnimation && typeof currentAnimation.interrupt === 'function') {
+                currentAnimation.interrupt();
+                currentAnimation = null;
+            }
 
-            let handlers;
 
             switch (slideIndex) {
                 case 3: visualizeVariables('vis-variables'); break;
@@ -5358,40 +5448,10 @@ case 31: visualizeBoundedness('vis-boundedness'); break;
 case 32: visualizeInverseMachine('vis-inverse-machine'); break;
 case 33: visualizeInverseGraph('vis-inverse-graph'); break;
 case 35: visualizeCompositeMachine('vis-composite-machine'); break;
-                case 3: handlers = visualizeVariables('vis-variables'); break;
-                case 4: handlers = visualizeIntervals('vis-intervals'); break;
-                case 5: handlers = visualizeFunctionMachine('vis-function-machine'); break;
-                case 6: handlers = visualizeDomain('vis-domain'); break;
-                case 7: handlers = visualizeRange('vis-range'); break;
-                case 8: handlers = visualizeElementaryIntro('vis-elementary-intro'); break;
-                case 10: handlers = visualizeExponents('vis-exponents'); break;
-                case 11: handlers = visualizeExponentRules1('vis-exponent-rules-1'); break;
-                case 12: handlers = visualizeExponentRules2('vis-exponent-rules-2'); break;
-                case 13: handlers = visualizeSpecialExponentsNew('vis-special-exponents'); break;
-                case 14: handlers = visualizeFractionalExponents('vis-fractional-exponents'); break;
-                case 16: handlers = visualizeLogHistory('vis-log-history'); break;
-                case 17: handlers = visualizeLogDefinition('vis-log-definition'); break;
-                case 19: handlers = visualizeLogProperties('vis-log-properties'); break;
-                case 20: handlers = visualizeCommonLogs('vis-common-logs'); break;
-                // 在runVisualization函数的switch语句中添加：
-                case 21: handlers = visualizeLogOperations('vis-log-operations'); break;
-                case 24: handlers = visualizePropertiesIntro('vis-properties-intro'); break;
-                case 25: handlers = visualizeMonotonicityInc('vis-monotonicity-inc'); break;
-                case 26: handlers = visualizeMonotonicityDec('vis-monotonicity-dec'); break;
-                case 27: handlers = visualizeMonotonicityIntervals('vis-monotonicity-intervals'); break;
-                case 28: handlers = visualizeParityIntro('vis-parity-intro'); break;
-                case 29: handlers = visualizeEvenFunction('vis-even-function'); break;
-                case 30: handlers = visualizeOddFunction('vis-odd-function'); break;
-                case 31: handlers = visualizeBoundedness('vis-boundedness'); break;
-                case 32: handlers = visualizeInverseMachine('vis-inverse-machine'); break;
-                case 33: handlers = visualizeInverseGraph('vis-inverse-graph'); break;
-                case 35: handlers = visualizeCompositeMachine('vis-composite-machine'); break;
             }
-
-            applyCurrentAnimation(handlers);
         }
 
-        // 幂函数可视化函数 - 重新设计
+        // 幂函数可视化函数
         function visualizePowerFunction(containerId) {
             const container = document.getElementById(containerId);
             if (!container) return;
@@ -5402,7 +5462,7 @@ case 35: visualizeCompositeMachine('vis-composite-machine'); break;
             // 创建SVG
             const width = container.offsetWidth;
             const height = container.offsetHeight;
-            const margin = { top: 40, right: 40, bottom: 40, left: 40 };
+            const margin = { top: 60, right: 40, bottom: 60, left: 60 };
             const plotWidth = width - margin.left - margin.right;
             const plotHeight = height - margin.top - margin.bottom;
 
@@ -5411,164 +5471,180 @@ case 35: visualizeCompositeMachine('vis-composite-machine'); break;
                 .attr('width', width)
                 .attr('height', height);
 
-            // 创建主绘图组，原点在中心
             const g = svg.append('g')
-                .attr('transform', `translate(${width/2}, ${height/2})`);
+                .attr('transform', `translate(${margin.left}, ${margin.top})`);
 
-            // 设置比例尺 - 原点在中心
+            // 设置比例尺
             const xScale = d3.scaleLinear()
                 .domain([-10, 10])
-                .range([-plotWidth/2, plotWidth/2]);
+                .range([0, plotWidth]);
 
             const yScale = d3.scaleLinear()
                 .domain([-10, 10])
-                .range([plotHeight/2, -plotHeight/2]);
+                .range([plotHeight, 0]);
+
+            // 添加坐标轴
+            g.append('g')
+                .attr('class', 'x-axis')
+                .attr('transform', `translate(0, ${plotHeight})`)
+                .call(d3.axisBottom(xScale).ticks(10));
+
+            g.append('g')
+                .attr('class', 'y-axis')
+                .call(d3.axisLeft(yScale).ticks(10));
+
+            // 添加网格线
+            g.append('g')
+                .attr('class', 'grid')
+                .attr('transform', `translate(0, ${plotHeight})`)
+                .call(d3.axisBottom(xScale)
+                    .tickSize(-plotHeight)
+                    .tickFormat('')
+                )
+                .style('opacity', 0.3);
+
+            g.append('g')
+                .attr('class', 'grid')
+                .call(d3.axisLeft(yScale)
+                    .tickSize(-plotWidth)
+                    .tickFormat('')
+                )
+                .style('opacity', 0.3);
+
+            // 添加滑轮控制
+            const sliderContainer = g.append('g')
+                .attr('class', 'slider-container')
+                .attr('transform', `translate(${plotWidth/2 - 100}, ${plotHeight + 20})`);
+
+            sliderContainer.append('text')
+                .attr('class', 'slider-label')
+                .attr('x', 0)
+                .attr('y', -5)
+                .style('text-anchor', 'middle')
+                .style('font-size', '14px')
+                .style('fill', '#2c3e50')
+                .text('指数 a = ');
+
+            const slider = sliderContainer.append('input')
+                .attr('type', 'range')
+                .attr('min', -3)
+                .attr('max', 3)
+                .attr('step', 0.1)
+                .attr('value', 1)
+                .style('width', '200px')
+                .style('margin', '0 10px');
+
+            const valueDisplay = sliderContainer.append('text')
+                .attr('class', 'value-display')
+                .attr('x', 100)
+                .attr('y', -5)
+                .style('text-anchor', 'middle')
+                .style('font-size', '14px')
+                .style('font-weight', 'bold')
+                .style('fill', '#e74c3c')
+                .text('1.0');
+
+            // 添加标题
+            g.append('text')
+                .attr('class', 'chart-title')
+                .attr('x', plotWidth / 2)
+                .attr('y', -10)
+                .style('text-anchor', 'middle')
+                .style('font-size', '24px')
+                .style('font-weight', 'bold')
+                .style('fill', '#2c3e50')
+                .text('幂函数 y = x^a');
+
+            // 添加坐标轴标签
+            g.append('text')
+                .attr('class', 'axis-label')
+                .attr('x', plotWidth / 2)
+                .attr('y', plotHeight + 35)
+                .style('text-anchor', 'middle')
+                .style('font-size', '14px')
+                .text('x');
+
+            g.append('text')
+                .attr('class', 'axis-label')
+                .attr('x', -25)
+                .attr('y', plotHeight / 2)
+                .style('text-anchor', 'middle')
+                .style('font-size', '14px')
+                .attr('transform', 'rotate(-90, -25, ' + plotHeight / 2 + ')')
+                .text('y');
+
+            // 创建线条生成器
+            const line = d3.line()
+                .x(d => xScale(d.x))
+                .y(d => yScale(d.y))
+                .curve(d3.curveLinear);
 
             // 当前指数值
             let currentExponent = 1;
 
-            // 绘制坐标轴
-            function drawAxes() {
-                // 清除之前的坐标轴
-                g.selectAll('.axis').remove();
-                g.selectAll('.grid').remove();
-
-                // X轴
-                g.append('line')
-                    .attr('class', 'axis x-axis')
-                    .attr('x1', xScale(-10))
-                    .attr('x2', xScale(10))
-                    .attr('y1', 0)
-                    .attr('y2', 0)
-                    .attr('stroke', '#333')
-                    .attr('stroke-width', 2);
-
-                // Y轴
-                g.append('line')
-                    .attr('class', 'axis y-axis')
-                    .attr('x1', 0)
-                    .attr('x2', 0)
-                    .attr('y1', yScale(-10))
-                    .attr('y2', yScale(10))
-                    .attr('stroke', '#333')
-                    .attr('stroke-width', 2);
-
-                // 网格线
-                for (let i = -10; i <= 10; i += 2) {
-                    if (i !== 0) {
-                        // 垂直网格线
-                        g.append('line')
-                            .attr('class', 'grid')
-                            .attr('x1', xScale(i))
-                            .attr('x2', xScale(i))
-                            .attr('y1', yScale(-10))
-                            .attr('y2', yScale(10))
-                            .attr('stroke', '#ddd')
-                            .attr('stroke-width', 1)
-                            .style('opacity', 0.5);
-
-                        // 水平网格线
-                        g.append('line')
-                            .attr('class', 'grid')
-                            .attr('x1', xScale(-10))
-                            .attr('x2', xScale(10))
-                            .attr('y1', yScale(i))
-                            .attr('y2', yScale(i))
-                            .attr('stroke', '#ddd')
-                            .attr('stroke-width', 1)
-                            .style('opacity', 0.5);
-                    }
-                }
-
-                // 坐标轴标签
-                g.append('text')
-                    .attr('class', 'axis-label')
-                    .attr('x', xScale(9))
-                    .attr('y', -10)
-                    .style('text-anchor', 'middle')
-                    .style('font-size', '14px')
-                    .style('fill', '#333')
-                    .text('x');
-
-                g.append('text')
-                    .attr('class', 'axis-label')
-                    .attr('x', 10)
-                    .attr('y', yScale(9))
-                    .style('text-anchor', 'middle')
-                    .style('font-size', '14px')
-                    .style('fill', '#333')
-                    .text('y');
-            }
-
             // 绘制幂函数
             function drawPowerFunction(exponent) {
-                // 清除之前的函数
+                // 移除之前的线条
                 g.selectAll('.power-curve').remove();
                 g.selectAll('.power-points').remove();
 
-                // 生成数据点 - 使用更小步长让曲线更圆润
+                // 生成数据点 - 修复x轴范围问题
                 const data = [];
                 for (let x = -10; x <= 10; x += 0.1) {
                     let y;
-                    
                     if (exponent === 0) {
-                        y = 1; // x^0 = 1
+                        y = 1;
                     } else if (exponent > 0) {
+                        // 正指数：x可以是负数
                         if (x < 0 && exponent % 1 !== 0) {
-                            continue; // 负数的小数次方无意义
+                            y = NaN; // 负数的小数次方无意义
                         } else {
                             y = Math.pow(x, exponent);
                         }
                     } else {
+                        // 负指数
                         if (x === 0) {
-                            continue; // 0的负次方无意义
+                            y = NaN; // 0的负次方无意义
                         } else {
                             y = Math.pow(x, exponent);
                         }
                     }
                     
-                    if (!isNaN(y) && isFinite(y)) {
+                    if (!isNaN(y) && y >= -10 && y <= 10) {
                         data.push({ x, y });
                     }
                 }
 
-                // 绘制曲线 - 使用平滑插值让曲线更圆润
-                const line = d3.line()
-                    .x(d => xScale(d.x))
-                    .y(d => yScale(d.y))
-                    .curve(d3.curveCardinal);
-
+                // 绘制曲线
                 g.append('path')
                     .attr('class', 'power-curve')
                     .attr('d', line(data))
                     .attr('fill', 'none')
                     .attr('stroke', '#e74c3c')
-                    .attr('stroke-width', 4)
-                    .style('stroke-linecap', 'round')
-                    .style('stroke-linejoin', 'round');
+                    .attr('stroke-width', 3)
+                    .style('opacity', 0);
 
                 // 添加关键点
                 const keyPoints = [];
                 for (let x = -10; x <= 10; x += 1) {
                     let y;
-                    
                     if (exponent === 0) {
                         y = 1;
                     } else if (exponent > 0) {
                         if (x < 0 && exponent % 1 !== 0) {
-                            continue;
+                            y = NaN;
                         } else {
                             y = Math.pow(x, exponent);
                         }
                     } else {
                         if (x === 0) {
-                            continue;
+                            y = NaN;
                         } else {
                             y = Math.pow(x, exponent);
                         }
                     }
                     
-                    if (!isNaN(y) && isFinite(y)) {
+                    if (!isNaN(y) && y >= -10 && y <= 10) {
                         keyPoints.push({ x, y });
                     }
                 }
@@ -5580,82 +5656,39 @@ case 35: visualizeCompositeMachine('vis-composite-machine'); break;
                     .attr('class', 'power-points')
                     .attr('cx', d => xScale(d.x))
                     .attr('cy', d => yScale(d.y))
-                    .attr('r', 3)
-                    .attr('fill', '#e74c3c');
+                    .attr('r', 4)
+                    .attr('fill', '#e74c3c')
+                    .style('opacity', 0);
 
-                // 函数标签 - 使用MathJax渲染
+                // 添加函数标签
                 g.selectAll('.function-label').remove();
-                const functionLabel = g.append('foreignObject')
+                g.append('text')
                     .attr('class', 'function-label')
-                    .attr('x', xScale(6))
-                    .attr('y', yScale(8))
-                    .attr('width', 80)
-                    .attr('height', 30)
-                    .html(`<div style="font-size: 16px; font-weight: bold; color: #e74c3c; text-align: center;">$y = x^{${exponent.toFixed(0)}}$</div>`);
-                
-                // 渲染MathJax
-                if (window.MathJax && window.MathJax.typesetPromise) {
-                    window.MathJax.typesetPromise([functionLabel.node()]).catch(error => {
-                        console.warn('MathJax rendering failed for function label:', error);
-                    });
-                }
+                    .attr('x', plotWidth - 10)
+                    .attr('y', 20)
+                    .style('text-anchor', 'end')
+                    .style('font-size', '16px')
+                    .style('font-weight', 'bold')
+                    .style('fill', '#e74c3c')
+                    .text(`y = x^${exponent.toFixed(1)}`);
+
+                // 直接显示
+                g.selectAll('.power-curve')
+                    .style('opacity', 1);
+
+                g.selectAll('.power-points')
+                    .style('opacity', 1);
             }
 
-            // 滑轮控制
-            const sliderContainer = d3.select(container)
-                .append('div')
-                .style('position', 'absolute')
-                .style('bottom', '20px')
-                .style('left', '50%')
-                .style('transform', 'translateX(-50%)')
-                .style('background', 'rgba(255,255,255,0.9)')
-                .style('padding', '10px 20px')
-                .style('border-radius', '10px')
-                .style('box-shadow', '0 2px 10px rgba(0,0,0,0.1)')
-                .style('z-index', '1001');
-
-            sliderContainer.append('label')
-                .style('display', 'block')
-                .style('text-align', 'center')
-                .style('margin-bottom', '5px')
-                .style('font-size', '14px')
-                .style('color', '#2c3e50')
-                .text('指数 n = ');
-
-            const slider = sliderContainer.append('input')
-                .attr('type', 'range')
-                .attr('min', 0)
-                .attr('max', 10)
-                .attr('step', 1)
-                .attr('value', 1)
-                .style('width', '200px')
-                .style('margin', '0 10px');
-
-            const valueDisplay = sliderContainer.append('span')
-                .style('font-size', '14px')
-                .style('font-weight', 'bold')
-                .style('color', '#e74c3c')
-                .text('1');
-
-            // 滑轮事件
+            // 滑轮事件处理
             slider.on('input', function() {
                 currentExponent = parseFloat(this.value);
-                valueDisplay.text(currentExponent.toFixed(0));
+                valueDisplay.text(currentExponent.toFixed(1));
                 drawPowerFunction(currentExponent);
             });
 
-            // 初始化
-            drawAxes();
+            // 初始绘制
             drawPowerFunction(currentExponent);
-            
-            // 确保MathJax公式正确渲染
-            setTimeout(() => {
-                if (window.MathJax && window.MathJax.typesetPromise) {
-                    window.MathJax.typesetPromise([container]).catch(error => {
-                        console.warn('MathJax rendering failed for power function:', error);
-                    });
-                }
-            }, 100);
         }
     </script>
 </body>
