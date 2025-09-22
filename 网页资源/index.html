@@ -2013,6 +2013,11 @@ function loadContent(url, title) {
     closeAllPanels();
 }
 
+// 直接跳转函数
+function directLoadContent(url, title) {
+    window.location.href = url;
+}
+
 function getChineseTitle(url) {
     // 缓存正则表达式
     if (!getChineseTitle.regex) {
@@ -2230,6 +2235,11 @@ window.addEventListener('DOMContentLoaded', () => {
             console.error('加载反馈数据失败:', e); 
         }
     }
+    
+    // 自动弹出目录
+    setTimeout(() => {
+        toggleDirectory();
+    }, 500);
 });
 </script>
 

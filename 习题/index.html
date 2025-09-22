@@ -687,6 +687,13 @@
         .welcome-item:nth-child(5) { animation-delay: 0.25s; }
         .welcome-item:nth-child(6) { animation-delay: 0.3s; }
         .welcome-item:nth-child(7) { animation-delay: 0.35s; }
+        
+        @keyframes fadeInOut {
+            0% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+            20% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+            80% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+            100% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+        }
     </style>
 </head>
 
@@ -1075,9 +1082,9 @@
         const chapter = chapters[categoryId];
         if (!chapter) return;
         
-        // 目录点击：预览模式
+        // 目录点击：直接跳转
         currentIndex = categoryId;
-        previewContent(chapter.url, chapter.title);
+        loadContent(chapter.url, chapter.title);
     }
 
     function goPrev() {
@@ -1086,7 +1093,7 @@
             currentIndex--;
             const chapter = Object.values(chapters)[currentIndex];
             console.log('上一页:', chapter);
-            previewContent(chapter.url, chapter.title);
+            loadContent(chapter.url, chapter.title);
         } else {
             showNavigationHint('已经是第一章了');
         }
@@ -1098,7 +1105,7 @@
             currentIndex++;
             const chapter = Object.values(chapters)[currentIndex];
             console.log('下一页:', chapter);
-            previewContent(chapter.url, chapter.title);
+            loadContent(chapter.url, chapter.title);
         } else {
             showNavigationHint('已经是最后一章了');
         }
@@ -1119,6 +1126,33 @@
 
     function goMainSite() {
         window.location.href = '../index.html';
+    }
+
+    function showNavigationHint(message) {
+        // 创建临时提示
+        const hint = document.createElement('div');
+        hint.style.cssText = `
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.8);
+            color: var(--space-accent);
+            padding: 15px 25px;
+            border-radius: 10px;
+            border: 1px solid var(--space-accent);
+            z-index: 1002;
+            font-size: 14px;
+            animation: fadeInOut 2s ease forwards;
+        `;
+        hint.textContent = message;
+        document.body.appendChild(hint);
+        
+        setTimeout(() => {
+            if (hint.parentNode) {
+                hint.parentNode.removeChild(hint);
+            }
+        }, 2000);
     }
 
     function showQuickNav() {
@@ -1305,7 +1339,7 @@
                             <h1>智能题库 - 章节列表</h1>
                             <div class="chapter-grid">
                                 ${Object.values(chapters).map((chapter, index) => `
-                                    <div class="chapter-item" onclick="parent.previewContent('${chapter.url}', '${chapter.title}'); parent.currentIndex = ${index};">
+                                    <div class="chapter-item" onclick="parent.loadContent('${chapter.url}', '${chapter.title}'); parent.currentIndex = ${index};">
                                         <div class="chapter-title">${chapter.title}</div>
                                         <div class="chapter-desc">点击开始练习</div>
                                     </div>
@@ -1367,6 +1401,11 @@
         initSpaceBackground(); // 默认启动星空主题
         initParticleField(); // 启动粒子场动画
         initKeyboardNavigation();
+        
+        // 自动弹出目录
+        setTimeout(() => {
+            showChapterList();
+        }, 500);
     });
 </script>
 </body>

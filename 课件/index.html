@@ -1209,8 +1209,8 @@ function exitFullscreen() {
 }
 
 function updateNavigationButtons() {
-    const prevBtn = document.querySelector('.nav-btn[onclick="goPrev()"]');
-    const nextBtn = document.querySelector('.nav-btn[onclick="goNext()"]');
+    const prevBtn = document.querySelector('.nav-action-btn[onclick="goPrev()"]');
+    const nextBtn = document.querySelector('.nav-action-btn[onclick="goNext()"]');
     
     if (prevBtn) {
         prevBtn.disabled = (currentIndex <= 0);
@@ -1233,9 +1233,9 @@ function showChapter(categoryId) {
     const chapter = chapters[categoryId];
     if (!chapter) return;
 
-    // 目录点击：预览模式
+    // 目录点击：直接跳转
     currentIndex = categoryId;
-    previewContent(chapter.url, chapter.title);
+    loadContent(chapter.url, chapter.title);
 }
 
 function showChapterList() {
@@ -1345,7 +1345,8 @@ function showChapterList() {
         `;
         item.onclick = () => {
             currentIndex = parseInt(id);
-            previewContent(chapter.url, chapter.title);
+            loadContent(chapter.url, chapter.title); // 直接跳转而不是预览
+            chapterMenu.remove(); // 关闭目录面板
         };
         item.onmouseover = () => {
             item.style.background = 'rgba(255, 255, 255, 0.1)';
@@ -1371,6 +1372,7 @@ function showChapterList() {
 function closeAllPanels() {
     document.getElementById('chapterPanel')?.classList.remove('active');
     document.getElementById('feedbackMenu')?.classList.remove('active');
+    document.getElementById('chapterMenu')?.remove();
     currentOpenChapter = -1;
 }
 
@@ -1386,7 +1388,7 @@ function goPrev() {
         currentIndex--;
         const chapter = Object.values(chapters)[currentIndex];
         console.log('上一页:', chapter);
-        previewContent(chapter.url, chapter.title);
+        loadContent(chapter.url, chapter.title);
     } else {
         showNavigationHint('已经是第一章了');
     }
@@ -1398,7 +1400,7 @@ function goNext() {
         currentIndex++;
         const chapter = Object.values(chapters)[currentIndex];
         console.log('下一页:', chapter);
-        previewContent(chapter.url, chapter.title);
+        loadContent(chapter.url, chapter.title);
     } else {
         showNavigationHint('已经是最后一章了');
     }
@@ -1605,6 +1607,11 @@ window.addEventListener('DOMContentLoaded', () => {
             console.error('加载反馈数据失败:', e); 
         }
     }
+    
+    // 自动弹出目录
+    setTimeout(() => {
+        showChapterList();
+    }, 500);
 });
 </script>
 </body>
