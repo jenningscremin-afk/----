@@ -2238,8 +2238,8 @@
             if (!setup) return;
             const { container, svg, g, width, height } = setup;
 
-            // 设置星空背景
-            svg.style('background', 'radial-gradient(ellipse at center, #1a1a2e 0%, #16213e 50%, #0f0f23 100%)');
+            // 简洁白底风格
+            svg.style('background', '#ffffff');
 
             const centerX = width / 2;
             const centerY = height / 2;
@@ -2271,7 +2271,7 @@
                     .attr('opacity', d => d.opacity);
             }
 
-            createStarField();
+            // 可选：弱化星空或移除，此处移除保留清爽
 
             // 添加标题
             svg.append('text')
@@ -2930,37 +2930,10 @@ const denominator = fraction.selectAll(".den").data("aaaaa".split("")).enter().a
             if (!setup) return;
             const { svg, g, width, height } = setup;
 
-            // 深色背景渐变
-            svg.style('background', 'radial-gradient(ellipse at center, #1a1a2e 0%, #16213e 50%, #0f0c29 100%)');
+            // 改为白底深色文本
+            svg.style('background', '#ffffff');
 
-            // 动态星空效果
-            const stars = g.append("g").attr("class", "stars");
-            for(let i = 0; i < 80; i++) {
-                const star = stars.append("circle")
-                    .attr("cx", Math.random() * width)
-                    .attr("cy", Math.random() * height)
-                    .attr("r", Math.random() * 2 + 0.5)
-                    .attr("fill", "white")
-                    .attr("opacity", Math.random() * 0.9 + 0.1);
-                
-                // 添加闪烁动画
-                star.transition()
-                    .duration((Math.random() * 3000) + 1000)
-                    .attr("opacity", Math.random() * 0.3 + 0.1)
-                    .transition()
-                    .duration((Math.random() * 2000) + 500)
-                    .attr("opacity", Math.random() * 0.9 + 0.1)
-                    .on("end", function repeat() {
-                        d3.select(this)
-                            .transition()
-                            .duration((Math.random() * 3000) + 1000)
-                            .attr("opacity", Math.random() * 0.3 + 0.1)
-                            .transition()
-                            .duration((Math.random() * 2000) + 500)
-                            .attr("opacity", Math.random() * 0.9 + 0.1)
-                            .on("end", repeat);
-                    });
-            }
+            // 移除星空效果，保持信息聚焦
 
             // 添加流星效果
             function createMeteor() {
@@ -2991,14 +2964,13 @@ const denominator = fraction.selectAll(".den").data("aaaaa".split("")).enter().a
                 .attr("x", width/2)
                 .attr("y", 80)
                 .attr("text-anchor", "middle")
-                .style("font-size", "42px")
+                .style("font-size", "36px")
                 .style("font-weight", "bold")
-                .style("fill", "#f1c40f")
-                .style("text-shadow", "0 0 20px #f1c40f, 0 0 40px #f1c40f")
+                .style("fill", "#1f2937")
                 .text("对数的历史长河")
                 .style("opacity", 0)
                 .transition()
-                .duration(1500)
+                .duration(800)
                 .style("opacity", 1);
 
             // 流动的时间线
@@ -3007,17 +2979,11 @@ const denominator = fraction.selectAll(".den").data("aaaaa".split("")).enter().a
                 .attr("y1", height/2)
                 .attr("x2", width * 0.9)
                 .attr("y2", height/2)
-                .attr("stroke", "url(#timelineGradient)")
-                .attr("stroke-width", 4)
+                .attr("stroke", "#334155")
+                .attr("stroke-width", 3)
                 .style("opacity", 0);
 
-            // 添加时间线渐变
-            const defs = svg.append("defs");
-            const timelineGradient = defs.append("linearGradient")
-                .attr("id", "timelineGradient");
-            timelineGradient.append("stop").attr("offset", "0%").style("stop-color", "#3498db");
-            timelineGradient.append("stop").attr("offset", "50%").style("stop-color", "#f1c40f");
-            timelineGradient.append("stop").attr("offset", "100%").style("stop-color", "#e74c3c");
+            // 移除彩色渐变，保持简洁
 
             g.select("line").transition()
                 .delay(800)
@@ -3096,8 +3062,8 @@ const denominator = fraction.selectAll(".den").data("aaaaa".split("")).enter().a
                 // 时间点（带脉冲效果）
                 const timePoint = eventGroup.append("circle")
                     .attr("r", 0)
-                    .attr("fill", event.color)
-                    .attr("stroke", "#fff")
+                    .attr("fill", "#0ea5e9")
+                    .attr("stroke", "#ffffff")
                     .attr("stroke-width", 3)
                     .style("filter", `drop-shadow(0 0 10px ${event.color})`);
 
@@ -3113,7 +3079,7 @@ const denominator = fraction.selectAll(".den").data("aaaaa".split("")).enter().a
                 const pulseRing = eventGroup.append("circle")
                     .attr("r", 0)
                     .attr("fill", "none")
-                    .attr("stroke", event.color)
+                    .attr("stroke", "#93c5fd")
                     .attr("stroke-width", 2)
                     .attr("opacity", 0.6);
 
@@ -3151,11 +3117,10 @@ const denominator = fraction.selectAll(".den").data("aaaaa".split("")).enter().a
                     .attr("width", 150)
                     .attr("height", 90)
                     .attr("rx", 15)
-                    .attr("fill", event.color)
-                    .attr("fill-opacity", 0.9)
-                    .attr("stroke", "#fff")
+                    .attr("fill", "#f8fafc")
+                    .attr("stroke", "#334155")
                     .attr("stroke-width", 2)
-                    .style("filter", `drop-shadow(0 5px 15px rgba(0,0,0,0.3))`)
+                    .style("filter", `drop-shadow(0 5px 12px rgba(0,0,0,0.15))`)
                     .style("opacity", 0);
 
                 cardRect.transition()
@@ -3196,7 +3161,7 @@ const denominator = fraction.selectAll(".den").data("aaaaa".split("")).enter().a
                     .attr("text-anchor", "middle")
                     .style("font-size", "18px")
                     .style("font-weight", "bold")
-                    .style("fill", "white")
+                    .style("fill", "#0f172a")
                     .text(event.year)
                     .style("opacity", 0)
                     .transition()
@@ -3209,7 +3174,7 @@ const denominator = fraction.selectAll(".den").data("aaaaa".split("")).enter().a
                     .attr("y", 25)
                     .attr("text-anchor", "middle")
                     .style("font-size", "12px")
-                    .style("fill", "white")
+                    .style("fill", "#1f2937")
                     .text(event.desc)
                     .style("opacity", 0)
                     .transition()
@@ -5468,11 +5433,11 @@ function visualizeCompositeMachine(containerId) {
             update(-Math.PI / 4);
         }
 
-        // 六种三角与余函数图像总览
+        // 六种三角与余函数图像（按钮切换单曲线 + MathJax 标题）
         function visualizeTrigAll(containerId) {
-            const setup = setupD3(containerId, {top: 50, right: 40, bottom: 50, left: 50});
+            const setup = setupD3(containerId, {top: 60, right: 40, bottom: 60, left: 60});
             if (!setup) return;
-            const { svg, g, width, height } = setup;
+            const { container, svg, g, width, height } = setup;
 
             const xScale = d3.scaleLinear().domain([-Math.PI * 2, Math.PI * 2]).range([0, width]);
             const yScale = d3.scaleLinear().domain([-2.2, 2.2]).range([height, 0]);
@@ -5491,82 +5456,131 @@ function visualizeCompositeMachine(containerId) {
                 );
             g.append('g').call(d3.axisLeft(yScale).tickValues([-2,-1,0,1,2]));
 
+            // MathJax 标题容器
+            const titleFO = g.append('foreignObject')
+                .attr('x', width/2 - 150)
+                .attr('y', -45)
+                .attr('width', 300)
+                .attr('height', 40)
+                .html(`<div style="text-align:center;font-size:20px;font-weight:bold;color:#222;">$y=\\sin x$</div>`);
+
+            // 控件：函数切换
+            const ui = container.append('div')
+                .style('position', 'absolute')
+                .style('top', '16px')
+                .style('left', '50%')
+                .style('transform', 'translateX(-50%)')
+                .style('display', 'flex')
+                .style('gap', '8px')
+                .style('background', 'rgba(255,255,255,0.9)')
+                .style('padding', '6px 10px')
+                .style('border-radius', '8px')
+                .style('box-shadow', '0 2px 8px rgba(0,0,0,0.08)');
+
             const funcs = [
-                { key: 'sin', color: 'var(--danger-color)', f: x => Math.sin(x) },
-                { key: 'cos', color: 'var(--primary-color)', f: x => Math.cos(x) },
-                { key: 'tan', color: '#8e44ad', f: x => Math.tan(x), clip: true },
-                { key: 'csc', color: '#16a085', f: x => 1/Math.sin(x), clip: true },
-                { key: 'sec', color: '#d35400', f: x => 1/Math.cos(x), clip: true },
-                { key: 'cot', color: '#2c3e50', f: x => 1/Math.tan(x), clip: true },
+                { key: 'sin', label: '$y=\\sin x$', color: 'var(--danger-color)', f: x => Math.sin(x), clip: false },
+                { key: 'cos', label: '$y=\\cos x$', color: 'var(--primary-color)', f: x => Math.cos(x), clip: false },
+                { key: 'tan', label: '$y=\\tan x$', color: '#8e44ad', f: x => Math.tan(x), clip: true },
+                { key: 'csc', label: '$y=\\csc x$', color: '#16a085', f: x => 1/Math.sin(x), clip: true },
+                { key: 'sec', label: '$y=\\sec x$', color: '#d35400', f: x => 1/Math.cos(x), clip: true },
+                { key: 'cot', label: '$y=\\cot x$', color: '#2c3e50', f: x => 1/Math.tan(x), clip: true },
             ];
 
-            svg.append('text')
-                .attr('x', width/2)
-                .attr('y', 24)
-                .attr('text-anchor', 'middle')
-                .style('font-size', '18px')
-                .style('font-weight', 'bold')
-                .text('sin x, cos x, tan x, csc x, sec x, cot x');
+            // 支持最多同时显示两条曲线
+            const curvesG = g.append('g').attr('class','trig-curves');
+            let activeKeys = new Set([funcs[0].key]);
+            let activeOrder = [funcs[0].key];
 
-            funcs.forEach(({key, color, f, clip}) => {
+            function drawCurveFor(conf) {
                 const data = [];
-                const step = 0.01;
+                const step = 0.008;
                 for (let x = -Math.PI*2; x <= Math.PI*2; x += step) {
-                    let y = f(x);
-                    if (!isFinite(y)) {
-                        data.push({break: true});
-                        continue;
+                    const y = conf.f(x);
+                    if (!isFinite(y) || (conf.clip && Math.abs(y) > 2.2)) {
+                        data.push({break:true});
+                    } else {
+                        data.push({x,y});
                     }
-                    if (clip && Math.abs(y) > 2.2) {
-                        data.push({break: true});
-                        continue;
-                    }
-                    data.push({x,y});
                 }
-
-                // 将含有断点的数据分段绘制
+                const line = d3.line().x(d=>xScale(d.x)).y(d=>yScale(d.y));
                 let seg = [];
                 data.forEach(p => {
                     if (p.break) {
                         if (seg.length) {
-                            draw(seg);
+                            curvesG.append('path')
+                                .datum(seg)
+                                .attr('fill','none')
+                                .attr('stroke', conf.color)
+                                .attr('stroke-width', 3)
+                                .attr('d', line)
+                                .attr('opacity', 0.95);
                             seg = [];
                         }
                     } else {
                         seg.push(p);
                     }
                 });
-                if (seg.length) draw(seg);
-
-                function draw(segment) {
-                    const line = d3.line()
-                        .x(d => xScale(d.x))
-                        .y(d => yScale(d.y));
-                    g.append('path')
-                        .datum(segment)
-                        .attr('fill', 'none')
-                        .attr('stroke', color)
-                        .attr('stroke-width', 2)
+                if (seg.length) {
+                    curvesG.append('path')
+                        .datum(seg)
+                        .attr('fill','none')
+                        .attr('stroke', conf.color)
+                        .attr('stroke-width', 3)
                         .attr('d', line)
                         .attr('opacity', 0.95);
                 }
+            }
+
+            function drawAll() {
+                curvesG.selectAll('*').remove();
+                const labels = [];
+                activeOrder.forEach(key => {
+                    if (!activeKeys.has(key)) return;
+                    const conf = funcs.find(f=>f.key===key);
+                    if (!conf) return;
+                    drawCurveFor(conf);
+                    labels.push(conf.label);
+                });
+                const titleHtml = labels.length ? labels.join('，') : '$\\,$';
+                titleFO.html(`<div style=\"text-align:center;font-size:20px;font-weight:bold;color:#222;\">${titleHtml}</div>`);
+                renderMathJax(titleFO.node());
+            }
+
+            // 按钮（多选，最多两条）
+            funcs.forEach((conf, idx) => {
+                const btn = ui.append('button')
+                    .attr('class','nav-btn')
+                    .style('width','auto')
+                    .style('padding','4px 8px')
+                    .style('border-radius','6px')
+                    .style('opacity', activeKeys.has(conf.key)?1:0.7)
+                    .html(conf.label)
+                    .on('click', function(){
+                        const k = conf.key;
+                        if (activeKeys.has(k)) {
+                            activeKeys.delete(k);
+                            activeOrder = activeOrder.filter(x=>x!==k);
+                        } else {
+                            if (activeKeys.size >= 2) {
+                                const removed = activeOrder.shift();
+                                if (removed) activeKeys.delete(removed);
+                            }
+                            activeKeys.add(k);
+                            activeOrder.push(k);
+                        }
+                        // 更新按钮态
+                        ui.selectAll('button').style('opacity', function(_, i){
+                            const key = funcs[i] ? funcs[i].key : null;
+                            return key && activeKeys.has(key) ? 1 : 0.7;
+                        });
+                        drawAll();
+                        renderMathJax(this);
+                    });
+                // 初次渲染按钮 LaTeX
+                renderMathJax(btn.node());
             });
 
-            // 图例
-            const legend = g.append('g').attr('transform', `translate(${width-120}, 10)`);
-            const legendItems = [
-                {label: 'sin x', color: 'var(--danger-color)'},
-                {label: 'cos x', color: 'var(--primary-color)'},
-                {label: 'tan x', color: '#8e44ad'},
-                {label: 'csc x', color: '#16a085'},
-                {label: 'sec x', color: '#d35400'},
-                {label: 'cot x', color: '#2c3e50'},
-            ];
-            legendItems.forEach((item, i) => {
-                const row = legend.append('g').attr('transform', `translate(0, ${i*18})`);
-                row.append('line').attr('x1',0).attr('y1',6).attr('x2',20).attr('y2',6).attr('stroke', item.color).attr('stroke-width', 3);
-                row.append('text').attr('x',26).attr('y',9).text(item.label).style('font-size', '12px').style('fill', '#333');
-            });
+            drawAll();
         }
 
         function visualizeInteractiveInvTrig(containerId) {
@@ -5600,6 +5614,14 @@ function visualizeCompositeMachine(containerId) {
                     }[d]))
                 );
             g.append('g').call(d3.axisLeft(yScale).tickValues([-1, 0, 1]));
+
+            // MathJax 标题
+            const titleFO = g.append('foreignObject')
+                .attr('x', width/2 - 150)
+                .attr('y', -45)
+                .attr('width', 300)
+                .attr('height', 40)
+                .html(`<div style="text-align:center;font-size:20px;font-weight:bold;color:#222;">$y=\\arcsin x$</div>`);
 
             // 底图网格：三角函数曲线（灰色）
             const dataFull = d3.range(-pi, pi + 0.001, 0.005);
@@ -5715,13 +5737,13 @@ function visualizeCompositeMachine(containerId) {
             function render(mode) {
                 // 基础曲线
                 if (mode === 'arcsin') {
-                    title.text('Sine 与 Arcsine');
+                    titleFO.html(`<div style=\"text-align:center;font-size:20px;font-weight:bold;color:#222;\">$y=\\arcsin x$</div>`);
                     baseCurve.attr('d', sinLine(dataFull));
                 } else if (mode === 'arccos') {
-                    title.text('Cosine 与 Arccosine');
+                    titleFO.html(`<div style=\"text-align:center;font-size:20px;font-weight:bold;color:#222;\">$y=\\arccos x$</div>`);
                     baseCurve.attr('d', cosLine(dataFull));
                 } else {
-                    title.text('Tangent 与 Arctangent');
+                    titleFO.html(`<div style=\"text-align:center;font-size:20px;font-weight:bold;color:#222;\">$y=\\arctan x$</div>`);
                     // 限制显示，避免 tan 奇异点
                     const segments = [];
                     let seg = [];
@@ -5772,9 +5794,11 @@ function visualizeCompositeMachine(containerId) {
                 // 初始化水平线与交点
                 const initY = mode === 'arctan' ? 0.5 : 0.5;
                 updateIntersections(initY, mode);
+                renderMathJax(titleFO.node());
             }
 
             render(currentMode);
+            renderMathJax(titleFO.node());
         }
 
         function visualizeInteractiveInverseExpLog(containerId) {
