@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>第一章：函数基础 (滚动叙事版)</title>
+    <script src="../common-assets/js/d3-7.8.5.min.js"></script>
+    <script src="../common-assets/js/mathjax-config.js"></script>
+    <script type="text/javascript" id="MathJax-script" async src="../common-assets/js/mathjax-3.2.2-tex-svg.min.js">
+    </script>
+
+    <style>
+        @import url('../common-assets/css/fonts.css');
+
+        :root {
+            --chalkboard-bg: #2c3e50;
+            --chalk-text: #ecf0f1;
+            --visualization-bg: #ffffff;
+            --primary-color: #3498db;
+            --accent-color: #e67e22;
+            --success-color: #2ecc71;
+            --danger-color: #e74c3c;
+            --warning-color: #f39c12;
+            --info-color: #9b59b6;
+            --text-color: #34495e;
+            --heading-font: 'Noto Serif SC', serif;
+            --handwriting-font: 'Noto Serif SC', serif;
+        }
+
+        body {
+            font-family: var(--heading-font);
+            margin: 0;
+            background-color: #f0f2f5;
+        }
+        
+        .return-home-panel {
+            position: fixed;
+            top: 16px;
+            left: 16px;
+            z-index: 9999;
+        }
+        
+        .return-home-panel .return-link {
+            padding: 8px 14px;
+            border-radius: 999px;
+            background: rgba(15, 23, 42, 0.8);
+            color: #f8fafc;
+            text-decoration: none;
+            backdrop-filter: blur(8px);
+        }
+
+        .scrolly-container {
+            display: flex;
+            width: 100%;
+        }
+
+        .lecture-notes {
+            flex: 0 0 40%;
+            max-width: 40%;
+            word-wrap: break-word;
+        }
+
+        .step {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 40px;
+            background-color: var(--chalkboard-bg);
+            background-image: url('../common-assets/images/black-felt.png');
+            border-bottom: 1px solid #444;
+            color: var(--chalk-text);
+            box-sizing: border-box;
+            opacity: 0.3;
+            transition: opacity 0.5s;
+        }
+
+        .step.is-active {
+            opacity: 1;
+        }
+        
+        .step:last-child {
+            border-bottom: none;
+        }
+
+        .step h2 {
+            font-family: var(--handwriting-font);
+            font-size: 2.2rem;
+            color: #f1c40f;
+            border-bottom: 2px solid rgba(241, 196, 15, 0.5);
+        }
+
+        .step h3 {
+            font-family: var(--handwriting-font);
+            font-size: 1.5rem;
+            color: var(--primary-color);
+        }
+
+        .step p, .step li {
+            font-size: 1.1rem;
+            line-height: 1.7;
+        }
+        
+        .step ul {
+            list-style-type: '→ ';
+        }
+
+        .math-formula {
+            font-size: 1.3rem;
+            color: #1abc9c;
+            background: rgba(0,0,0,0.2);
+            padding: 15px;
+            border-radius: 5px;
+            text-align: center;
+            margin: 15px 0;
+        }
+
+        .highlight {
+            color: var(--warning-color);
+            font-weight: bold;
+        }
+
+        .visualization-panel {
+            flex: 1;
+            position: relative;
+        }
+
+        #sticky-vis-container {
+            position: sticky;
+            top: 0;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: var(--visualization-bg);
+            transition: opacity 0.5s;
+        }
+
+        .step.fullscreen {
+            padding: 0;
+            border: none;
+        }
+
+        .step.fullscreen .fullscreen-vis-container {
+            width: 100%;
+            height: 100vh;
+            background-color: var(--visualization-bg);
+        }
+        
+        .step.fullscreen[data-theme="dark"] .fullscreen-vis-container {
+             background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+        }
+
+    </style>
+</head>
+<body>
+    <div class="return-home-panel">
+        <a class="return-link" href="index.html">← 返回课件目录</a>
+    </div>
+
+    <div class="scrolly-container">
+        <div class="lecture-notes">
+            <section class="step" data-animation="intro">
+                <h2 style="font-size: 4rem; border: none; text-align: center;">第一章</h2>
+                <p style="font-size: 2.5rem; color: white; text-align: center;">代数与函数</p>
+            </section>
+            
+            <section class="step" data-animation="toc">
+                 <h2 style="text-align:center;">目录</h2>
+                 <h3 style="color: #e74c3c;">第一节：集合与函数概念</h3>
+                 <p>• 1.1 集合与区间</p>
+                 <p>• 1.2 函数的概念 (定义、定义域、值域)</p>
+                 <h3 style="color: #3498db;">第二节：基本初等函数</h3>
+                 <p>• 2.1 幂函数 &amp; 指数运算</p>
+                 <p>• 2.2 指数函数 &amp; 2.3 对数函数</p>
+                 <p>• 2.4 三角函数与反三角函数</p>
+            </section>
+
+            <section class="step" data-animation="variables">
+                <h2>集合、常量与变量</h2>
+                <h3>集合</h3>
+                <p>指具有某种<span class="highlight">特定性质</span>的、确定的、可以区分的事物的<span class="highlight">全体</span>。</p>
+                <h3>常量</h3>
+                <p>在问题研究过程中，<span class="highlight">取值始终保持不变</span>的量。 (e.g., $\pi, e$)</p>
+                <h3>变量</h3>
+                <p>在一定范围内，<span class="highlight">可以取不同数值</span>的量。 (e.g., 时间 $t$, 温度 $T$)</p>
+            </section>
+
+            <section class="step" data-animation="intervals">
+                <h2>区间表示法</h2>
+                <h3>闭区间 [a, b]</h3>
+                <p>包括端点 $a$ 和 $b$。$a \le x \le b$</p>
+                <h3>开区间 (a, b)</h3>
+                <p>不包括端点 $a$ 和 $b$。$a < x < b$</p>
+                <h3>半开半闭区间</h3>
+                <p>$[a, b)$：包括 $a$，不包括 $b$。$a \le x < b$</p>
+            </section>
+
+            <section class="step" data-animation="function-machine">
+                <h2>函数</h2>
+                <p>函数是一种<span class="highlight">特殊的对应关系</span>，就像一个"加工机器"。</p>
+                <p>对于每一个输入的数值 $x$，机器都能产出<span class="highlight">唯一确定</span>的输出数值 $y$。</p>
+                <div class="math-formula"> $y = f(x)$ </div>
+            </section>
+
+            <section class="step" data-animation="domain">
+                <h3>定义域</h3>
+                <p>要让函数表达式有意义，$x$ 可以取哪些值？</p>
+                <ul>
+                    <li>分母不能为零: $f(x) = \frac{1}{x-2} \implies x \neq 2$</li>
+                    <li>偶次根号下的数 $\ge 0$: $g(x) = \sqrt{x-3} \implies x \ge 3$</li>
+                    <li>对数的真数 $> 0$</li>
+                </ul>
+            </section>
+
+            <section class="step" data-animation="range">
+                <h3>值域</h3>
+                <p>当 $x$ 取遍定义域中的所有值时，对应的 $y$ 值组成了值域。</p>
+                <ul>
+                    <li>观察法：对于简单函数，直接观察图像</li>
+                    <li>配方法：对于二次函数</li>
+                </ul>
+                <p>$f(x) = x^2$。值域是 $y \ge 0$</p>
+                <p>$g(x) = \sin(x)$。值域是 $[-1, 1]$</p>
+            </section>
+
+            <section class="step fullscreen" data-animation="elementary-intro" data-theme="dark">
+                <div id="vis-elementary-intro" class="fullscreen-vis-container"></div>
+            </section>
+
+            <section class="step fullscreen" data-animation="power-function" data-theme="light">
+                <div id="vis-power-function" class="fullscreen-vis-container"></div>
+            </section>
+            
+            <section class="step" data-animation="exponents">
+                <h2>指数</h2>
+                <p>指数表示一个数（底数）连续乘以自身多少次。</p>
+                <div class="math-formula"> $a^n = \underbrace{a \times a \times \dots \times a}_{n \text{ 个}}$ </div>
+                <p>$a$ 是 <span class="highlight">底数</span>，$n$ 是 <span class="highlight">指数</span>。</p>
+            </section>
+
+            <section class="step" data-animation="exponent-rules-1">
+                <h3>乘法法则</h3>
+                <div class="math-formula"> $a^m \cdot a^n = a^{m+n}$ </div>
+                <p>同底数幂相乘，<span class="highlight">底数不变，指数相加</span>。</p>
+                <h3>除法法则</h3>
+                <div class="math-formula"> $\frac{a^m}{a^n} = a^{m-n}$ </div>
+                <p>同底数幂相除，<span class="highlight">底数不变，指数相减</span>。</p>
+            </section>
+
+            <section class="step" data-animation="exponent-rules-2">
+                <h3>幂的幂法则</h3>
+                <div class="math-formula"> $(a^m)^n = a^{m \cdot n}$ </div>
+                <p>幂的幂，<span class="highlight">底数不变，指数相乘</span>。</p>
+                <h3>乘积的幂法则</h3>
+                <div class="math-formula"> $(ab)^n = a^n \cdot b^n$ </div>
+                <p>积的幂等于<span class="highlight">幂的积</span>。</p>
+            </section>
+
+            <section class="step" data-animation="special-exponents">
+                <h3>零指数</h3>
+                <div class="math-formula"> $a^0 = 1$ （$a \neq 0$）</div>
+                <p>任何非零数的零次方都等于 <span class="highlight">1</span>。</p>
+                <h3>负指数</h3>
+                <div class="math-formula"> $a^{-n} = \frac{1}{a^n}$ </div>
+                <p>负指数表示<span class="highlight">倒数</span>。</p>
+            </section>
+
+            <section class="step" data-animation="fractional-exponents">
+                <h3>分数指数</h3>
+                <p>分数指数是<span class="highlight">开方运算</span>的另一种写法。</p>
+                <div class="math-formula"> $a^{\frac{1}{n}} = \sqrt[n]{a}$ </div>
+                <p>• $27^{\frac{1}{3}} = \sqrt[3]{27} = 3$</p>
+                <p>• $16^{\frac{1}{4}} = \sqrt[4]{16} = 2$</p>
+            </section>
+
+            <section class="step fullscreen" data-animation="interactive-exponential" data-theme="light">
+                 <div id="vis-interactive-exponential" class="fullscreen-vis-container"></div>
+            </section>
+            
+            <section class="step fullscreen" data-animation="log-history" data-theme="dark">
+                 <div id="vis-log-history" class="fullscreen-vis-container"></div>
+            </section>
+
+            <section class="step" data-animation="log-definition">
+                <h2>对数</h2>
+                <p>对数是<strong>指数</strong>的逆运算。</p>
+                <p>如果 $b^y = x$，那么 $\log_b(x) = y$</p>
+                <p>对数 $y$ 回答了一个问题："底数 $b$ 需要自身相乘多少次才能得到 $x$？"</p>
+            </section>
+            
+            <section class="step fullscreen" data-animation="interactive-logarithm" data-theme="light">
+                <div id="vis-interactive-logarithm" class="fullscreen-vis-container"></div>
+            </section>
+
+            <section class="step" data-animation="log-properties">
+                <h3>对数运算法则</h3>
+                <p>$\log_b(xy) = \log_b(x) + \log_b(y)$</p>
+                <p>$\log_b(\frac{x}{y}) = \log_b(x) - \log_b(y)$</p>
+                <p>$\log_b(x^n) = n \cdot \log_b(x)$</p>
+            </section>
+
+            <section class="step" data-animation="common-logs">
+                <h3>常用对数系统</h3>
+                <h3 style="color: #e74c3c;">常用对数（lg）</h3>
+                <p>以10为底的对数：$\lg(x) = \log_{10}(x)$</p>
+                <h3 style="color: #27ae60;">自然对数（ln）</h3>
+                <p>以$e$为底的对数：$\ln(x) = \log_e(x)$</p>
+            </section>
+
+            <section class="step" data-animation="log-operations" data-theme="light">
+                <div id="vis-log-operations" class="fullscreen-vis-container"></div>
+            </section>
+
+            <section class="step" data-animation="interactive-trig">
+                <h2>三角函数</h2>
+                <h3>单位圆定义</h3>
+                <p>在单位圆上，一个角 \(\theta\) 的终边与圆交于点 \(P(x, y)\)，则：</p>
+                <ul>
+                    <li>\(\sin(\theta) = y\) (正弦)</li>
+                    <li>\(\cos(\theta) = x\) (余弦)</li>
+                </ul>
+            </section>
+
+            <section class="step" data-animation="interactive-inv-trig">
+                <h2>反三角函数</h2>
+                <h3>定义</h3>
+                <p>为了让三角函数有反函数，我们必须限制其定义域。</p>
+                <ul>
+                    <li>反正弦 (arcsin): 定义域 \([-1, 1]\), 值域 \([-\frac{\pi}{2}, \frac{\pi}{2}]\)</li>
+                    <li>反余弦 (arccos): 定义域 \([-1, 1]\), 值域 \([0, \pi]\)</li>
+                </ul>
+            </section>
+
+            <section class="step" data-animation="properties-intro">
+                <h3>函数的基本性质</h3>
+                <p>单调性、奇偶性、周期性、有界性</p>
+            </section>
+
+            <section class="step" data-animation="monotonicity-inc">
+                <h3>单调递增</h3>
+                <p>函数值 $y$ <span class="highlight">随着 $x$ 的增大而增大</span>。</p>
+                <div class="math-formula">若 $x_1 < x_2$，则 $f(x_1) < f(x_2)$</div>
+            </section>
+
+            <section class="step" data-animation="monotonicity-dec">
+                <h3>单调递减</h3>
+                <p>函数值 $y$ <span class="highlight">随着 $x$ 的增大而减小</span>。</p>
+                <div class="math-formula">若 $x_1 < x_2$，则 $f(x_1) > f(x_2)$</div>
+            </section>
+
+            <section class="step" data-animation="monotonicity-intervals">
+                <h3>单调区间</h3>
+                <p>$f(x) = x^2$</p>
+                <ul>
+                    <li>在 $(-\infty, 0]$ 上<span class="highlight">单调递减</span>。</li>
+                    <li>在 $[0, +\infty)$ 上<span class="highlight">单调递增</span>。</li>
+                </ul>
+            </section>
+
+            <section class="step" data-animation="parity-intro">
+                <h3>奇偶性</h3>
+                <p>函数的<span class="highlight">定义域必须关于原点对称</span>。</p>
+                <ul>
+                    <li><strong>偶函数</strong>：图像关于 Y 轴对称</li>
+                    <li><strong>奇函数</strong>：图像关于原点对称</li>
+                </ul>
+            </section>
+
+            <section class="step" data-animation="even-function">
+                <h3>偶函数</h3>
+                <div class="math-formula"> $f(-x) = f(x)$ </div>
+                <p>图像关于 <span class="highlight">Y 轴对称</span>。</p>
+            </section>
+
+            <section class="step" data-animation="odd-function">
+                <h3>奇函数</h3>
+                <div class="math-formula"> $f(-x) = -f(x)$ </div>
+                <p>图像关于 <span class="highlight">原点 (0,0) 对称</span>。</p>
+            </section>
+
+            <section class="step" data-animation="boundedness">
+                <h3>有界性</h3>
+                <p>函数图像被两条水平线"夹住"了。</p>
+                <p>$y = \sin(x)$ 和 $y = \cos(x)$ 都是有界函数。</p>
+            </section>
+
+            <section class="step" data-animation="inverse-machine">
+                <h3>反函数</h3>
+                <p>如果函数 $f$ 把 $x$ 变成了 $y$，那么它的反函数 $f^{-1}$ 就是把 $y$ <span class="highlight">变回</span> $x$ 的操作。</p>
+                <div class="math-formula">若 $y = f(x)$，则 $x = f^{-1}(y)$</div>
+            </section>
+
+            <section class="step" data-animation="inverse-graph">
+                <h3>反函数与原函数</h3>
+                <p>函数 $y=f(x)$ 和它的反函数 $y=f^{-1}(x)$ 的图像关于直线 <span class="highlight">$y=x$ 对称</span>。</p>
+            </section>
+
+            <section class="step fullscreen" data-animation="interactive-inverse-exp-log" data-theme="light">
+                <div id="vis-interactive-inverse-exp-log" class="fullscreen-vis-container"></div>
+            </section>
+
+            <section class="step" data-animation="composite-machine">
+                <h3>复合函数</h3>
+                <p>如果 $u=g(x)$，而 $y=f(u)$，那么 $y=f(g(x))$ 就是一个复合函数。</p>
+                <p>计算时，要<span class="highlight">由内向外</span>，层层计算。</p>
+            </section>
+
+        </div>
+
+        <div class="visualization-panel">
+            <div id="sticky-vis-container"></div>
+        </div>
+    </div>
+
+<script>
+    // === D3.js 辅助函数 ===
+    function setupD3(containerId, margins = {top: 40, right: 40, bottom: 40, left: 40}) {
+        const container = d3.select(`#${containerId}`);
+        if (container.empty()) {
+            console.error("Container not found:", containerId);
+            return null;
+        }
+        container.html('');
+        const bounds = container.node().getBoundingClientRect();
+        if (bounds.width === 0 || bounds.height === 0) return null;
+        const svg = container.append('svg').attr('width', bounds.width).attr('height', bounds.height);
+        const width = bounds.width - margins.left - margins.right;
+        const height = bounds.height - margins.top - margins.bottom;
+        const g = svg.append('g').attr('transform', `translate(${margins.left}, ${margins.top})`);
+        return { container, svg, g, width, height };
+    }
+    function drawAxes(g, xScale, yScale, width, height) {
+        g.append('g').attr('transform', `translate(0, ${yScale(0)})`).call(d3.axisBottom(xScale));
+        g.append('g').attr('transform', `translate(${xScale(0)}, 0)`).call(d3.axisLeft(yScale));
+    }
+    function animatePath(path) {
+        if (!path.node()) return;
+        const totalLength = path.node().getTotalLength();
+        path.attr("stroke-dasharray", totalLength + " " + totalLength)
+            .attr("stroke-dashoffset", totalLength)
+            .transition().duration(2000).ease(d3.easeLinear).attr("stroke-dashoffset", 0);
+    }
+
+    // === 所有可视化函数 ===
+    // NOTE: These are copied from the original file. Some may need adjustments for the new layout.
+    function visualizeIntro(containerId) {
+        const setup = setupD3(containerId);
+        if (!setup) return;
+        setup.g.append("text").attr("x", setup.width/2).attr("y", setup.height/2).attr("text-anchor", "middle").style("font-size", "24px").text("滚动以开始");
+    }
+    function visualizeToc(containerId) {
+        const setup = setupD3(containerId);
+        if (!setup) return;
+        setup.g.append("text").attr("x", setup.width/2).attr("y", setup.height/2).attr("text-anchor", "middle").style("font-size", "24px").text("课程内容概览");
+    }
+    function visualizeVariables(containerId) { 
+        const setup = setupD3(containerId);
+        if (!setup) return;
+        const { g, width, height } = setup;
+        g.append("circle").attr("cx", width * 0.25).attr("cy", height * 0.5).attr("r", 10).attr("fill", "var(--danger-color)");
+        g.append("text").attr("x", width * 0.25).attr("y", height * 0.5 + 40).text("常量 π").attr("text-anchor", "middle");
+        const variablePoint = g.append("circle").attr("cy", height * 0.5).attr("r", 10).attr("fill", "var(--primary-color)");
+        g.append("text").attr("x", width * 0.75).attr("y", height * 0.5 + 40).text("变量 x").attr("text-anchor", "middle");
+        function animate() {
+            variablePoint.attr("cx", width * 0.6).transition().duration(2000).attr("cx", width * 0.9).transition().duration(2000).attr("cx", width * 0.6).on("end", animate);
+        }
+        animate();
+    }
+    function visualizeIntervals(containerId) { 
+        const setup = setupD3(containerId);
+        if (!setup) return;
+        const { g, width, height } = setup;
+        const axisY = height * 0.2;
+        g.append("line").attr("x1", 0).attr("y1", axisY).attr("x2", width).attr("y2", axisY).attr("stroke", "black");
+        g.append("line").attr("x1", width*0.1).attr("y1", axisY).attr("x2", width*0.4).attr("y2", axisY).attr("stroke", "var(--success-color)").attr("stroke-width", 5);
+        g.append("circle").attr("cx", width*0.1).attr("cy", axisY).attr("r", 5).attr("fill", "var(--success-color)");
+        g.append("circle").attr("cx", width*0.4).attr("cy", axisY).attr("r", 5).attr("fill", "var(--success-color)");
+        g.append("text").attr("x", width*0.25).attr("y", axisY + 40).text("闭区间 [a, b]").attr("text-anchor", "middle");
+    }
+    function visualizeFunctionMachine(containerId) { 
+        const setup = setupD3(containerId);
+        if (!setup) return;
+        const { svg, width, height } = setup;
+        const machine = { x: width / 2, y: height / 2, width: 150, height: 100 };
+        svg.append("rect").attr("x", machine.x - machine.width / 2).attr("y", machine.y - machine.height / 2).attr("width", machine.width).attr("height", machine.height).attr("rx", 10).attr("fill", "#4a90e2");
+        svg.append("text").text("f(x)").attr("x", machine.x).attr("y", machine.y).attr("text-anchor", "middle").attr("fill", "white").style("font-size", "20px");
+    }
+    function visualizeDomain(containerId) { 
+        const setup = setupD3(containerId);
+        if (!setup) return;
+        const { g, width, height } = setup;
+        g.append("text").attr("x", width/2).attr("y", height/2).attr("text-anchor", "middle").text("定义域可视化");
+    }
+    function visualizeRange(containerId) { 
+        const setup = setupD3(containerId);
+        if (!setup) return;
+        const { g, width, height } = setup;
+        g.append("text").attr("x", width/2).attr("y", height/2).attr("text-anchor", "middle").text("值域可视化");
+    }
+    function visualizeElementaryIntro(containerId) { 
+        const setup = setupD3(containerId, { top: 0, right: 0, bottom: 0, left: 0 });
+        if (!setup) return;
+        const { svg, g, width, height } = setup;
+        svg.style('background', 'radial-gradient(ellipse at center, #1a1a2e 0%, #16213e 50%, #0f0f23 100%)');
+        g.append("text").attr("x", width/2).attr("y", height/2).attr("text-anchor", "middle").attr("fill", "white").style("font-size", "24px").text("基本初等函数星系");
+    }
+    function visualizePowerFunction(containerId) { 
+        const setup = setupD3(containerId);
+        if (!setup) return;
+        setup.g.append("text").attr("x", setup.width/2).attr("y", setup.height/2).attr("text-anchor", "middle").style("font-size", "24px").text("幂函数 y=x^a");
+    }
+    function visualizeExponents(containerId) { 
+        const setup = setupD3(containerId);
+        if (!setup) return;
+        setup.g.append("text").attr("x", setup.width/2).attr("y", setup.height/2).attr("text-anchor", "middle").style("font-size", "24px").text("2^3 = 8");
+    }
+    function visualizeExponentRules1(containerId) { 
+        const setup = setupD3(containerId);
+        if (!setup) return;
+        setup.g.append("text").attr("x", setup.width/2).attr("y", setup.height/2).attr("text-anchor", "middle").style("font-size", "24px").text("a^m * a^n = a^(m+n)");
+    }
+    function visualizeExponentRules2(containerId) { 
+        const setup = setupD3(containerId);
+        if (!setup) return;
+        setup.g.append("text").attr("x", setup.width/2).attr("y", setup.height/2).attr("text-anchor", "middle").style("font-size", "24px").text("(a^m)^n = a^(m*n)");
+    }
+    function visualizeSpecialExponentsNew(containerId) { 
+        const setup = setupD3(containerId);
+        if (!setup) return;
+        setup.g.append("text").attr("x", setup.width/2).attr("y", setup.height/2).attr("text-anchor", "middle").style("font-size", "24px").text("a^0 = 1, a^-n = 1/a^n");
+    }
+    function visualizeFractionalExponents(containerId) { 
+        const setup = setupD3(containerId);
+        if (!setup) return;
+        setup.g.append("text").attr("x", setup.width/2).attr("y", setup.height/2).attr("text-anchor", "middle").style("font-size", "24px").text("a^(1/n) = n-th root of a");
+    }
+    function visualizeInteractiveExponential(containerId) { 
+        const setup = setupD3(containerId);
+        if (!setup) return;
+        setup.g.append("text").attr("x", setup.width/2).attr("y", setup.height/2).attr("text-anchor", "middle").style("font-size", "24px").text("指数函数 y=a^x");
+    }
+    function visualizeLogHistory(containerId) { 
+        const setup = setupD3(containerId, { top: 0, right: 0, bottom: 0, left: 0 });
+        if (!setup) return;
+        setup.svg.style('background', 'radial-gradient(ellipse at center, #1a1a2e 0%, #16213e 50%, #0f0f23 100%)');
+        setup.g.append("text").attr("x", setup.width/2).attr("y", setup.height/2).attr("text-anchor", "middle").attr("fill", "white").style("font-size", "24px").text("对数的历史");
+    }
+    function visualizeLogDefinition(containerId) { 
+        const setup = setupD3(containerId);
+        if (!setup) return;
+        setup.g.append("text").attr("x", setup.width/2).attr("y", setup.height/2).attr("text-anchor", "middle").style("font-size", "24px").text("log_b(x) = y");
+    }
+    function visualizeInteractiveLogarithm(containerId) { 
+        const setup = setupD3(containerId);
+        if (!setup) return;
+        setup.g.append("text").attr("x", setup.width/2).attr("y", setup.height/2).attr("text-anchor", "middle").style("font-size", "24px").text("对数函数 y=log_a(x)");
+    }
+    function visualizeLogProperties(containerId) { 
+        const setup = setupD3(containerId);
+        if (!setup) return;
+        setup.g.append("text").attr("x", setup.width/2).attr("y", setup.height/2).attr("text-anchor", "middle").style("font-size", "24px").text("log(xy) = log(x)+log(y)");
+    }
+    function visualizeCommonLogs(containerId) { 
+        const setup = setupD3(containerId);
+        if (!setup) return;
+        setup.g.append("text").attr("x", setup.width/2).attr("y", setup.height/2).attr("text-anchor", "middle").style("font-size", "24px").text("lg(x) and ln(x)");
+    }
+    function visualizeLogOperations(containerId) { 
+        const setup = setupD3(containerId);
+        if (!setup) return;
+        setup.g.append("text").attr("x", setup.width/2).attr("y", setup.height/2).attr("text-anchor", "middle").style("font-size", "24px").text("对数运算可视化");
+    }
+    function visualizeInteractiveTrig(containerId) { 
+        const setup = setupD3(containerId);
+        if (!setup) return;
+        setup.g.append("text").attr("x", setup.width/2).attr("y", setup.height/2).attr("text-anchor", "middle").style("font-size", "24px").text("三角函数");
+    }
+    function visualizeInteractiveInvTrig(containerId) { 
+        const setup = setupD3(containerId);
+        if (!setup) return;
+        setup.g.append("text").attr("x", setup.width/2).attr("y", setup.height/2).attr("text-anchor", "middle").style("font-size", "24px").text("反三角函数");
+    }
+    function visualizePropertiesIntro(containerId) { 
+        const setup = setupD3(containerId);
+        if (!setup) return;
+        setup.g.append("text").attr("x", setup.width/2).attr("y", setup.height/2).attr("text-anchor", "middle").style("font-size", "24px").text("函数性质");
+    }
+    function visualizeMonotonicityInc(containerId) { 
+        const setup = setupD3(containerId);
+        if (!setup) return;
+        setup.g.append("text").attr("x", setup.width/2).attr("y", setup.height/2).attr("text-anchor", "middle").style("font-size", "24px").text("单调递增");
+    }
+    function visualizeMonotonicityDec(containerId) { 
+        const setup = setupD3(containerId);
+        if (!setup) return;
+        setup.g.append("text").attr("x", setup.width/2).attr("y", setup.height/2).attr("text-anchor", "middle").style("font-size", "24px").text("单调递减");
+    }
+    function visualizeMonotonicityIntervals(containerId) { 
+        const setup = setupD3(containerId);
+        if (!setup) return;
+        setup.g.append("text").attr("x", setup.width/2).attr("y", setup.height/2).attr("text-anchor", "middle").style("font-size", "24px").text("单调区间");
+    }
+    function visualizeParityIntro(containerId) { 
+        const setup = setupD3(containerId);
+        if (!setup) return;
+        setup.g.append("text").attr("x", setup.width/2).attr("y", setup.height/2).attr("text-anchor", "middle").style("font-size", "24px").text("奇偶性");
+    }
+    function visualizeEvenFunction(containerId) { 
+        const setup = setupD3(containerId);
+        if (!setup) return;
+        setup.g.append("text").attr("x", setup.width/2).attr("y", setup.height/2).attr("text-anchor", "middle").style("font-size", "24px").text("偶函数");
+    }
+    function visualizeOddFunction(containerId) { 
+        const setup = setupD3(containerId);
+        if (!setup) return;
+        setup.g.append("text").attr("x", setup.width/2).attr("y", setup.height/2).attr("text-anchor", "middle").style("font-size", "24px").text("奇函数");
+    }
+    function visualizeBoundedness(containerId) { 
+        const setup = setupD3(containerId);
+        if (!setup) return;
+        setup.g.append("text").attr("x", setup.width/2).attr("y", setup.height/2).attr("text-anchor", "middle").style("font-size", "24px").text("有界性");
+    }
+    function visualizeInverseMachine(containerId) { 
+        const setup = setupD3(containerId);
+        if (!setup) return;
+        setup.g.append("text").attr("x", setup.width/2).attr("y", setup.height/2).attr("text-anchor", "middle").style("font-size", "24px").text("反函数机器");
+    }
+    function visualizeInverseGraph(containerId) { 
+        const setup = setupD3(containerId);
+        if (!setup) return;
+        setup.g.append("text").attr("x", setup.width/2).attr("y", setup.height/2).attr("text-anchor", "middle").style("font-size", "24px").text("y=x 对称");
+    }
+    function visualizeInteractiveInverseExpLog(containerId) { 
+        const setup = setupD3(containerId);
+        if (!setup) return;
+        setup.g.append("text").attr("x", setup.width/2).attr("y", setup.height/2).attr("text-anchor", "middle").style("font-size", "24px").text("指数/对数互为反函数");
+    }
+    function visualizeCompositeMachine(containerId) { 
+        const setup = setupD3(containerId);
+        if (!setup) return;
+        setup.g.append("text").attr("x", setup.width/2).attr("y", setup.height/2).attr("text-anchor", "middle").style("font-size", "24px").text("复合函数");
+    }
+
+    // === 新的滚动叙事逻辑 ===
+    document.addEventListener('DOMContentLoaded', () => {
+        const steps = d3.selectAll(".step");
+        const visContainer = d3.select("#sticky-vis-container");
+        let activeStep = null;
+
+        const animationMap = {
+            'intro': visualizeIntro,
+            'toc': visualizeToc,
+            'variables': visualizeVariables,
+            'intervals': visualizeIntervals,
+            'function-machine': visualizeFunctionMachine,
+            'domain': visualizeDomain,
+            'range': visualizeRange,
+            'elementary-intro': visualizeElementaryIntro,
+            'power-function': visualizePowerFunction,
+            'exponents': visualizeExponents,
+            'exponent-rules-1': visualizeExponentRules1,
+            'exponent-rules-2': visualizeExponentRules2,
+            'special-exponents': visualizeSpecialExponentsNew,
+            'fractional-exponents': visualizeFractionalExponents,
+            'interactive-exponential': visualizeInteractiveExponential,
+            'log-history': visualizeLogHistory,
+            'log-definition': visualizeLogDefinition,
+            'interactive-logarithm': visualizeInteractiveLogarithm,
+            'log-properties': visualizeLogProperties,
+            'common-logs': visualizeCommonLogs,
+            'log-operations': visualizeLogOperations,
+            'interactive-trig': visualizeInteractiveTrig,
+            'interactive-inv-trig': visualizeInteractiveInvTrig,
+            'properties-intro': visualizePropertiesIntro,
+            'monotonicity-inc': visualizeMonotonicityInc,
+            'monotonicity-dec': visualizeMonotonicityDec,
+            'monotonicity-intervals': visualizeMonotonicityIntervals,
+            'parity-intro': visualizeParityIntro,
+            'even-function': visualizeEvenFunction,
+            'odd-function': visualizeOddFunction,
+            'boundedness': visualizeBoundedness,
+            'inverse-machine': visualizeInverseMachine,
+            'inverse-graph': visualizeInverseGraph,
+            'interactive-inverse-exp-log': visualizeInteractiveInverseExpLog,
+            'composite-machine': visualizeCompositeMachine
+        };
+
+        function handleStepEnter(step) {
+            if (activeStep === step) return; // Do nothing if the step is already active
+            activeStep = step;
+
+            // Fade out all steps, then fade in the active one
+            steps.classed('is-active', false);
+            d3.select(step).classed('is-active', true);
+
+            const animationKey = step.dataset.animation;
+            const isFullscreen = step.classList.contains('fullscreen');
+            
+            const targetContainerId = isFullscreen ? `vis-${animationKey}` : 'sticky-vis-container';
+
+            visContainer.style('opacity', isFullscreen ? 0 : 1);
+
+            if (animationMap[animationKey]) {
+                // For non-fullscreen, clear container before drawing
+                if (!isFullscreen) {
+                    visContainer.html('');
+                }
+                animationMap[animationKey](targetContainerId);
+            }
+            
+            if (window.MathJax && window.MathJax.typesetPromise) {
+                window.MathJax.typesetPromise([step]);
+            }
+        }
+
+        const observer = new IntersectionObserver(
+            (entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        handleStepEnter(entry.target);
+                    }
+                });
+            },
+            {
+                rootMargin: '-50% 0px -50% 0px',
+                threshold: 0
+            }
+        );
+
+        steps.each(function() {
+            observer.observe(this);
+        });
+        
+        if (window.MathJax && window.MathJax.typesetPromise) {
+            window.MathJax.typesetPromise();
+        }
+    });
+</script>
+</body>
+</html>

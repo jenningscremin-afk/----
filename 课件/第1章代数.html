@@ -659,6 +659,71 @@
             margin-bottom: 4px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
+        .info-box-style {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            color: #333;
+            font-size: 14px;
+            line-height: 1.6;
+            margin-top: 20px;
+            border: 1px solid #eee;
+        }
+        .info-box-style .color-sine { color: var(--danger-color); }
+        .info-box-style .color-cosine { color: var(--primary-color); }
+        .info-box-style .color-tangent { color: var(--success-color); }
+
+        .toc-local {
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(255,255,255,0.2);
+        }
+        .toc-local h4 {
+            font-size: 1rem;
+            color: var(--warning-color);
+            margin-bottom: 10px;
+        }
+        .toc-local a {
+            display: block;
+            color: var(--chalk-text);
+            text-decoration: none;
+            padding: 5px 0;
+            font-size: 0.9rem;
+            transition: color 0.2s;
+        }
+        .toc-local a:hover {
+            color: var(--primary-color);
+        }
+
+        #back-to-top-btn {
+            position: fixed;
+            bottom: 80px;
+            right: 30px;
+            width: 40px;
+            height: 40px;
+            background: rgba(0,0,0,0.5);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s, transform 0.3s;
+            z-index: 2000;
+            backdrop-filter: blur(5px);
+        }
+        #back-to-top-btn.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        #back-to-top-btn:hover {
+            background: rgba(0,0,0,0.8);
+            transform: scale(1.1);
+        }
     </style>
 </head>
 <body>
