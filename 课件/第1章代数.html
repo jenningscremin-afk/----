@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
@@ -946,12 +946,9 @@
             <div class="visualization" id="vis-fractional-exponents"></div>
         </div>
 
-        <!-- 幻灯片15：指数函数 (iframe) -->
+        <!-- 幻灯片15：指数函数可视化 -->
         <div class="slide">
-            <div class="iframe-container">
-                <iframe id="iframe-exp" src="指数函数可视化.html" style="width: 100%; height: 100%; border: none;"></iframe>
-                <div class="iframe-nav-overlay" data-slide="15"></div>
-            </div>
+            <div class="visualization full-width white-bg" id="vis-interactive-exponential"></div>
         </div>
 
         <!-- 幻灯片16：对数发展历史 -->
@@ -978,12 +975,9 @@
             </div>
         </div>
 
-        <!-- 幻灯片18：对数函数 (iframe) -->
+        <!-- 幻灯片18：对数函数可视化 -->
         <div class="slide">
-            <div class="iframe-container">
-                <iframe id="iframe-log" src="对数函数可视化.html" style="width: 100%; height: 100%; border: none;"></iframe>
-                <div class="iframe-nav-overlay" data-slide="18"></div>
-            </div>
+            <div class="visualization full-width white-bg" id="vis-interactive-logarithm"></div>
         </div>
 
         <!-- 幻灯片19：对数运算法则 -->
@@ -1048,20 +1042,45 @@
             </div>
         </div>
 
-        <!-- 幻灯片22：三角函数 (iframe) -->
+        <!-- 幻灯片22：三角函数可视化 (优化版) -->
         <div class="slide">
-            <div class="iframe-container">
-                <iframe id="iframe-trig" src="三角函数.html" style="width: 100%; height: 100%; border: none;"></iframe>
-                <div class="iframe-nav-overlay" data-slide="22"></div>
+            <div class="chalkboard" style="flex: 0 0 30%; padding: 20px; overflow-y: auto;">
+                <h2 id="trig-functions-anchor">三角函数</h2>
+                <h3>单位圆定义</h3>
+                <p>在单位圆上，一个角 \(\theta\) 的终边与圆交于点 \(P(x, y)\)，则：</p>
+                <ul>
+                    <li>\(\sin(\theta) = y\) (正弦)</li>
+                    <li>\(\cos(\theta) = x\) (余弦)</li>
+                    <li>\(\tan(\theta) = \frac{y}{x}\) (正切)</li>
+                </ul>
+                <div id="trig-info-box" class="info-box-style"></div>
+                <div class="toc-local">
+                    <h4>本节导航</h4>
+                    <a href="javascript:void(0);" onclick="document.getElementById('vis-interactive-trig').scrollIntoView({behavior: 'smooth'});">三角函数</a>
+                    <a href="javascript:void(0);" onclick="document.getElementById('vis-interactive-inv-trig').scrollIntoView({behavior: 'smooth'});">反三角函数</a>
+                </div>
             </div>
+            <div class="visualization white-bg" style="flex: 1;" id="vis-interactive-trig"></div>
         </div>
 
-        <!-- 幻灯片23：反三角函数 (iframe) -->
+        <!-- 幻灯片23：反三角函数可视化 (优化版) -->
         <div class="slide">
-            <div class="iframe-container">
-                <iframe id="iframe-inv-trig" src="反三角函数可视化.html" style="width: 100%; height: 100%; border: none;"></iframe>
-                <div class="iframe-nav-overlay" data-slide="23"></div>
+            <div class="chalkboard" style="flex: 0 0 30%; padding: 20px; overflow-y: auto;">
+                <h2 id="inv-trig-functions-anchor">反三角函数</h2>
+                <h3>定义</h3>
+                <p>为了让三角函数有反函数，我们必须限制其定义域，使其成为一一对应的关系。</p>
+                <ul>
+                    <li>反正弦 (arcsin): 定义域 \([-1, 1]\), 值域 \([-\frac{\pi}{2}, \frac{\pi}{2}]\)</li>
+                    <li>反余弦 (arccos): 定义域 \([-1, 1]\), 值域 \([0, \pi]\)</li>
+                </ul>
+                <p>拖动图中的滑块，观察 \(y=\sin(x)\) 如何通过限制定义域来得到其反函数 \(y=\arcsin(x)\)。</p>
+                 <div class="toc-local">
+                    <h4>本节导航</h4>
+                    <a href="javascript:void(0);" onclick="document.getElementById('vis-interactive-trig').scrollIntoView({behavior: 'smooth'});">三角函数</a>
+                    <a href="javascript:void(0);" onclick="document.getElementById('vis-interactive-inv-trig').scrollIntoView({behavior: 'smooth'});">反三角函数</a>
+                </div>
             </div>
+            <div class="visualization white-bg" style="flex: 1;" id="vis-interactive-inv-trig"></div>
         </div>
 
         <!-- 第三节：函数的基本性质 -->
@@ -1221,12 +1240,9 @@
             <div class="visualization" id="vis-inverse-graph"></div>
         </div>
 
-        <!-- 幻灯片34：指对数互为反函数 (iframe) -->
+        <!-- 幻灯片34：指对数互为反函数可视化 -->
         <div class="slide">
-            <div class="iframe-container">
-                <iframe id="iframe-inverse" src="指对数互为反函数.html" style="width: 100%; height: 100%; border: none;"></iframe>
-                <div class="iframe-nav-overlay" data-slide="34"></div>
-            </div>
+            <div class="visualization full-width white-bg" id="vis-interactive-inverse-exp-log"></div>
         </div>
 
         <!-- 幻灯片35：复合函数 -->
@@ -1723,6 +1739,16 @@
             
             // 鼠标滚轮导航
             document.addEventListener('wheel', (e) => {
+                let target = e.target;
+                // Check if the target or any of its parents is a scrollable element
+                while (target && target !== document.body) {
+                    // If the element has a scrollbar, let the default scroll behavior happen
+                    if (target.scrollHeight > target.clientHeight) {
+                        return;
+                    }
+                    target = target.parentElement;
+                }
+
                 e.preventDefault();
                 if (e.deltaY > 0) {
                     nextSlide();
@@ -3013,7 +3039,7 @@ const denominator = fraction.selectAll(".den").data("aaaaa".split("")).enter().a
             .attr("width", 120)
             .attr("height", 40)
             .html(`<div style="text-align: center; font-size: 20px; color: ${ex.color}; font-weight: bold;">
-                $${ex.base}^{\\frac{${ex.numerator}}{${ex.denominator}}}$
+                ${ex.base}^{\\frac{${ex.numerator}}{${ex.denominator}}}$
             </div>`)
             .style("opacity", 0);
 
@@ -3782,30 +3808,40 @@ function visualizeLogOperations(containerId) {
         if(svg.empty()) return;
         svg.selectAll("*").remove();
 
+        // 设置SVG背景色
+        svg.append("rect")
+            .attr("width", "100%")
+            .attr("height", "100%")
+            .attr("fill", "#ffffff");
+
         const width = 1100, height = 800;
         const margin = {top: 220, right: 50, bottom: 120, left: 50};
         const innerWidth = width - margin.left - margin.right;
 
         const g = svg.append("g").attr("transform", `translate(${margin.left}, ${margin.top})`);
 
-        // 创建背景区域
+        // 创建背景区域 - 增强可见性
         const upperBg = g.append("rect")
             .attr("x", -30)
             .attr("y", -60)
             .attr("width", innerWidth + 60)
             .attr("height", 100)
-            .attr("fill", "#ecf8ff")
+            .attr("fill", "#e3f2fd")
             .attr("rx", 10)
-            .style("opacity", 0.3);
+            .style("opacity", 0.8)
+            .style("stroke", "#1976d2")
+            .style("stroke-width", 2);
 
         const lowerBg = g.append("rect")
             .attr("x", -30)
             .attr("y", 90)
             .attr("width", innerWidth + 60)
             .attr("height", 100)
-            .attr("fill", "#f0f9e8")
+            .attr("fill", "#e8f5e8")
             .attr("rx", 10)
-            .style("opacity", 0.3);
+            .style("opacity", 0.8)
+            .style("stroke", "#388e3c")
+            .style("stroke-width", 2);
 
     const numbers = [2, 4, 8, 16, 32, 64, 128, 256, 512];
     const logs = [1, 2, 3, 4, 5, 6, 7, 8, 9];
@@ -3994,7 +4030,9 @@ function visualizeLogOperations(containerId) {
                     .attr("y", -100)
                 .attr("text-anchor", "middle")
                     .style("font-size", "24px")
-                    .style("font-weight", "bold");
+                    .style("font-weight", "bold")
+                    .style("fill", "#1976d2")
+                    .style("text-shadow", "1px 1px 2px rgba(0,0,0,0.1)");
 
                 async function step1() {
                     await waitForResume();
@@ -4088,7 +4126,7 @@ function visualizeLogOperations(containerId) {
                         .attr("height", 40)
                         .style("opacity", 0);
 
-                    formulaFO.html(`<div xmlns="http://www.w3.org/1999/xhtml" style="font-size:16px;font-weight:bold;color:#2980b9;text-align:center;line-height:40px;">$${latexFormula}$</div>`);
+                    formulaFO.html(`<div xmlns="http://www.w3.org/1999/xhtml" style="font-size:16px;font-weight:bold;color:#2980b9;text-align:center;line-height:40px;">${latexFormula}$</div>`);
 
                     if (window.MathJax && window.MathJax.typesetPromise) {
                         try {
@@ -5322,6 +5360,490 @@ function visualizeCompositeMachine(containerId) {
 
 
 
+        function visualizeInteractiveExponential(containerId) {
+            const setup = setupD3(containerId, {top: 60, right: 40, bottom: 60, left: 50});
+            if (!setup) return;
+            const { container, svg, g, width, height } = setup;
+
+            // Add title
+            svg.append('text')
+                .attr('x', width / 2 + 50)
+                .attr('y', 30)
+                .attr('text-anchor', 'middle')
+                .style('font-size', '20px')
+                .style('font-weight', 'bold')
+                .text('指数函数 y = a^x');
+
+            const xScale = d3.scaleLinear().domain([-4, 4]).range([0, width]);
+            const yScale = d3.scaleLinear().domain([-1, 8]).range([height, 0]);
+
+            // Draw axes
+            g.append('g')
+                .attr('transform', `translate(0, ${yScale(0)})`)
+                .call(d3.axisBottom(xScale).ticks(8))
+                .call(sel => sel.select('.domain').attr('stroke-width', 1.5));
+            g.append('g')
+                .attr('transform', `translate(${xScale(0)}, 0)`)
+                .call(d3.axisLeft(yScale).ticks(8))
+                .call(sel => sel.select('.domain').attr('stroke-width', 1.5));
+
+            // Slider
+            const sliderContainer = container.append('div')
+                .style('position', 'absolute')
+                .style('bottom', '20px')
+                .style('left', '50%')
+                .style('transform', 'translateX(-50%)')
+                .style('background', 'rgba(255, 255, 255, 0.9)')
+                .style('padding', '10px')
+                .style('border-radius', '8px')
+                .style('box-shadow', '0 2px 8px rgba(0,0,0,0.15)');
+
+            sliderContainer.append('label').text('底数 a: ').style('color', 'black');
+            const slider = sliderContainer.append('input')
+                .attr('type', 'range')
+                .attr('min', 0.2)
+                .attr('max', 4)
+                .attr('step', 0.1)
+                .attr('value', 2);
+            const label = sliderContainer.append('span').text('2.0').style('color', 'black').style('font-weight', 'bold');
+
+            const path = g.append("path")
+                .attr("fill", "none")
+                .attr("stroke-width", 3);
+
+            const fixedPointLabel = g.append('text')
+                .attr('x', xScale(0) + 5)
+                .attr('y', yScale(1) - 5)
+                .style('font-size', '12px')
+                .text('恒过点 (0, 1)');
+
+            g.append('circle')
+                .attr('cx', xScale(0))
+                .attr('cy', yScale(1))
+                .attr('r', 5)
+                .attr('fill', 'var(--accent-color)');
+
+            function update(a) {
+                label.text(a.toFixed(1));
+                
+                let description = '';
+                if (a > 1) {
+                    path.attr("stroke", "var(--danger-color)");
+                    description = 'a > 1, 函数单调递增';
+                } else if (a === 1) {
+                    path.attr("stroke", "var(--info-color)");
+                    description = 'a = 1, 函数为 y=1';
+                } else { // 0 < a < 1
+                    path.attr("stroke", "var(--success-color)");
+                    description = '0 < a < 1, 函数单调递减';
+                }
+                
+                // Update description text
+                svg.selectAll('.desc-text').remove();
+                svg.append('text')
+                    .attr('class', 'desc-text')
+                    .attr('x', width / 2 + 50)
+                    .attr('y', height - 5)
+                    .attr('text-anchor', 'middle')
+                    .style('font-size', '14px')
+                    .style('fill', '#555')
+                    .text(description);
+
+                const line = d3.line()
+                    .x(d => xScale(d))
+                    .y(d => yScale(Math.pow(a, d)));
+
+                const data = d3.range(-4, 4.1, 0.1);
+                path.datum(data).attr("d", line);
+            }
+
+            update(2);
+            slider.on('input', function() {
+                update(+this.value);
+            });
+        }
+
+        function visualizeInteractiveLogarithm(containerId) {
+            const setup = setupD3(containerId, {top: 60, right: 40, bottom: 60, left: 50});
+            if (!setup) return;
+            const { container, svg, g, width, height } = setup;
+
+            svg.append('text')
+                .attr('x', width / 2 + 50)
+                .attr('y', 30)
+                .attr('text-anchor', 'middle')
+                .style('font-size', '20px')
+                .style('font-weight', 'bold')
+                .text('对数函数 y = logₐ(x)');
+
+            const xScale = d3.scaleLinear().domain([-1, 8]).range([0, width]);
+            const yScale = d3.scaleLinear().domain([-4, 4]).range([height, 0]);
+
+            g.append('g')
+                .attr('transform', `translate(0, ${yScale(0)})`)
+                .call(d3.axisBottom(xScale).ticks(8))
+                .call(sel => sel.select('.domain').attr('stroke-width', 1.5));
+            g.append('g')
+                .attr('transform', `translate(${xScale(0)}, 0)`)
+                .call(d3.axisLeft(yScale).ticks(8))
+                .call(sel => sel.select('.domain').attr('stroke-width', 1.5));
+
+            const sliderContainer = container.append('div')
+                .style('position', 'absolute')
+                .style('bottom', '20px')
+                .style('left', '50%')
+                .style('transform', 'translateX(-50%)')
+                .style('background', 'rgba(255, 255, 255, 0.9)')
+                .style('padding', '10px')
+                .style('border-radius', '8px')
+                .style('box-shadow', '0 2px 8px rgba(0,0,0,0.15)');
+
+            sliderContainer.append('label').text('底数 a: ').style('color', 'black');
+            const slider = sliderContainer.append('input')
+                .attr('type', 'range')
+                .attr('min', 0.2)
+                .attr('max', 4)
+                .attr('step', 0.1)
+                .attr('value', 2);
+            const label = sliderContainer.append('span').text('2.0').style('color', 'black').style('font-weight', 'bold');
+
+            const path = g.append("path")
+                .attr("fill", "none")
+                .attr("stroke-width", 3);
+                
+            const fixedPointLabel = g.append('text')
+                .attr('x', xScale(1) + 5)
+                .attr('y', yScale(0) - 5)
+                .style('font-size', '12px')
+                .text('恒过点 (1, 0)');
+
+            g.append('circle')
+                .attr('cx', xScale(1))
+                .attr('cy', yScale(0))
+                .attr('r', 5)
+                .attr('fill', 'var(--accent-color)');
+
+            function update(a) {
+                label.text(a.toFixed(1));
+                path.style('opacity', 1);
+
+                let description = '';
+                if (a > 1) {
+                    path.attr("stroke", "var(--danger-color)");
+                    description = 'a > 1, 函数单调递增';
+                } else if (a === 1) {
+                    path.style('opacity', 0); // log base 1 is undefined
+                    description = 'a = 1, 对数函数无意义';
+                } else { // 0 < a < 1
+                    path.attr("stroke", "var(--success-color)");
+                    description = '0 < a < 1, 函数单调递减';
+                }
+
+                svg.selectAll('.desc-text').remove();
+                svg.append('text')
+                    .attr('class', 'desc-text')
+                    .attr('x', width / 2 + 50)
+                    .attr('y', height - 5)
+                    .attr('text-anchor', 'middle')
+                    .style('font-size', '14px')
+                    .style('fill', '#555')
+                    .text(description);
+
+                if (a === 1) return;
+
+                const line = d3.line()
+                    .x(d => xScale(d))
+                    .y(d => yScale(Math.log(d) / Math.log(a)));
+
+                const data = d3.range(0.01, 8.1, 0.01);
+                path.datum(data).attr("d", line);
+            }
+
+            update(2);
+            slider.on('input', function() {
+                update(+this.value);
+            });
+        }
+
+        function visualizeInteractiveTrig(containerId) {
+            const container = d3.select(`#${containerId}`);
+            if (container.empty()) {
+                console.error("Container not found:", containerId);
+                return null;
+            }
+            container.html('');
+            container.style('touch-action', 'none');
+
+            const width = container.node().clientWidth;
+            const height = container.node().clientHeight;
+            const margin = {top: 40, right: 20, bottom: 40, left: 20};
+            
+            const plotSize = Math.min(width - margin.left - margin.right, height - margin.top - margin.bottom);
+            const radius = plotSize / 2.5;
+
+            const svg = container.append('svg')
+                .attr('width', width)
+                .attr('height', height);
+
+            const g = svg.append('g')
+                .attr('transform', `translate(${width / 2}, ${height / 2})`);
+
+            const xScale = d3.scaleLinear().domain([-1.5, 1.5]).range([-radius * 1.5, radius * 1.5]);
+            const yScale = d3.scaleLinear().domain([-1.5, 1.5]).range([radius * 1.5, -radius * 1.5]);
+
+            // Grid lines
+            const grid = g.append('g').attr('class', 'grid');
+            grid.selectAll('.x-grid')
+                .data(yScale.ticks(10))
+                .enter().append('line')
+                .attr('class', 'x-grid')
+                .attr('x1', xScale.range()[0])
+                .attr('x2', xScale.range()[1])
+                .attr('y1', d => yScale(d))
+                .attr('y2', d => yScale(d))
+                .attr('stroke', '#e0e0e0')
+                .attr('stroke-width', 0.5);
+
+            grid.selectAll('.y-grid')
+                .data(xScale.ticks(10))
+                .enter().append('line')
+                .attr('class', 'y-grid')
+                .attr('x1', d => xScale(d))
+                .attr('x2', d => xScale(d))
+                .attr('y1', yScale.range()[0])
+                .attr('y2', yScale.range()[1])
+                .attr('stroke', '#e0e0e0')
+                .attr('stroke-width', 0.5);
+
+            // Axes
+            const xAxis = g.append('g').attr('class', 'axis x-axis').call(d3.axisBottom(xScale).ticks(5));
+            const yAxis = g.append('g').attr('class', 'axis y-axis').call(d3.axisLeft(yScale).ticks(5));
+            xAxis.select('.domain').attr('stroke-width', 1.5);
+            yAxis.select('.domain').attr('stroke-width', 1.5);
+
+            // Unit circle
+            g.append('circle')
+                .attr('r', radius)
+                .attr('fill', 'rgba(200, 200, 200, 0.1)')
+                .attr('stroke', '#888');
+
+            const angleArc = d3.arc().innerRadius(0).outerRadius(radius * 0.3);
+            const anglePath = g.append('path').attr('fill', 'rgba(0,0,0,0.1)');
+            const angleLabel = g.append('text').attr('class', 'angle-label').attr('dy', '0.35em');
+
+            const angleLine = g.append('line').attr('x1', 0).attr('y1', 0).attr('stroke', '#555').attr('stroke-width', 2);
+            const sineLine = g.append('line').attr('stroke', 'var(--danger-color)').attr('stroke-width', 2.5);
+            const cosineLine = g.append('line').attr('stroke', 'var(--primary-color)').attr('stroke-width', 2.5);
+            
+            const sineLabel = g.append('text').attr('class', 'label sine-label').style('fill', 'var(--danger-color)');
+            const cosineLabel = g.append('text').attr('class', 'label cosine-label').style('fill', 'var(--primary-color)');
+
+            const draggablePoint = g.append('circle').attr('r', 8).attr('fill', 'var(--accent-color)').style('cursor', 'pointer');
+            const infoBox = d3.select('#trig-info-box');
+
+            function update(angle) {
+                const x = radius * Math.cos(angle);
+                const y = -radius * Math.sin(angle); // y is inverted in SVG
+
+                draggablePoint.attr('cx', x).attr('cy', y);
+                angleLine.attr('x2', x).attr('y2', y);
+
+                sineLine.attr('x1', x).attr('y1', y).attr('x2', x).attr('y2', 0);
+                cosineLine.attr('x1', x).attr('y1', 0).attr('x2', 0).attr('y2', 0);
+
+                sineLabel.attr('x', x + 5).attr('y', y / 2).text('sin(θ)');
+                cosineLabel.attr('x', x / 2).attr('y', -5).text('cos(θ)');
+
+                anglePath.attr('d', angleArc({startAngle: 0, endAngle: -angle}));
+                const [angleX, angleY] = angleArc.centroid({startAngle: 0, endAngle: -angle});
+                angleLabel.attr('x', angleX).attr('y', angleY).text(`${(-angle * 180 / Math.PI).toFixed(0)}°`);
+
+                infoBox.html(
+                    `<strong>Angle (θ):</strong> ${(-angle * 180 / Math.PI).toFixed(1)}° / ${(-angle).toFixed(2)} rad<br>` +
+                    `<strong class="color-cosine">Cosine:</strong> ${Math.cos(angle).toFixed(3)}<br>` +
+                    `<strong class="color-sine">Sine:</strong> ${Math.sin(angle).toFixed(3)}<br>`
+                );
+                renderMathJax(infoBox.node());
+            }
+
+            const drag = d3.drag().on('drag', function(event) {
+                const angle = Math.atan2(-event.y, event.x);
+                update(angle);
+            });
+
+            draggablePoint.call(drag);
+            update(-Math.PI / 4);
+        }
+
+        function visualizeInteractiveInvTrig(containerId) {
+            const setup = setupD3(containerId, {top: 60, right: 40, bottom: 60, left: 60});
+            if (!setup) return;
+            const { container, svg, g, width, height } = setup;
+
+            svg.append('text')
+                .attr('x', width / 2 + 30)
+                .attr('y', 30)
+                .attr('text-anchor', 'middle')
+                .style('font-size', '20px')
+                .style('font-weight', 'bold')
+                .text('Sine 与 Arcsine');
+
+            const pi = Math.PI;
+            const xScale = d3.scaleLinear().domain([-pi, pi]).range([0, width]);
+            const yScale = d3.scaleLinear().domain([-1.6, 1.6]).range([height, 0]);
+
+            const xAxis = g.append('g').attr('transform', `translate(0, ${yScale(0)})`)
+                .call(d3.axisBottom(xScale)
+                    .tickValues([-pi, -pi/2, 0, pi/2, pi])
+                    .tickFormat(d => ({'-3.141592653589793': '-π', '-1.5707963267948966': '-π/2', '0': '0', '1.5707963267948966': 'π/2', '3.141592653589793': 'π'}[d]))
+                );
+            const yAxis = g.append('g').call(d3.axisLeft(yScale).tickValues([-1, 0, 1]));
+            
+            const sineLine = d3.line().x(d => xScale(d)).y(d => yScale(Math.sin(d)));
+            const data = d3.range(-pi, pi, 0.01);
+            g.append("path").datum(data).attr("fill", "none").attr("stroke", "#ccc").attr("stroke-width", 2).attr("d", sineLine);
+
+            const restrictedData = d3.range(-pi / 2, pi / 2 + 0.01, 0.01);
+            const restrictedPath = g.append("path").datum(restrictedData).attr("fill", "none").attr("stroke", "var(--danger-color)").attr("stroke-width", 4).attr("d", sineLine);
+
+            const invXScale = d3.scaleLinear().domain([-1, 1]).range([xScale(-pi/2), xScale(pi/2)]);
+            const invYScale = d3.scaleLinear().domain([-pi/2, pi/2]).range([yScale(-1), yScale(1)]);
+            
+            const arcsinLine = d3.line().x(d => invXScale(d)).y(d => invYScale(Math.asin(d)));
+            const invData = d3.range(-1, 1.01, 0.01);
+            const arcsinPath = g.append("path").datum(invData).attr("fill", "none").attr("stroke", "var(--primary-color)").attr("stroke-width", 4).attr("d", arcsinLine).style('opacity', 0);
+
+            const yLine = g.append("line").attr("x1", 0).attr("x2", width).attr("stroke", "var(--accent-color)").attr("stroke-width", 2).style("cursor", "row-resize");
+            const intersections = g.append("g");
+
+            function updateIntersections(yVal) {
+                yLine.attr("y1", yScale(yVal)).attr("y2", yScale(yVal));
+                const xVals = data.filter(d => Math.abs(Math.sin(d) - yVal) < 0.01);
+                
+                intersections.selectAll("circle").remove();
+                intersections.selectAll("circle")
+                    .data(xVals)
+                    .enter().append("circle")
+                    .attr("cx", d => xScale(d))
+                    .attr("cy", yScale(yVal))
+                    .attr("r", 5)
+                    .attr("fill", "var(--accent-color)");
+            }
+
+            const drag = d3.drag().on("drag", function(event) {
+                const yVal = yScale.invert(event.y);
+                if (yVal >= -1 && yVal <= 1) {
+                    updateIntersections(yVal);
+                }
+            });
+
+            yLine.call(drag);
+            updateIntersections(0.5);
+
+            const buttonContainer = container.append('div')
+                .style('position', 'absolute')
+                .style('top', '20px')
+                .style('right', '20px');
+
+            buttonContainer.append('button')
+                .attr('class', 'nav-btn')
+                .style('width', 'auto').style('padding', '5px 10px').style('border-radius', '5px')
+                .text('显示反函数')
+                .on('click', function() {
+                    arcsinPath.transition().duration(500).style('opacity', 1);
+                    yLine.transition().duration(500).style("opacity", 0);
+                    intersections.transition().duration(500).style("opacity", 0);
+                    d3.select(this).remove();
+                });
+        }
+
+        function visualizeInteractiveInverseExpLog(containerId) {
+            const setup = setupD3(containerId, {top: 60, right: 40, bottom: 60, left: 50});
+            if (!setup) return;
+            const { container, svg, g, width, height } = setup;
+
+            svg.append('text')
+                .attr('x', width / 2 + 50)
+                .attr('y', 30)
+                .attr('text-anchor', 'middle')
+                .style('font-size', '20px')
+                .style('font-weight', 'bold')
+                .text('指数函数与对数函数互为反函数');
+
+            const domainRange = 5;
+            const xScale = d3.scaleLinear().domain([-domainRange, domainRange]).range([0, width]);
+            const yScale = d3.scaleLinear().domain([-domainRange, domainRange]).range([height, 0]);
+
+            g.append('g')
+                .attr('transform', `translate(0, ${yScale(0)})`)
+                .call(d3.axisBottom(xScale));
+            g.append('g')
+                .attr('transform', `translate(${xScale(0)}, 0)`)
+                .call(d3.axisLeft(yScale));
+
+            g.append("line")
+                .attr("x1", xScale(-domainRange))
+                .attr("y1", yScale(-domainRange))
+                .attr("x2", xScale(domainRange))
+                .attr("y2", yScale(domainRange))
+                .attr("stroke", "#aaa")
+                .attr("stroke-width", 2)
+                .attr("stroke-dasharray", "5,5");
+            g.append('text').attr('x', xScale(4)).attr('y', yScale(4) - 5).text('y=x').style('fill', '#aaa');
+
+            const expPath = g.append("path").attr("fill", "none").attr("stroke", "var(--danger-color)").attr("stroke-width", 2.5);
+            const logPath = g.append("path").attr("fill", "none").attr("stroke", "var(--primary-color)").attr("stroke-width", 2.5);
+
+            const sliderContainer = container.append('div')
+                .style('position', 'absolute')
+                .style('bottom', '20px')
+                .style('left', '50%')
+                .style('transform', 'translateX(-50%)')
+                .style('background', 'rgba(255, 255, 255, 0.9)')
+                .style('padding', '10px')
+                .style('border-radius', '8px')
+                .style('box-shadow', '0 2px 8px rgba(0,0,0,0.15)');
+
+            sliderContainer.append('label').text('底数 a: ').style('color', 'black');
+            const slider = sliderContainer.append('input').attr('type', 'range').attr('min', 0.2).attr('max', 4).attr('step', 0.1).attr('value', 2);
+            const label = sliderContainer.append('span').text('2.0').style('color', 'black').style('font-weight', 'bold');
+
+            const expLabel = g.append('text').attr('class', 'label').style('fill', 'var(--danger-color)');
+            const logLabel = g.append('text').attr('class', 'label').style('fill', 'var(--primary-color)');
+
+            function update(a) {
+                label.text(a.toFixed(1));
+
+                if (a.toFixed(1) === '1.0') {
+                    expPath.style('opacity', 0);
+                    logPath.style('opacity', 0);
+                    return;
+                }
+                expPath.style('opacity', 1);
+                logPath.style('opacity', 1);
+
+                const expLine = d3.line().x(d => xScale(d)).y(d => yScale(Math.pow(a, d)));
+                const logLine = d3.line().x(d => xScale(d)).y(d => yScale(Math.log(d) / Math.log(a)));
+
+                const expData = d3.range(-domainRange, domainRange, 0.1).filter(x => {
+                    const y = Math.pow(a, x);
+                    return y < domainRange && y > -domainRange;
+                });
+                const logData = d3.range(0.01, domainRange, 0.1);
+
+                expPath.datum(expData).attr("d", expLine);
+                logPath.datum(logData).attr("d", logLine);
+                
+                expLabel.attr('x', xScale(1.5)).attr('y', yScale(Math.pow(a, 1.5)) - 5).text(`y = a^x`);
+                logLabel.attr('x', xScale(Math.max(2, Math.pow(a, 1.5)))).attr('y', yScale(1.5) + 15).text(`y = log_a(x)`);
+            }
+
+            update(2);
+            slider.on('input', function() {
+                update(+this.value);
+            });
+        }
+
         // 运行可视化函数映射
         function runVisualization(slideIndex) {
             stopCurrentAnimation();
@@ -5329,52 +5851,27 @@ function visualizeCompositeMachine(containerId) {
             let handlers;
 
             switch (slideIndex) {
-                case 3: visualizeVariables('vis-variables'); break;
-                case 4: visualizeIntervals('vis-intervals'); break;
-                case 5: visualizeFunctionMachine('vis-function-machine'); break;
-                case 6: visualizeDomain('vis-domain'); break;
-                case 7: visualizeRange('vis-range'); break;
-                case 8: visualizeElementaryIntro('vis-elementary-intro'); break;
-                case 9: visualizePowerFunction('vis-power-function'); break;
-                case 10: visualizeExponents('vis-exponents'); break;
-                case 11: visualizeExponentRules1('vis-exponent-rules-1'); break;
-                case 12: visualizeExponentRules2('vis-exponent-rules-2'); break;
-                case 13: visualizeSpecialExponentsNew('vis-special-exponents'); break;
-                case 14: visualizeFractionalExponents('vis-fractional-exponents'); break;
-                case 16: visualizeLogHistory('vis-log-history'); break;
-                case 17: visualizeLogDefinition('vis-log-definition'); break;
-                case 19: visualizeLogProperties('vis-log-properties'); break;
-                case 20: visualizeCommonLogs('vis-common-logs'); break;
-             // 在runVisualization函数的switch语句中添加：
-case 21: visualizeLogOperations('vis-log-operations'); break;
-case 24: visualizePropertiesIntro('vis-properties-intro'); break;
-case 25: visualizeMonotonicityInc('vis-monotonicity-inc'); break;
-case 26: visualizeMonotonicityDec('vis-monotonicity-dec'); break;
-case 27: visualizeMonotonicityIntervals('vis-monotonicity-intervals'); break;
-case 28: visualizeParityIntro('vis-parity-intro'); break;
-case 29: visualizeEvenFunction('vis-even-function'); break;
-case 30: visualizeOddFunction('vis-odd-function'); break;
-case 31: visualizeBoundedness('vis-boundedness'); break;
-case 32: visualizeInverseMachine('vis-inverse-machine'); break;
-case 33: visualizeInverseGraph('vis-inverse-graph'); break;
-case 35: visualizeCompositeMachine('vis-composite-machine'); break;
                 case 3: handlers = visualizeVariables('vis-variables'); break;
                 case 4: handlers = visualizeIntervals('vis-intervals'); break;
                 case 5: handlers = visualizeFunctionMachine('vis-function-machine'); break;
                 case 6: handlers = visualizeDomain('vis-domain'); break;
                 case 7: handlers = visualizeRange('vis-range'); break;
                 case 8: handlers = visualizeElementaryIntro('vis-elementary-intro'); break;
+                case 9: handlers = visualizePowerFunction('vis-power-function'); break;
                 case 10: handlers = visualizeExponents('vis-exponents'); break;
                 case 11: handlers = visualizeExponentRules1('vis-exponent-rules-1'); break;
                 case 12: handlers = visualizeExponentRules2('vis-exponent-rules-2'); break;
                 case 13: handlers = visualizeSpecialExponentsNew('vis-special-exponents'); break;
                 case 14: handlers = visualizeFractionalExponents('vis-fractional-exponents'); break;
+                case 15: handlers = visualizeInteractiveExponential('vis-interactive-exponential'); break;
                 case 16: handlers = visualizeLogHistory('vis-log-history'); break;
                 case 17: handlers = visualizeLogDefinition('vis-log-definition'); break;
+                case 18: handlers = visualizeInteractiveLogarithm('vis-interactive-logarithm'); break;
                 case 19: handlers = visualizeLogProperties('vis-log-properties'); break;
                 case 20: handlers = visualizeCommonLogs('vis-common-logs'); break;
-                // 在runVisualization函数的switch语句中添加：
                 case 21: handlers = visualizeLogOperations('vis-log-operations'); break;
+                case 22: handlers = visualizeInteractiveTrig('vis-interactive-trig'); break;
+                case 23: handlers = visualizeInteractiveInvTrig('vis-interactive-inv-trig'); break;
                 case 24: handlers = visualizePropertiesIntro('vis-properties-intro'); break;
                 case 25: handlers = visualizeMonotonicityInc('vis-monotonicity-inc'); break;
                 case 26: handlers = visualizeMonotonicityDec('vis-monotonicity-dec'); break;
@@ -5385,6 +5882,7 @@ case 35: visualizeCompositeMachine('vis-composite-machine'); break;
                 case 31: handlers = visualizeBoundedness('vis-boundedness'); break;
                 case 32: handlers = visualizeInverseMachine('vis-inverse-machine'); break;
                 case 33: handlers = visualizeInverseGraph('vis-inverse-graph'); break;
+                case 34: handlers = visualizeInteractiveInverseExpLog('vis-interactive-inverse-exp-log'); break;
                 case 35: handlers = visualizeCompositeMachine('vis-composite-machine'); break;
             }
 
