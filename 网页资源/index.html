@@ -32,6 +32,22 @@
     --glow: 0 0 20px rgba(6, 255, 165, 0.3);
 }
 
+/* 统一字体引入 */
+@font-face {
+    font-family: 'WDXLubrifontSC';
+    src: url('../common-assets/fonts/WD-XLLubrifontSC-Regular.otf') format('opentype');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: 'JfOpenHuninn';
+    src: url('../common-assets/fonts/jf-openhuninn-2.1.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
 @font-face {
     font-family: 'SourceHanSans';
     src: url('../common-assets/fonts/SourceHanSansSC-Regular.otf') format('opentype');
@@ -71,42 +87,46 @@
 }
 
 body {
-    font-family: 'SourceHanSans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-family: 'WDXLubrifontSC', 'JfOpenHuninn', 'Noto Serif SC', 'Microsoft YaHei', 'PingFang SC', Arial, sans-serif;
     font-size: 18px;
-    background-color: #000;
+    background-color: #faf9f7;
     width: 100vw;
     height: 100vh;
     margin: 0;
     padding: 0;
     position: relative;
     overflow: hidden;
-    color: var(--text);
+    color: #2c3e50;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
 
-/* 3D背景画布 */
-#background3d {
+/* 轻量网格/噪声覆盖层 */
+.subtle-overlay {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: -1;
-    will-change: transform;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0.06;
+    background-image:
+        radial-gradient(rgba(52,73,94,0.35) 1px, transparent 1px),
+        radial-gradient(rgba(52,73,94,0.25) 1px, transparent 1px);
+    background-size: 28px 28px, 14px 14px;
+    background-position: 0 0, 7px 7px;
+    animation: overlayPan 30s linear infinite;
 }
 
-/* 3D数字雕塑背景 */
-#digitalSculpture {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 0;
-    pointer-events: none;
-    will-change: transform;
+@keyframes overlayPan {
+    0% { transform: translate3d(0,0,0); }
+    50% { transform: translate3d(7px,7px,0); }
+    100% { transform: translate3d(0,0,0); }
 }
+
+/* 3D背景画布（禁用） */
+#background3d { display: none; }
+
+/* 第二背景（删除/禁用） */
+#digitalSculpture { display: none; }
 
 #sculptureInfo {
     position: absolute;
@@ -144,6 +164,8 @@ body {
     pointer-events: none;
     will-change: transform;
 }
+/* 第二背景统一关闭 */
+#digitalSculpture, #sculptureCanvas { display: none !important; }
 
 /* 主内容区 - 全屏iframe */
 .main-content {
@@ -157,7 +179,7 @@ body {
     width: 100%;
     height: 100%;
     border: none;
-    background: #0f172a;
+    background: #faf9f7;
 }
 
 /* 欢迎页 */
@@ -919,12 +941,18 @@ body {
 <body>
 
 <!-- 3D背景画布 -->
-<canvas id="background3d"></canvas>
+<canvas id="background3d" style="display:none"></canvas>
 
-<!-- 3D数字雕塑背景 -->
-<div id="digitalSculpture">
+<!-- 3D数字雕塑背景（关闭） -->
+<div id="digitalSculpture" style="display:none">
     <canvas id="sculptureCanvas"></canvas>
+    
 </div>
+
+<!-- 轻量网格/噪声覆盖层 -->
+<div class="subtle-overlay"></div>
+
+
 
 <!-- 主内容区 -->
 <div class="main-content">

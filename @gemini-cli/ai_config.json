@@ -1,0 +1,52 @@
+{
+  "system": {
+    "request_timeout": 32,
+    "max_retries": 6,
+    "retry_backoff": {
+      "base": 1.5,
+      "cap": 12
+    },
+    "cooldown_seconds": 8,
+    "rate_limit_cooldown": 60,
+    "hard_block_seconds": 900,
+    "per_key_minute_limit": 90,
+    "per_key_daily_limit": 50,
+    "base_latency": 1.2,
+    "max_output_tokens": 2048,
+    "temperature": 0.7,
+    "topK": 40,
+    "topP": 0.95,
+    "default_group": "gemini"
+  },
+  "groups": [
+    {
+      "name": "gemini",
+      "provider": "google",
+      "model": "gemini-1.5-pro-latest",
+      "base_url": "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro-latest:generateContent",
+      "max_retries": 6,
+      "retry_backoff": {
+        "base": 1.5,
+        "cap": 12
+      },
+      "cooldown_seconds": 8,
+      "rate_limit_cooldown": 60,
+      "hard_block_seconds": 900,
+      "per_key_minute_limit": 90,
+      "per_key_daily_limit": 50,
+      "base_latency": 1.2,
+      "max_output_tokens": 2048,
+      "temperature": 0.7,
+      "topK": 40,
+      "topP": 0.95,
+      "keys": [
+        {
+          "value": "AIzaSyB2z3beTsALMXl4VF5Zf_IVZqRwc0bNlnc",
+          "weight": 1.0,
+          "minute_limit": 90,
+          "daily_limit": 50
+        }
+      ]
+    }
+  ]
+}

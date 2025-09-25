@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3n+1 猜想 (考拉兹猜想) 可视化</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #f4f7f9;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 900px;
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        p.description {
+            color: #555;
+            font-size: 1.1em;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+
+        .input-area {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+
+        input[type="number"] {
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1.2em;
+            width: 200px;
+            text-align: center;
+            transition: border-color 0.3s;
+        }
+
+        input[type="number"]:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+
+        button {
+            padding: 12px 30px;
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #fff;
+            background-color: #3498db;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+        }
+
+        .results {
+            margin-top: 20px;
+            text-align: left;
+        }
+
+        h2 {
+            color: #2c3e50;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        #sequence-output {
+            background-color: #ecf0f1;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', Courier, monospace;
+            line-height: 1.5;
+            word-wrap: break-word;
+            max-height: 150px;
+            overflow-y: auto;
+        }
+        
+        #chart-container {
+            margin-top: 30px;
+            position: relative;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>3n+1 猜想可视化</h1>
+        <p class="description">
+            <strong>考拉兹猜想（Collatz Conjecture）</strong>，又称为 3n+1 猜想或冰雹猜想。规则很简单：从任何一个正整数 <em>n</em> 开始，如果 <em>n</em> 是偶数，则将它除以 2；如果 <em>n</em> 是奇数，则将它乘以 3 再加 1。重复这个过程，猜想认为无论从哪个正整数出发，最终都会落入 <code>4 → 2 → 1</code> 的循环。
+        </p>
+
+        <div class="input-area">
+            <input type="number" id="numberInput" placeholder="输入一个正整数" value="27" min="1">
+            <button id="generateBtn">生成数列并可视化</button>
+        </div>
+
+        <div class="results">
+            <h2>生成的数列:</h2>
+            <div id="sequence-output">请点击按钮开始生成...</div>
+            <p id="stats-output"></p>
+        </div>
+        
+        <div id="chart-container">
+            <canvas id="collatzChart"></canvas>
+        </div>
+    </div>
+
+    <script>
+        const numberInput = document.getElementById('numberInput');
+        const generateBtn = document.getElementById('generateBtn');
+        const sequenceOutput = document.getElementById('sequence-output');
+        const statsOutput = document.getElementById('stats-output');
+        const ctx = document.getElementById('collatzChart').getContext('2d');
+        let myChart;
+
+        // 函数：生成 3n+1 数列
+        function generateCollatzSequence(n) {
+            const sequence = [n];
+            let iterations = 0;
+            // 添加一个迭代上限，防止因极端数字导致浏览器假死
+            const maxIterations = 5000; 
+
+            while (n > 1 && iterations < maxIterations) {
+                if (n % 2 === 0) {
+                    n = n / 2;
+                } else {
+                    n = 3 * n + 1;
+                }
+                sequence.push(n);
+                iterations++;
+            }
+            return sequence;
+        }
+
+        // 函数：渲染图表
+        function renderChart(sequence) {
+            const labels = Array.from({ length: sequence.length }, (_, i) => `第 ${i + 1} 步`);
+            
+            const data = {
+                labels: labels,
+                datasets: [{
+                    label: '数值',
+                    data: sequence,
+                    fill: true,
+                    backgroundColor: 'rgba(52, 152, 219, 0.2)',
+                    borderColor: 'rgb(52, 152, 219)',
+                    tension: 0.1, // 使线条稍微平滑
+                    pointRadius: sequence.length > 100 ? 1 : 3, // 当点太多时，缩小点的大小
+                    pointBackgroundColor: 'rgb(52, 152, 219)'
+                }]
+            };
+
+            const config = {
+                type: 'line',
+                data: data,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: '数值'
+                            }
+                        },
+                        x: {
+                             title: {
+                                display: true,
+                                text: '步数'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                title: function(context) {
+                                    return context[0].label;
+                                },
+                                label: function(context) {
+                                    return `数值: ${context.parsed.y}`;
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+            
+            // 如果图表已存在，先销毁旧的实例
+            if (myChart) {
+                myChart.destroy();
+            }
+
+            myChart = new Chart(ctx, config);
+        }
+        
+        // 主执行函数
+        function main() {
+            const startNum = parseInt(numberInput.value);
+
+            if (isNaN(startNum) || startNum <= 0) {
+                alert('请输入一个有效的正整数！');
+                return;
+            }
+
+            const sequence = generateCollatzSequence(startNum);
+            
+            // 显示数列文本
+            sequenceOutput.textContent = sequence.join(' → ');
+
+            // 显示统计信息
+            const maxValue = Math.max(...sequence);
+            const steps = sequence.length - 1;
+            statsOutput.innerHTML = `<strong>总步数:</strong> ${steps} | <strong>峰值:</strong> ${maxValue}`;
+            
+            // 渲染图表
+            renderChart(sequence);
+        }
+
+        // 绑定事件
+        generateBtn.addEventListener('click', main);
+        
+        // 允许按回车键触发
+        numberInput.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
+                main();
+            }
+        });
+
+        // 页面加载时使用默认值生成一次
+        main();
+
+    </script>
+</body>
+</html>
