@@ -707,14 +707,14 @@
                     </ol>
                 </div>
                 <div class="student-pain-points">
-                    <h3>⚠️ 学生常见困难点</h3>
+                    <h3>⚠️ 学生常见困惑</h3>
                     <ul>
-                        <li><strong>符号理解</strong>：$\lim_{n\to\infty}$、$\varepsilon$-$N$定义看不懂</li>
-                        <li><strong>概念混淆</strong>：极限值 vs 数列的项，无限接近 vs 等于</li>
-                        <li><strong>计算技能</strong>：遇到0/0型不知道如何处理</li>
+                        <li><strong>要点 1：</strong>"无限接近"到底是什么意思？</li>
+                        <li><strong>要点 2：</strong>怎样判断一个变化过程的"最终结果"？</li>
+                        <li><strong>要点 3：</strong>碰到 $\frac{0}{0}$ 这种怪现象应该怎么办？</li>
                     </ul>
                     <div class="teacher-note">
-                        <strong>教学策略</strong>：多用生活类比，分步骤展示解题过程，强调"先试后想"的解题习惯
+                        <strong>教学策略</strong>：用直观画面和生活语言拆解抽象概念，再带学生一步步操作和总结方法。
                     </div>
                 </div>`,
                 animation: "objective"
@@ -920,19 +920,16 @@
                     </div>
 
                     <div class="step-item" data-step="2">
-                        <div class="definition">
-                            <strong>定义2</strong> 对于数列 $\\{x_{n}\\}$,如果当n无限增大时,数列的一般项 $x_{n}$ 无限地接近于某一确定的数值a,则称常数a是数列 $\\{x_{n}\\}$ 的极限,或称数列 $\\{x_{n}\\}$ 收敛于a,记作 $$\displaystyle\lim_{n\to\infty}x_{n}=a$$
-                        </div>
-                        <p>如果数列没有极限,就说数列是发散的。</p>
-                        <button class="step-btn" data-action="next">下一步：ε-N承诺</button>
+                        <div class="formula-highlight">$$\displaystyle\lim_{n\to\infty} x_n = a$$</div>
+                        <p>翻译成口语：当 $n$ 越来越大时，$x_n$ 的目标就是靠近数字 $a$，虽然总差一点点，但方向不会偏。</p>
+                        <p>始终围着一个目标转叫<strong>收敛</strong>；没有固定目标就叫<strong>发散</strong>。</p>
+                        <button class="step-btn" data-action="next">下一步：画面感</button>
                     </div>
 
                     <div class="step-item" data-step="3">
-                        <h4>📐 ε-N承诺理解</h4>
-                        <p><strong>承包商承诺</strong>：就像承包商说"给我足够时间(N)，我能把误差控制在你要求的范围(ε)内"</p>
-                        <div class="teacher-note">
-                            书上的 ε-N 定义其实就是在说：无论你要求多小的误差（ε），我总能找到一个位置（N），从这个位置往后，所有的数都满足你的误差要求。这像不像一个承诺？
-                        </div>
+                        <h4>🎬 画面想象</h4>
+                        <p>在数轴上放一个小点，让它依次取 $\frac{1}{2}, \frac{2}{3}, \frac{3}{4}, \dots$，你会看到它紧紧贴着 1 靠近。</p>
+                        <div class="teacher-note">右侧可展示动画：点的位置随着 $n$ 变化一路逼近目标点 $a$，帮助学生形成视觉记忆。</div>
                         <button class="step-btn completed" data-action="reset">重新开始</button>
                     </div>
                 </div>`,
