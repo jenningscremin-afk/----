@@ -33,84 +33,205 @@
 </head>
 <body class="blackboard">
     <div id="statusIndicator" class="status-indicator">等待连接</div>
+    <header class="lesson-topbar">
+        <div class="lesson-meta">
+            <h1>第3章 视频 3.1 导数的核心概念与几何意义</h1>
+            <div class="lesson-meta__row">
+                <span class="lesson-chip">章节 3.1</span>
+                <span class="lesson-chip">预计总时长：4 分 50 秒 / 290 秒</span>
+                <span class="lesson-chip">共 6 页</span>
+            </div>
+            <p class="lesson-subtitle">虚拟人录屏课件模板 · 自动生成的板书、动画、讲稿三栏脚本</p>
+        </div>
+        <div class="lesson-timeline">
+            <button class="timeline-item active" data-target="1"><span class="timeline-index">01</span><span class="timeline-title">导数引入</span><span class="timeline-duration">45秒</span></button>
+            <button class="timeline-item" data-target="2"><span class="timeline-index">02</span><span class="timeline-title">极限定义</span><span class="timeline-duration">75秒</span></button>
+            <button class="timeline-item" data-target="3"><span class="timeline-index">03</span><span class="timeline-title">几何意义</span><span class="timeline-duration">60秒</span></button>
+            <button class="timeline-item" data-target="4"><span class="timeline-index">04</span><span class="timeline-title">数值近似</span><span class="timeline-duration">50秒</span></button>
+            <button class="timeline-item" data-target="5"><span class="timeline-index">05</span><span class="timeline-title">物理应用情境</span><span class="timeline-duration">55秒</span></button>
+            <button class="timeline-item" data-target="6"><span class="timeline-index">06</span><span class="timeline-title">易错提醒与总结</span><span class="timeline-duration">55秒</span></button>
+        </div>
+    </header>
     <div class="avatar-container">
         <div class="wrapper" id="avatarWrapper"></div>
     </div>
     <div id="slide-container" class="slide-container flex-grow">
-        <div class="slide active">
+        <div class="slide active" data-slide="1">
             <div class="slide-content">
-                <div class="blackboard-text">
-                    <h2>导数引入</h2>
-      <ul><li>生活例子：速度表读数、温度瞬时变化</li><li>导数 = 瞬时变化率</li></ul>
-                </div>
-                <div class="animation-pane">
-                    <h3>动画执行提示</h3>
-      <ol><li>汽车速度表指针实时变化。</li><li>温度曲线在某一时刻放大。</li></ol>
-                </div>
+                <aside class="slide-meta">
+                    <div class="slide-meta__badge">第 1 / 6 页</div>
+                    <div class="slide-meta__duration">⏱️ 45 秒</div>
+                    <div class="slide-progress"><div class="slide-progress__bar" style="width: 0%"></div></div>
+                    <div class="slide-meta__action">推荐动作：<span>A_RLH_welcome_O</span></div>
+                    <div class="slide-meta__note">自动播放会额外保留讲稿缓冲时间。</div>
+                </aside>
+                <section class="panel board-pane">
+                    <header class="panel__header"><h2>导数引入</h2></header>
+                    <div class="panel__body">
+        <ul><li>生活例子：速度表读数、温度瞬时变化</li><li>导数 = 瞬时变化率</li></ul>
+                    </div>
+                </section>
+                <section class="panel animation-pane">
+                    <header class="panel__header"><h3>动画执行提示</h3></header>
+                    <div class="panel__body">
+        <ol><li>汽车速度表指针实时变化。</li><li>温度曲线在某一时刻放大。</li></ol>
+                    </div>
+                </section>
+                <section class="panel narration-pane">
+                    <header class="panel__header"><h3>虚拟人讲稿</h3><span class="action-chip">动作：A_RLH_welcome_O</span></header>
+                    <div class="panel__body">
+        <p>导数告诉我们某个瞬间的变化速度，就像驾驶时看到的实时车速。</p>
+                    </div>
+                </section>
             </div>
         </div>
-        <div class="slide">
+        <div class="slide" data-slide="2">
             <div class="slide-content">
-                <div class="blackboard-text">
-                    <h2>极限定义</h2>
-      <ul><li>定义：$f'(x_0)=\lim_{\Delta x\to0}\frac{f(x_0+\Delta x)-f(x_0)}{\Delta x}$</li><li>坡度理解：割线 → 切线</li></ul>
-                </div>
-                <div class="animation-pane">
-                    <h3>动画执行提示</h3>
-      <ol><li>曲线上取两个点形成割线，Δx 缩小。</li><li>割线逐渐逼近切线。</li></ol>
-                </div>
+                <aside class="slide-meta">
+                    <div class="slide-meta__badge">第 2 / 6 页</div>
+                    <div class="slide-meta__duration">⏱️ 75 秒</div>
+                    <div class="slide-progress"><div class="slide-progress__bar" style="width: 20%"></div></div>
+                    <div class="slide-meta__action">推荐动作：<span>A_LH_introduced_O</span></div>
+                    <div class="slide-meta__note">自动播放会额外保留讲稿缓冲时间。</div>
+                </aside>
+                <section class="panel board-pane">
+                    <header class="panel__header"><h2>极限定义</h2></header>
+                    <div class="panel__body">
+        <ul><li>定义：$f'(x_0)=\lim_{\Delta x\to0}\frac{f(x_0+\Delta x)-f(x_0)}{\Delta x}$</li><li>坡度理解：割线 → 切线</li></ul>
+                    </div>
+                </section>
+                <section class="panel animation-pane">
+                    <header class="panel__header"><h3>动画执行提示</h3></header>
+                    <div class="panel__body">
+        <ol><li>曲线上取两个点形成割线，Δx 缩小。</li><li>割线逐渐逼近切线。</li></ol>
+                    </div>
+                </section>
+                <section class="panel narration-pane">
+                    <header class="panel__header"><h3>虚拟人讲稿</h3><span class="action-chip">动作：A_LH_introduced_O</span></header>
+                    <div class="panel__body">
+        <p>导数就是函数值变化量与自变量变化量的比值，在Δx趋向 0 时得到切线斜率。</p>
+                    </div>
+                </section>
             </div>
         </div>
-        <div class="slide">
+        <div class="slide" data-slide="3">
             <div class="slide-content">
-                <div class="blackboard-text">
-                    <h2>几何意义</h2>
-      <ul><li>切线斜率 = 导数值</li><li>正值表示上坡，负值表示下坡</li><li>例：y=x² 在 x=1 处导数为 2</li></ul>
-                </div>
-                <div class="animation-pane">
-                    <h3>动画执行提示</h3>
-      <ol><li>在曲线 y=x² 上作切线，显示斜率 2。</li><li>对比 x³ 在 x=0 处导数 0（水平切线）。</li></ol>
-                </div>
+                <aside class="slide-meta">
+                    <div class="slide-meta__badge">第 3 / 6 页</div>
+                    <div class="slide-meta__duration">⏱️ 60 秒</div>
+                    <div class="slide-progress"><div class="slide-progress__bar" style="width: 40%"></div></div>
+                    <div class="slide-meta__action">推荐动作：<span>A_RH_point_O</span></div>
+                    <div class="slide-meta__note">自动播放会额外保留讲稿缓冲时间。</div>
+                </aside>
+                <section class="panel board-pane">
+                    <header class="panel__header"><h2>几何意义</h2></header>
+                    <div class="panel__body">
+        <ul><li>切线斜率 = 导数值</li><li>正值表示上坡，负值表示下坡</li><li>例：y=x² 在 x=1 处导数为 2</li></ul>
+                    </div>
+                </section>
+                <section class="panel animation-pane">
+                    <header class="panel__header"><h3>动画执行提示</h3></header>
+                    <div class="panel__body">
+        <ol><li>在曲线 y=x² 上作切线，显示斜率 2。</li><li>对比 x³ 在 x=0 处导数 0（水平切线）。</li></ol>
+                    </div>
+                </section>
+                <section class="panel narration-pane">
+                    <header class="panel__header"><h3>虚拟人讲稿</h3><span class="action-chip">动作：A_RH_point_O</span></header>
+                    <div class="panel__body">
+        <p>导数不仅是计算，更是几何直观。斜率告诉我们曲线在该点是上升还是下降。</p>
+                    </div>
+                </section>
             </div>
         </div>
-        <div class="slide">
+        <div class="slide" data-slide="4">
             <div class="slide-content">
-                <div class="blackboard-text">
-                    <h2>数值近似</h2>
-      <ul><li>差商表：取 Δx=0.5、0.1、0.01 近似求导数</li><li>应用：实验数据估算瞬时速度</li></ul>
-                </div>
-                <div class="animation-pane">
-                    <h3>动画执行提示</h3>
-      <ol><li>表格随 Δx 缩小而趋近真实导数。</li><li>现实应用：速度传感器数据点连成差商。</li></ol>
-                </div>
+                <aside class="slide-meta">
+                    <div class="slide-meta__badge">第 4 / 6 页</div>
+                    <div class="slide-meta__duration">⏱️ 50 秒</div>
+                    <div class="slide-progress"><div class="slide-progress__bar" style="width: 60%"></div></div>
+                    <div class="slide-meta__action">推荐动作：<span>A_U_No_pointing_O</span></div>
+                    <div class="slide-meta__note">自动播放会额外保留讲稿缓冲时间。</div>
+                </aside>
+                <section class="panel board-pane">
+                    <header class="panel__header"><h2>数值近似</h2></header>
+                    <div class="panel__body">
+        <ul><li>差商表：取 Δx=0.5、0.1、0.01 近似求导数</li><li>应用：实验数据估算瞬时速度</li></ul>
+                    </div>
+                </section>
+                <section class="panel animation-pane">
+                    <header class="panel__header"><h3>动画执行提示</h3></header>
+                    <div class="panel__body">
+        <ol><li>表格随 Δx 缩小而趋近真实导数。</li><li>现实应用：速度传感器数据点连成差商。</li></ol>
+                    </div>
+                </section>
+                <section class="panel narration-pane">
+                    <header class="panel__header"><h3>虚拟人讲稿</h3><span class="action-chip">动作：A_U_No_pointing_O</span></header>
+                    <div class="panel__body">
+        <p>在没有解析表达式时，我们也能用差商逼近导数，理解导数的物理意义。</p>
+                    </div>
+                </section>
             </div>
         </div>
-        <div class="slide">
+        <div class="slide" data-slide="5">
             <div class="slide-content">
-                <div class="blackboard-text">
-                    <h2>物理应用情境</h2>
-      <ul><li>匀加速直线运动：$s(t)=s_0+v_0t+\frac{1}{2}at^2$</li><li>速度：$v(t)=s'(t)=v_0+at$</li><li>加速度：$a(t)=v'(t)=a$</li><li>现场演示：赛车数据图</li></ul>
-                </div>
-                <div class="animation-pane">
-                    <h3>动画执行提示</h3>
-      <ol><li>展示位移-时间曲线，切线斜率对应该时刻速度。</li><li>同步出现速度-时间曲线，强调导数作为“变化率”。</li></ol>
-                </div>
+                <aside class="slide-meta">
+                    <div class="slide-meta__badge">第 5 / 6 页</div>
+                    <div class="slide-meta__duration">⏱️ 55 秒</div>
+                    <div class="slide-progress"><div class="slide-progress__bar" style="width: 80%"></div></div>
+                    <div class="slide-meta__action">推荐动作：<span>A_RH_point_O</span></div>
+                    <div class="slide-meta__note">自动播放会额外保留讲稿缓冲时间。</div>
+                </aside>
+                <section class="panel board-pane">
+                    <header class="panel__header"><h2>物理应用情境</h2></header>
+                    <div class="panel__body">
+        <ul><li>匀加速直线运动：$s(t)=s_0+v_0t+\frac{1}{2}at^2$</li><li>速度：$v(t)=s'(t)=v_0+at$</li><li>加速度：$a(t)=v'(t)=a$</li><li>现场演示：赛车数据图</li></ul>
+                    </div>
+                </section>
+                <section class="panel animation-pane">
+                    <header class="panel__header"><h3>动画执行提示</h3></header>
+                    <div class="panel__body">
+        <ol><li>展示位移-时间曲线，切线斜率对应该时刻速度。</li><li>同步出现速度-时间曲线，强调导数作为“变化率”。</li></ol>
+                    </div>
+                </section>
+                <section class="panel narration-pane">
+                    <header class="panel__header"><h3>虚拟人讲稿</h3><span class="action-chip">动作：A_RH_point_O</span></header>
+                    <div class="panel__body">
+        <p>在物理中，位移对时间求导得到速度，再求导得到加速度。导数把抽象的极限概念转化为可以直接测量的物理量。</p>
+                    </div>
+                </section>
             </div>
         </div>
-        <div class="slide">
+        <div class="slide" data-slide="6">
             <div class="slide-content">
-                <div class="blackboard-text">
-                    <h2>易错提醒与总结</h2>
-      <ul><li>常见误解：</li><li>仅比较两个点的平均变化率 ≠ 导数</li><li>忽略定义域导致无导数点</li><li>课堂提问：$|x|$ 在 $x=0$ 是否可导？</li><li>本节结论：导数 = 极限 + 几何 + 物理</li></ul>
-                </div>
-                <div class="animation-pane">
-                    <h3>动画执行提示</h3>
-      <ol><li>对比割线斜率与切线斜率，出现“并不相同”的提示框。</li><li>图像展示 $|x|$ 在原点的尖点，闪烁“不可导”标签。</li></ol>
-                </div>
+                <aside class="slide-meta">
+                    <div class="slide-meta__badge">第 6 / 6 页</div>
+                    <div class="slide-meta__duration">⏱️ 55 秒</div>
+                    <div class="slide-progress"><div class="slide-progress__bar" style="width: 100%"></div></div>
+                    <div class="slide-meta__action">推荐动作：<span>A_LH_introduced_O</span></div>
+                    <div class="slide-meta__note">自动播放会额外保留讲稿缓冲时间。</div>
+                </aside>
+                <section class="panel board-pane">
+                    <header class="panel__header"><h2>易错提醒与总结</h2></header>
+                    <div class="panel__body">
+        <ul><li>常见误解：</li><li>仅比较两个点的平均变化率 ≠ 导数</li><li>忽略定义域导致无导数点</li><li>课堂提问：$|x|$ 在 $x=0$ 是否可导？</li><li>本节结论：导数 = 极限 + 几何 + 物理</li></ul>
+                    </div>
+                </section>
+                <section class="panel animation-pane">
+                    <header class="panel__header"><h3>动画执行提示</h3></header>
+                    <div class="panel__body">
+        <ol><li>对比割线斜率与切线斜率，出现“并不相同”的提示框。</li><li>图像展示 $|x|$ 在原点的尖点，闪烁“不可导”标签。</li></ol>
+                    </div>
+                </section>
+                <section class="panel narration-pane">
+                    <header class="panel__header"><h3>虚拟人讲稿</h3><span class="action-chip">动作：A_LH_introduced_O</span></header>
+                    <div class="panel__body">
+        <p>切记导数需要极限存在。比如绝对值函数在原点有尖点，没有唯一的切线斜率，因此不可导。把这些易错点记在笔记上。</p>
+                    </div>
+                </section>
             </div>
         </div>
     </div>
-    <div class="subtitle-area" id="subtitleArea">欢迎学习导数的核心概念与几何意义！点击开始讲课启动虚拟人讲师。</div>
+    <div class="subtitle-area" id="subtitleArea">欢迎学习第3章 视频 3.1 导数的核心概念与几何意义！点击开始讲课启动虚拟人讲师。</div>
     <div class="control-bar">
         <div class="control-title">第 <span id="currentSlide">1</span> 页 / 共 <span id="totalSlides">6</span> 页</div>
         <button class="btn" onclick="previousSlide()">⬅️ 上一页</button>
@@ -137,38 +258,38 @@
         window.dispatchEvent(new CustomEvent('sdkReady'));
     </script>
     <script>
-        const lessonTitle = "导数的核心概念与几何意义";
+        const lessonTitle = "第3章 视频 3.1 导数的核心概念与几何意义";
         const subtitleScript = {
-    "1": "导数告诉我们某个瞬间的变化速度，就像驾驶时看到的实时车速。",
-    "2": "导数就是函数值变化量与自变量变化量的比值，在Δx趋向 0 时得到切线斜率。",
-    "3": "导数不仅是计算，更是几何直观。斜率告诉我们曲线在该点是上升还是下降。",
-    "4": "在没有解析表达式时，我们也能用差商逼近导数，理解导数的物理意义。",
-    "5": "在物理中，位移对时间求导得到速度，再求导得到加速度。导数把抽象的极限概念转化为可以直接测量的物理量。",
-    "6": "切记导数需要极限存在。比如绝对值函数在原点有尖点，没有唯一的切线斜率，因此不可导。把这些易错点记在笔记上。"
+  "1": "导数告诉我们某个瞬间的变化速度，就像驾驶时看到的实时车速。",
+  "2": "导数就是函数值变化量与自变量变化量的比值，在Δx趋向 0 时得到切线斜率。",
+  "3": "导数不仅是计算，更是几何直观。斜率告诉我们曲线在该点是上升还是下降。",
+  "4": "在没有解析表达式时，我们也能用差商逼近导数，理解导数的物理意义。",
+  "5": "在物理中，位移对时间求导得到速度，再求导得到加速度。导数把抽象的极限概念转化为可以直接测量的物理量。",
+  "6": "切记导数需要极限存在。比如绝对值函数在原点有尖点，没有唯一的切线斜率，因此不可导。把这些易错点记在笔记上。"
 };
         const actionMap = {
-    "1": "A_RLH_welcome_O",
-    "2": "A_LH_introduced_O",
-    "3": "A_RH_point_O",
-    "4": "A_U_No_pointing_O",
-    "5": "A_RH_point_O",
-    "6": "A_LH_introduced_O"
+  "1": "A_RLH_welcome_O",
+  "2": "A_LH_introduced_O",
+  "3": "A_RH_point_O",
+  "4": "A_U_No_pointing_O",
+  "5": "A_RH_point_O",
+  "6": "A_LH_introduced_O"
 };
         const slideTitles = {
-    "1": "导数引入",
-    "2": "极限定义",
-    "3": "几何意义",
-    "4": "数值近似",
-    "5": "物理应用情境",
-    "6": "易错提醒与总结"
+  "1": "导数引入",
+  "2": "极限定义",
+  "3": "几何意义",
+  "4": "数值近似",
+  "5": "物理应用情境",
+  "6": "易错提醒与总结"
 };
         const slideDurations = {
-    "1": 45000,
-    "2": 75000,
-    "3": 60000,
-    "4": 50000,
-    "5": 55000,
-    "6": 55000
+  "1": 51749,
+  "2": 86250,
+  "3": 69000,
+  "4": 57499,
+  "5": 63249,
+  "6": 63249
 };
         const totalSlides = 6;
 
@@ -179,6 +300,7 @@
         let isAutoPlaying = false;
 
         const slides = document.querySelectorAll('.slide');
+        const timelineItems = document.querySelectorAll('.timeline-item');
 
         function showSlide(index) {
             slides.forEach((slide, i) => slide.classList.toggle('active', i === index));
@@ -187,6 +309,7 @@
             if (window.MathJax && window.MathJax.typesetPromise) {
                 window.MathJax.typesetPromise([slides[index]]).catch(err => console.error(err));
             }
+            timelineItems.forEach((item, i) => item.classList.toggle('active', i === index));
         }
 
         function nextSlide() {
@@ -334,7 +457,7 @@
                 if (!isAutoPlaying) break;
                 showSlide(slide - 1);
                 speakContent(slide);
-                const duration = slideDurations[slide] || 15000;
+                const duration = slideDurations[slide] || 18000;
                 await new Promise(resolve => setTimeout(resolve, duration));
             }
 
@@ -343,6 +466,17 @@
             autoBtn.classList.remove('stop');
             updateStatus('课程播放结束');
         }
+
+        timelineItems.forEach((item, index) => {
+            item.addEventListener('click', () => {
+                isAutoPlaying = false;
+                const autoBtn = document.getElementById('autoPlayBtn');
+                autoBtn.textContent = '🎬 自动播放';
+                autoBtn.classList.remove('stop');
+                showSlide(index);
+                speakContent(index + 1);
+            });
+        });
 
         document.addEventListener('keydown', (event) => {
             if (event.key === 'ArrowRight' || event.key === ' ') {

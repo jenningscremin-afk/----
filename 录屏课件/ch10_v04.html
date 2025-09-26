@@ -33,73 +33,179 @@
 </head>
 <body class="blackboard">
     <div id="statusIndicator" class="status-indicator">等待连接</div>
+    <header class="lesson-topbar">
+        <div class="lesson-meta">
+            <h1>第10章 视频 10.4 章节总结与工程应用</h1>
+            <div class="lesson-meta__row">
+                <span class="lesson-chip">章节 10.4</span>
+                <span class="lesson-chip">预计总时长：5 分 20 秒 / 320 秒</span>
+                <span class="lesson-chip">共 5 页</span>
+            </div>
+            <p class="lesson-subtitle">虚拟人录屏课件模板 · 自动生成的板书、动画、讲稿三栏脚本</p>
+        </div>
+        <div class="lesson-timeline">
+            <button class="timeline-item active" data-target="1"><span class="timeline-index">01</span><span class="timeline-title">知识地图</span><span class="timeline-duration">45秒</span></button>
+            <button class="timeline-item" data-target="2"><span class="timeline-index">02</span><span class="timeline-title">工程案例：电路分析</span><span class="timeline-duration">75秒</span></button>
+            <button class="timeline-item" data-target="3"><span class="timeline-index">03</span><span class="timeline-title">经济模型：投入产出</span><span class="timeline-duration">70秒</span></button>
+            <button class="timeline-item" data-target="4"><span class="timeline-index">04</span><span class="timeline-title">练习自测</span><span class="timeline-duration">60秒</span></button>
+            <button class="timeline-item" data-target="5"><span class="timeline-index">05</span><span class="timeline-title">总结与预告</span><span class="timeline-duration">70秒</span></button>
+        </div>
+    </header>
     <div class="avatar-container">
         <div class="wrapper" id="avatarWrapper"></div>
     </div>
     <div id="slide-container" class="slide-container flex-grow">
-        <div class="slide active">
+        <div class="slide active" data-slide="1">
             <div class="slide-content">
-                <div class="blackboard-text">
-                    <h2>知识地图</h2>
-      <ul><li>行列式 → 判断可逆</li><li>矩阵运算 → 构造逆与变换</li><li>方程组 → 求解与应用</li></ul>
-                </div>
-                <div class="animation-pane">
-                    <h3>动画执行提示</h3>
-      <ol><li>知识地图从中心向外展开，箭头连接模块。</li></ol>
-                </div>
+                <aside class="slide-meta">
+                    <div class="slide-meta__badge">第 1 / 5 页</div>
+                    <div class="slide-meta__duration">⏱️ 45 秒</div>
+                    <div class="slide-progress"><div class="slide-progress__bar" style="width: 0%"></div></div>
+                    <div class="slide-meta__action">推荐动作：<span>A_RLH_welcome_O</span></div>
+                    <div class="slide-meta__note">自动播放会额外保留讲稿缓冲时间。</div>
+                </aside>
+                <section class="panel board-pane">
+                    <header class="panel__header"><h2>知识地图</h2></header>
+                    <div class="panel__body">
+        <ul><li>行列式 → 判断可逆</li><li>矩阵运算 → 构造逆与变换</li><li>方程组 → 求解与应用</li></ul>
+                    </div>
+                </section>
+                <section class="panel animation-pane">
+                    <header class="panel__header"><h3>动画执行提示</h3></header>
+                    <div class="panel__body">
+        <ol><li>知识地图从中心向外展开，箭头连接模块。</li></ol>
+                    </div>
+                </section>
+                <section class="panel narration-pane">
+                    <header class="panel__header"><h3>虚拟人讲稿</h3><span class="action-chip">动作：A_RLH_welcome_O</span></header>
+                    <div class="panel__body">
+        <p>线性代数的三个模块环环相扣：行列式判断可逆，矩阵运算提供工具，最终用于解方程组。</p>
+                    </div>
+                </section>
             </div>
         </div>
-        <div class="slide">
+        <div class="slide" data-slide="2">
             <div class="slide-content">
-                <div class="blackboard-text">
-                    <h2>工程案例：电路分析</h2>
-      <ul><li>节点电压法得到线性方程组</li><li>通过矩阵求解电流分布</li></ul>
-                </div>
-                <div class="animation-pane">
-                    <h3>动画执行提示</h3>
-      <ol><li>电路图转化为矩阵方程 AX = B。</li><li>解出的电流数值在电路上闪烁显示。</li></ol>
-                </div>
+                <aside class="slide-meta">
+                    <div class="slide-meta__badge">第 2 / 5 页</div>
+                    <div class="slide-meta__duration">⏱️ 75 秒</div>
+                    <div class="slide-progress"><div class="slide-progress__bar" style="width: 25%"></div></div>
+                    <div class="slide-meta__action">推荐动作：<span>A_RH_point_O</span></div>
+                    <div class="slide-meta__note">自动播放会额外保留讲稿缓冲时间。</div>
+                </aside>
+                <section class="panel board-pane">
+                    <header class="panel__header"><h2>工程案例：电路分析</h2></header>
+                    <div class="panel__body">
+        <ul><li>节点电压法得到线性方程组</li><li>通过矩阵求解电流分布</li></ul>
+                    </div>
+                </section>
+                <section class="panel animation-pane">
+                    <header class="panel__header"><h3>动画执行提示</h3></header>
+                    <div class="panel__body">
+        <ol><li>电路图转化为矩阵方程 AX = B。</li><li>解出的电流数值在电路上闪烁显示。</li></ol>
+                    </div>
+                </section>
+                <section class="panel narration-pane">
+                    <header class="panel__header"><h3>虚拟人讲稿</h3><span class="action-chip">动作：A_RH_point_O</span></header>
+                    <div class="panel__body">
+        <p>电路分析会产生一组线性方程，用矩阵解法就能快速得到每条支路的电流。</p>
+                    </div>
+                </section>
             </div>
         </div>
-        <div class="slide">
+        <div class="slide" data-slide="3">
             <div class="slide-content">
-                <div class="blackboard-text">
-                    <h2>经济模型：投入产出</h2>
-      <ul><li>列昂惕夫模型：x = Ax + d</li><li>解法：x = (I − A)^{-1} d</li></ul>
-                </div>
-                <div class="animation-pane">
-                    <h3>动画执行提示</h3>
-      <ol><li>产业之间的流量图，矩阵乘法过程动画显示。</li></ol>
-                </div>
+                <aside class="slide-meta">
+                    <div class="slide-meta__badge">第 3 / 5 页</div>
+                    <div class="slide-meta__duration">⏱️ 70 秒</div>
+                    <div class="slide-progress"><div class="slide-progress__bar" style="width: 50%"></div></div>
+                    <div class="slide-meta__action">推荐动作：<span>A_LH_introduced_O</span></div>
+                    <div class="slide-meta__note">自动播放会额外保留讲稿缓冲时间。</div>
+                </aside>
+                <section class="panel board-pane">
+                    <header class="panel__header"><h2>经济模型：投入产出</h2></header>
+                    <div class="panel__body">
+        <ul><li>列昂惕夫模型：x = Ax + d</li><li>解法：x = (I − A)^{-1} d</li></ul>
+                    </div>
+                </section>
+                <section class="panel animation-pane">
+                    <header class="panel__header"><h3>动画执行提示</h3></header>
+                    <div class="panel__body">
+        <ol><li>产业之间的流量图，矩阵乘法过程动画显示。</li></ol>
+                    </div>
+                </section>
+                <section class="panel narration-pane">
+                    <header class="panel__header"><h3>虚拟人讲稿</h3><span class="action-chip">动作：A_LH_introduced_O</span></header>
+                    <div class="panel__body">
+        <p>在经济学中，投入产出模型用矩阵描述产业依赖。算 (I − A)^{-1)，就能得到满足最终需求所需的总产出。</p>
+                    </div>
+                </section>
             </div>
         </div>
-        <div class="slide">
+        <div class="slide" data-slide="4">
             <div class="slide-content">
-                <div class="blackboard-text">
-                    <h2>练习自测</h2>
-      <ul><li>清单：</li></ul>
-      <ol><li>计算一个 3×3 行列式</li><li>求一个矩阵的逆</li><li>解一个含自由变量的方程组</li></ol>
-                </div>
-                <div class="animation-pane">
-                    <h3>动画执行提示</h3>
-      <ol><li>待办清单逐项显示复选框，完成时打勾。</li></ol>
-                </div>
+                <aside class="slide-meta">
+                    <div class="slide-meta__badge">第 4 / 5 页</div>
+                    <div class="slide-meta__duration">⏱️ 60 秒</div>
+                    <div class="slide-progress"><div class="slide-progress__bar" style="width: 75%"></div></div>
+                    <div class="slide-meta__action">推荐动作：<span>A_RH_emphasize_O</span></div>
+                    <div class="slide-meta__note">自动播放会额外保留讲稿缓冲时间。</div>
+                </aside>
+                <section class="panel board-pane">
+                    <header class="panel__header"><h2>练习自测</h2></header>
+                    <div class="panel__body">
+        <ul><li>清单：</li></ul>
+        <ol><li>计算一个 3×3 行列式</li><li>求一个矩阵的逆</li><li>解一个含自由变量的方程组</li></ol>
+                    </div>
+                </section>
+                <section class="panel animation-pane">
+                    <header class="panel__header"><h3>动画执行提示</h3></header>
+                    <div class="panel__body">
+        <ol><li>待办清单逐项显示复选框，完成时打勾。</li></ol>
+                    </div>
+                </section>
+                <section class="panel narration-pane">
+                    <header class="panel__header"><h3>虚拟人讲稿</h3><span class="action-chip">动作：A_RH_emphasize_O</span></header>
+                    <div class="panel__body">
+        <p>把三类题都练一遍，线性代数的基础就扎实了。</p>
+                    </div>
+                </section>
             </div>
         </div>
-        <div class="slide">
+        <div class="slide" data-slide="5">
             <div class="slide-content">
-                <div class="blackboard-text">
-                    <h2>总结与预告</h2>
-      <ul><li>核心记忆：行列式、矩阵、方程组</li><li>预告：下一章无穷级数</li></ul>
-                </div>
-                <div class="animation-pane">
-                    <h3>动画执行提示</h3>
-      <ol><li>三个核心点翻牌锁定。</li><li>下一章封面滑入。</li></ol>
-                </div>
+                <aside class="slide-meta">
+                    <div class="slide-meta__badge">第 5 / 5 页</div>
+                    <div class="slide-meta__duration">⏱️ 70 秒</div>
+                    <div class="slide-progress"><div class="slide-progress__bar" style="width: 100%"></div></div>
+                    <div class="slide-meta__action">推荐动作：<span>A_RLH_welcome_O</span></div>
+                    <div class="slide-meta__note">自动播放会额外保留讲稿缓冲时间。</div>
+                </aside>
+                <section class="panel board-pane">
+                    <header class="panel__header"><h2>总结与预告</h2></header>
+                    <div class="panel__body">
+        <ul><li>核心记忆：行列式、矩阵、方程组</li><li>预告：下一章无穷级数</li></ul>
+                    </div>
+                </section>
+                <section class="panel animation-pane">
+                    <header class="panel__header"><h3>动画执行提示</h3></header>
+                    <div class="panel__body">
+        <ol><li>三个核心点翻牌锁定。</li><li>下一章封面滑入。</li></ol>
+                    </div>
+                </section>
+                <section class="panel narration-pane">
+                    <header class="panel__header"><h3>虚拟人讲稿</h3><span class="action-chip">动作：A_RLH_welcome_O</span></header>
+                    <div class="panel__body">
+        <p>线性代数是很多工程问题的底层语言。下一章我们走进无穷级数，研究无限求和的规律。"</p>
+        <p>--- ### 第十一章：无穷级数（虚拟人PPT执行矩阵）</p>
+        <p>#### 本章PPT执行总控表</p>
+        <p>| 视频 | 页面数量 | 主视觉关键词 | 动画亮点 | 实操/互动提示 | | --- | --- | --- | --- | --- | | 11.1 级数概念与敛散性判别 | 6 | 部分和、敛散对比、判别树 | 数列求和动画、敛散曲线、判别流程图 | 按钮切换不同判别法示例与常犯错误 | | 11.2 幂级数与泰勒展开 | 6 | 收敛半径、泰勒多项式 | 收敛区间动态伸缩、泰勒逼近对比 | 滑块控制泰勒阶数观察逼近效果 | | 11.3 章节总结与误差控制 | 5 | 工具卡、误差上界、应用案例 | 工具卡翻转、误差条收缩、案例演示 | 练习按钮提供误差估计题目 |</p>
+                    </div>
+                </section>
             </div>
         </div>
     </div>
-    <div class="subtitle-area" id="subtitleArea">欢迎学习章节总结与工程应用！点击开始讲课启动虚拟人讲师。</div>
+    <div class="subtitle-area" id="subtitleArea">欢迎学习第10章 视频 10.4 章节总结与工程应用！点击开始讲课启动虚拟人讲师。</div>
     <div class="control-bar">
         <div class="control-title">第 <span id="currentSlide">1</span> 页 / 共 <span id="totalSlides">5</span> 页</div>
         <button class="btn" onclick="previousSlide()">⬅️ 上一页</button>
@@ -126,34 +232,34 @@
         window.dispatchEvent(new CustomEvent('sdkReady'));
     </script>
     <script>
-        const lessonTitle = "章节总结与工程应用";
+        const lessonTitle = "第10章 视频 10.4 章节总结与工程应用";
         const subtitleScript = {
-    "1": "线性代数的三个模块环环相扣：行列式判断可逆，矩阵运算提供工具，最终用于解方程组。",
-    "2": "电路分析会产生一组线性方程，用矩阵解法就能快速得到每条支路的电流。",
-    "3": "在经济学中，投入产出模型用矩阵描述产业依赖。算 (I − A)^{-1)，就能得到满足最终需求所需的总产出。",
-    "4": "把三类题都练一遍，线性代数的基础就扎实了。",
-    "5": "线性代数是很多工程问题的底层语言。下一章我们走进无穷级数，研究无限求和的规律。\" --- ### 第十一章：无穷级数（虚拟人PPT执行矩阵） #### 本章PPT执行总控表 | 视频 | 页面数量 | 主视觉关键词 | 动画亮点 | 实操/互动提示 | | --- | --- | --- | --- | --- | | 11.1 级数概念与敛散性判别 | 6 | 部分和、敛散对比、判别树 | 数列求和动画、敛散曲线、判别流程图 | 按钮切换不同判别法示例与常犯错误 | | 11.2 幂级数与泰勒展开 | 6 | 收敛半径、泰勒多项式 | 收敛区间动态伸缩、泰勒逼近对比 | 滑块控制泰勒阶数观察逼近效果 | | 11.3 章节总结与误差控制 | 5 | 工具卡、误差上界、应用案例 | 工具卡翻转、误差条收缩、案例演示 | 练习按钮提供误差估计题目 |"
+  "1": "线性代数的三个模块环环相扣：行列式判断可逆，矩阵运算提供工具，最终用于解方程组。",
+  "2": "电路分析会产生一组线性方程，用矩阵解法就能快速得到每条支路的电流。",
+  "3": "在经济学中，投入产出模型用矩阵描述产业依赖。算 (I − A)^{-1)，就能得到满足最终需求所需的总产出。",
+  "4": "把三类题都练一遍，线性代数的基础就扎实了。",
+  "5": "线性代数是很多工程问题的底层语言。下一章我们走进无穷级数，研究无限求和的规律。\" --- ### 第十一章：无穷级数（虚拟人PPT执行矩阵） #### 本章PPT执行总控表 | 视频 | 页面数量 | 主视觉关键词 | 动画亮点 | 实操/互动提示 | | --- | --- | --- | --- | --- | | 11.1 级数概念与敛散性判别 | 6 | 部分和、敛散对比、判别树 | 数列求和动画、敛散曲线、判别流程图 | 按钮切换不同判别法示例与常犯错误 | | 11.2 幂级数与泰勒展开 | 6 | 收敛半径、泰勒多项式 | 收敛区间动态伸缩、泰勒逼近对比 | 滑块控制泰勒阶数观察逼近效果 | | 11.3 章节总结与误差控制 | 5 | 工具卡、误差上界、应用案例 | 工具卡翻转、误差条收缩、案例演示 | 练习按钮提供误差估计题目 |"
 };
         const actionMap = {
-    "1": "A_RLH_welcome_O",
-    "2": "A_RH_point_O",
-    "3": "A_LH_introduced_O",
-    "4": "A_RH_emphasize_O",
-    "5": "A_RLH_welcome_O"
+  "1": "A_RLH_welcome_O",
+  "2": "A_RH_point_O",
+  "3": "A_LH_introduced_O",
+  "4": "A_RH_emphasize_O",
+  "5": "A_RLH_welcome_O"
 };
         const slideTitles = {
-    "1": "知识地图",
-    "2": "工程案例：电路分析",
-    "3": "经济模型：投入产出",
-    "4": "练习自测",
-    "5": "总结与预告"
+  "1": "知识地图",
+  "2": "工程案例：电路分析",
+  "3": "经济模型：投入产出",
+  "4": "练习自测",
+  "5": "总结与预告"
 };
         const slideDurations = {
-    "1": 45000,
-    "2": 75000,
-    "3": 70000,
-    "4": 60000,
-    "5": 70000
+  "1": 51749,
+  "2": 86250,
+  "3": 80500,
+  "4": 69000,
+  "5": 80500
 };
         const totalSlides = 5;
 
@@ -164,6 +270,7 @@
         let isAutoPlaying = false;
 
         const slides = document.querySelectorAll('.slide');
+        const timelineItems = document.querySelectorAll('.timeline-item');
 
         function showSlide(index) {
             slides.forEach((slide, i) => slide.classList.toggle('active', i === index));
@@ -172,6 +279,7 @@
             if (window.MathJax && window.MathJax.typesetPromise) {
                 window.MathJax.typesetPromise([slides[index]]).catch(err => console.error(err));
             }
+            timelineItems.forEach((item, i) => item.classList.toggle('active', i === index));
         }
 
         function nextSlide() {
@@ -319,7 +427,7 @@
                 if (!isAutoPlaying) break;
                 showSlide(slide - 1);
                 speakContent(slide);
-                const duration = slideDurations[slide] || 15000;
+                const duration = slideDurations[slide] || 18000;
                 await new Promise(resolve => setTimeout(resolve, duration));
             }
 
@@ -328,6 +436,17 @@
             autoBtn.classList.remove('stop');
             updateStatus('课程播放结束');
         }
+
+        timelineItems.forEach((item, index) => {
+            item.addEventListener('click', () => {
+                isAutoPlaying = false;
+                const autoBtn = document.getElementById('autoPlayBtn');
+                autoBtn.textContent = '🎬 自动播放';
+                autoBtn.classList.remove('stop');
+                showSlide(index);
+                speakContent(index + 1);
+            });
+        });
 
         document.addEventListener('keydown', (event) => {
             if (event.key === 'ArrowRight' || event.key === ' ') {

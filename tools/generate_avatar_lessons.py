@@ -200,6 +200,8 @@ def convert_inline(text: str) -> str:
 def render_animation_block(text: str) -> str:
     # Prefer ordered list if entries are enumerated; otherwise paragraphs.
     lines = [line.rstrip() for line in text.splitlines() if line.strip()]
+    if not lines:
+        return ""
     if all(re.match(r"^\d+\.\s+", line.strip()) for line in lines):
         items = []
         for line in lines:
@@ -250,6 +252,20 @@ HTML_TEMPLATE = """<!DOCTYPE html>
 </head>
 <body class=\"blackboard\">
     <div id=\"statusIndicator\" class=\"status-indicator\">等待连接</div>
+    <header class=\"lesson-topbar\">
+        <div class=\"lesson-meta\">
+            <h1>{lesson_title}</h1>
+            <div class=\"lesson-meta__row\">
+                <span class=\"lesson-chip\">章节 {chapter_number}</span>
+                <span class=\"lesson-chip\">预计总时长：{total_time}</span>
+                <span class=\"lesson-chip\">共 {total_slides} 页</span>
+            </div>
+            <p class=\"lesson-subtitle\">虚拟人录屏课件模板 · 自动生成的板书、动画、讲稿三栏脚本</p>
+        </div>
+        <div class=\"lesson-timeline\">
+{timeline_items}
+        </div>
+    </header>
     <div class=\"avatar-container\">
         <div class=\"wrapper\" id=\"avatarWrapper\"></div>
     </div>
@@ -297,6 +313,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
         let isAutoPlaying = false;
 
         const slides = document.querySelectorAll('.slide');
+        const timelineItems = document.querySelectorAll('.timeline-item');
 
         function showSlide(index) {{
             slides.forEach((slide, i) => slide.classList.toggle('active', i === index));
@@ -305,6 +322,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
             if (window.MathJax && window.MathJax.typesetPromise) {{
                 window.MathJax.typesetPromise([slides[index]]).catch(err => console.error(err));
             }}
+            timelineItems.forEach((item, i) => item.classList.toggle('active', i === index));
         }}
 
         function nextSlide() {{
@@ -452,7 +470,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
                 if (!isAutoPlaying) break;
                 showSlide(slide - 1);
                 speakContent(slide);
-                const duration = slideDurations[slide] || 15000;
+                const duration = slideDurations[slide] || 18000;
                 await new Promise(resolve => setTimeout(resolve, duration));
             }}
 
@@ -461,6 +479,17 @@ HTML_TEMPLATE = """<!DOCTYPE html>
             autoBtn.classList.remove('stop');
             updateStatus('课程播放结束');
         }}
+
+        timelineItems.forEach((item, index) => {{
+            item.addEventListener('click', () => {{
+                isAutoPlaying = false;
+                const autoBtn = document.getElementById('autoPlayBtn');
+                autoBtn.textContent = '🎬 自动播放';
+                autoBtn.classList.remove('stop');
+                showSlide(index);
+                speakContent(index + 1);
+            }});
+        }});
 
         document.addEventListener('keydown', (event) => {{
             if (event.key === 'ArrowRight' || event.key === ' ') {{
@@ -494,17 +523,36 @@ HTML_TEMPLATE = """<!DOCTYPE html>
 def build_slide_html(slide: Slide, is_first: bool) -> str:
     board_html = format_text_block(slide.board)
     animation_html = render_animation_block(slide.animation)
+    narration_html = format_text_block(slide.narration_text)
+    progress = 0 if slide.total <= 1 else int((slide.index - 1) / (slide.total - 1) * 100)
     return (
-        f"        <div class=\"slide{' active' if is_first else ''}\">\n"
+        f"        <div class=\"slide{' active' if is_first else ''}\" data-slide=\"{slide.index}\">\n"
         f"            <div class=\"slide-content\">\n"
-        f"                <div class=\"blackboard-text\">\n"
-        f"                    <h2>{convert_inline(slide.title)}</h2>\n"
-        f"{indent_lines(board_html, 6)}\n"
-        f"                </div>\n"
-        f"                <div class=\"animation-pane\">\n"
-        f"                    <h3>动画执行提示</h3>\n"
-        f"{indent_lines(animation_html or '<p>请根据脚本补充动画细节。</p>', 6)}\n"
-        f"                </div>\n"
+        f"                <aside class=\"slide-meta\">\n"
+        f"                    <div class=\"slide-meta__badge\">第 {slide.index} / {slide.total} 页</div>\n"
+        f"                    <div class=\"slide-meta__duration\">⏱️ {slide.duration_seconds} 秒</div>\n"
+        f"                    <div class=\"slide-progress\"><div class=\"slide-progress__bar\" style=\"width: {progress}%\"></div></div>\n"
+        f"                    <div class=\"slide-meta__action\">推荐动作：<span>{html_escape(slide.action)}</span></div>\n"
+        f"                    <div class=\"slide-meta__note\">自动播放会额外保留讲稿缓冲时间。</div>\n"
+        f"                </aside>\n"
+        f"                <section class=\"panel board-pane\">\n"
+        f"                    <header class=\"panel__header\"><h2>{convert_inline(slide.title)}</h2></header>\n"
+        f"                    <div class=\"panel__body\">\n"
+        f"{indent_lines(board_html or '<p>请补充板书内容。</p>', 8)}\n"
+        f"                    </div>\n"
+        f"                </section>\n"
+        f"                <section class=\"panel animation-pane\">\n"
+        f"                    <header class=\"panel__header\"><h3>动画执行提示</h3></header>\n"
+        f"                    <div class=\"panel__body\">\n"
+        f"{indent_lines(animation_html or '<p>请根据脚本补充动画细节。</p>', 8)}\n"
+        f"                    </div>\n"
+        f"                </section>\n"
+        f"                <section class=\"panel narration-pane\">\n"
+        f"                    <header class=\"panel__header\"><h3>虚拟人讲稿</h3><span class=\"action-chip\">动作：{html_escape(slide.action)}</span></header>\n"
+        f"                    <div class=\"panel__body\">\n"
+        f"{indent_lines(narration_html or '<p>请补充讲稿。</p>', 8)}\n"
+        f"                    </div>\n"
+        f"                </section>\n"
         f"            </div>\n"
         f"        </div>"
     )
@@ -519,25 +567,38 @@ def create_html(lesson: Lesson) -> str:
     slides_html = "\n".join(
         build_slide_html(slide, idx == 0) for idx, slide in enumerate(lesson.slides)
     )
+    timeline_html = "\n".join(
+        f"            <button class=\"timeline-item{' active' if idx == 0 else ''}\" data-target=\"{slide.index}\">"
+        f"<span class=\"timeline-index\">{slide.index:02d}</span>"
+        f"<span class=\"timeline-title\">{convert_inline(slide.title)}</span>"
+        f"<span class=\"timeline-duration\">{slide.duration_seconds}秒</span>"
+        "</button>"
+        for idx, slide in enumerate(lesson.slides)
+    )
     subtitle_map = {slide.index: narration_to_script_text(slide.narration_text) for slide in lesson.slides}
     action_map = {slide.index: slide.action for slide in lesson.slides}
     titles_map = {slide.index: slide.title for slide in lesson.slides}
-    durations_map = {slide.index: slide.duration_seconds * 1000 for slide in lesson.slides}
+    durations_map = {
+        slide.index: max(int(slide.duration_seconds * 1000 * 1.15), 15000) for slide in lesson.slides
+    }
 
     class SafeDict(dict):
         def __missing__(self, key: str) -> str:  # type: ignore[override]
             return "{" + key + "}"
 
     values = SafeDict(
-        full_title=f"第{lesson.chapter}章 视频 {lesson.chapter}.{lesson.number} {lesson.title}",
-        lesson_title=lesson.title,
+        full_title=lesson.display_name,
+        lesson_title=lesson.display_name,
+        chapter_number=f"{lesson.chapter}.{lesson.number}",
+        total_time=lesson.total_time,
         total_slides=len(lesson.slides),
         slides=slides_html,
-        subtitle_json=json.dumps(subtitle_map, ensure_ascii=False, indent=4),
-        action_json=json.dumps(action_map, ensure_ascii=False, indent=4),
-        titles_json=json.dumps(titles_map, ensure_ascii=False, indent=4),
-        durations_json=json.dumps(durations_map, ensure_ascii=False, indent=4),
-        json_lesson_title=json.dumps(lesson.title, ensure_ascii=False),
+        timeline_items=timeline_html,
+        subtitle_json=json.dumps(subtitle_map, ensure_ascii=False, indent=2),
+        action_json=json.dumps(action_map, ensure_ascii=False, indent=2),
+        titles_json=json.dumps(titles_map, ensure_ascii=False, indent=2),
+        durations_json=json.dumps(durations_map, ensure_ascii=False, indent=2),
+        json_lesson_title=json.dumps(lesson.display_name, ensure_ascii=False),
     )
     return HTML_TEMPLATE.format_map(values)
 
@@ -559,16 +620,111 @@ def ensure_assets():
 
 LESSON_CSS = """
 * { box-sizing: border-box; }
-html, body { width: 100%; height: 100%; margin: 0; padding: 0; }
-body.blackboard {
-    background: #1a1a2e;
-    color: #e0e0e0;
-    font-family: 'Noto Serif SC', serif;
+:root {
+    --topbar-height: 170px;
+    --panel-bg: rgba(15, 23, 42, 0.78);
+    --panel-border: rgba(148, 163, 184, 0.35);
+    --timeline-bg: rgba(30, 41, 59, 0.7);
 }
+html, body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+body.blackboard {
+    font-family: 'Noto Serif SC', serif;
+    background: radial-gradient(circle at top, #1f2a44 0%, #0f172a 45%, #050816 100%);
+    color: #e2e8f0;
+}
+.lesson-topbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    padding: 1.5rem 3rem 1.25rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2.5rem;
+    align-items: flex-start;
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.85), rgba(30, 58, 138, 0.78));
+    backdrop-filter: blur(12px);
+    box-shadow: 0 12px 35px rgba(2, 6, 23, 0.65);
+    z-index: 140;
+}
+.lesson-meta h1 {
+    margin: 0 0 0.75rem 0;
+    font-size: 1.65rem;
+    color: #facc15;
+}
+.lesson-meta__row {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+.lesson-chip {
+    padding: 0.35rem 0.75rem;
+    border-radius: 999px;
+    background: rgba(14, 116, 144, 0.35);
+    color: #bae6fd;
+    font-size: 0.85rem;
+    border: 1px solid rgba(56, 189, 248, 0.35);
+}
+.lesson-subtitle {
+    margin: 0.75rem 0 0;
+    color: rgba(226, 232, 240, 0.72);
+    font-size: 0.95rem;
+}
+.lesson-timeline {
+    flex: 1;
+    min-width: 280px;
+    display: flex;
+    gap: 0.75rem;
+    overflow-x: auto;
+    padding-bottom: 0.35rem;
+}
+.lesson-timeline::-webkit-scrollbar {
+    height: 6px;
+}
+.lesson-timeline::-webkit-scrollbar-thumb {
+    background: rgba(148, 163, 184, 0.35);
+    border-radius: 4px;
+}
+.timeline-item {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    grid-template-rows: auto auto;
+    gap: 0.35rem 0.65rem;
+    padding: 0.75rem 1rem;
+    background: var(--timeline-bg);
+    border: 1px solid rgba(148, 163, 184, 0.35);
+    border-radius: 14px;
+    color: #cbd5f5;
+    min-width: 220px;
+    cursor: pointer;
+    transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+}
+.timeline-item:hover { transform: translateY(-3px); }
+.timeline-item.active {
+    border-color: #38bdf8;
+    background: rgba(14, 165, 233, 0.25);
+    color: #e0f2fe;
+}
+.timeline-index {
+    grid-row: span 2;
+    align-self: center;
+    font-weight: 700;
+    font-size: 1.25rem;
+    color: #facc15;
+}
+.timeline-title { font-weight: 600; font-size: 0.95rem; }
+.timeline-duration { font-size: 0.85rem; color: rgba(226, 232, 240, 0.7); }
+
 .slide-container {
     position: relative;
     width: 100vw;
-    height: 100vh;
+    height: calc(100vh - var(--topbar-height));
+    margin-top: var(--topbar-height);
     overflow: hidden;
 }
 .slide {
@@ -580,137 +736,222 @@ body.blackboard {
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 3rem 2rem 6rem;
+    padding: 2.5rem 2.5rem 6rem;
 }
 .slide.active { opacity: 1; visibility: visible; }
 .slide-content {
+    width: min(1380px, 95vw);
+    display: grid;
+    grid-template-columns: 260px 1fr 1fr;
+    grid-template-rows: auto 1fr;
+    gap: 1.5rem;
+    grid-template-areas:
+        'meta board animation'
+        'meta narration narration';
+    align-items: stretch;
+}
+.slide-meta {
+    grid-area: meta;
     display: flex;
     flex-direction: column;
-    gap: 2rem;
-    width: min(1200px, 92vw);
+    gap: 0.85rem;
+    padding: 1.35rem 1.1rem;
+    background: rgba(15, 23, 42, 0.75);
+    border-radius: 18px;
+    border: 1px solid var(--panel-border);
+    box-shadow: inset 0 0 0 1px rgba(14, 116, 144, 0.15);
 }
-@media (min-width: 1024px) {
-    .slide-content { flex-direction: row; }
+.slide-meta__badge { font-weight: 700; font-size: 1.1rem; color: #facc15; }
+.slide-meta__duration { color: #bae6fd; font-size: 0.95rem; }
+.slide-progress {
+    position: relative;
+    height: 6px;
+    border-radius: 999px;
+    background: rgba(148, 163, 184, 0.35);
+    overflow: hidden;
 }
-.blackboard-text, .animation-pane {
-    background: rgba(0, 0, 0, 0.35);
-    border-radius: 16px;
-    padding: 1.75rem;
-    flex: 1;
+.slide-progress__bar {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, #38bdf8, #22d3ee);
+}
+.slide-meta__action {
+    font-size: 0.9rem;
+    color: rgba(226, 232, 240, 0.85);
+}
+.slide-meta__action span { color: #fcd34d; }
+.slide-meta__note {
+    font-size: 0.8rem;
+    color: rgba(148, 163, 184, 0.85);
+    line-height: 1.4;
+}
+
+.panel {
+    background: var(--panel-bg);
+    border-radius: 18px;
+    border: 1px solid var(--panel-border);
+    display: flex;
+    flex-direction: column;
+    backdrop-filter: blur(6px);
+    box-shadow: 0 18px 40px rgba(2, 6, 23, 0.35);
+}
+.panel__header {
+    padding: 1rem 1.35rem 0.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+.panel__header h2, .panel__header h3 {
+    margin: 0;
+    color: #facc15;
+    font-size: 1.35rem;
+}
+.panel__body {
+    padding: 0.35rem 1.35rem 1.35rem;
     overflow-y: auto;
-    max-height: 70vh;
 }
-.blackboard-text h2 {
-    color: #f1c40f;
-    font-size: 2rem;
-    margin-bottom: 1rem;
-    border-bottom: 1px solid rgba(241, 196, 15, 0.45);
-    padding-bottom: 0.5rem;
+.panel__body p {
+    line-height: 1.75;
+    margin: 0.4rem 0;
 }
-.animation-pane h3 {
-    font-size: 1.5rem;
-    color: #1abc9c;
-    margin-bottom: 0.75rem;
+.panel__body ul, .panel__body ol {
+    margin: 0.5rem 0 0.5rem 1.1rem;
+    padding-left: 1rem;
 }
-.blackboard-text ul, .animation-pane ul,
-.blackboard-text ol, .animation-pane ol {
-    padding-left: 1.25rem;
-    margin: 0.5rem 0 0.5rem 0;
+.panel__body li { margin-bottom: 0.35rem; }
+.panel__body ul li::marker { color: #38bdf8; }
+.panel__body ol li::marker { color: #f472b6; font-weight: 600; }
+
+.board-pane { grid-area: board; }
+.animation-pane { grid-area: animation; }
+.narration-pane { grid-area: narration; }
+.action-chip {
+    font-size: 0.85rem;
+    color: #fcd34d;
+    border: 1px solid rgba(252, 211, 77, 0.45);
+    border-radius: 999px;
+    padding: 0.25rem 0.75rem;
+    background: rgba(234, 179, 8, 0.12);
 }
-.blackboard-text p, .animation-pane p {
-    line-height: 1.7;
-    margin: 0.5rem 0;
-}
+
 .control-bar {
     position: fixed;
-    left: 16px;
-    top: 50%;
+    left: 20px;
+    top: calc(var(--topbar-height) + 45%);
     transform: translateY(-50%);
-    width: 240px;
-    background: rgba(20, 20, 20, 0.92);
-    border-radius: 18px;
-    padding: 1.5rem 1.25rem;
+    width: 248px;
+    background: rgba(15, 23, 42, 0.92);
+    border-radius: 20px;
+    padding: 1.75rem 1.25rem;
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
-    z-index: 200;
+    gap: 0.85rem;
+    z-index: 180;
+    box-shadow: 0 25px 45px rgba(2, 6, 23, 0.55);
 }
-.control-title { color: #fff; font-weight: 600; text-align: center; }
+.control-title {
+    color: #e2e8f0;
+    font-weight: 700;
+    text-align: center;
+}
 .btn {
-    padding: 0.75rem 1rem;
-    border-radius: 10px;
+    padding: 0.78rem 1rem;
+    border-radius: 12px;
     border: none;
     font-size: 1rem;
     font-weight: 600;
     cursor: pointer;
-    background: linear-gradient(135deg, #4a4a4a, #666);
-    color: #fff;
-    transition: transform 0.2s ease, opacity 0.2s ease;
+    background: linear-gradient(135deg, #475569, #64748b);
+    color: #f8fafc;
+    transition: transform 0.2s ease, opacity 0.2s ease, box-shadow 0.2s ease;
 }
-.btn:hover { transform: translateY(-2px); }
-.btn.primary { background: linear-gradient(135deg, #FF69B4, #FF1493); }
-.btn.autoplay { background: linear-gradient(135deg, #2196f3, #1976d2); }
-.btn.stop { background: linear-gradient(135deg, #f44336, #d32f2f); }
-.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.btn:hover { transform: translateY(-2px); box-shadow: 0 8px 18px rgba(15, 23, 42, 0.45); }
+.btn.primary { background: linear-gradient(135deg, #ec4899, #d946ef); }
+.btn.autoplay { background: linear-gradient(135deg, #3b82f6, #2563eb); }
+.btn.stop { background: linear-gradient(135deg, #f97316, #ef4444); }
+.btn:disabled { opacity: 0.55; cursor: not-allowed; box-shadow: none; }
 .control-hint, .control-shortcuts {
-    color: #ffeb99;
+    color: rgba(248, 250, 252, 0.85);
     font-size: 0.85rem;
     text-align: center;
     line-height: 1.4;
 }
-.control-shortcuts { color: #d1d5db; }
+.control-shortcuts { color: rgba(226, 232, 240, 0.75); }
+
 .avatar-container {
     position: fixed;
-    top: 55%;
+    top: calc(var(--topbar-height) + 48%);
     right: 4%;
     transform: translateY(-50%);
     width: 420px;
     height: 640px;
-    z-index: 180;
+    z-index: 160;
     pointer-events: none;
 }
+
 .subtitle-area {
     position: fixed;
     left: 50%;
-    bottom: 24px;
+    bottom: 28px;
     transform: translateX(-50%);
     width: min(960px, 90vw);
-    padding: 0.75rem 1.25rem;
-    background: rgba(0, 0, 0, 0.78);
-    border-radius: 10px;
+    padding: 0.85rem 1.35rem;
+    background: rgba(2, 6, 23, 0.82);
+    border-radius: 12px;
     font-size: 1.05rem;
-    line-height: 1.5;
+    line-height: 1.55;
     text-align: center;
+    border: 1px solid rgba(148, 163, 184, 0.35);
 }
+
 .status-indicator {
     position: fixed;
-    top: 18px;
+    top: 16px;
     right: 24px;
-    padding: 0.4rem 0.75rem;
+    padding: 0.45rem 0.85rem;
     border-radius: 999px;
-    background: rgba(0, 0, 0, 0.55);
-    color: #fff;
+    background: rgba(15, 23, 42, 0.85);
+    color: #f8fafc;
     font-weight: 600;
     letter-spacing: 0.02em;
     z-index: 220;
+    box-shadow: 0 12px 28px rgba(2, 6, 23, 0.45);
 }
-.status-indicator.connected { background: rgba(76, 175, 80, 0.85); }
-.status-indicator.error { background: rgba(244, 67, 54, 0.85); }
-.status-indicator.connecting { background: rgba(255, 152, 0, 0.85); }
-.status-indicator.recording { background: rgba(33, 150, 243, 0.85); }
+.status-indicator.connected { background: rgba(34, 197, 94, 0.85); }
+.status-indicator.error { background: rgba(248, 113, 113, 0.85); }
+.status-indicator.connecting { background: rgba(251, 191, 36, 0.85); }
+.status-indicator.recording { background: rgba(59, 130, 246, 0.85); }
 
-@media (max-width: 900px) {
+@media (max-width: 1280px) {
+    .lesson-topbar { padding: 1.25rem 1.5rem; gap: 1.5rem; }
+    .slide-content {
+        grid-template-columns: 1fr;
+        grid-template-areas:
+            'meta'
+            'board'
+            'animation'
+            'narration';
+    }
     .control-bar {
         position: static;
         transform: none;
         width: auto;
-        margin: 1rem;
+        margin: 1.25rem;
         flex-direction: row;
         flex-wrap: wrap;
         justify-content: center;
     }
-    .btn { flex: 1 1 45%; }
+    .btn { flex: 1 1 46%; }
     .avatar-container { display: none; }
+}
+
+@media (max-width: 768px) {
+    :root { --topbar-height: 210px; }
+    .lesson-topbar { padding: 1rem 1.1rem; }
+    .timeline-item { min-width: 180px; }
+    .subtitle-area { font-size: 0.95rem; }
 }
 """
 

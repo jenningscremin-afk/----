@@ -33,84 +33,206 @@
 </head>
 <body class="blackboard">
     <div id="statusIndicator" class="status-indicator">等待连接</div>
+    <header class="lesson-topbar">
+        <div class="lesson-meta">
+            <h1>第13章 视频 13.2 随机变量与期望方差</h1>
+            <div class="lesson-meta__row">
+                <span class="lesson-chip">章节 13.2</span>
+                <span class="lesson-chip">预计总时长：5 分 50 秒 / 350 秒</span>
+                <span class="lesson-chip">共 6 页</span>
+            </div>
+            <p class="lesson-subtitle">虚拟人录屏课件模板 · 自动生成的板书、动画、讲稿三栏脚本</p>
+        </div>
+        <div class="lesson-timeline">
+            <button class="timeline-item active" data-target="1"><span class="timeline-index">01</span><span class="timeline-title">课程导入</span><span class="timeline-duration">30秒</span></button>
+            <button class="timeline-item" data-target="2"><span class="timeline-index">02</span><span class="timeline-title">离散随机变量</span><span class="timeline-duration">60秒</span></button>
+            <button class="timeline-item" data-target="3"><span class="timeline-index">03</span><span class="timeline-title">期望与方差公式</span><span class="timeline-duration">60秒</span></button>
+            <button class="timeline-item" data-target="4"><span class="timeline-index">04</span><span class="timeline-title">协方差与相关系数</span><span class="timeline-duration">55秒</span></button>
+            <button class="timeline-item" data-target="5"><span class="timeline-index">05</span><span class="timeline-title">例题：奖金方案比较</span><span class="timeline-duration">70秒</span></button>
+            <button class="timeline-item" data-target="6"><span class="timeline-index">06</span><span class="timeline-title">小结</span><span class="timeline-duration">45秒</span></button>
+        </div>
+    </header>
     <div class="avatar-container">
         <div class="wrapper" id="avatarWrapper"></div>
     </div>
     <div id="slide-container" class="slide-container flex-grow">
-        <div class="slide active">
+        <div class="slide active" data-slide="1">
             <div class="slide-content">
-                <div class="blackboard-text">
-                    <h2>课程导入</h2>
-      <ul><li>主题：随机变量、分布、期望、方差</li></ul>
-                </div>
-                <div class="animation-pane">
-                    <h3>动画执行提示</h3>
-      <ol><li>随机变量符号 X 闪烁，分布表展开。</li></ol>
-                </div>
+                <aside class="slide-meta">
+                    <div class="slide-meta__badge">第 1 / 6 页</div>
+                    <div class="slide-meta__duration">⏱️ 30 秒</div>
+                    <div class="slide-progress"><div class="slide-progress__bar" style="width: 0%"></div></div>
+                    <div class="slide-meta__action">推荐动作：<span>A_RLH_welcome_O</span></div>
+                    <div class="slide-meta__note">自动播放会额外保留讲稿缓冲时间。</div>
+                </aside>
+                <section class="panel board-pane">
+                    <header class="panel__header"><h2>课程导入</h2></header>
+                    <div class="panel__body">
+        <ul><li>主题：随机变量、分布、期望、方差</li></ul>
+                    </div>
+                </section>
+                <section class="panel animation-pane">
+                    <header class="panel__header"><h3>动画执行提示</h3></header>
+                    <div class="panel__body">
+        <ol><li>随机变量符号 X 闪烁，分布表展开。</li></ol>
+                    </div>
+                </section>
+                <section class="panel narration-pane">
+                    <header class="panel__header"><h3>虚拟人讲稿</h3><span class="action-chip">动作：A_RLH_welcome_O</span></header>
+                    <div class="panel__body">
+        <p>随机变量把随机结果转换成数值，期望和方差帮助我们抓住平均趋势与波动幅度。</p>
+                    </div>
+                </section>
             </div>
         </div>
-        <div class="slide">
+        <div class="slide" data-slide="2">
             <div class="slide-content">
-                <div class="blackboard-text">
-                    <h2>离散随机变量</h2>
-      <ul><li>概率分布表：x_i 与 P(X = x_i)</li><li>例：掷骰子 X = 点数</li></ul>
-                </div>
-                <div class="animation-pane">
-                    <h3>动画执行提示</h3>
-      <ol><li>分布表逐行点亮，条形图同步显示概率。</li></ol>
-                </div>
+                <aside class="slide-meta">
+                    <div class="slide-meta__badge">第 2 / 6 页</div>
+                    <div class="slide-meta__duration">⏱️ 60 秒</div>
+                    <div class="slide-progress"><div class="slide-progress__bar" style="width: 20%"></div></div>
+                    <div class="slide-meta__action">推荐动作：<span>A_LH_introduced_O</span></div>
+                    <div class="slide-meta__note">自动播放会额外保留讲稿缓冲时间。</div>
+                </aside>
+                <section class="panel board-pane">
+                    <header class="panel__header"><h2>离散随机变量</h2></header>
+                    <div class="panel__body">
+        <ul><li>概率分布表：x_i 与 P(X = x_i)</li><li>例：掷骰子 X = 点数</li></ul>
+                    </div>
+                </section>
+                <section class="panel animation-pane">
+                    <header class="panel__header"><h3>动画执行提示</h3></header>
+                    <div class="panel__body">
+        <ol><li>分布表逐行点亮，条形图同步显示概率。</li></ol>
+                    </div>
+                </section>
+                <section class="panel narration-pane">
+                    <header class="panel__header"><h3>虚拟人讲稿</h3><span class="action-chip">动作：A_LH_introduced_O</span></header>
+                    <div class="panel__body">
+        <p>离散随机变量的分布可以用表格或条形图展示，概率之和必须等于 1。</p>
+                    </div>
+                </section>
             </div>
         </div>
-        <div class="slide">
+        <div class="slide" data-slide="3">
             <div class="slide-content">
-                <div class="blackboard-text">
-                    <h2>期望与方差公式</h2>
-      <ul><li>期望：E(X) = Σ x_i P(X = x_i)</li><li>方差：Var(X) = Σ (x_i − E(X))² P(X = x_i)</li><li>标准差：σ = √Var(X)</li></ul>
-                </div>
-                <div class="animation-pane">
-                    <h3>动画执行提示</h3>
-      <ol><li>条形图顶部出现平均值线。</li><li>方差计算步骤逐条呈现。</li></ol>
-                </div>
+                <aside class="slide-meta">
+                    <div class="slide-meta__badge">第 3 / 6 页</div>
+                    <div class="slide-meta__duration">⏱️ 60 秒</div>
+                    <div class="slide-progress"><div class="slide-progress__bar" style="width: 40%"></div></div>
+                    <div class="slide-meta__action">推荐动作：<span>A_RH_point_O</span></div>
+                    <div class="slide-meta__note">自动播放会额外保留讲稿缓冲时间。</div>
+                </aside>
+                <section class="panel board-pane">
+                    <header class="panel__header"><h2>期望与方差公式</h2></header>
+                    <div class="panel__body">
+        <ul><li>期望：E(X) = Σ x_i P(X = x_i)</li><li>方差：Var(X) = Σ (x_i − E(X))² P(X = x_i)</li><li>标准差：σ = √Var(X)</li></ul>
+                    </div>
+                </section>
+                <section class="panel animation-pane">
+                    <header class="panel__header"><h3>动画执行提示</h3></header>
+                    <div class="panel__body">
+        <ol><li>条形图顶部出现平均值线。</li><li>方差计算步骤逐条呈现。</li></ol>
+                    </div>
+                </section>
+                <section class="panel narration-pane">
+                    <header class="panel__header"><h3>虚拟人讲稿</h3><span class="action-chip">动作：A_RH_point_O</span></header>
+                    <div class="panel__body">
+        <p>期望是加权平均，方差衡量波动。把每个取值与平均值的偏差平方后加权，就得到方差。</p>
+                    </div>
+                </section>
             </div>
         </div>
-        <div class="slide">
+        <div class="slide" data-slide="4">
             <div class="slide-content">
-                <div class="blackboard-text">
-                    <h2>协方差与相关系数</h2>
-      <ul><li>协方差：Cov(X,Y) = E[(X − E(X))(Y − E(Y))]</li><li>相关系数：ρ = Cov(X,Y)/(σ_X σ_Y)</li><li>判断：ρ 在 −1 到 1 之间</li></ul>
-                </div>
-                <div class="animation-pane">
-                    <h3>动画执行提示</h3>
-      <ol><li>散点图展示正相关、负相关、中性三种情况。</li></ol>
-                </div>
+                <aside class="slide-meta">
+                    <div class="slide-meta__badge">第 4 / 6 页</div>
+                    <div class="slide-meta__duration">⏱️ 55 秒</div>
+                    <div class="slide-progress"><div class="slide-progress__bar" style="width: 60%"></div></div>
+                    <div class="slide-meta__action">推荐动作：<span>A_RH_emphasize_O</span></div>
+                    <div class="slide-meta__note">自动播放会额外保留讲稿缓冲时间。</div>
+                </aside>
+                <section class="panel board-pane">
+                    <header class="panel__header"><h2>协方差与相关系数</h2></header>
+                    <div class="panel__body">
+        <ul><li>协方差：Cov(X,Y) = E[(X − E(X))(Y − E(Y))]</li><li>相关系数：ρ = Cov(X,Y)/(σ_X σ_Y)</li><li>判断：ρ 在 −1 到 1 之间</li></ul>
+                    </div>
+                </section>
+                <section class="panel animation-pane">
+                    <header class="panel__header"><h3>动画执行提示</h3></header>
+                    <div class="panel__body">
+        <ol><li>散点图展示正相关、负相关、中性三种情况。</li></ol>
+                    </div>
+                </section>
+                <section class="panel narration-pane">
+                    <header class="panel__header"><h3>虚拟人讲稿</h3><span class="action-chip">动作：A_RH_emphasize_O</span></header>
+                    <div class="panel__body">
+        <p>协方差描述两个变量同向或反向变化的趋势，相关系数把它标准化为 −1 到 1。</p>
+                    </div>
+                </section>
             </div>
         </div>
-        <div class="slide">
+        <div class="slide" data-slide="5">
             <div class="slide-content">
-                <div class="blackboard-text">
-                    <h2>例题：奖金方案比较</h2>
-      <ul><li>两种奖金方案的分布表</li><li>计算各自期望与标准差</li><li>决策建议：期望更高且波动更小者优先</li></ul>
-                </div>
-                <div class="animation-pane">
-                    <h3>动画执行提示</h3>
-      <ol><li>两个分布表并排展示，期望值线比较。</li><li>标准差以误差条形式呈现。</li></ol>
-                </div>
+                <aside class="slide-meta">
+                    <div class="slide-meta__badge">第 5 / 6 页</div>
+                    <div class="slide-meta__duration">⏱️ 70 秒</div>
+                    <div class="slide-progress"><div class="slide-progress__bar" style="width: 80%"></div></div>
+                    <div class="slide-meta__action">推荐动作：<span>A_RH_please_O</span></div>
+                    <div class="slide-meta__note">自动播放会额外保留讲稿缓冲时间。</div>
+                </aside>
+                <section class="panel board-pane">
+                    <header class="panel__header"><h2>例题：奖金方案比较</h2></header>
+                    <div class="panel__body">
+        <ul><li>两种奖金方案的分布表</li><li>计算各自期望与标准差</li><li>决策建议：期望更高且波动更小者优先</li></ul>
+                    </div>
+                </section>
+                <section class="panel animation-pane">
+                    <header class="panel__header"><h3>动画执行提示</h3></header>
+                    <div class="panel__body">
+        <ol><li>两个分布表并排展示，期望值线比较。</li><li>标准差以误差条形式呈现。</li></ol>
+                    </div>
+                </section>
+                <section class="panel narration-pane">
+                    <header class="panel__header"><h3>虚拟人讲稿</h3><span class="action-chip">动作：A_RH_please_O</span></header>
+                    <div class="panel__body">
+        <p>期望告诉我们长期平均收益，标准差告诉我们风险大小。比较两个方案时，两者都要考虑。</p>
+                    </div>
+                </section>
             </div>
         </div>
-        <div class="slide">
+        <div class="slide" data-slide="6">
             <div class="slide-content">
-                <div class="blackboard-text">
-                    <h2>小结</h2>
-      <ul><li>核心：分布表、期望、方差、协方差</li><li>作业：练习自定义分布的期望与方差</li></ul>
-                </div>
-                <div class="animation-pane">
-                    <h3>动画执行提示</h3>
-      <ol><li>关键点翻牌锁定，作业提示弹出。</li></ol>
-                </div>
+                <aside class="slide-meta">
+                    <div class="slide-meta__badge">第 6 / 6 页</div>
+                    <div class="slide-meta__duration">⏱️ 45 秒</div>
+                    <div class="slide-progress"><div class="slide-progress__bar" style="width: 100%"></div></div>
+                    <div class="slide-meta__action">推荐动作：<span>A_RLH_welcome_O</span></div>
+                    <div class="slide-meta__note">自动播放会额外保留讲稿缓冲时间。</div>
+                </aside>
+                <section class="panel board-pane">
+                    <header class="panel__header"><h2>小结</h2></header>
+                    <div class="panel__body">
+        <ul><li>核心：分布表、期望、方差、协方差</li><li>作业：练习自定义分布的期望与方差</li></ul>
+                    </div>
+                </section>
+                <section class="panel animation-pane">
+                    <header class="panel__header"><h3>动画执行提示</h3></header>
+                    <div class="panel__body">
+        <ol><li>关键点翻牌锁定，作业提示弹出。</li></ol>
+                    </div>
+                </section>
+                <section class="panel narration-pane">
+                    <header class="panel__header"><h3>虚拟人讲稿</h3><span class="action-chip">动作：A_RLH_welcome_O</span></header>
+                    <div class="panel__body">
+        <p>掌握随机变量的统计指标后，我们可以研究具体的概率分布。"</p>
+        <p>---</p>
+                    </div>
+                </section>
             </div>
         </div>
     </div>
-    <div class="subtitle-area" id="subtitleArea">欢迎学习随机变量与期望方差！点击开始讲课启动虚拟人讲师。</div>
+    <div class="subtitle-area" id="subtitleArea">欢迎学习第13章 视频 13.2 随机变量与期望方差！点击开始讲课启动虚拟人讲师。</div>
     <div class="control-bar">
         <div class="control-title">第 <span id="currentSlide">1</span> 页 / 共 <span id="totalSlides">6</span> 页</div>
         <button class="btn" onclick="previousSlide()">⬅️ 上一页</button>
@@ -137,38 +259,38 @@
         window.dispatchEvent(new CustomEvent('sdkReady'));
     </script>
     <script>
-        const lessonTitle = "随机变量与期望方差";
+        const lessonTitle = "第13章 视频 13.2 随机变量与期望方差";
         const subtitleScript = {
-    "1": "随机变量把随机结果转换成数值，期望和方差帮助我们抓住平均趋势与波动幅度。",
-    "2": "离散随机变量的分布可以用表格或条形图展示，概率之和必须等于 1。",
-    "3": "期望是加权平均，方差衡量波动。把每个取值与平均值的偏差平方后加权，就得到方差。",
-    "4": "协方差描述两个变量同向或反向变化的趋势，相关系数把它标准化为 −1 到 1。",
-    "5": "期望告诉我们长期平均收益，标准差告诉我们风险大小。比较两个方案时，两者都要考虑。",
-    "6": "掌握随机变量的统计指标后，我们可以研究具体的概率分布。\" ---"
+  "1": "随机变量把随机结果转换成数值，期望和方差帮助我们抓住平均趋势与波动幅度。",
+  "2": "离散随机变量的分布可以用表格或条形图展示，概率之和必须等于 1。",
+  "3": "期望是加权平均，方差衡量波动。把每个取值与平均值的偏差平方后加权，就得到方差。",
+  "4": "协方差描述两个变量同向或反向变化的趋势，相关系数把它标准化为 −1 到 1。",
+  "5": "期望告诉我们长期平均收益，标准差告诉我们风险大小。比较两个方案时，两者都要考虑。",
+  "6": "掌握随机变量的统计指标后，我们可以研究具体的概率分布。\" ---"
 };
         const actionMap = {
-    "1": "A_RLH_welcome_O",
-    "2": "A_LH_introduced_O",
-    "3": "A_RH_point_O",
-    "4": "A_RH_emphasize_O",
-    "5": "A_RH_please_O",
-    "6": "A_RLH_welcome_O"
+  "1": "A_RLH_welcome_O",
+  "2": "A_LH_introduced_O",
+  "3": "A_RH_point_O",
+  "4": "A_RH_emphasize_O",
+  "5": "A_RH_please_O",
+  "6": "A_RLH_welcome_O"
 };
         const slideTitles = {
-    "1": "课程导入",
-    "2": "离散随机变量",
-    "3": "期望与方差公式",
-    "4": "协方差与相关系数",
-    "5": "例题：奖金方案比较",
-    "6": "小结"
+  "1": "课程导入",
+  "2": "离散随机变量",
+  "3": "期望与方差公式",
+  "4": "协方差与相关系数",
+  "5": "例题：奖金方案比较",
+  "6": "小结"
 };
         const slideDurations = {
-    "1": 30000,
-    "2": 60000,
-    "3": 60000,
-    "4": 55000,
-    "5": 70000,
-    "6": 45000
+  "1": 34500,
+  "2": 69000,
+  "3": 69000,
+  "4": 63249,
+  "5": 80500,
+  "6": 51749
 };
         const totalSlides = 6;
 
@@ -179,6 +301,7 @@
         let isAutoPlaying = false;
 
         const slides = document.querySelectorAll('.slide');
+        const timelineItems = document.querySelectorAll('.timeline-item');
 
         function showSlide(index) {
             slides.forEach((slide, i) => slide.classList.toggle('active', i === index));
@@ -187,6 +310,7 @@
             if (window.MathJax && window.MathJax.typesetPromise) {
                 window.MathJax.typesetPromise([slides[index]]).catch(err => console.error(err));
             }
+            timelineItems.forEach((item, i) => item.classList.toggle('active', i === index));
         }
 
         function nextSlide() {
@@ -334,7 +458,7 @@
                 if (!isAutoPlaying) break;
                 showSlide(slide - 1);
                 speakContent(slide);
-                const duration = slideDurations[slide] || 15000;
+                const duration = slideDurations[slide] || 18000;
                 await new Promise(resolve => setTimeout(resolve, duration));
             }
 
@@ -343,6 +467,17 @@
             autoBtn.classList.remove('stop');
             updateStatus('课程播放结束');
         }
+
+        timelineItems.forEach((item, index) => {
+            item.addEventListener('click', () => {
+                isAutoPlaying = false;
+                const autoBtn = document.getElementById('autoPlayBtn');
+                autoBtn.textContent = '🎬 自动播放';
+                autoBtn.classList.remove('stop');
+                showSlide(index);
+                speakContent(index + 1);
+            });
+        });
 
         document.addEventListener('keydown', (event) => {
             if (event.key === 'ArrowRight' || event.key === ' ') {

@@ -33,60 +33,145 @@
 </head>
 <body class="blackboard">
     <div id="statusIndicator" class="status-indicator">等待连接</div>
+    <header class="lesson-topbar">
+        <div class="lesson-meta">
+            <h1>第4章 视频 4.1 洛必达法则：求极限的"手术刀"</h1>
+            <div class="lesson-meta__row">
+                <span class="lesson-chip">章节 4.1</span>
+                <span class="lesson-chip">预计总时长：4 分 40 秒 / 280 秒</span>
+                <span class="lesson-chip">共 4 页</span>
+            </div>
+            <p class="lesson-subtitle">虚拟人录屏课件模板 · 自动生成的板书、动画、讲稿三栏脚本</p>
+        </div>
+        <div class="lesson-timeline">
+            <button class="timeline-item active" data-target="1"><span class="timeline-index">01</span><span class="timeline-title">法则概述</span><span class="timeline-duration">60秒</span></button>
+            <button class="timeline-item" data-target="2"><span class="timeline-index">02</span><span class="timeline-title">基础例题</span><span class="timeline-duration">70秒</span></button>
+            <button class="timeline-item" data-target="3"><span class="timeline-index">03</span><span class="timeline-title">注意事项</span><span class="timeline-duration">60秒</span></button>
+            <button class="timeline-item" data-target="4"><span class="timeline-index">04</span><span class="timeline-title">小结与练习</span><span class="timeline-duration">45秒</span></button>
+        </div>
+    </header>
     <div class="avatar-container">
         <div class="wrapper" id="avatarWrapper"></div>
     </div>
     <div id="slide-container" class="slide-container flex-grow">
-        <div class="slide active">
+        <div class="slide active" data-slide="1">
             <div class="slide-content">
-                <div class="blackboard-text">
-                    <h2>法则概述</h2>
-      <ul><li>适用型：0/0、∞/∞</li><li>公式：$\lim\frac{f(x)}{g(x)}=\lim\frac{f'(x)}{g'(x)}$</li><li>条件：f、g 在邻域可导，g'(x)≠0</li></ul>
-                </div>
-                <div class="animation-pane">
-                    <h3>动画执行提示</h3>
-      <ol><li>将 0/0 型标记为“未定型”，旁边出现手术刀图标。</li><li>公式逐步展开并强调条件。</li></ol>
-                </div>
+                <aside class="slide-meta">
+                    <div class="slide-meta__badge">第 1 / 4 页</div>
+                    <div class="slide-meta__duration">⏱️ 60 秒</div>
+                    <div class="slide-progress"><div class="slide-progress__bar" style="width: 0%"></div></div>
+                    <div class="slide-meta__action">推荐动作：<span>A_RLH_welcome_O</span></div>
+                    <div class="slide-meta__note">自动播放会额外保留讲稿缓冲时间。</div>
+                </aside>
+                <section class="panel board-pane">
+                    <header class="panel__header"><h2>法则概述</h2></header>
+                    <div class="panel__body">
+        <ul><li>适用型：0/0、∞/∞</li><li>公式：$\lim\frac{f(x)}{g(x)}=\lim\frac{f'(x)}{g'(x)}$</li><li>条件：f、g 在邻域可导，g'(x)≠0</li></ul>
+                    </div>
+                </section>
+                <section class="panel animation-pane">
+                    <header class="panel__header"><h3>动画执行提示</h3></header>
+                    <div class="panel__body">
+        <ol><li>将 0/0 型标记为“未定型”，旁边出现手术刀图标。</li><li>公式逐步展开并强调条件。</li></ol>
+                    </div>
+                </section>
+                <section class="panel narration-pane">
+                    <header class="panel__header"><h3>虚拟人讲稿</h3><span class="action-chip">动作：A_RLH_welcome_O</span></header>
+                    <div class="panel__body">
+        <p>洛必达法则像手术刀，只对 0/0 或 ∞/∞ 的未定型动刀，前提是函数可导且分母导数不为零。</p>
+                    </div>
+                </section>
             </div>
         </div>
-        <div class="slide">
+        <div class="slide" data-slide="2">
             <div class="slide-content">
-                <div class="blackboard-text">
-                    <h2>基础例题</h2>
-      <ul><li>例：$\lim_{x\to0}\frac{\sin x}{x}$ 用洛必达→$\frac{\cos x}{1}$→1</li><li>例：$\lim_{x\to\infty}\frac{e^x}{x^2}$ → $\frac{e^x}{2x}$ → … → ∞</li></ul>
-                </div>
-                <div class="animation-pane">
-                    <h3>动画执行提示</h3>
-      <ol><li>每次求导后重写表达式。</li><li>注意提醒多次应用。</li></ol>
-                </div>
+                <aside class="slide-meta">
+                    <div class="slide-meta__badge">第 2 / 4 页</div>
+                    <div class="slide-meta__duration">⏱️ 70 秒</div>
+                    <div class="slide-progress"><div class="slide-progress__bar" style="width: 33%"></div></div>
+                    <div class="slide-meta__action">推荐动作：<span>A_LH_introduced_O</span></div>
+                    <div class="slide-meta__note">自动播放会额外保留讲稿缓冲时间。</div>
+                </aside>
+                <section class="panel board-pane">
+                    <header class="panel__header"><h2>基础例题</h2></header>
+                    <div class="panel__body">
+        <ul><li>例：$\lim_{x\to0}\frac{\sin x}{x}$ 用洛必达→$\frac{\cos x}{1}$→1</li><li>例：$\lim_{x\to\infty}\frac{e^x}{x^2}$ → $\frac{e^x}{2x}$ → … → ∞</li></ul>
+                    </div>
+                </section>
+                <section class="panel animation-pane">
+                    <header class="panel__header"><h3>动画执行提示</h3></header>
+                    <div class="panel__body">
+        <ol><li>每次求导后重写表达式。</li><li>注意提醒多次应用。</li></ol>
+                    </div>
+                </section>
+                <section class="panel narration-pane">
+                    <header class="panel__header"><h3>虚拟人讲稿</h3><span class="action-chip">动作：A_LH_introduced_O</span></header>
+                    <div class="panel__body">
+        <p>应用法则时，一次不够可以继续求导，直到消除未定型。</p>
+                    </div>
+                </section>
             </div>
         </div>
-        <div class="slide">
+        <div class="slide" data-slide="3">
             <div class="slide-content">
-                <div class="blackboard-text">
-                    <h2>注意事项</h2>
-      <ul><li>不适用：0·∞、∞−∞ 等需先变形</li><li>若极限不存在或震荡，法则无效</li><li>有界但分母趋 0 → 发散</li></ul>
-                </div>
-                <div class="animation-pane">
-                    <h3>动画执行提示</h3>
-      <ol><li>举反例：$\lim_{x\to0}x\ln x$ 需要转化。</li><li>展示错误使用的后果。</li></ol>
-                </div>
+                <aside class="slide-meta">
+                    <div class="slide-meta__badge">第 3 / 4 页</div>
+                    <div class="slide-meta__duration">⏱️ 60 秒</div>
+                    <div class="slide-progress"><div class="slide-progress__bar" style="width: 66%"></div></div>
+                    <div class="slide-meta__action">推荐动作：<span>A_RH_warning_O</span></div>
+                    <div class="slide-meta__note">自动播放会额外保留讲稿缓冲时间。</div>
+                </aside>
+                <section class="panel board-pane">
+                    <header class="panel__header"><h2>注意事项</h2></header>
+                    <div class="panel__body">
+        <ul><li>不适用：0·∞、∞−∞ 等需先变形</li><li>若极限不存在或震荡，法则无效</li><li>有界但分母趋 0 → 发散</li></ul>
+                    </div>
+                </section>
+                <section class="panel animation-pane">
+                    <header class="panel__header"><h3>动画执行提示</h3></header>
+                    <div class="panel__body">
+        <ol><li>举反例：$\lim_{x\to0}x\ln x$ 需要转化。</li><li>展示错误使用的后果。</li></ol>
+                    </div>
+                </section>
+                <section class="panel narration-pane">
+                    <header class="panel__header"><h3>虚拟人讲稿</h3><span class="action-chip">动作：A_RH_warning_O</span></header>
+                    <div class="panel__body">
+        <p>别把洛必达当万能公式，判断是否能转化成商形是第一步。</p>
+                    </div>
+                </section>
             </div>
         </div>
-        <div class="slide">
+        <div class="slide" data-slide="4">
             <div class="slide-content">
-                <div class="blackboard-text">
-                    <h2>小结与练习</h2>
-      <ul><li>练习：$\lim_{x\to0}\frac{e^x-1-x}{x^2}$</li><li>答案：1/2</li></ul>
-                </div>
-                <div class="animation-pane">
-                    <h3>动画执行提示</h3>
-      <ol><li>提示应用两次洛必达。</li><li>答案浮现并强调二阶导数。</li></ol>
-                </div>
+                <aside class="slide-meta">
+                    <div class="slide-meta__badge">第 4 / 4 页</div>
+                    <div class="slide-meta__duration">⏱️ 45 秒</div>
+                    <div class="slide-progress"><div class="slide-progress__bar" style="width: 100%"></div></div>
+                    <div class="slide-meta__action">推荐动作：<span>A_RLH_welcome_O</span></div>
+                    <div class="slide-meta__note">自动播放会额外保留讲稿缓冲时间。</div>
+                </aside>
+                <section class="panel board-pane">
+                    <header class="panel__header"><h2>小结与练习</h2></header>
+                    <div class="panel__body">
+        <ul><li>练习：$\lim_{x\to0}\frac{e^x-1-x}{x^2}$</li><li>答案：1/2</li></ul>
+                    </div>
+                </section>
+                <section class="panel animation-pane">
+                    <header class="panel__header"><h3>动画执行提示</h3></header>
+                    <div class="panel__body">
+        <ol><li>提示应用两次洛必达。</li><li>答案浮现并强调二阶导数。</li></ol>
+                    </div>
+                </section>
+                <section class="panel narration-pane">
+                    <header class="panel__header"><h3>虚拟人讲稿</h3><span class="action-chip">动作：A_RLH_welcome_O</span></header>
+                    <div class="panel__body">
+        <p>熟练判断未定型后，洛必达法则能迅速解决难算的极限。</p>
+                    </div>
+                </section>
             </div>
         </div>
     </div>
-    <div class="subtitle-area" id="subtitleArea">欢迎学习洛必达法则：求极限的"手术刀"！点击开始讲课启动虚拟人讲师。</div>
+    <div class="subtitle-area" id="subtitleArea">欢迎学习第4章 视频 4.1 洛必达法则：求极限的"手术刀"！点击开始讲课启动虚拟人讲师。</div>
     <div class="control-bar">
         <div class="control-title">第 <span id="currentSlide">1</span> 页 / 共 <span id="totalSlides">4</span> 页</div>
         <button class="btn" onclick="previousSlide()">⬅️ 上一页</button>
@@ -113,30 +198,30 @@
         window.dispatchEvent(new CustomEvent('sdkReady'));
     </script>
     <script>
-        const lessonTitle = "洛必达法则：求极限的\"手术刀\"";
+        const lessonTitle = "第4章 视频 4.1 洛必达法则：求极限的\"手术刀\"";
         const subtitleScript = {
-    "1": "洛必达法则像手术刀，只对 0/0 或 ∞/∞ 的未定型动刀，前提是函数可导且分母导数不为零。",
-    "2": "应用法则时，一次不够可以继续求导，直到消除未定型。",
-    "3": "别把洛必达当万能公式，判断是否能转化成商形是第一步。",
-    "4": "熟练判断未定型后，洛必达法则能迅速解决难算的极限。"
+  "1": "洛必达法则像手术刀，只对 0/0 或 ∞/∞ 的未定型动刀，前提是函数可导且分母导数不为零。",
+  "2": "应用法则时，一次不够可以继续求导，直到消除未定型。",
+  "3": "别把洛必达当万能公式，判断是否能转化成商形是第一步。",
+  "4": "熟练判断未定型后，洛必达法则能迅速解决难算的极限。"
 };
         const actionMap = {
-    "1": "A_RLH_welcome_O",
-    "2": "A_LH_introduced_O",
-    "3": "A_RH_warning_O",
-    "4": "A_RLH_welcome_O"
+  "1": "A_RLH_welcome_O",
+  "2": "A_LH_introduced_O",
+  "3": "A_RH_warning_O",
+  "4": "A_RLH_welcome_O"
 };
         const slideTitles = {
-    "1": "法则概述",
-    "2": "基础例题",
-    "3": "注意事项",
-    "4": "小结与练习"
+  "1": "法则概述",
+  "2": "基础例题",
+  "3": "注意事项",
+  "4": "小结与练习"
 };
         const slideDurations = {
-    "1": 60000,
-    "2": 70000,
-    "3": 60000,
-    "4": 45000
+  "1": 69000,
+  "2": 80500,
+  "3": 69000,
+  "4": 51749
 };
         const totalSlides = 4;
 
@@ -147,6 +232,7 @@
         let isAutoPlaying = false;
 
         const slides = document.querySelectorAll('.slide');
+        const timelineItems = document.querySelectorAll('.timeline-item');
 
         function showSlide(index) {
             slides.forEach((slide, i) => slide.classList.toggle('active', i === index));
@@ -155,6 +241,7 @@
             if (window.MathJax && window.MathJax.typesetPromise) {
                 window.MathJax.typesetPromise([slides[index]]).catch(err => console.error(err));
             }
+            timelineItems.forEach((item, i) => item.classList.toggle('active', i === index));
         }
 
         function nextSlide() {
@@ -302,7 +389,7 @@
                 if (!isAutoPlaying) break;
                 showSlide(slide - 1);
                 speakContent(slide);
-                const duration = slideDurations[slide] || 15000;
+                const duration = slideDurations[slide] || 18000;
                 await new Promise(resolve => setTimeout(resolve, duration));
             }
 
@@ -311,6 +398,17 @@
             autoBtn.classList.remove('stop');
             updateStatus('课程播放结束');
         }
+
+        timelineItems.forEach((item, index) => {
+            item.addEventListener('click', () => {
+                isAutoPlaying = false;
+                const autoBtn = document.getElementById('autoPlayBtn');
+                autoBtn.textContent = '🎬 自动播放';
+                autoBtn.classList.remove('stop');
+                showSlide(index);
+                speakContent(index + 1);
+            });
+        });
 
         document.addEventListener('keydown', (event) => {
             if (event.key === 'ArrowRight' || event.key === ' ') {

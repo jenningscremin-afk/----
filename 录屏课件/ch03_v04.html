@@ -33,84 +33,205 @@
 </head>
 <body class="blackboard">
     <div id="statusIndicator" class="status-indicator">等待连接</div>
+    <header class="lesson-topbar">
+        <div class="lesson-meta">
+            <h1>第3章 视频 3.4 微分的概念与应用</h1>
+            <div class="lesson-meta__row">
+                <span class="lesson-chip">章节 3.4</span>
+                <span class="lesson-chip">预计总时长：5 分 10 秒 / 310 秒</span>
+                <span class="lesson-chip">共 6 页</span>
+            </div>
+            <p class="lesson-subtitle">虚拟人录屏课件模板 · 自动生成的板书、动画、讲稿三栏脚本</p>
+        </div>
+        <div class="lesson-timeline">
+            <button class="timeline-item active" data-target="1"><span class="timeline-index">01</span><span class="timeline-title">微分定义</span><span class="timeline-duration">50秒</span></button>
+            <button class="timeline-item" data-target="2"><span class="timeline-index">02</span><span class="timeline-title">基本运算</span><span class="timeline-duration">70秒</span></button>
+            <button class="timeline-item" data-target="3"><span class="timeline-index">03</span><span class="timeline-title">线性近似应用</span><span class="timeline-duration">70秒</span></button>
+            <button class="timeline-item" data-target="4"><span class="timeline-index">04</span><span class="timeline-title">误差拆解</span><span class="timeline-duration">55秒</span></button>
+            <button class="timeline-item" data-target="5"><span class="timeline-index">05</span><span class="timeline-title">行业案例</span><span class="timeline-duration">45秒</span></button>
+            <button class="timeline-item" data-target="6"><span class="timeline-index">06</span><span class="timeline-title">练习与总结</span><span class="timeline-duration">40秒</span></button>
+        </div>
+    </header>
     <div class="avatar-container">
         <div class="wrapper" id="avatarWrapper"></div>
     </div>
     <div id="slide-container" class="slide-container flex-grow">
-        <div class="slide active">
+        <div class="slide active" data-slide="1">
             <div class="slide-content">
-                <div class="blackboard-text">
-                    <h2>微分定义</h2>
-      <ul><li>定义：dy=f'(x)dx</li><li>dx 代表自变量的微小变化</li><li>dy 近似函数变化量 Δy</li></ul>
-                </div>
-                <div class="animation-pane">
-                    <h3>动画执行提示</h3>
-      <ol><li>曲线上一小段的放大图，将 Δx 替换为 dx。</li><li>说明 dy≈Δy 的意义。</li></ol>
-                </div>
+                <aside class="slide-meta">
+                    <div class="slide-meta__badge">第 1 / 6 页</div>
+                    <div class="slide-meta__duration">⏱️ 50 秒</div>
+                    <div class="slide-progress"><div class="slide-progress__bar" style="width: 0%"></div></div>
+                    <div class="slide-meta__action">推荐动作：<span>A_RLH_welcome_O</span></div>
+                    <div class="slide-meta__note">自动播放会额外保留讲稿缓冲时间。</div>
+                </aside>
+                <section class="panel board-pane">
+                    <header class="panel__header"><h2>微分定义</h2></header>
+                    <div class="panel__body">
+        <ul><li>定义：dy=f'(x)dx</li><li>dx 代表自变量的微小变化</li><li>dy 近似函数变化量 Δy</li></ul>
+                    </div>
+                </section>
+                <section class="panel animation-pane">
+                    <header class="panel__header"><h3>动画执行提示</h3></header>
+                    <div class="panel__body">
+        <ol><li>曲线上一小段的放大图，将 Δx 替换为 dx。</li><li>说明 dy≈Δy 的意义。</li></ol>
+                    </div>
+                </section>
+                <section class="panel narration-pane">
+                    <header class="panel__header"><h3>虚拟人讲稿</h3><span class="action-chip">动作：A_RLH_welcome_O</span></header>
+                    <div class="panel__body">
+        <p>微分把导数转成线性近似工具，方便我们估算函数的微小变化。</p>
+                    </div>
+                </section>
             </div>
         </div>
-        <div class="slide">
+        <div class="slide" data-slide="2">
             <div class="slide-content">
-                <div class="blackboard-text">
-                    <h2>基本运算</h2>
-      <ul><li>若 y=xⁿ，则 dy=n·xⁿ⁻¹ dx</li><li>若 y=sinx，则 dy=cosx dx</li><li>链式形式：若 y=f(u), u=g(x)，则 dy=f'(u)·g'(x) dx</li></ul>
-                </div>
-                <div class="animation-pane">
-                    <h3>动画执行提示</h3>
-      <ol><li>将导数公式加上 dx，转换成微分形式。</li><li>强调微分的“可乘性”。</li></ol>
-                </div>
+                <aside class="slide-meta">
+                    <div class="slide-meta__badge">第 2 / 6 页</div>
+                    <div class="slide-meta__duration">⏱️ 70 秒</div>
+                    <div class="slide-progress"><div class="slide-progress__bar" style="width: 20%"></div></div>
+                    <div class="slide-meta__action">推荐动作：<span>A_LH_introduced_O</span></div>
+                    <div class="slide-meta__note">自动播放会额外保留讲稿缓冲时间。</div>
+                </aside>
+                <section class="panel board-pane">
+                    <header class="panel__header"><h2>基本运算</h2></header>
+                    <div class="panel__body">
+        <ul><li>若 y=xⁿ，则 dy=n·xⁿ⁻¹ dx</li><li>若 y=sinx，则 dy=cosx dx</li><li>链式形式：若 y=f(u), u=g(x)，则 dy=f'(u)·g'(x) dx</li></ul>
+                    </div>
+                </section>
+                <section class="panel animation-pane">
+                    <header class="panel__header"><h3>动画执行提示</h3></header>
+                    <div class="panel__body">
+        <ol><li>将导数公式加上 dx，转换成微分形式。</li><li>强调微分的“可乘性”。</li></ol>
+                    </div>
+                </section>
+                <section class="panel narration-pane">
+                    <header class="panel__header"><h3>虚拟人讲稿</h3><span class="action-chip">动作：A_LH_introduced_O</span></header>
+                    <div class="panel__body">
+        <p>微分计算几乎与求导同步，只是在最后乘上 dx。</p>
+                    </div>
+                </section>
             </div>
         </div>
-        <div class="slide">
+        <div class="slide" data-slide="3">
             <div class="slide-content">
-                <div class="blackboard-text">
-                    <h2>线性近似应用</h2>
-      <ul><li>例：估算 √(4.1)</li><li>设 y=√x，在 x=4，dy≈(1/(2√4))·0.1=0.025</li><li>结果：√4.1≈2+0.025=2.025</li></ul>
-                </div>
-                <div class="animation-pane">
-                    <h3>动画执行提示</h3>
-      <ol><li>显示函数 y=√x 在 x=4 处的切线方程。</li><li>计算过程逐步呈现。</li></ol>
-                </div>
+                <aside class="slide-meta">
+                    <div class="slide-meta__badge">第 3 / 6 页</div>
+                    <div class="slide-meta__duration">⏱️ 70 秒</div>
+                    <div class="slide-progress"><div class="slide-progress__bar" style="width: 40%"></div></div>
+                    <div class="slide-meta__action">推荐动作：<span>A_RH_point_O</span></div>
+                    <div class="slide-meta__note">自动播放会额外保留讲稿缓冲时间。</div>
+                </aside>
+                <section class="panel board-pane">
+                    <header class="panel__header"><h2>线性近似应用</h2></header>
+                    <div class="panel__body">
+        <ul><li>例：估算 √(4.1)</li><li>设 y=√x，在 x=4，dy≈(1/(2√4))·0.1=0.025</li><li>结果：√4.1≈2+0.025=2.025</li></ul>
+                    </div>
+                </section>
+                <section class="panel animation-pane">
+                    <header class="panel__header"><h3>动画执行提示</h3></header>
+                    <div class="panel__body">
+        <ol><li>显示函数 y=√x 在 x=4 处的切线方程。</li><li>计算过程逐步呈现。</li></ol>
+                    </div>
+                </section>
+                <section class="panel narration-pane">
+                    <header class="panel__header"><h3>虚拟人讲稿</h3><span class="action-chip">动作：A_RH_point_O</span></header>
+                    <div class="panel__body">
+        <p>微分的线性近似能快速估算难算的数值，误差与 dx 的大小相关。</p>
+                    </div>
+                </section>
             </div>
         </div>
-        <div class="slide">
+        <div class="slide" data-slide="4">
             <div class="slide-content">
-                <div class="blackboard-text">
-                    <h2>误差拆解</h2>
-      <ul><li>线性化：$\Delta y = dy + o(\Delta x)$</li><li>主项：$dy=f'(x)\Delta x$</li><li>剩余项：高阶小量示意</li></ul>
-                </div>
-                <div class="animation-pane">
-                    <h3>动画执行提示</h3>
-      <ol><li>用拼图展示“真实变化 = 主项 + 余项”。</li><li>随着 Δx 缩小，余项拼图逐渐消失。</li></ol>
-                </div>
+                <aside class="slide-meta">
+                    <div class="slide-meta__badge">第 4 / 6 页</div>
+                    <div class="slide-meta__duration">⏱️ 55 秒</div>
+                    <div class="slide-progress"><div class="slide-progress__bar" style="width: 60%"></div></div>
+                    <div class="slide-meta__action">推荐动作：<span>A_RH_point_O</span></div>
+                    <div class="slide-meta__note">自动播放会额外保留讲稿缓冲时间。</div>
+                </aside>
+                <section class="panel board-pane">
+                    <header class="panel__header"><h2>误差拆解</h2></header>
+                    <div class="panel__body">
+        <ul><li>线性化：$\Delta y = dy + o(\Delta x)$</li><li>主项：$dy=f'(x)\Delta x$</li><li>剩余项：高阶小量示意</li></ul>
+                    </div>
+                </section>
+                <section class="panel animation-pane">
+                    <header class="panel__header"><h3>动画执行提示</h3></header>
+                    <div class="panel__body">
+        <ol><li>用拼图展示“真实变化 = 主项 + 余项”。</li><li>随着 Δx 缩小，余项拼图逐渐消失。</li></ol>
+                    </div>
+                </section>
+                <section class="panel narration-pane">
+                    <header class="panel__header"><h3>虚拟人讲稿</h3><span class="action-chip">动作：A_RH_point_O</span></header>
+                    <div class="panel__body">
+        <p>微分只保留了第一阶主项，高阶小量在 Δx 很小时可以忽略，但请记住它们确实存在。</p>
+                    </div>
+                </section>
             </div>
         </div>
-        <div class="slide">
+        <div class="slide" data-slide="5">
             <div class="slide-content">
-                <div class="blackboard-text">
-                    <h2>行业案例</h2>
-      <ul><li>工程：梁的挠度变化 $dw = w'(x)dx$</li><li>金融：收益率变化 $dr = r'(t)dt$</li><li>数据：传感器校准流程</li></ul>
-                </div>
-                <div class="animation-pane">
-                    <h3>动画执行提示</h3>
-      <ol><li>多行业场景轮播，标出对应微分表达式。</li><li>动态曲线展示“微分预测 vs 实际数据”。</li></ol>
-                </div>
+                <aside class="slide-meta">
+                    <div class="slide-meta__badge">第 5 / 6 页</div>
+                    <div class="slide-meta__duration">⏱️ 45 秒</div>
+                    <div class="slide-progress"><div class="slide-progress__bar" style="width: 80%"></div></div>
+                    <div class="slide-meta__action">推荐动作：<span>A_LH_introduced_O</span></div>
+                    <div class="slide-meta__note">自动播放会额外保留讲稿缓冲时间。</div>
+                </aside>
+                <section class="panel board-pane">
+                    <header class="panel__header"><h2>行业案例</h2></header>
+                    <div class="panel__body">
+        <ul><li>工程：梁的挠度变化 $dw = w'(x)dx$</li><li>金融：收益率变化 $dr = r'(t)dt$</li><li>数据：传感器校准流程</li></ul>
+                    </div>
+                </section>
+                <section class="panel animation-pane">
+                    <header class="panel__header"><h3>动画执行提示</h3></header>
+                    <div class="panel__body">
+        <ol><li>多行业场景轮播，标出对应微分表达式。</li><li>动态曲线展示“微分预测 vs 实际数据”。</li></ol>
+                    </div>
+                </section>
+                <section class="panel narration-pane">
+                    <header class="panel__header"><h3>虚拟人讲稿</h3><span class="action-chip">动作：A_LH_introduced_O</span></header>
+                    <div class="panel__body">
+        <p>请结合自己的专业背景写下至少一个微分应用，这会让概念真正‘落地’。</p>
+                    </div>
+                </section>
             </div>
         </div>
-        <div class="slide">
+        <div class="slide" data-slide="6">
             <div class="slide-content">
-                <div class="blackboard-text">
-                    <h2>练习与总结</h2>
-      <ul><li>练习 1：已知 y=√(x²+1)，x=3, dx=0.02 → dy=?</li><li>练习 2：用微分估算 (1.02)⁵</li><li>作业：误差估计题 2 道</li></ul>
-                </div>
-                <div class="animation-pane">
-                    <h3>动画执行提示</h3>
-      <ol><li>显示练习题，提示使用 dy=f'(x)dx。</li><li>预告章末总结。</li></ol>
-                </div>
+                <aside class="slide-meta">
+                    <div class="slide-meta__badge">第 6 / 6 页</div>
+                    <div class="slide-meta__duration">⏱️ 40 秒</div>
+                    <div class="slide-progress"><div class="slide-progress__bar" style="width: 100%"></div></div>
+                    <div class="slide-meta__action">推荐动作：<span>A_RLH_welcome_O</span></div>
+                    <div class="slide-meta__note">自动播放会额外保留讲稿缓冲时间。</div>
+                </aside>
+                <section class="panel board-pane">
+                    <header class="panel__header"><h2>练习与总结</h2></header>
+                    <div class="panel__body">
+        <ul><li>练习 1：已知 y=√(x²+1)，x=3, dx=0.02 → dy=?</li><li>练习 2：用微分估算 (1.02)⁵</li><li>作业：误差估计题 2 道</li></ul>
+                    </div>
+                </section>
+                <section class="panel animation-pane">
+                    <header class="panel__header"><h3>动画执行提示</h3></header>
+                    <div class="panel__body">
+        <ol><li>显示练习题，提示使用 dy=f'(x)dx。</li><li>预告章末总结。</li></ol>
+                    </div>
+                </section>
+                <section class="panel narration-pane">
+                    <header class="panel__header"><h3>虚拟人讲稿</h3><span class="action-chip">动作：A_RLH_welcome_O</span></header>
+                    <div class="panel__body">
+        <p>掌握微分后，我们就能把导数应用到实际估算和误差控制中。</p>
+                    </div>
+                </section>
             </div>
         </div>
     </div>
-    <div class="subtitle-area" id="subtitleArea">欢迎学习微分的概念与应用！点击开始讲课启动虚拟人讲师。</div>
+    <div class="subtitle-area" id="subtitleArea">欢迎学习第3章 视频 3.4 微分的概念与应用！点击开始讲课启动虚拟人讲师。</div>
     <div class="control-bar">
         <div class="control-title">第 <span id="currentSlide">1</span> 页 / 共 <span id="totalSlides">6</span> 页</div>
         <button class="btn" onclick="previousSlide()">⬅️ 上一页</button>
@@ -137,38 +258,38 @@
         window.dispatchEvent(new CustomEvent('sdkReady'));
     </script>
     <script>
-        const lessonTitle = "微分的概念与应用";
+        const lessonTitle = "第3章 视频 3.4 微分的概念与应用";
         const subtitleScript = {
-    "1": "微分把导数转成线性近似工具，方便我们估算函数的微小变化。",
-    "2": "微分计算几乎与求导同步，只是在最后乘上 dx。",
-    "3": "微分的线性近似能快速估算难算的数值，误差与 dx 的大小相关。",
-    "4": "微分只保留了第一阶主项，高阶小量在 Δx 很小时可以忽略，但请记住它们确实存在。",
-    "5": "请结合自己的专业背景写下至少一个微分应用，这会让概念真正‘落地’。",
-    "6": "掌握微分后，我们就能把导数应用到实际估算和误差控制中。"
+  "1": "微分把导数转成线性近似工具，方便我们估算函数的微小变化。",
+  "2": "微分计算几乎与求导同步，只是在最后乘上 dx。",
+  "3": "微分的线性近似能快速估算难算的数值，误差与 dx 的大小相关。",
+  "4": "微分只保留了第一阶主项，高阶小量在 Δx 很小时可以忽略，但请记住它们确实存在。",
+  "5": "请结合自己的专业背景写下至少一个微分应用，这会让概念真正‘落地’。",
+  "6": "掌握微分后，我们就能把导数应用到实际估算和误差控制中。"
 };
         const actionMap = {
-    "1": "A_RLH_welcome_O",
-    "2": "A_LH_introduced_O",
-    "3": "A_RH_point_O",
-    "4": "A_RH_point_O",
-    "5": "A_LH_introduced_O",
-    "6": "A_RLH_welcome_O"
+  "1": "A_RLH_welcome_O",
+  "2": "A_LH_introduced_O",
+  "3": "A_RH_point_O",
+  "4": "A_RH_point_O",
+  "5": "A_LH_introduced_O",
+  "6": "A_RLH_welcome_O"
 };
         const slideTitles = {
-    "1": "微分定义",
-    "2": "基本运算",
-    "3": "线性近似应用",
-    "4": "误差拆解",
-    "5": "行业案例",
-    "6": "练习与总结"
+  "1": "微分定义",
+  "2": "基本运算",
+  "3": "线性近似应用",
+  "4": "误差拆解",
+  "5": "行业案例",
+  "6": "练习与总结"
 };
         const slideDurations = {
-    "1": 50000,
-    "2": 70000,
-    "3": 70000,
-    "4": 55000,
-    "5": 45000,
-    "6": 40000
+  "1": 57499,
+  "2": 80500,
+  "3": 80500,
+  "4": 63249,
+  "5": 51749,
+  "6": 46000
 };
         const totalSlides = 6;
 
@@ -179,6 +300,7 @@
         let isAutoPlaying = false;
 
         const slides = document.querySelectorAll('.slide');
+        const timelineItems = document.querySelectorAll('.timeline-item');
 
         function showSlide(index) {
             slides.forEach((slide, i) => slide.classList.toggle('active', i === index));
@@ -187,6 +309,7 @@
             if (window.MathJax && window.MathJax.typesetPromise) {
                 window.MathJax.typesetPromise([slides[index]]).catch(err => console.error(err));
             }
+            timelineItems.forEach((item, i) => item.classList.toggle('active', i === index));
         }
 
         function nextSlide() {
@@ -334,7 +457,7 @@
                 if (!isAutoPlaying) break;
                 showSlide(slide - 1);
                 speakContent(slide);
-                const duration = slideDurations[slide] || 15000;
+                const duration = slideDurations[slide] || 18000;
                 await new Promise(resolve => setTimeout(resolve, duration));
             }
 
@@ -343,6 +466,17 @@
             autoBtn.classList.remove('stop');
             updateStatus('课程播放结束');
         }
+
+        timelineItems.forEach((item, index) => {
+            item.addEventListener('click', () => {
+                isAutoPlaying = false;
+                const autoBtn = document.getElementById('autoPlayBtn');
+                autoBtn.textContent = '🎬 自动播放';
+                autoBtn.classList.remove('stop');
+                showSlide(index);
+                speakContent(index + 1);
+            });
+        });
 
         document.addEventListener('keydown', (event) => {
             if (event.key === 'ArrowRight' || event.key === ' ') {

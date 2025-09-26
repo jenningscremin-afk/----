@@ -33,60 +33,145 @@
 </head>
 <body class="blackboard">
     <div id="statusIndicator" class="status-indicator">等待连接</div>
+    <header class="lesson-topbar">
+        <div class="lesson-meta">
+            <h1>第7章 视频 7.3 一阶线性微分方程（习题精讲）</h1>
+            <div class="lesson-meta__row">
+                <span class="lesson-chip">章节 7.3</span>
+                <span class="lesson-chip">预计总时长：4 分 45 秒 / 285 秒</span>
+                <span class="lesson-chip">共 4 页</span>
+            </div>
+            <p class="lesson-subtitle">虚拟人录屏课件模板 · 自动生成的板书、动画、讲稿三栏脚本</p>
+        </div>
+        <div class="lesson-timeline">
+            <button class="timeline-item active" data-target="1"><span class="timeline-index">01</span><span class="timeline-title">标准形式</span><span class="timeline-duration">55秒</span></button>
+            <button class="timeline-item" data-target="2"><span class="timeline-index">02</span><span class="timeline-title">示例</span><span class="timeline-duration">80秒</span></button>
+            <button class="timeline-item" data-target="3"><span class="timeline-index">03</span><span class="timeline-title">应用题</span><span class="timeline-duration">60秒</span></button>
+            <button class="timeline-item" data-target="4"><span class="timeline-index">04</span><span class="timeline-title">练习</span><span class="timeline-duration">45秒</span></button>
+        </div>
+    </header>
     <div class="avatar-container">
         <div class="wrapper" id="avatarWrapper"></div>
     </div>
     <div id="slide-container" class="slide-container flex-grow">
-        <div class="slide active">
+        <div class="slide active" data-slide="1">
             <div class="slide-content">
-                <div class="blackboard-text">
-                    <h2>标准形式</h2>
-      <ul><li>方程：y' + P(x) y = Q(x)</li><li>解法：积分因子 μ(x)=e^{∫P(x)dx}</li><li>通解：y = μ^{-1}(∫ μ Q dx + C)</li></ul>
-                </div>
-                <div class="animation-pane">
-                    <h3>动画执行提示</h3>
-      <ol><li>推导积分因子过程。</li><li>流程图展示步骤。</li></ol>
-                </div>
+                <aside class="slide-meta">
+                    <div class="slide-meta__badge">第 1 / 4 页</div>
+                    <div class="slide-meta__duration">⏱️ 55 秒</div>
+                    <div class="slide-progress"><div class="slide-progress__bar" style="width: 0%"></div></div>
+                    <div class="slide-meta__action">推荐动作：<span>A_RLH_welcome_O</span></div>
+                    <div class="slide-meta__note">自动播放会额外保留讲稿缓冲时间。</div>
+                </aside>
+                <section class="panel board-pane">
+                    <header class="panel__header"><h2>标准形式</h2></header>
+                    <div class="panel__body">
+        <ul><li>方程：y' + P(x) y = Q(x)</li><li>解法：积分因子 μ(x)=e^{∫P(x)dx}</li><li>通解：y = μ^{-1}(∫ μ Q dx + C)</li></ul>
+                    </div>
+                </section>
+                <section class="panel animation-pane">
+                    <header class="panel__header"><h3>动画执行提示</h3></header>
+                    <div class="panel__body">
+        <ol><li>推导积分因子过程。</li><li>流程图展示步骤。</li></ol>
+                    </div>
+                </section>
+                <section class="panel narration-pane">
+                    <header class="panel__header"><h3>虚拟人讲稿</h3><span class="action-chip">动作：A_RLH_welcome_O</span></header>
+                    <div class="panel__body">
+        <p>一阶线性方程的关键是乘上积分因子，让左边变成乘积的导数。</p>
+                    </div>
+                </section>
             </div>
         </div>
-        <div class="slide">
+        <div class="slide" data-slide="2">
             <div class="slide-content">
-                <div class="blackboard-text">
-                    <h2>示例</h2>
-      <ul><li>方程：y' − 2y = e^{3x}</li><li>P(x)=−2 → μ=e^{∫−2dx}=e^{−2x}</li><li>计算：d/dx(y e^{−2x}) = e^{x}</li><li>积分：y e^{−2x} = e^{x} + C → y = e^{3x} + C e^{2x}</li></ul>
-                </div>
-                <div class="animation-pane">
-                    <h3>动画执行提示</h3>
-      <ol><li>步骤逐个呈现。</li><li>强调“乘因子 → 合并为导数”。</li></ol>
-                </div>
+                <aside class="slide-meta">
+                    <div class="slide-meta__badge">第 2 / 4 页</div>
+                    <div class="slide-meta__duration">⏱️ 80 秒</div>
+                    <div class="slide-progress"><div class="slide-progress__bar" style="width: 33%"></div></div>
+                    <div class="slide-meta__action">推荐动作：<span>A_LH_introduced_O</span></div>
+                    <div class="slide-meta__note">自动播放会额外保留讲稿缓冲时间。</div>
+                </aside>
+                <section class="panel board-pane">
+                    <header class="panel__header"><h2>示例</h2></header>
+                    <div class="panel__body">
+        <ul><li>方程：y' − 2y = e^{3x}</li><li>P(x)=−2 → μ=e^{∫−2dx}=e^{−2x}</li><li>计算：d/dx(y e^{−2x}) = e^{x}</li><li>积分：y e^{−2x} = e^{x} + C → y = e^{3x} + C e^{2x}</li></ul>
+                    </div>
+                </section>
+                <section class="panel animation-pane">
+                    <header class="panel__header"><h3>动画执行提示</h3></header>
+                    <div class="panel__body">
+        <ol><li>步骤逐个呈现。</li><li>强调“乘因子 → 合并为导数”。</li></ol>
+                    </div>
+                </section>
+                <section class="panel narration-pane">
+                    <header class="panel__header"><h3>虚拟人讲稿</h3><span class="action-chip">动作：A_LH_introduced_O</span></header>
+                    <div class="panel__body">
+        <p>积分因子的选择取决于 P(x)，计算完记得把因子移回去。</p>
+                    </div>
+                </section>
             </div>
         </div>
-        <div class="slide">
+        <div class="slide" data-slide="3">
             <div class="slide-content">
-                <div class="blackboard-text">
-                    <h2>应用题</h2>
-      <ul><li>RC 电路：V' + (1/RC)V = (1/RC)E(t)</li><li>解法：使用积分因子，求电压变化</li></ul>
-                </div>
-                <div class="animation-pane">
-                    <h3>动画执行提示</h3>
-      <ol><li>电路图示与方程对应。</li><li>结果曲线展示电压随时间变化。</li></ol>
-                </div>
+                <aside class="slide-meta">
+                    <div class="slide-meta__badge">第 3 / 4 页</div>
+                    <div class="slide-meta__duration">⏱️ 60 秒</div>
+                    <div class="slide-progress"><div class="slide-progress__bar" style="width: 66%"></div></div>
+                    <div class="slide-meta__action">推荐动作：<span>A_RH_point_O</span></div>
+                    <div class="slide-meta__note">自动播放会额外保留讲稿缓冲时间。</div>
+                </aside>
+                <section class="panel board-pane">
+                    <header class="panel__header"><h2>应用题</h2></header>
+                    <div class="panel__body">
+        <ul><li>RC 电路：V' + (1/RC)V = (1/RC)E(t)</li><li>解法：使用积分因子，求电压变化</li></ul>
+                    </div>
+                </section>
+                <section class="panel animation-pane">
+                    <header class="panel__header"><h3>动画执行提示</h3></header>
+                    <div class="panel__body">
+        <ol><li>电路图示与方程对应。</li><li>结果曲线展示电压随时间变化。</li></ol>
+                    </div>
+                </section>
+                <section class="panel narration-pane">
+                    <header class="panel__header"><h3>虚拟人讲稿</h3><span class="action-chip">动作：A_RH_point_O</span></header>
+                    <div class="panel__body">
+        <p>一阶线性方程广泛用于工程和经济模型，掌握解法非常重要。</p>
+                    </div>
+                </section>
             </div>
         </div>
-        <div class="slide">
+        <div class="slide" data-slide="4">
             <div class="slide-content">
-                <div class="blackboard-text">
-                    <h2>练习</h2>
-      <ul><li>题：y' + y = e^{−x}</li><li>解：μ=e^{∫1 dx}=e^{x}</li><li>y e^{x} = ∫ e^{0} dx = x + C → y = e^{−x}(x + C)</li></ul>
-                </div>
-                <div class="animation-pane">
-                    <h3>动画执行提示</h3>
-      <ol><li>解题步骤板书化。</li><li>答案展示。</li></ol>
-                </div>
+                <aside class="slide-meta">
+                    <div class="slide-meta__badge">第 4 / 4 页</div>
+                    <div class="slide-meta__duration">⏱️ 45 秒</div>
+                    <div class="slide-progress"><div class="slide-progress__bar" style="width: 100%"></div></div>
+                    <div class="slide-meta__action">推荐动作：<span>A_RLH_welcome_O</span></div>
+                    <div class="slide-meta__note">自动播放会额外保留讲稿缓冲时间。</div>
+                </aside>
+                <section class="panel board-pane">
+                    <header class="panel__header"><h2>练习</h2></header>
+                    <div class="panel__body">
+        <ul><li>题：y' + y = e^{−x}</li><li>解：μ=e^{∫1 dx}=e^{x}</li><li>y e^{x} = ∫ e^{0} dx = x + C → y = e^{−x}(x + C)</li></ul>
+                    </div>
+                </section>
+                <section class="panel animation-pane">
+                    <header class="panel__header"><h3>动画执行提示</h3></header>
+                    <div class="panel__body">
+        <ol><li>解题步骤板书化。</li><li>答案展示。</li></ol>
+                    </div>
+                </section>
+                <section class="panel narration-pane">
+                    <header class="panel__header"><h3>虚拟人讲稿</h3><span class="action-chip">动作：A_RLH_welcome_O</span></header>
+                    <div class="panel__body">
+        <p>熟悉流程后，再复杂的 Q(x) 也能轻松处理。</p>
+                    </div>
+                </section>
             </div>
         </div>
     </div>
-    <div class="subtitle-area" id="subtitleArea">欢迎学习一阶线性微分方程（习题精讲）！点击开始讲课启动虚拟人讲师。</div>
+    <div class="subtitle-area" id="subtitleArea">欢迎学习第7章 视频 7.3 一阶线性微分方程（习题精讲）！点击开始讲课启动虚拟人讲师。</div>
     <div class="control-bar">
         <div class="control-title">第 <span id="currentSlide">1</span> 页 / 共 <span id="totalSlides">4</span> 页</div>
         <button class="btn" onclick="previousSlide()">⬅️ 上一页</button>
@@ -113,30 +198,30 @@
         window.dispatchEvent(new CustomEvent('sdkReady'));
     </script>
     <script>
-        const lessonTitle = "一阶线性微分方程（习题精讲）";
+        const lessonTitle = "第7章 视频 7.3 一阶线性微分方程（习题精讲）";
         const subtitleScript = {
-    "1": "一阶线性方程的关键是乘上积分因子，让左边变成乘积的导数。",
-    "2": "积分因子的选择取决于 P(x)，计算完记得把因子移回去。",
-    "3": "一阶线性方程广泛用于工程和经济模型，掌握解法非常重要。",
-    "4": "熟悉流程后，再复杂的 Q(x) 也能轻松处理。"
+  "1": "一阶线性方程的关键是乘上积分因子，让左边变成乘积的导数。",
+  "2": "积分因子的选择取决于 P(x)，计算完记得把因子移回去。",
+  "3": "一阶线性方程广泛用于工程和经济模型，掌握解法非常重要。",
+  "4": "熟悉流程后，再复杂的 Q(x) 也能轻松处理。"
 };
         const actionMap = {
-    "1": "A_RLH_welcome_O",
-    "2": "A_LH_introduced_O",
-    "3": "A_RH_point_O",
-    "4": "A_RLH_welcome_O"
+  "1": "A_RLH_welcome_O",
+  "2": "A_LH_introduced_O",
+  "3": "A_RH_point_O",
+  "4": "A_RLH_welcome_O"
 };
         const slideTitles = {
-    "1": "标准形式",
-    "2": "示例",
-    "3": "应用题",
-    "4": "练习"
+  "1": "标准形式",
+  "2": "示例",
+  "3": "应用题",
+  "4": "练习"
 };
         const slideDurations = {
-    "1": 55000,
-    "2": 80000,
-    "3": 60000,
-    "4": 45000
+  "1": 63249,
+  "2": 92000,
+  "3": 69000,
+  "4": 51749
 };
         const totalSlides = 4;
 
@@ -147,6 +232,7 @@
         let isAutoPlaying = false;
 
         const slides = document.querySelectorAll('.slide');
+        const timelineItems = document.querySelectorAll('.timeline-item');
 
         function showSlide(index) {
             slides.forEach((slide, i) => slide.classList.toggle('active', i === index));
@@ -155,6 +241,7 @@
             if (window.MathJax && window.MathJax.typesetPromise) {
                 window.MathJax.typesetPromise([slides[index]]).catch(err => console.error(err));
             }
+            timelineItems.forEach((item, i) => item.classList.toggle('active', i === index));
         }
 
         function nextSlide() {
@@ -302,7 +389,7 @@
                 if (!isAutoPlaying) break;
                 showSlide(slide - 1);
                 speakContent(slide);
-                const duration = slideDurations[slide] || 15000;
+                const duration = slideDurations[slide] || 18000;
                 await new Promise(resolve => setTimeout(resolve, duration));
             }
 
@@ -311,6 +398,17 @@
             autoBtn.classList.remove('stop');
             updateStatus('课程播放结束');
         }
+
+        timelineItems.forEach((item, index) => {
+            item.addEventListener('click', () => {
+                isAutoPlaying = false;
+                const autoBtn = document.getElementById('autoPlayBtn');
+                autoBtn.textContent = '🎬 自动播放';
+                autoBtn.classList.remove('stop');
+                showSlide(index);
+                speakContent(index + 1);
+            });
+        });
 
         document.addEventListener('keydown', (event) => {
             if (event.key === 'ArrowRight' || event.key === ' ') {

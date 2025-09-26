@@ -33,84 +33,206 @@
 </head>
 <body class="blackboard">
     <div id="statusIndicator" class="status-indicator">等待连接</div>
+    <header class="lesson-topbar">
+        <div class="lesson-meta">
+            <h1>第13章 视频 13.3 三大重要分布对比</h1>
+            <div class="lesson-meta__row">
+                <span class="lesson-chip">章节 13.3</span>
+                <span class="lesson-chip">预计总时长：5 分 55 秒 / 355 秒</span>
+                <span class="lesson-chip">共 6 页</span>
+            </div>
+            <p class="lesson-subtitle">虚拟人录屏课件模板 · 自动生成的板书、动画、讲稿三栏脚本</p>
+        </div>
+        <div class="lesson-timeline">
+            <button class="timeline-item active" data-target="1"><span class="timeline-index">01</span><span class="timeline-title">课程导入</span><span class="timeline-duration">30秒</span></button>
+            <button class="timeline-item" data-target="2"><span class="timeline-index">02</span><span class="timeline-title">二项分布</span><span class="timeline-duration">60秒</span></button>
+            <button class="timeline-item" data-target="3"><span class="timeline-index">03</span><span class="timeline-title">泊松分布</span><span class="timeline-duration">55秒</span></button>
+            <button class="timeline-item" data-target="4"><span class="timeline-index">04</span><span class="timeline-title">正态分布</span><span class="timeline-duration">60秒</span></button>
+            <button class="timeline-item" data-target="5"><span class="timeline-index">05</span><span class="timeline-title">应用对比</span><span class="timeline-duration">70秒</span></button>
+            <button class="timeline-item" data-target="6"><span class="timeline-index">06</span><span class="timeline-title">小结</span><span class="timeline-duration">45秒</span></button>
+        </div>
+    </header>
     <div class="avatar-container">
         <div class="wrapper" id="avatarWrapper"></div>
     </div>
     <div id="slide-container" class="slide-container flex-grow">
-        <div class="slide active">
+        <div class="slide active" data-slide="1">
             <div class="slide-content">
-                <div class="blackboard-text">
-                    <h2>课程导入</h2>
-      <ul><li>主角：二项分布、泊松分布、正态分布</li></ul>
-                </div>
-                <div class="animation-pane">
-                    <h3>动画执行提示</h3>
-      <ol><li>三条分布曲线依次现身。</li></ol>
-                </div>
+                <aside class="slide-meta">
+                    <div class="slide-meta__badge">第 1 / 6 页</div>
+                    <div class="slide-meta__duration">⏱️ 30 秒</div>
+                    <div class="slide-progress"><div class="slide-progress__bar" style="width: 0%"></div></div>
+                    <div class="slide-meta__action">推荐动作：<span>A_RLH_welcome_O</span></div>
+                    <div class="slide-meta__note">自动播放会额外保留讲稿缓冲时间。</div>
+                </aside>
+                <section class="panel board-pane">
+                    <header class="panel__header"><h2>课程导入</h2></header>
+                    <div class="panel__body">
+        <ul><li>主角：二项分布、泊松分布、正态分布</li></ul>
+                    </div>
+                </section>
+                <section class="panel animation-pane">
+                    <header class="panel__header"><h3>动画执行提示</h3></header>
+                    <div class="panel__body">
+        <ol><li>三条分布曲线依次现身。</li></ol>
+                    </div>
+                </section>
+                <section class="panel narration-pane">
+                    <header class="panel__header"><h3>虚拟人讲稿</h3><span class="action-chip">动作：A_RLH_welcome_O</span></header>
+                    <div class="panel__body">
+        <p>这三种分布在工程与数据分析中最常见。我们要知道它们的特点和应用场景。</p>
+                    </div>
+                </section>
             </div>
         </div>
-        <div class="slide">
+        <div class="slide" data-slide="2">
             <div class="slide-content">
-                <div class="blackboard-text">
-                    <h2>二项分布</h2>
-      <ul><li>模型：n 次独立重复试验，每次成功概率 p</li><li>概率质量函数：P(X = k) = C(n,k) p^k (1−p)^{n−k}</li><li>期望与方差：np, np(1−p)</li></ul>
-                </div>
-                <div class="animation-pane">
-                    <h3>动画执行提示</h3>
-      <ol><li>条形图显示不同 k 的概率，滑块调节 n、p。</li></ol>
-                </div>
+                <aside class="slide-meta">
+                    <div class="slide-meta__badge">第 2 / 6 页</div>
+                    <div class="slide-meta__duration">⏱️ 60 秒</div>
+                    <div class="slide-progress"><div class="slide-progress__bar" style="width: 20%"></div></div>
+                    <div class="slide-meta__action">推荐动作：<span>A_LH_introduced_O</span></div>
+                    <div class="slide-meta__note">自动播放会额外保留讲稿缓冲时间。</div>
+                </aside>
+                <section class="panel board-pane">
+                    <header class="panel__header"><h2>二项分布</h2></header>
+                    <div class="panel__body">
+        <ul><li>模型：n 次独立重复试验，每次成功概率 p</li><li>概率质量函数：P(X = k) = C(n,k) p^k (1−p)^{n−k}</li><li>期望与方差：np, np(1−p)</li></ul>
+                    </div>
+                </section>
+                <section class="panel animation-pane">
+                    <header class="panel__header"><h3>动画执行提示</h3></header>
+                    <div class="panel__body">
+        <ol><li>条形图显示不同 k 的概率，滑块调节 n、p。</li></ol>
+                    </div>
+                </section>
+                <section class="panel narration-pane">
+                    <header class="panel__header"><h3>虚拟人讲稿</h3><span class="action-chip">动作：A_LH_introduced_O</span></header>
+                    <div class="panel__body">
+        <p>二项分布描述重复实验的成功次数。成功概率 p 越大，分布越偏向高 k。</p>
+                    </div>
+                </section>
             </div>
         </div>
-        <div class="slide">
+        <div class="slide" data-slide="3">
             <div class="slide-content">
-                <div class="blackboard-text">
-                    <h2>泊松分布</h2>
-      <ul><li>模型：单位时间内事件发生次数</li><li>概率质量函数：P(X = k) = λ^k e^{−λ} / k!</li><li>期望与方差：均为 λ</li></ul>
-                </div>
-                <div class="animation-pane">
-                    <h3>动画执行提示</h3>
-      <ol><li>条形图显示不同 λ 下的泊松分布。</li><li>指出当 n 大、p 小时可由二项分布近似。</li></ol>
-                </div>
+                <aside class="slide-meta">
+                    <div class="slide-meta__badge">第 3 / 6 页</div>
+                    <div class="slide-meta__duration">⏱️ 55 秒</div>
+                    <div class="slide-progress"><div class="slide-progress__bar" style="width: 40%"></div></div>
+                    <div class="slide-meta__action">推荐动作：<span>A_RH_point_O</span></div>
+                    <div class="slide-meta__note">自动播放会额外保留讲稿缓冲时间。</div>
+                </aside>
+                <section class="panel board-pane">
+                    <header class="panel__header"><h2>泊松分布</h2></header>
+                    <div class="panel__body">
+        <ul><li>模型：单位时间内事件发生次数</li><li>概率质量函数：P(X = k) = λ^k e^{−λ} / k!</li><li>期望与方差：均为 λ</li></ul>
+                    </div>
+                </section>
+                <section class="panel animation-pane">
+                    <header class="panel__header"><h3>动画执行提示</h3></header>
+                    <div class="panel__body">
+        <ol><li>条形图显示不同 λ 下的泊松分布。</li><li>指出当 n 大、p 小时可由二项分布近似。</li></ol>
+                    </div>
+                </section>
+                <section class="panel narration-pane">
+                    <header class="panel__header"><h3>虚拟人讲稿</h3><span class="action-chip">动作：A_RH_point_O</span></header>
+                    <div class="panel__body">
+        <p>泊松分布刻画稀有事件的计数，参数 λ 同时是平均次数与方差。</p>
+                    </div>
+                </section>
             </div>
         </div>
-        <div class="slide">
+        <div class="slide" data-slide="4">
             <div class="slide-content">
-                <div class="blackboard-text">
-                    <h2>正态分布</h2>
-      <ul><li>密度函数：f(x) = (1/√(2πσ²)) exp(−(x−μ)²/(2σ²))</li><li>特点：钟形、对称、68-95-99.7 规则</li><li>中心极限定理：大量独立变量之和趋向正态</li></ul>
-                </div>
-                <div class="animation-pane">
-                    <h3>动画执行提示</h3>
-      <ol><li>正态曲线随着 μ、σ 改变形态。</li><li>标示 1σ、2σ、3σ 区间面积。</li></ol>
-                </div>
+                <aside class="slide-meta">
+                    <div class="slide-meta__badge">第 4 / 6 页</div>
+                    <div class="slide-meta__duration">⏱️ 60 秒</div>
+                    <div class="slide-progress"><div class="slide-progress__bar" style="width: 60%"></div></div>
+                    <div class="slide-meta__action">推荐动作：<span>A_RH_emphasize_O</span></div>
+                    <div class="slide-meta__note">自动播放会额外保留讲稿缓冲时间。</div>
+                </aside>
+                <section class="panel board-pane">
+                    <header class="panel__header"><h2>正态分布</h2></header>
+                    <div class="panel__body">
+        <ul><li>密度函数：f(x) = (1/√(2πσ²)) exp(−(x−μ)²/(2σ²))</li><li>特点：钟形、对称、68-95-99.7 规则</li><li>中心极限定理：大量独立变量之和趋向正态</li></ul>
+                    </div>
+                </section>
+                <section class="panel animation-pane">
+                    <header class="panel__header"><h3>动画执行提示</h3></header>
+                    <div class="panel__body">
+        <ol><li>正态曲线随着 μ、σ 改变形态。</li><li>标示 1σ、2σ、3σ 区间面积。</li></ol>
+                    </div>
+                </section>
+                <section class="panel narration-pane">
+                    <header class="panel__header"><h3>虚拟人讲稿</h3><span class="action-chip">动作：A_RH_emphasize_O</span></header>
+                    <div class="panel__body">
+        <p>正态分布是自然界最常见的分布。多数独立随机变量的总和都会接近正态，这就是中心极限定理。</p>
+                    </div>
+                </section>
             </div>
         </div>
-        <div class="slide">
+        <div class="slide" data-slide="5">
             <div class="slide-content">
-                <div class="blackboard-text">
-                    <h2>应用对比</h2>
-      <ul><li>二项：质量检测、问卷成功次数</li><li>泊松：呼叫中心电话量、事故次数</li><li>正态：身高、测量误差</li><li>转换：二项 → 泊松（n 大 p 小），泊松 → 正态（λ 大）</li></ul>
-                </div>
-                <div class="animation-pane">
-                    <h3>动画执行提示</h3>
-      <ol><li>三个案例图标切换，分布曲线同步。</li><li>箭头展示分布之间的近似关系。</li></ol>
-                </div>
+                <aside class="slide-meta">
+                    <div class="slide-meta__badge">第 5 / 6 页</div>
+                    <div class="slide-meta__duration">⏱️ 70 秒</div>
+                    <div class="slide-progress"><div class="slide-progress__bar" style="width: 80%"></div></div>
+                    <div class="slide-meta__action">推荐动作：<span>A_RH_please_O</span></div>
+                    <div class="slide-meta__note">自动播放会额外保留讲稿缓冲时间。</div>
+                </aside>
+                <section class="panel board-pane">
+                    <header class="panel__header"><h2>应用对比</h2></header>
+                    <div class="panel__body">
+        <ul><li>二项：质量检测、问卷成功次数</li><li>泊松：呼叫中心电话量、事故次数</li><li>正态：身高、测量误差</li><li>转换：二项 → 泊松（n 大 p 小），泊松 → 正态（λ 大）</li></ul>
+                    </div>
+                </section>
+                <section class="panel animation-pane">
+                    <header class="panel__header"><h3>动画执行提示</h3></header>
+                    <div class="panel__body">
+        <ol><li>三个案例图标切换，分布曲线同步。</li><li>箭头展示分布之间的近似关系。</li></ol>
+                    </div>
+                </section>
+                <section class="panel narration-pane">
+                    <header class="panel__header"><h3>虚拟人讲稿</h3><span class="action-chip">动作：A_RH_please_O</span></header>
+                    <div class="panel__body">
+        <p>选择分布时要看场景。二项适合有限次试验，泊松适合稀有事件计数，正态适合连续型自然变量。参数变化时，这些分布还可以相互近似。</p>
+                    </div>
+                </section>
             </div>
         </div>
-        <div class="slide">
+        <div class="slide" data-slide="6">
             <div class="slide-content">
-                <div class="blackboard-text">
-                    <h2>小结</h2>
-      <ul><li>核心：模型假设、参数、期望方差</li><li>作业：完成分布识别练习题</li></ul>
-                </div>
-                <div class="animation-pane">
-                    <h3>动画执行提示</h3>
-      <ol><li>三个分布的关键参数对比表锁定。</li></ol>
-                </div>
+                <aside class="slide-meta">
+                    <div class="slide-meta__badge">第 6 / 6 页</div>
+                    <div class="slide-meta__duration">⏱️ 45 秒</div>
+                    <div class="slide-progress"><div class="slide-progress__bar" style="width: 100%"></div></div>
+                    <div class="slide-meta__action">推荐动作：<span>A_RLH_welcome_O</span></div>
+                    <div class="slide-meta__note">自动播放会额外保留讲稿缓冲时间。</div>
+                </aside>
+                <section class="panel board-pane">
+                    <header class="panel__header"><h2>小结</h2></header>
+                    <div class="panel__body">
+        <ul><li>核心：模型假设、参数、期望方差</li><li>作业：完成分布识别练习题</li></ul>
+                    </div>
+                </section>
+                <section class="panel animation-pane">
+                    <header class="panel__header"><h3>动画执行提示</h3></header>
+                    <div class="panel__body">
+        <ol><li>三个分布的关键参数对比表锁定。</li></ol>
+                    </div>
+                </section>
+                <section class="panel narration-pane">
+                    <header class="panel__header"><h3>虚拟人讲稿</h3><span class="action-chip">动作：A_RLH_welcome_O</span></header>
+                    <div class="panel__body">
+        <p>了解分布特征后，建模时就能快速匹配合适的概率模型。"</p>
+        <p>---</p>
+                    </div>
+                </section>
             </div>
         </div>
     </div>
-    <div class="subtitle-area" id="subtitleArea">欢迎学习三大重要分布对比！点击开始讲课启动虚拟人讲师。</div>
+    <div class="subtitle-area" id="subtitleArea">欢迎学习第13章 视频 13.3 三大重要分布对比！点击开始讲课启动虚拟人讲师。</div>
     <div class="control-bar">
         <div class="control-title">第 <span id="currentSlide">1</span> 页 / 共 <span id="totalSlides">6</span> 页</div>
         <button class="btn" onclick="previousSlide()">⬅️ 上一页</button>
@@ -137,38 +259,38 @@
         window.dispatchEvent(new CustomEvent('sdkReady'));
     </script>
     <script>
-        const lessonTitle = "三大重要分布对比";
+        const lessonTitle = "第13章 视频 13.3 三大重要分布对比";
         const subtitleScript = {
-    "1": "这三种分布在工程与数据分析中最常见。我们要知道它们的特点和应用场景。",
-    "2": "二项分布描述重复实验的成功次数。成功概率 p 越大，分布越偏向高 k。",
-    "3": "泊松分布刻画稀有事件的计数，参数 λ 同时是平均次数与方差。",
-    "4": "正态分布是自然界最常见的分布。多数独立随机变量的总和都会接近正态，这就是中心极限定理。",
-    "5": "选择分布时要看场景。二项适合有限次试验，泊松适合稀有事件计数，正态适合连续型自然变量。参数变化时，这些分布还可以相互近似。",
-    "6": "了解分布特征后，建模时就能快速匹配合适的概率模型。\" ---"
+  "1": "这三种分布在工程与数据分析中最常见。我们要知道它们的特点和应用场景。",
+  "2": "二项分布描述重复实验的成功次数。成功概率 p 越大，分布越偏向高 k。",
+  "3": "泊松分布刻画稀有事件的计数，参数 λ 同时是平均次数与方差。",
+  "4": "正态分布是自然界最常见的分布。多数独立随机变量的总和都会接近正态，这就是中心极限定理。",
+  "5": "选择分布时要看场景。二项适合有限次试验，泊松适合稀有事件计数，正态适合连续型自然变量。参数变化时，这些分布还可以相互近似。",
+  "6": "了解分布特征后，建模时就能快速匹配合适的概率模型。\" ---"
 };
         const actionMap = {
-    "1": "A_RLH_welcome_O",
-    "2": "A_LH_introduced_O",
-    "3": "A_RH_point_O",
-    "4": "A_RH_emphasize_O",
-    "5": "A_RH_please_O",
-    "6": "A_RLH_welcome_O"
+  "1": "A_RLH_welcome_O",
+  "2": "A_LH_introduced_O",
+  "3": "A_RH_point_O",
+  "4": "A_RH_emphasize_O",
+  "5": "A_RH_please_O",
+  "6": "A_RLH_welcome_O"
 };
         const slideTitles = {
-    "1": "课程导入",
-    "2": "二项分布",
-    "3": "泊松分布",
-    "4": "正态分布",
-    "5": "应用对比",
-    "6": "小结"
+  "1": "课程导入",
+  "2": "二项分布",
+  "3": "泊松分布",
+  "4": "正态分布",
+  "5": "应用对比",
+  "6": "小结"
 };
         const slideDurations = {
-    "1": 30000,
-    "2": 60000,
-    "3": 55000,
-    "4": 60000,
-    "5": 70000,
-    "6": 45000
+  "1": 34500,
+  "2": 69000,
+  "3": 63249,
+  "4": 69000,
+  "5": 80500,
+  "6": 51749
 };
         const totalSlides = 6;
 
@@ -179,6 +301,7 @@
         let isAutoPlaying = false;
 
         const slides = document.querySelectorAll('.slide');
+        const timelineItems = document.querySelectorAll('.timeline-item');
 
         function showSlide(index) {
             slides.forEach((slide, i) => slide.classList.toggle('active', i === index));
@@ -187,6 +310,7 @@
             if (window.MathJax && window.MathJax.typesetPromise) {
                 window.MathJax.typesetPromise([slides[index]]).catch(err => console.error(err));
             }
+            timelineItems.forEach((item, i) => item.classList.toggle('active', i === index));
         }
 
         function nextSlide() {
@@ -334,7 +458,7 @@
                 if (!isAutoPlaying) break;
                 showSlide(slide - 1);
                 speakContent(slide);
-                const duration = slideDurations[slide] || 15000;
+                const duration = slideDurations[slide] || 18000;
                 await new Promise(resolve => setTimeout(resolve, duration));
             }
 
@@ -343,6 +467,17 @@
             autoBtn.classList.remove('stop');
             updateStatus('课程播放结束');
         }
+
+        timelineItems.forEach((item, index) => {
+            item.addEventListener('click', () => {
+                isAutoPlaying = false;
+                const autoBtn = document.getElementById('autoPlayBtn');
+                autoBtn.textContent = '🎬 自动播放';
+                autoBtn.classList.remove('stop');
+                showSlide(index);
+                speakContent(index + 1);
+            });
+        });
 
         document.addEventListener('keydown', (event) => {
             if (event.key === 'ArrowRight' || event.key === ' ') {

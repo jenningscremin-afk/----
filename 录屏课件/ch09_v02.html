@@ -33,84 +33,206 @@
 </head>
 <body class="blackboard">
     <div id="statusIndicator" class="status-indicator">等待连接</div>
+    <header class="lesson-topbar">
+        <div class="lesson-meta">
+            <h1>第9章 视频 9.2 二重积分计算（直角坐标）</h1>
+            <div class="lesson-meta__row">
+                <span class="lesson-chip">章节 9.2</span>
+                <span class="lesson-chip">预计总时长：5 分 50 秒 / 350 秒</span>
+                <span class="lesson-chip">共 6 页</span>
+            </div>
+            <p class="lesson-subtitle">虚拟人录屏课件模板 · 自动生成的板书、动画、讲稿三栏脚本</p>
+        </div>
+        <div class="lesson-timeline">
+            <button class="timeline-item active" data-target="1"><span class="timeline-index">01</span><span class="timeline-title">迭代积分思路</span><span class="timeline-duration">40秒</span></button>
+            <button class="timeline-item" data-target="2"><span class="timeline-index">02</span><span class="timeline-title">区域类型</span><span class="timeline-duration">55秒</span></button>
+            <button class="timeline-item" data-target="3"><span class="timeline-index">03</span><span class="timeline-title">例题：三角形区域</span><span class="timeline-duration">70秒</span></button>
+            <button class="timeline-item" data-target="4"><span class="timeline-index">04</span><span class="timeline-title">积分次序交换</span><span class="timeline-duration">55秒</span></button>
+            <button class="timeline-item" data-target="5"><span class="timeline-index">05</span><span class="timeline-title">例题：换次序简化</span><span class="timeline-duration">70秒</span></button>
+            <button class="timeline-item" data-target="6"><span class="timeline-index">06</span><span class="timeline-title">本节总结</span><span class="timeline-duration">60秒</span></button>
+        </div>
+    </header>
     <div class="avatar-container">
         <div class="wrapper" id="avatarWrapper"></div>
     </div>
     <div id="slide-container" class="slide-container flex-grow">
-        <div class="slide active">
+        <div class="slide active" data-slide="1">
             <div class="slide-content">
-                <div class="blackboard-text">
-                    <h2>迭代积分思路</h2>
-      <ul><li>公式：∬_D f(x, y) dA = ∫_{x=a}^{b} [∫_{y=g1(x)}^{g2(x)} f(x, y) dy] dx</li><li>思想：先沿 y 积分，再沿 x 累加</li></ul>
-                </div>
-                <div class="animation-pane">
-                    <h3>动画执行提示</h3>
-      <ol><li>区域被竖直扫描，形成一条条积分条。</li><li>积分条完成后沿 x 方向累加。</li></ol>
-                </div>
+                <aside class="slide-meta">
+                    <div class="slide-meta__badge">第 1 / 6 页</div>
+                    <div class="slide-meta__duration">⏱️ 40 秒</div>
+                    <div class="slide-progress"><div class="slide-progress__bar" style="width: 0%"></div></div>
+                    <div class="slide-meta__action">推荐动作：<span>A_LH_introduced_O</span></div>
+                    <div class="slide-meta__note">自动播放会额外保留讲稿缓冲时间。</div>
+                </aside>
+                <section class="panel board-pane">
+                    <header class="panel__header"><h2>迭代积分思路</h2></header>
+                    <div class="panel__body">
+        <ul><li>公式：∬_D f(x, y) dA = ∫_{x=a}^{b} [∫_{y=g1(x)}^{g2(x)} f(x, y) dy] dx</li><li>思想：先沿 y 积分，再沿 x 累加</li></ul>
+                    </div>
+                </section>
+                <section class="panel animation-pane">
+                    <header class="panel__header"><h3>动画执行提示</h3></header>
+                    <div class="panel__body">
+        <ol><li>区域被竖直扫描，形成一条条积分条。</li><li>积分条完成后沿 x 方向累加。</li></ol>
+                    </div>
+                </section>
+                <section class="panel narration-pane">
+                    <header class="panel__header"><h3>虚拟人讲稿</h3><span class="action-chip">动作：A_LH_introduced_O</span></header>
+                    <div class="panel__body">
+        <p>迭代积分就是把二维累加拆成两次一维积分，先沿 y 方向算面积条，再沿 x 方向整合。</p>
+                    </div>
+                </section>
             </div>
         </div>
-        <div class="slide">
+        <div class="slide" data-slide="2">
             <div class="slide-content">
-                <div class="blackboard-text">
-                    <h2>区域类型</h2>
-      <ul><li>类型 I：竖直条覆盖区域 → a ≤ x ≤ b, g1(x) ≤ y ≤ g2(x)</li><li>类型 II：水平条覆盖区域 → c ≤ y ≤ d, h1(y) ≤ x ≤ h2(y)</li></ul>
-                </div>
-                <div class="animation-pane">
-                    <h3>动画执行提示</h3>
-      <ol><li>两种扫描方式对比演示。</li><li>上下限写法以标签形式提示。</li></ol>
-                </div>
+                <aside class="slide-meta">
+                    <div class="slide-meta__badge">第 2 / 6 页</div>
+                    <div class="slide-meta__duration">⏱️ 55 秒</div>
+                    <div class="slide-progress"><div class="slide-progress__bar" style="width: 20%"></div></div>
+                    <div class="slide-meta__action">推荐动作：<span>A_RH_point_O</span></div>
+                    <div class="slide-meta__note">自动播放会额外保留讲稿缓冲时间。</div>
+                </aside>
+                <section class="panel board-pane">
+                    <header class="panel__header"><h2>区域类型</h2></header>
+                    <div class="panel__body">
+        <ul><li>类型 I：竖直条覆盖区域 → a ≤ x ≤ b, g1(x) ≤ y ≤ g2(x)</li><li>类型 II：水平条覆盖区域 → c ≤ y ≤ d, h1(y) ≤ x ≤ h2(y)</li></ul>
+                    </div>
+                </section>
+                <section class="panel animation-pane">
+                    <header class="panel__header"><h3>动画执行提示</h3></header>
+                    <div class="panel__body">
+        <ol><li>两种扫描方式对比演示。</li><li>上下限写法以标签形式提示。</li></ol>
+                    </div>
+                </section>
+                <section class="panel narration-pane">
+                    <header class="panel__header"><h3>虚拟人讲稿</h3><span class="action-chip">动作：A_RH_point_O</span></header>
+                    <div class="panel__body">
+        <p>先判断你的区域更适合竖直条还是水平条，写上下限才不会出错。</p>
+                    </div>
+                </section>
             </div>
         </div>
-        <div class="slide">
+        <div class="slide" data-slide="3">
             <div class="slide-content">
-                <div class="blackboard-text">
-                    <h2>例题：三角形区域</h2>
-      <ul><li>区域顶点： (0,0), (1,0), (1,1)</li><li>积分：∬_D (x + y) dA</li><li>类型 I：0 ≤ x ≤ 1, 0 ≤ y ≤ x，结果 1/2</li></ul>
-                </div>
-                <div class="animation-pane">
-                    <h3>动画执行提示</h3>
-      <ol><li>三角形区域被竖向扫描，积分条逐渐填满。</li><li>计算步骤逐条显示，最终结果高亮。</li></ol>
-                </div>
+                <aside class="slide-meta">
+                    <div class="slide-meta__badge">第 3 / 6 页</div>
+                    <div class="slide-meta__duration">⏱️ 70 秒</div>
+                    <div class="slide-progress"><div class="slide-progress__bar" style="width: 40%"></div></div>
+                    <div class="slide-meta__action">推荐动作：<span>A_RH_please_O</span></div>
+                    <div class="slide-meta__note">自动播放会额外保留讲稿缓冲时间。</div>
+                </aside>
+                <section class="panel board-pane">
+                    <header class="panel__header"><h2>例题：三角形区域</h2></header>
+                    <div class="panel__body">
+        <ul><li>区域顶点： (0,0), (1,0), (1,1)</li><li>积分：∬_D (x + y) dA</li><li>类型 I：0 ≤ x ≤ 1, 0 ≤ y ≤ x，结果 1/2</li></ul>
+                    </div>
+                </section>
+                <section class="panel animation-pane">
+                    <header class="panel__header"><h3>动画执行提示</h3></header>
+                    <div class="panel__body">
+        <ol><li>三角形区域被竖向扫描，积分条逐渐填满。</li><li>计算步骤逐条显示，最终结果高亮。</li></ol>
+                    </div>
+                </section>
+                <section class="panel narration-pane">
+                    <header class="panel__header"><h3>虚拟人讲稿</h3><span class="action-chip">动作：A_RH_please_O</span></header>
+                    <div class="panel__body">
+        <p>把区域视作类型 I，先对 y 积分，再对 x 积分，很快得到 1/2。如果换水平条也可以算，但上下限要重新写。</p>
+                    </div>
+                </section>
             </div>
         </div>
-        <div class="slide">
+        <div class="slide" data-slide="4">
             <div class="slide-content">
-                <div class="blackboard-text">
-                    <h2>积分次序交换</h2>
-      <ul><li>原则：同一区域，两种迭代次序都成立</li><li>目的：选择更易计算的上下限</li><li>步骤：画图 → 改写上下限</li></ul>
-                </div>
-                <div class="animation-pane">
-                    <h3>动画执行提示</h3>
-      <ol><li>原扫描方向与改写后的扫描方向在区域图上交替显示。</li><li>表格对比两组上下限。</li></ol>
-                </div>
+                <aside class="slide-meta">
+                    <div class="slide-meta__badge">第 4 / 6 页</div>
+                    <div class="slide-meta__duration">⏱️ 55 秒</div>
+                    <div class="slide-progress"><div class="slide-progress__bar" style="width: 60%"></div></div>
+                    <div class="slide-meta__action">推荐动作：<span>A_LH_emphasize_O</span></div>
+                    <div class="slide-meta__note">自动播放会额外保留讲稿缓冲时间。</div>
+                </aside>
+                <section class="panel board-pane">
+                    <header class="panel__header"><h2>积分次序交换</h2></header>
+                    <div class="panel__body">
+        <ul><li>原则：同一区域，两种迭代次序都成立</li><li>目的：选择更易计算的上下限</li><li>步骤：画图 → 改写上下限</li></ul>
+                    </div>
+                </section>
+                <section class="panel animation-pane">
+                    <header class="panel__header"><h3>动画执行提示</h3></header>
+                    <div class="panel__body">
+        <ol><li>原扫描方向与改写后的扫描方向在区域图上交替显示。</li><li>表格对比两组上下限。</li></ol>
+                    </div>
+                </section>
+                <section class="panel narration-pane">
+                    <header class="panel__header"><h3>虚拟人讲稿</h3><span class="action-chip">动作：A_LH_emphasize_O</span></header>
+                    <div class="panel__body">
+        <p>遇到难算的积分，尝试换个积分次序。换之前一定要画出区域，搞清楚边界方程。</p>
+                    </div>
+                </section>
             </div>
         </div>
-        <div class="slide">
+        <div class="slide" data-slide="5">
             <div class="slide-content">
-                <div class="blackboard-text">
-                    <h2>例题：换次序简化</h2>
-      <ul><li>原式：∫₀¹ ∫_y¹ e^{x²} dx dy</li><li>换次序：∫₀¹ ∫₀^x e^{x²} dy dx</li><li>结果：∫₀¹ e^{x²}·x dx</li></ul>
-                </div>
-                <div class="animation-pane">
-                    <h3>动画执行提示</h3>
-      <ol><li>显示原积分的上下限，并标出难点在于对 x 积分。</li><li>换次序后，内层积分转为对 y，计算轻松完成。</li></ol>
-                </div>
+                <aside class="slide-meta">
+                    <div class="slide-meta__badge">第 5 / 6 页</div>
+                    <div class="slide-meta__duration">⏱️ 70 秒</div>
+                    <div class="slide-progress"><div class="slide-progress__bar" style="width: 80%"></div></div>
+                    <div class="slide-meta__action">推荐动作：<span>A_RH_smile_O</span></div>
+                    <div class="slide-meta__note">自动播放会额外保留讲稿缓冲时间。</div>
+                </aside>
+                <section class="panel board-pane">
+                    <header class="panel__header"><h2>例题：换次序简化</h2></header>
+                    <div class="panel__body">
+        <ul><li>原式：∫₀¹ ∫_y¹ e^{x²} dx dy</li><li>换次序：∫₀¹ ∫₀^x e^{x²} dy dx</li><li>结果：∫₀¹ e^{x²}·x dx</li></ul>
+                    </div>
+                </section>
+                <section class="panel animation-pane">
+                    <header class="panel__header"><h3>动画执行提示</h3></header>
+                    <div class="panel__body">
+        <ol><li>显示原积分的上下限，并标出难点在于对 x 积分。</li><li>换次序后，内层积分转为对 y，计算轻松完成。</li></ol>
+                    </div>
+                </section>
+                <section class="panel narration-pane">
+                    <header class="panel__header"><h3>虚拟人讲稿</h3><span class="action-chip">动作：A_RH_smile_O</span></header>
+                    <div class="panel__body">
+        <p>原式直接算会碰到 e^{x²} 这个难点，换次序之后，内层只是对 y 积分，答案轻松到手。</p>
+                    </div>
+                </section>
             </div>
         </div>
-        <div class="slide">
+        <div class="slide" data-slide="6">
             <div class="slide-content">
-                <div class="blackboard-text">
-                    <h2>本节总结</h2>
-      <ul><li>流程：画区域 → 选类型 → 写上下限 → 视情况换次序</li><li>作业：尝试三个不同形状的积分区域</li></ul>
-                </div>
-                <div class="animation-pane">
-                    <h3>动画执行提示</h3>
-      <ol><li>流程图逐步亮起每一步。</li><li>作业提示弹窗提醒下载练习。</li></ol>
-                </div>
+                <aside class="slide-meta">
+                    <div class="slide-meta__badge">第 6 / 6 页</div>
+                    <div class="slide-meta__duration">⏱️ 60 秒</div>
+                    <div class="slide-progress"><div class="slide-progress__bar" style="width: 100%"></div></div>
+                    <div class="slide-meta__action">推荐动作：<span>A_RLH_welcome_O</span></div>
+                    <div class="slide-meta__note">自动播放会额外保留讲稿缓冲时间。</div>
+                </aside>
+                <section class="panel board-pane">
+                    <header class="panel__header"><h2>本节总结</h2></header>
+                    <div class="panel__body">
+        <ul><li>流程：画区域 → 选类型 → 写上下限 → 视情况换次序</li><li>作业：尝试三个不同形状的积分区域</li></ul>
+                    </div>
+                </section>
+                <section class="panel animation-pane">
+                    <header class="panel__header"><h3>动画执行提示</h3></header>
+                    <div class="panel__body">
+        <ol><li>流程图逐步亮起每一步。</li><li>作业提示弹窗提醒下载练习。</li></ol>
+                    </div>
+                </section>
+                <section class="panel narration-pane">
+                    <header class="panel__header"><h3>虚拟人讲稿</h3><span class="action-chip">动作：A_RLH_welcome_O</span></header>
+                    <div class="panel__body">
+        <p>计算二重积分的关键在于图像感。多画几张区域图，多练换次序，技巧就牢固了。"</p>
+        <p>---</p>
+                    </div>
+                </section>
             </div>
         </div>
     </div>
-    <div class="subtitle-area" id="subtitleArea">欢迎学习二重积分计算（直角坐标）！点击开始讲课启动虚拟人讲师。</div>
+    <div class="subtitle-area" id="subtitleArea">欢迎学习第9章 视频 9.2 二重积分计算（直角坐标）！点击开始讲课启动虚拟人讲师。</div>
     <div class="control-bar">
         <div class="control-title">第 <span id="currentSlide">1</span> 页 / 共 <span id="totalSlides">6</span> 页</div>
         <button class="btn" onclick="previousSlide()">⬅️ 上一页</button>
@@ -137,38 +259,38 @@
         window.dispatchEvent(new CustomEvent('sdkReady'));
     </script>
     <script>
-        const lessonTitle = "二重积分计算（直角坐标）";
+        const lessonTitle = "第9章 视频 9.2 二重积分计算（直角坐标）";
         const subtitleScript = {
-    "1": "迭代积分就是把二维累加拆成两次一维积分，先沿 y 方向算面积条，再沿 x 方向整合。",
-    "2": "先判断你的区域更适合竖直条还是水平条，写上下限才不会出错。",
-    "3": "把区域视作类型 I，先对 y 积分，再对 x 积分，很快得到 1/2。如果换水平条也可以算，但上下限要重新写。",
-    "4": "遇到难算的积分，尝试换个积分次序。换之前一定要画出区域，搞清楚边界方程。",
-    "5": "原式直接算会碰到 e^{x²} 这个难点，换次序之后，内层只是对 y 积分，答案轻松到手。",
-    "6": "计算二重积分的关键在于图像感。多画几张区域图，多练换次序，技巧就牢固了。\" ---"
+  "1": "迭代积分就是把二维累加拆成两次一维积分，先沿 y 方向算面积条，再沿 x 方向整合。",
+  "2": "先判断你的区域更适合竖直条还是水平条，写上下限才不会出错。",
+  "3": "把区域视作类型 I，先对 y 积分，再对 x 积分，很快得到 1/2。如果换水平条也可以算，但上下限要重新写。",
+  "4": "遇到难算的积分，尝试换个积分次序。换之前一定要画出区域，搞清楚边界方程。",
+  "5": "原式直接算会碰到 e^{x²} 这个难点，换次序之后，内层只是对 y 积分，答案轻松到手。",
+  "6": "计算二重积分的关键在于图像感。多画几张区域图，多练换次序，技巧就牢固了。\" ---"
 };
         const actionMap = {
-    "1": "A_LH_introduced_O",
-    "2": "A_RH_point_O",
-    "3": "A_RH_please_O",
-    "4": "A_LH_emphasize_O",
-    "5": "A_RH_smile_O",
-    "6": "A_RLH_welcome_O"
+  "1": "A_LH_introduced_O",
+  "2": "A_RH_point_O",
+  "3": "A_RH_please_O",
+  "4": "A_LH_emphasize_O",
+  "5": "A_RH_smile_O",
+  "6": "A_RLH_welcome_O"
 };
         const slideTitles = {
-    "1": "迭代积分思路",
-    "2": "区域类型",
-    "3": "例题：三角形区域",
-    "4": "积分次序交换",
-    "5": "例题：换次序简化",
-    "6": "本节总结"
+  "1": "迭代积分思路",
+  "2": "区域类型",
+  "3": "例题：三角形区域",
+  "4": "积分次序交换",
+  "5": "例题：换次序简化",
+  "6": "本节总结"
 };
         const slideDurations = {
-    "1": 40000,
-    "2": 55000,
-    "3": 70000,
-    "4": 55000,
-    "5": 70000,
-    "6": 60000
+  "1": 46000,
+  "2": 63249,
+  "3": 80500,
+  "4": 63249,
+  "5": 80500,
+  "6": 69000
 };
         const totalSlides = 6;
 
@@ -179,6 +301,7 @@
         let isAutoPlaying = false;
 
         const slides = document.querySelectorAll('.slide');
+        const timelineItems = document.querySelectorAll('.timeline-item');
 
         function showSlide(index) {
             slides.forEach((slide, i) => slide.classList.toggle('active', i === index));
@@ -187,6 +310,7 @@
             if (window.MathJax && window.MathJax.typesetPromise) {
                 window.MathJax.typesetPromise([slides[index]]).catch(err => console.error(err));
             }
+            timelineItems.forEach((item, i) => item.classList.toggle('active', i === index));
         }
 
         function nextSlide() {
@@ -334,7 +458,7 @@
                 if (!isAutoPlaying) break;
                 showSlide(slide - 1);
                 speakContent(slide);
-                const duration = slideDurations[slide] || 15000;
+                const duration = slideDurations[slide] || 18000;
                 await new Promise(resolve => setTimeout(resolve, duration));
             }
 
@@ -343,6 +467,17 @@
             autoBtn.classList.remove('stop');
             updateStatus('课程播放结束');
         }
+
+        timelineItems.forEach((item, index) => {
+            item.addEventListener('click', () => {
+                isAutoPlaying = false;
+                const autoBtn = document.getElementById('autoPlayBtn');
+                autoBtn.textContent = '🎬 自动播放';
+                autoBtn.classList.remove('stop');
+                showSlide(index);
+                speakContent(index + 1);
+            });
+        });
 
         document.addEventListener('keydown', (event) => {
             if (event.key === 'ArrowRight' || event.key === ' ') {

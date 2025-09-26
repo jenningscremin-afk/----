@@ -33,84 +33,212 @@
 </head>
 <body class="blackboard">
     <div id="statusIndicator" class="status-indicator">等待连接</div>
+    <header class="lesson-topbar">
+        <div class="lesson-meta">
+            <h1>第8章 视频 8.1 多元函数与偏导数入门</h1>
+            <div class="lesson-meta__row">
+                <span class="lesson-chip">章节 8.1</span>
+                <span class="lesson-chip">预计总时长：5 分 30 秒 / 330 秒</span>
+                <span class="lesson-chip">共 6 页</span>
+            </div>
+            <p class="lesson-subtitle">虚拟人录屏课件模板 · 自动生成的板书、动画、讲稿三栏脚本</p>
+        </div>
+        <div class="lesson-timeline">
+            <button class="timeline-item active" data-target="1"><span class="timeline-index">01</span><span class="timeline-title">课程导入与目标</span><span class="timeline-duration">30秒</span></button>
+            <button class="timeline-item" data-target="2"><span class="timeline-index">02</span><span class="timeline-title">多元函数的几何意义</span><span class="timeline-duration">45秒</span></button>
+            <button class="timeline-item" data-target="3"><span class="timeline-index">03</span><span class="timeline-title">定义域与等值线</span><span class="timeline-duration">55秒</span></button>
+            <button class="timeline-item" data-target="4"><span class="timeline-index">04</span><span class="timeline-title">多元极限与连续</span><span class="timeline-duration">45秒</span></button>
+            <button class="timeline-item" data-target="5"><span class="timeline-index">05</span><span class="timeline-title">偏导数的概念</span><span class="timeline-duration">45秒</span></button>
+            <button class="timeline-item" data-target="6"><span class="timeline-index">06</span><span class="timeline-title">偏导计算示例</span><span class="timeline-duration">40秒</span></button>
+        </div>
+    </header>
     <div class="avatar-container">
         <div class="wrapper" id="avatarWrapper"></div>
     </div>
     <div id="slide-container" class="slide-container flex-grow">
-        <div class="slide active">
+        <div class="slide active" data-slide="1">
             <div class="slide-content">
-                <div class="blackboard-text">
-                    <h2>课程导入与目标</h2>
-      <ul><li>标题：多元函数与偏导数入门</li><li>学习地图：认识多元函数 → 读懂几何图像 → 计算偏导数</li></ul>
-                </div>
-                <div class="animation-pane">
-                    <h3>动画执行提示</h3>
-      <ol><li>三维坐标轴缓慢升起，曲面 z = f(x, y) 从网格中生成。</li><li>三个学习目标依次弹出并高亮曲面上的相应区域。</li></ol>
-                </div>
+                <aside class="slide-meta">
+                    <div class="slide-meta__badge">第 1 / 6 页</div>
+                    <div class="slide-meta__duration">⏱️ 30 秒</div>
+                    <div class="slide-progress"><div class="slide-progress__bar" style="width: 0%"></div></div>
+                    <div class="slide-meta__action">推荐动作：<span>A_RLH_welcome_O</span></div>
+                    <div class="slide-meta__note">自动播放会额外保留讲稿缓冲时间。</div>
+                </aside>
+                <section class="panel board-pane">
+                    <header class="panel__header"><h2>课程导入与目标</h2></header>
+                    <div class="panel__body">
+        <ul><li>标题：多元函数与偏导数入门</li><li>学习地图：认识多元函数 → 读懂几何图像 → 计算偏导数</li></ul>
+                    </div>
+                </section>
+                <section class="panel animation-pane">
+                    <header class="panel__header"><h3>动画执行提示</h3></header>
+                    <div class="panel__body">
+        <ol><li>三维坐标轴缓慢升起，曲面 z = f(x, y) 从网格中生成。</li><li>三个学习目标依次弹出并高亮曲面上的相应区域。</li></ol>
+                    </div>
+                </section>
+                <section class="panel narration-pane">
+                    <header class="panel__header"><h3>虚拟人讲稿</h3><span class="action-chip">动作：A_RLH_welcome_O</span></header>
+                    <div class="panel__body">
+        <p>欢迎来到多元函数的世界！这一节我们会聚焦三件事：搞清楚什么叫多元函数，学会从图像看懂它的行为，并且亲手算出偏导数。做好准备，我们要把平面里的曲线搬进三维空间了。"</p>
+        <p><strong>制作提示</strong></p>
+        <ul><li>复用模板中的旋转曲面动画，调整材质为淡蓝网格以突出演示。</li></ul>
+                    </div>
+                </section>
             </div>
         </div>
-        <div class="slide">
+        <div class="slide" data-slide="2">
             <div class="slide-content">
-                <div class="blackboard-text">
-                    <h2>多元函数的几何意义</h2>
-      <ul><li>定义：多元函数 z = f(x, y) 接受两个自变量</li><li>直观类比：地形高度图、温度场、利润面</li></ul>
-                </div>
-                <div class="animation-pane">
-                    <h3>动画执行提示</h3>
-      <ol><li>曲面以 180° 旋转展示整体形状。</li><li>插入两张示例图标：城市地形与温度分布。</li></ol>
-                </div>
+                <aside class="slide-meta">
+                    <div class="slide-meta__badge">第 2 / 6 页</div>
+                    <div class="slide-meta__duration">⏱️ 45 秒</div>
+                    <div class="slide-progress"><div class="slide-progress__bar" style="width: 20%"></div></div>
+                    <div class="slide-meta__action">推荐动作：<span>A_LH_introduced_O</span></div>
+                    <div class="slide-meta__note">自动播放会额外保留讲稿缓冲时间。</div>
+                </aside>
+                <section class="panel board-pane">
+                    <header class="panel__header"><h2>多元函数的几何意义</h2></header>
+                    <div class="panel__body">
+        <ul><li>定义：多元函数 z = f(x, y) 接受两个自变量</li><li>直观类比：地形高度图、温度场、利润面</li></ul>
+                    </div>
+                </section>
+                <section class="panel animation-pane">
+                    <header class="panel__header"><h3>动画执行提示</h3></header>
+                    <div class="panel__body">
+        <ol><li>曲面以 180° 旋转展示整体形状。</li><li>插入两张示例图标：城市地形与温度分布。</li></ol>
+                    </div>
+                </section>
+                <section class="panel narration-pane">
+                    <header class="panel__header"><h3>虚拟人讲稿</h3><span class="action-chip">动作：A_LH_introduced_O</span></header>
+                    <div class="panel__body">
+        <p>单变量函数的图像是一条曲线，而多元函数的图像是一张曲面。每一对 (x, y) 坐标对应一个高度 z，就像地图上每个位置都有不同的海拔或温度。右侧旋转动画提醒我们：理解多元函数需要具备三维视角。"</p>
+        <p><strong>制作提示</strong></p>
+        <ul><li>准备 6 秒循环的曲面旋转片段，在自动播放中与讲稿对齐。</li></ul>
+                    </div>
+                </section>
             </div>
         </div>
-        <div class="slide">
+        <div class="slide" data-slide="3">
             <div class="slide-content">
-                <div class="blackboard-text">
-                    <h2>定义域与等值线</h2>
-      <ul><li>定义域：允许的 (x, y) 组合区域</li><li>等值线：f(x, y) = c 在平面上的轨迹</li><li>示例：f(x, y) = x² + y² → 等值线为同心圆</li></ul>
-                </div>
-                <div class="animation-pane">
-                    <h3>动画执行提示</h3>
-      <ol><li>曲面被投影到 xy 平面，显示阴影轮廓。</li><li>水平平面 z = c 缓慢下降，与曲面相交形成圆形切线。</li><li>等值线在平面上点亮并标注高度。</li></ol>
-                </div>
+                <aside class="slide-meta">
+                    <div class="slide-meta__badge">第 3 / 6 页</div>
+                    <div class="slide-meta__duration">⏱️ 55 秒</div>
+                    <div class="slide-progress"><div class="slide-progress__bar" style="width: 40%"></div></div>
+                    <div class="slide-meta__action">推荐动作：<span>A_RH_point_O</span></div>
+                    <div class="slide-meta__note">自动播放会额外保留讲稿缓冲时间。</div>
+                </aside>
+                <section class="panel board-pane">
+                    <header class="panel__header"><h2>定义域与等值线</h2></header>
+                    <div class="panel__body">
+        <ul><li>定义域：允许的 (x, y) 组合区域</li><li>等值线：f(x, y) = c 在平面上的轨迹</li><li>示例：f(x, y) = x² + y² → 等值线为同心圆</li></ul>
+                    </div>
+                </section>
+                <section class="panel animation-pane">
+                    <header class="panel__header"><h3>动画执行提示</h3></header>
+                    <div class="panel__body">
+        <ol><li>曲面被投影到 xy 平面，显示阴影轮廓。</li><li>水平平面 z = c 缓慢下降，与曲面相交形成圆形切线。</li><li>等值线在平面上点亮并标注高度。</li></ol>
+                    </div>
+                </section>
+                <section class="panel narration-pane">
+                    <header class="panel__header"><h3>虚拟人讲稿</h3><span class="action-chip">动作：A_RH_point_O</span></header>
+                    <div class="panel__body">
+        <p>读懂多元函数，第一步要确认在哪些位置有定义。然后，把 z = c 的水平面切下来，留下的轨迹就是等值线。比如抛物面 x² + y² 的等值线，就是一圈圈同心圆。"</p>
+        <p><strong>制作提示</strong></p>
+        <ul><li>为动画设置 55 秒时长，确保切片过程完整呈现。</li></ul>
+                    </div>
+                </section>
             </div>
         </div>
-        <div class="slide">
+        <div class="slide" data-slide="4">
             <div class="slide-content">
-                <div class="blackboard-text">
-                    <h2>多元极限与连续</h2>
-      <ul><li>目标：当 (x, y) → (x₀, y₀) 时，函数值是否靠近同一高度</li><li>关键：不同路径都要得到相同结果</li><li>连续：极限存在且等于函数值</li></ul>
-                </div>
-                <div class="animation-pane">
-                    <h3>动画执行提示</h3>
-      <ol><li>两条路径（直线、抛物线）沿曲面滑向同一点。</li><li>若两条路径高度一致，出现绿色对勾；不一致则闪烁红叉。</li></ol>
-                </div>
+                <aside class="slide-meta">
+                    <div class="slide-meta__badge">第 4 / 6 页</div>
+                    <div class="slide-meta__duration">⏱️ 45 秒</div>
+                    <div class="slide-progress"><div class="slide-progress__bar" style="width: 60%"></div></div>
+                    <div class="slide-meta__action">推荐动作：<span>A_RH_warning_O</span></div>
+                    <div class="slide-meta__note">自动播放会额外保留讲稿缓冲时间。</div>
+                </aside>
+                <section class="panel board-pane">
+                    <header class="panel__header"><h2>多元极限与连续</h2></header>
+                    <div class="panel__body">
+        <ul><li>目标：当 (x, y) → (x₀, y₀) 时，函数值是否靠近同一高度</li><li>关键：不同路径都要得到相同结果</li><li>连续：极限存在且等于函数值</li></ul>
+                    </div>
+                </section>
+                <section class="panel animation-pane">
+                    <header class="panel__header"><h3>动画执行提示</h3></header>
+                    <div class="panel__body">
+        <ol><li>两条路径（直线、抛物线）沿曲面滑向同一点。</li><li>若两条路径高度一致，出现绿色对勾；不一致则闪烁红叉。</li></ol>
+                    </div>
+                </section>
+                <section class="panel narration-pane">
+                    <header class="panel__header"><h3>虚拟人讲稿</h3><span class="action-chip">动作：A_RH_warning_O</span></header>
+                    <div class="panel__body">
+        <p>多元极限的难点在于路径。我们不再只有左、右两个方向，而是无限多种方式靠近目标点。只有所有路径都把你带到同一个高度，极限才真正存在。</p>
+                    </div>
+                </section>
             </div>
         </div>
-        <div class="slide">
+        <div class="slide" data-slide="5">
             <div class="slide-content">
-                <div class="blackboard-text">
-                    <h2>偏导数的概念</h2>
-      <ul><li>偏导：固定一个变量，观察另一个变量的变化率</li><li>记号：f_x(x, y)、f_y(x, y)</li><li>几何：沿与坐标轴平行的切线斜率</li></ul>
-                </div>
-                <div class="animation-pane">
-                    <h3>动画执行提示</h3>
-      <ol><li>在曲面上一点处截出与 x、y 轴平行的两个垂直平面。</li><li>平面上的切线分别用不同颜色表示 f_x 与 f_y。</li></ol>
-                </div>
+                <aside class="slide-meta">
+                    <div class="slide-meta__badge">第 5 / 6 页</div>
+                    <div class="slide-meta__duration">⏱️ 45 秒</div>
+                    <div class="slide-progress"><div class="slide-progress__bar" style="width: 80%"></div></div>
+                    <div class="slide-meta__action">推荐动作：<span>A_LH_emphasize_O</span></div>
+                    <div class="slide-meta__note">自动播放会额外保留讲稿缓冲时间。</div>
+                </aside>
+                <section class="panel board-pane">
+                    <header class="panel__header"><h2>偏导数的概念</h2></header>
+                    <div class="panel__body">
+        <ul><li>偏导：固定一个变量，观察另一个变量的变化率</li><li>记号：f_x(x, y)、f_y(x, y)</li><li>几何：沿与坐标轴平行的切线斜率</li></ul>
+                    </div>
+                </section>
+                <section class="panel animation-pane">
+                    <header class="panel__header"><h3>动画执行提示</h3></header>
+                    <div class="panel__body">
+        <ol><li>在曲面上一点处截出与 x、y 轴平行的两个垂直平面。</li><li>平面上的切线分别用不同颜色表示 f_x 与 f_y。</li></ol>
+                    </div>
+                </section>
+                <section class="panel narration-pane">
+                    <header class="panel__header"><h3>虚拟人讲稿</h3><span class="action-chip">动作：A_LH_emphasize_O</span></header>
+                    <div class="panel__body">
+        <p>所谓偏导，就是把另一个变量暂时按下暂停键，单独考察某一方向的斜率。沿 x 方向的切线斜率就是 f_x，沿 y 方向就是 f_y。</p>
+                    </div>
+                </section>
             </div>
         </div>
-        <div class="slide">
+        <div class="slide" data-slide="6">
             <div class="slide-content">
-                <div class="blackboard-text">
-                    <h2>偏导计算示例</h2>
-      <ul><li>例题：f(x, y) = x²y + e^{xy}</li><li>f_x = 2xy + y·e^{xy}</li><li>f_y = x² + x·e^{xy}</li><li>步骤：把另一个变量视为常数，按单变量规则求导</li></ul>
-                </div>
-                <div class="animation-pane">
-                    <h3>动画执行提示</h3>
-      <ol><li>公式逐行显示，关键项以颜色区分。</li><li>流程提示卡强调“把另一变量当常数”。</li></ol>
-                </div>
+                <aside class="slide-meta">
+                    <div class="slide-meta__badge">第 6 / 6 页</div>
+                    <div class="slide-meta__duration">⏱️ 40 秒</div>
+                    <div class="slide-progress"><div class="slide-progress__bar" style="width: 100%"></div></div>
+                    <div class="slide-meta__action">推荐动作：<span>A_RH_please_O</span></div>
+                    <div class="slide-meta__note">自动播放会额外保留讲稿缓冲时间。</div>
+                </aside>
+                <section class="panel board-pane">
+                    <header class="panel__header"><h2>偏导计算示例</h2></header>
+                    <div class="panel__body">
+        <ul><li>例题：f(x, y) = x²y + e^{xy}</li><li>f_x = 2xy + y·e^{xy}</li><li>f_y = x² + x·e^{xy}</li><li>步骤：把另一个变量视为常数，按单变量规则求导</li></ul>
+                    </div>
+                </section>
+                <section class="panel animation-pane">
+                    <header class="panel__header"><h3>动画执行提示</h3></header>
+                    <div class="panel__body">
+        <ol><li>公式逐行显示，关键项以颜色区分。</li><li>流程提示卡强调“把另一变量当常数”。</li></ol>
+                    </div>
+                </section>
+                <section class="panel narration-pane">
+                    <header class="panel__header"><h3>虚拟人讲稿</h3><span class="action-chip">动作：A_RH_please_O</span></header>
+                    <div class="panel__body">
+        <p>算偏导数的核心就是‘把另一个变量当常数’。例题展示了乘积法则和指数函数的处理方式，按部就班就能算出结果。"</p>
+        <p>---</p>
+                    </div>
+                </section>
             </div>
         </div>
     </div>
-    <div class="subtitle-area" id="subtitleArea">欢迎学习多元函数与偏导数入门！点击开始讲课启动虚拟人讲师。</div>
+    <div class="subtitle-area" id="subtitleArea">欢迎学习第8章 视频 8.1 多元函数与偏导数入门！点击开始讲课启动虚拟人讲师。</div>
     <div class="control-bar">
         <div class="control-title">第 <span id="currentSlide">1</span> 页 / 共 <span id="totalSlides">6</span> 页</div>
         <button class="btn" onclick="previousSlide()">⬅️ 上一页</button>
@@ -137,38 +265,38 @@
         window.dispatchEvent(new CustomEvent('sdkReady'));
     </script>
     <script>
-        const lessonTitle = "多元函数与偏导数入门";
+        const lessonTitle = "第8章 视频 8.1 多元函数与偏导数入门";
         const subtitleScript = {
-    "1": "欢迎来到多元函数的世界！这一节我们会聚焦三件事：搞清楚什么叫多元函数，学会从图像看懂它的行为，并且亲手算出偏导数。做好准备，我们要把平面里的曲线搬进三维空间了。\" **制作提示** * 复用模板中的旋转曲面动画，调整材质为淡蓝网格以突出演示。",
-    "2": "单变量函数的图像是一条曲线，而多元函数的图像是一张曲面。每一对 (x, y) 坐标对应一个高度 z，就像地图上每个位置都有不同的海拔或温度。右侧旋转动画提醒我们：理解多元函数需要具备三维视角。\" **制作提示** * 准备 6 秒循环的曲面旋转片段，在自动播放中与讲稿对齐。",
-    "3": "读懂多元函数，第一步要确认在哪些位置有定义。然后，把 z = c 的水平面切下来，留下的轨迹就是等值线。比如抛物面 x² + y² 的等值线，就是一圈圈同心圆。\" **制作提示** * 为动画设置 55 秒时长，确保切片过程完整呈现。",
-    "4": "多元极限的难点在于路径。我们不再只有左、右两个方向，而是无限多种方式靠近目标点。只有所有路径都把你带到同一个高度，极限才真正存在。",
-    "5": "所谓偏导，就是把另一个变量暂时按下暂停键，单独考察某一方向的斜率。沿 x 方向的切线斜率就是 f_x，沿 y 方向就是 f_y。",
-    "6": "算偏导数的核心就是‘把另一个变量当常数’。例题展示了乘积法则和指数函数的处理方式，按部就班就能算出结果。\" ---"
+  "1": "欢迎来到多元函数的世界！这一节我们会聚焦三件事：搞清楚什么叫多元函数，学会从图像看懂它的行为，并且亲手算出偏导数。做好准备，我们要把平面里的曲线搬进三维空间了。\" **制作提示** * 复用模板中的旋转曲面动画，调整材质为淡蓝网格以突出演示。",
+  "2": "单变量函数的图像是一条曲线，而多元函数的图像是一张曲面。每一对 (x, y) 坐标对应一个高度 z，就像地图上每个位置都有不同的海拔或温度。右侧旋转动画提醒我们：理解多元函数需要具备三维视角。\" **制作提示** * 准备 6 秒循环的曲面旋转片段，在自动播放中与讲稿对齐。",
+  "3": "读懂多元函数，第一步要确认在哪些位置有定义。然后，把 z = c 的水平面切下来，留下的轨迹就是等值线。比如抛物面 x² + y² 的等值线，就是一圈圈同心圆。\" **制作提示** * 为动画设置 55 秒时长，确保切片过程完整呈现。",
+  "4": "多元极限的难点在于路径。我们不再只有左、右两个方向，而是无限多种方式靠近目标点。只有所有路径都把你带到同一个高度，极限才真正存在。",
+  "5": "所谓偏导，就是把另一个变量暂时按下暂停键，单独考察某一方向的斜率。沿 x 方向的切线斜率就是 f_x，沿 y 方向就是 f_y。",
+  "6": "算偏导数的核心就是‘把另一个变量当常数’。例题展示了乘积法则和指数函数的处理方式，按部就班就能算出结果。\" ---"
 };
         const actionMap = {
-    "1": "A_RLH_welcome_O",
-    "2": "A_LH_introduced_O",
-    "3": "A_RH_point_O",
-    "4": "A_RH_warning_O",
-    "5": "A_LH_emphasize_O",
-    "6": "A_RH_please_O"
+  "1": "A_RLH_welcome_O",
+  "2": "A_LH_introduced_O",
+  "3": "A_RH_point_O",
+  "4": "A_RH_warning_O",
+  "5": "A_LH_emphasize_O",
+  "6": "A_RH_please_O"
 };
         const slideTitles = {
-    "1": "课程导入与目标",
-    "2": "多元函数的几何意义",
-    "3": "定义域与等值线",
-    "4": "多元极限与连续",
-    "5": "偏导数的概念",
-    "6": "偏导计算示例"
+  "1": "课程导入与目标",
+  "2": "多元函数的几何意义",
+  "3": "定义域与等值线",
+  "4": "多元极限与连续",
+  "5": "偏导数的概念",
+  "6": "偏导计算示例"
 };
         const slideDurations = {
-    "1": 30000,
-    "2": 45000,
-    "3": 55000,
-    "4": 45000,
-    "5": 45000,
-    "6": 40000
+  "1": 34500,
+  "2": 51749,
+  "3": 63249,
+  "4": 51749,
+  "5": 51749,
+  "6": 46000
 };
         const totalSlides = 6;
 
@@ -179,6 +307,7 @@
         let isAutoPlaying = false;
 
         const slides = document.querySelectorAll('.slide');
+        const timelineItems = document.querySelectorAll('.timeline-item');
 
         function showSlide(index) {
             slides.forEach((slide, i) => slide.classList.toggle('active', i === index));
@@ -187,6 +316,7 @@
             if (window.MathJax && window.MathJax.typesetPromise) {
                 window.MathJax.typesetPromise([slides[index]]).catch(err => console.error(err));
             }
+            timelineItems.forEach((item, i) => item.classList.toggle('active', i === index));
         }
 
         function nextSlide() {
@@ -334,7 +464,7 @@
                 if (!isAutoPlaying) break;
                 showSlide(slide - 1);
                 speakContent(slide);
-                const duration = slideDurations[slide] || 15000;
+                const duration = slideDurations[slide] || 18000;
                 await new Promise(resolve => setTimeout(resolve, duration));
             }
 
@@ -343,6 +473,17 @@
             autoBtn.classList.remove('stop');
             updateStatus('课程播放结束');
         }
+
+        timelineItems.forEach((item, index) => {
+            item.addEventListener('click', () => {
+                isAutoPlaying = false;
+                const autoBtn = document.getElementById('autoPlayBtn');
+                autoBtn.textContent = '🎬 自动播放';
+                autoBtn.classList.remove('stop');
+                showSlide(index);
+                speakContent(index + 1);
+            });
+        });
 
         document.addEventListener('keydown', (event) => {
             if (event.key === 'ArrowRight' || event.key === ' ') {

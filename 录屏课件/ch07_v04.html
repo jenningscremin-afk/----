@@ -33,60 +33,149 @@
 </head>
 <body class="blackboard">
     <div id="statusIndicator" class="status-indicator">等待连接</div>
+    <header class="lesson-topbar">
+        <div class="lesson-meta">
+            <h1>第7章 视频 7.4 第七章：知识点回顾与习题精讲</h1>
+            <div class="lesson-meta__row">
+                <span class="lesson-chip">章节 7.4</span>
+                <span class="lesson-chip">预计总时长：4 分 00 秒 / 240 秒</span>
+                <span class="lesson-chip">共 4 页</span>
+            </div>
+            <p class="lesson-subtitle">虚拟人录屏课件模板 · 自动生成的板书、动画、讲稿三栏脚本</p>
+        </div>
+        <div class="lesson-timeline">
+            <button class="timeline-item active" data-target="1"><span class="timeline-index">01</span><span class="timeline-title">知识图谱</span><span class="timeline-duration">40秒</span></button>
+            <button class="timeline-item" data-target="2"><span class="timeline-index">02</span><span class="timeline-title">例题 1</span><span class="timeline-duration">70秒</span></button>
+            <button class="timeline-item" data-target="3"><span class="timeline-index">03</span><span class="timeline-title">例题 2</span><span class="timeline-duration">70秒</span></button>
+            <button class="timeline-item" data-target="4"><span class="timeline-index">04</span><span class="timeline-title">总结</span><span class="timeline-duration">40秒</span></button>
+        </div>
+    </header>
     <div class="avatar-container">
         <div class="wrapper" id="avatarWrapper"></div>
     </div>
     <div id="slide-container" class="slide-container flex-grow">
-        <div class="slide active">
+        <div class="slide active" data-slide="1">
             <div class="slide-content">
-                <div class="blackboard-text">
-                    <h2>知识图谱</h2>
-      <ul><li>微分方程概念 → 分离变量 → 线性方程 → 应用</li></ul>
-                </div>
-                <div class="animation-pane">
-                    <h3>动画执行提示</h3>
-      <ol><li>流程图逐步点亮。</li><li>“动态世界”主题出现。</li></ol>
-                </div>
+                <aside class="slide-meta">
+                    <div class="slide-meta__badge">第 1 / 4 页</div>
+                    <div class="slide-meta__duration">⏱️ 40 秒</div>
+                    <div class="slide-progress"><div class="slide-progress__bar" style="width: 0%"></div></div>
+                    <div class="slide-meta__action">推荐动作：<span>A_RLH_welcome_O</span></div>
+                    <div class="slide-meta__note">自动播放会额外保留讲稿缓冲时间。</div>
+                </aside>
+                <section class="panel board-pane">
+                    <header class="panel__header"><h2>知识图谱</h2></header>
+                    <div class="panel__body">
+        <ul><li>微分方程概念 → 分离变量 → 线性方程 → 应用</li></ul>
+                    </div>
+                </section>
+                <section class="panel animation-pane">
+                    <header class="panel__header"><h3>动画执行提示</h3></header>
+                    <div class="panel__body">
+        <ol><li>流程图逐步点亮。</li><li>“动态世界”主题出现。</li></ol>
+                    </div>
+                </section>
+                <section class="panel narration-pane">
+                    <header class="panel__header"><h3>虚拟人讲稿</h3><span class="action-chip">动作：A_RLH_welcome_O</span></header>
+                    <div class="panel__body">
+        <p>微分方程让我们从变化出发理解世界，解法就是打开问题的钥匙。</p>
+                    </div>
+                </section>
             </div>
         </div>
-        <div class="slide">
+        <div class="slide" data-slide="2">
             <div class="slide-content">
-                <div class="blackboard-text">
-                    <h2>例题 1</h2>
-      <ul><li>题：y' = y(1−y)</li><li>分离：dy/(y(1−y)) = dx</li><li>积分：ln|y| − ln|1−y| = x + C</li><li>解：y=\frac{1}{1+Ce^{−x}}</li></ul>
-                </div>
-                <div class="animation-pane">
-                    <h3>动画执行提示</h3>
-      <ol><li>积分分部分展开。</li><li>解的 Sigmoid 曲线展示。</li></ol>
-                </div>
+                <aside class="slide-meta">
+                    <div class="slide-meta__badge">第 2 / 4 页</div>
+                    <div class="slide-meta__duration">⏱️ 70 秒</div>
+                    <div class="slide-progress"><div class="slide-progress__bar" style="width: 33%"></div></div>
+                    <div class="slide-meta__action">推荐动作：<span>A_LH_introduced_O</span></div>
+                    <div class="slide-meta__note">自动播放会额外保留讲稿缓冲时间。</div>
+                </aside>
+                <section class="panel board-pane">
+                    <header class="panel__header"><h2>例题 1</h2></header>
+                    <div class="panel__body">
+        <ul><li>题：y' = y(1−y)</li><li>分离：dy/(y(1−y)) = dx</li><li>积分：ln|y| − ln|1−y| = x + C</li><li>解：y=\frac{1}{1+Ce^{−x}}</li></ul>
+                    </div>
+                </section>
+                <section class="panel animation-pane">
+                    <header class="panel__header"><h3>动画执行提示</h3></header>
+                    <div class="panel__body">
+        <ol><li>积分分部分展开。</li><li>解的 Sigmoid 曲线展示。</li></ol>
+                    </div>
+                </section>
+                <section class="panel narration-pane">
+                    <header class="panel__header"><h3>虚拟人讲稿</h3><span class="action-chip">动作：A_LH_introduced_O</span></header>
+                    <div class="panel__body">
+        <p>这是著名的 Logistic 方程，常用于人口模型。</p>
+                    </div>
+                </section>
             </div>
         </div>
-        <div class="slide">
+        <div class="slide" data-slide="3">
             <div class="slide-content">
-                <div class="blackboard-text">
-                    <h2>例题 2</h2>
-      <ul><li>题：y' + 2y = 4</li><li>积分因子：μ=e^{2x}</li><li>结果：y=2 + Ce^{−2x}</li></ul>
-                </div>
-                <div class="animation-pane">
-                    <h3>动画执行提示</h3>
-      <ol><li>步骤展示。</li><li>曲线示意 y→2 的收敛。</li></ol>
-                </div>
+                <aside class="slide-meta">
+                    <div class="slide-meta__badge">第 3 / 4 页</div>
+                    <div class="slide-meta__duration">⏱️ 70 秒</div>
+                    <div class="slide-progress"><div class="slide-progress__bar" style="width: 66%"></div></div>
+                    <div class="slide-meta__action">推荐动作：<span>A_RH_point_O</span></div>
+                    <div class="slide-meta__note">自动播放会额外保留讲稿缓冲时间。</div>
+                </aside>
+                <section class="panel board-pane">
+                    <header class="panel__header"><h2>例题 2</h2></header>
+                    <div class="panel__body">
+        <ul><li>题：y' + 2y = 4</li><li>积分因子：μ=e^{2x}</li><li>结果：y=2 + Ce^{−2x}</li></ul>
+                    </div>
+                </section>
+                <section class="panel animation-pane">
+                    <header class="panel__header"><h3>动画执行提示</h3></header>
+                    <div class="panel__body">
+        <ol><li>步骤展示。</li><li>曲线示意 y→2 的收敛。</li></ol>
+                    </div>
+                </section>
+                <section class="panel narration-pane">
+                    <header class="panel__header"><h3>虚拟人讲稿</h3><span class="action-chip">动作：A_RH_point_O</span></header>
+                    <div class="panel__body">
+        <p>线性方程的解通常由稳态值加上指数衰减组成。</p>
+                    </div>
+                </section>
             </div>
         </div>
-        <div class="slide">
+        <div class="slide" data-slide="4">
             <div class="slide-content">
-                <div class="blackboard-text">
-                    <h2>总结</h2>
-      <ul><li>作业：分离变量 2 题，线性方程 2 题</li><li>预告：下一章多元函数微分学</li></ul>
-                </div>
-                <div class="animation-pane">
-                    <h3>动画执行提示</h3>
-      <ol><li>作业清单。</li><li>章节链接箭头。</li></ol>
-                </div>
+                <aside class="slide-meta">
+                    <div class="slide-meta__badge">第 4 / 4 页</div>
+                    <div class="slide-meta__duration">⏱️ 40 秒</div>
+                    <div class="slide-progress"><div class="slide-progress__bar" style="width: 100%"></div></div>
+                    <div class="slide-meta__action">推荐动作：<span>A_RLH_welcome_O</span></div>
+                    <div class="slide-meta__note">自动播放会额外保留讲稿缓冲时间。</div>
+                </aside>
+                <section class="panel board-pane">
+                    <header class="panel__header"><h2>总结</h2></header>
+                    <div class="panel__body">
+        <ul><li>作业：分离变量 2 题，线性方程 2 题</li><li>预告：下一章多元函数微分学</li></ul>
+                    </div>
+                </section>
+                <section class="panel animation-pane">
+                    <header class="panel__header"><h3>动画执行提示</h3></header>
+                    <div class="panel__body">
+        <ol><li>作业清单。</li><li>章节链接箭头。</li></ol>
+                    </div>
+                </section>
+                <section class="panel narration-pane">
+                    <header class="panel__header"><h3>虚拟人讲稿</h3><span class="action-chip">动作：A_RLH_welcome_O</span></header>
+                    <div class="panel__body">
+        <p>准备好进阶到多元函数，体验三维空间的变化。"</p>
+        <p>## 第八章：多元函数微分学 (进入三维)</p>
+        <ul><li><code>视频 8.1</code>: <strong>多元函数与偏导数入门</strong></li><li><code>视频 8.2</code>: <strong>全微分与多元复合函数求导</strong></li><li><code>视频 8.3</code>: <strong>第八章：知识点回顾与习题精讲</strong></li></ul>
+        <p>#### 本章PPT执行总控表</p>
+        <p>| 视频 | 页面数量 | PPT主视觉关键词 | 动画亮点 | 互动/练习提示 | | --- | --- | --- | --- | --- | | 8.1 多元函数与偏导数入门 | 4 | 三维曲面透视、偏导方向箭头 | 曲面切片、沿 x/y 方向切线、偏导极限演示 | 设置“选择偏导方向”互动题，点击对应箭头显示解释 | | 8.2 全微分与多元复合函数求导 | 4 | 全微分矩阵布局、链式网络图 | 全微分展开公式、变量替换路径动画、雅可比矩阵可视化 | 练习页提供“填写微分公式中的系数”表格并给出即时校验 | | 8.3 第八章：知识点回顾与习题精讲 | 4 | 三维应用场景、偏导工具清单 | 曲面近似对比、链式网络回顾、综合例题拆解 | 章末加入工程/经济案例问答及拓展阅读链接 |</p>
+                    </div>
+                </section>
             </div>
         </div>
     </div>
-    <div class="subtitle-area" id="subtitleArea">欢迎学习第七章：知识点回顾与习题精讲！点击开始讲课启动虚拟人讲师。</div>
+    <div class="subtitle-area" id="subtitleArea">欢迎学习第7章 视频 7.4 第七章：知识点回顾与习题精讲！点击开始讲课启动虚拟人讲师。</div>
     <div class="control-bar">
         <div class="control-title">第 <span id="currentSlide">1</span> 页 / 共 <span id="totalSlides">4</span> 页</div>
         <button class="btn" onclick="previousSlide()">⬅️ 上一页</button>
@@ -113,30 +202,30 @@
         window.dispatchEvent(new CustomEvent('sdkReady'));
     </script>
     <script>
-        const lessonTitle = "第七章：知识点回顾与习题精讲";
+        const lessonTitle = "第7章 视频 7.4 第七章：知识点回顾与习题精讲";
         const subtitleScript = {
-    "1": "微分方程让我们从变化出发理解世界，解法就是打开问题的钥匙。",
-    "2": "这是著名的 Logistic 方程，常用于人口模型。",
-    "3": "线性方程的解通常由稳态值加上指数衰减组成。",
-    "4": "准备好进阶到多元函数，体验三维空间的变化。\" ## 第八章：多元函数微分学 (进入三维) * `视频 8.1`: **多元函数与偏导数入门** * `视频 8.2`: **全微分与多元复合函数求导** * `视频 8.3`: **第八章：知识点回顾与习题精讲** #### 本章PPT执行总控表 | 视频 | 页面数量 | PPT主视觉关键词 | 动画亮点 | 互动/练习提示 | | --- | --- | --- | --- | --- | | 8.1 多元函数与偏导数入门 | 4 | 三维曲面透视、偏导方向箭头 | 曲面切片、沿 x/y 方向切线、偏导极限演示 | 设置“选择偏导方向”互动题，点击对应箭头显示解释 | | 8.2 全微分与多元复合函数求导 | 4 | 全微分矩阵布局、链式网络图 | 全微分展开公式、变量替换路径动画、雅可比矩阵可视化 | 练习页提供“填写微分公式中的系数”表格并给出即时校验 | | 8.3 第八章：知识点回顾与习题精讲 | 4 | 三维应用场景、偏导工具清单 | 曲面近似对比、链式网络回顾、综合例题拆解 | 章末加入工程/经济案例问答及拓展阅读链接 |"
+  "1": "微分方程让我们从变化出发理解世界，解法就是打开问题的钥匙。",
+  "2": "这是著名的 Logistic 方程，常用于人口模型。",
+  "3": "线性方程的解通常由稳态值加上指数衰减组成。",
+  "4": "准备好进阶到多元函数，体验三维空间的变化。\" ## 第八章：多元函数微分学 (进入三维) * `视频 8.1`: **多元函数与偏导数入门** * `视频 8.2`: **全微分与多元复合函数求导** * `视频 8.3`: **第八章：知识点回顾与习题精讲** #### 本章PPT执行总控表 | 视频 | 页面数量 | PPT主视觉关键词 | 动画亮点 | 互动/练习提示 | | --- | --- | --- | --- | --- | | 8.1 多元函数与偏导数入门 | 4 | 三维曲面透视、偏导方向箭头 | 曲面切片、沿 x/y 方向切线、偏导极限演示 | 设置“选择偏导方向”互动题，点击对应箭头显示解释 | | 8.2 全微分与多元复合函数求导 | 4 | 全微分矩阵布局、链式网络图 | 全微分展开公式、变量替换路径动画、雅可比矩阵可视化 | 练习页提供“填写微分公式中的系数”表格并给出即时校验 | | 8.3 第八章：知识点回顾与习题精讲 | 4 | 三维应用场景、偏导工具清单 | 曲面近似对比、链式网络回顾、综合例题拆解 | 章末加入工程/经济案例问答及拓展阅读链接 |"
 };
         const actionMap = {
-    "1": "A_RLH_welcome_O",
-    "2": "A_LH_introduced_O",
-    "3": "A_RH_point_O",
-    "4": "A_RLH_welcome_O"
+  "1": "A_RLH_welcome_O",
+  "2": "A_LH_introduced_O",
+  "3": "A_RH_point_O",
+  "4": "A_RLH_welcome_O"
 };
         const slideTitles = {
-    "1": "知识图谱",
-    "2": "例题 1",
-    "3": "例题 2",
-    "4": "总结"
+  "1": "知识图谱",
+  "2": "例题 1",
+  "3": "例题 2",
+  "4": "总结"
 };
         const slideDurations = {
-    "1": 40000,
-    "2": 70000,
-    "3": 70000,
-    "4": 40000
+  "1": 46000,
+  "2": 80500,
+  "3": 80500,
+  "4": 46000
 };
         const totalSlides = 4;
 
@@ -147,6 +236,7 @@
         let isAutoPlaying = false;
 
         const slides = document.querySelectorAll('.slide');
+        const timelineItems = document.querySelectorAll('.timeline-item');
 
         function showSlide(index) {
             slides.forEach((slide, i) => slide.classList.toggle('active', i === index));
@@ -155,6 +245,7 @@
             if (window.MathJax && window.MathJax.typesetPromise) {
                 window.MathJax.typesetPromise([slides[index]]).catch(err => console.error(err));
             }
+            timelineItems.forEach((item, i) => item.classList.toggle('active', i === index));
         }
 
         function nextSlide() {
@@ -302,7 +393,7 @@
                 if (!isAutoPlaying) break;
                 showSlide(slide - 1);
                 speakContent(slide);
-                const duration = slideDurations[slide] || 15000;
+                const duration = slideDurations[slide] || 18000;
                 await new Promise(resolve => setTimeout(resolve, duration));
             }
 
@@ -311,6 +402,17 @@
             autoBtn.classList.remove('stop');
             updateStatus('课程播放结束');
         }
+
+        timelineItems.forEach((item, index) => {
+            item.addEventListener('click', () => {
+                isAutoPlaying = false;
+                const autoBtn = document.getElementById('autoPlayBtn');
+                autoBtn.textContent = '🎬 自动播放';
+                autoBtn.classList.remove('stop');
+                showSlide(index);
+                speakContent(index + 1);
+            });
+        });
 
         document.addEventListener('keydown', (event) => {
             if (event.key === 'ArrowRight' || event.key === ' ') {

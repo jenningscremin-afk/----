@@ -33,60 +33,145 @@
 </head>
 <body class="blackboard">
     <div id="statusIndicator" class="status-indicator">等待连接</div>
+    <header class="lesson-topbar">
+        <div class="lesson-meta">
+            <h1>第6章 视频 6.2 定积分的计算技巧（换元与分部）</h1>
+            <div class="lesson-meta__row">
+                <span class="lesson-chip">章节 6.2</span>
+                <span class="lesson-chip">预计总时长：4 分 50 秒 / 290 秒</span>
+                <span class="lesson-chip">共 4 页</span>
+            </div>
+            <p class="lesson-subtitle">虚拟人录屏课件模板 · 自动生成的板书、动画、讲稿三栏脚本</p>
+        </div>
+        <div class="lesson-timeline">
+            <button class="timeline-item active" data-target="1"><span class="timeline-index">01</span><span class="timeline-title">定积分换元</span><span class="timeline-duration">70秒</span></button>
+            <button class="timeline-item" data-target="2"><span class="timeline-index">02</span><span class="timeline-title">定积分分部</span><span class="timeline-duration">80秒</span></button>
+            <button class="timeline-item" data-target="3"><span class="timeline-index">03</span><span class="timeline-title">对称性技巧</span><span class="timeline-duration">55秒</span></button>
+            <button class="timeline-item" data-target="4"><span class="timeline-index">04</span><span class="timeline-title">练习</span><span class="timeline-duration">45秒</span></button>
+        </div>
+    </header>
     <div class="avatar-container">
         <div class="wrapper" id="avatarWrapper"></div>
     </div>
     <div id="slide-container" class="slide-container flex-grow">
-        <div class="slide active">
+        <div class="slide active" data-slide="1">
             <div class="slide-content">
-                <div class="blackboard-text">
-                    <h2>定积分换元</h2>
-      <ul><li>公式：$\int_a^b f(g(x))g'(x)dx = \int_{g(a)}^{g(b)} f(u)du$</li><li>步骤：换变量、换限、代回</li><li>例：$\int_0^{\pi/2} \sin x \cos x dx$</li></ul>
-                </div>
-                <div class="animation-pane">
-                    <h3>动画执行提示</h3>
-      <ol><li>显示换元流程。</li><li>例题：设 u=sin x，上下限变为 0→1，结果 1/2。</li></ol>
-                </div>
+                <aside class="slide-meta">
+                    <div class="slide-meta__badge">第 1 / 4 页</div>
+                    <div class="slide-meta__duration">⏱️ 70 秒</div>
+                    <div class="slide-progress"><div class="slide-progress__bar" style="width: 0%"></div></div>
+                    <div class="slide-meta__action">推荐动作：<span>A_RLH_welcome_O</span></div>
+                    <div class="slide-meta__note">自动播放会额外保留讲稿缓冲时间。</div>
+                </aside>
+                <section class="panel board-pane">
+                    <header class="panel__header"><h2>定积分换元</h2></header>
+                    <div class="panel__body">
+        <ul><li>公式：$\int_a^b f(g(x))g'(x)dx = \int_{g(a)}^{g(b)} f(u)du$</li><li>步骤：换变量、换限、代回</li><li>例：$\int_0^{\pi/2} \sin x \cos x dx$</li></ul>
+                    </div>
+                </section>
+                <section class="panel animation-pane">
+                    <header class="panel__header"><h3>动画执行提示</h3></header>
+                    <div class="panel__body">
+        <ol><li>显示换元流程。</li><li>例题：设 u=sin x，上下限变为 0→1，结果 1/2。</li></ol>
+                    </div>
+                </section>
+                <section class="panel narration-pane">
+                    <header class="panel__header"><h3>虚拟人讲稿</h3><span class="action-chip">动作：A_RLH_welcome_O</span></header>
+                    <div class="panel__body">
+        <p>换元时别忘了同时替换积分限，否则会出现错误。</p>
+                    </div>
+                </section>
             </div>
         </div>
-        <div class="slide">
+        <div class="slide" data-slide="2">
             <div class="slide-content">
-                <div class="blackboard-text">
-                    <h2>定积分分部</h2>
-      <ul><li>公式：$\int_a^b u dv = [uv]_a^b - \int_a^b v du$</li><li>例：$\int_0^1 x e^x dx$</li><li>计算：$[x e^x]_0^1 - \int_0^1 e^x dx = e - (e-1) = 1$</li></ul>
-                </div>
-                <div class="animation-pane">
-                    <h3>动画执行提示</h3>
-      <ol><li>分部积分表格展示。</li><li>注意带入上下限。</li></ol>
-                </div>
+                <aside class="slide-meta">
+                    <div class="slide-meta__badge">第 2 / 4 页</div>
+                    <div class="slide-meta__duration">⏱️ 80 秒</div>
+                    <div class="slide-progress"><div class="slide-progress__bar" style="width: 33%"></div></div>
+                    <div class="slide-meta__action">推荐动作：<span>A_LH_introduced_O</span></div>
+                    <div class="slide-meta__note">自动播放会额外保留讲稿缓冲时间。</div>
+                </aside>
+                <section class="panel board-pane">
+                    <header class="panel__header"><h2>定积分分部</h2></header>
+                    <div class="panel__body">
+        <ul><li>公式：$\int_a^b u dv = [uv]_a^b - \int_a^b v du$</li><li>例：$\int_0^1 x e^x dx$</li><li>计算：$[x e^x]_0^1 - \int_0^1 e^x dx = e - (e-1) = 1$</li></ul>
+                    </div>
+                </section>
+                <section class="panel animation-pane">
+                    <header class="panel__header"><h3>动画执行提示</h3></header>
+                    <div class="panel__body">
+        <ol><li>分部积分表格展示。</li><li>注意带入上下限。</li></ol>
+                    </div>
+                </section>
+                <section class="panel narration-pane">
+                    <header class="panel__header"><h3>虚拟人讲稿</h3><span class="action-chip">动作：A_LH_introduced_O</span></header>
+                    <div class="panel__body">
+        <p>定积分分部积分与不定积分类似，但要额外计算边界项。</p>
+                    </div>
+                </section>
             </div>
         </div>
-        <div class="slide">
+        <div class="slide" data-slide="3">
             <div class="slide-content">
-                <div class="blackboard-text">
-                    <h2>对称性技巧</h2>
-      <ul><li>对称区间：$\int_{-a}^{a} f(x)dx$</li><li>若 f 为奇函数 → 0；若为偶函数 → 2∫₀ᵃ f(x)dx</li><li>例：$\int_{-1}^{1} x^3 dx = 0$</li></ul>
-                </div>
-                <div class="animation-pane">
-                    <h3>动画执行提示</h3>
-      <ol><li>图像展示奇偶对称性。</li><li>例题演示。</li></ol>
-                </div>
+                <aside class="slide-meta">
+                    <div class="slide-meta__badge">第 3 / 4 页</div>
+                    <div class="slide-meta__duration">⏱️ 55 秒</div>
+                    <div class="slide-progress"><div class="slide-progress__bar" style="width: 66%"></div></div>
+                    <div class="slide-meta__action">推荐动作：<span>A_RH_point_O</span></div>
+                    <div class="slide-meta__note">自动播放会额外保留讲稿缓冲时间。</div>
+                </aside>
+                <section class="panel board-pane">
+                    <header class="panel__header"><h2>对称性技巧</h2></header>
+                    <div class="panel__body">
+        <ul><li>对称区间：$\int_{-a}^{a} f(x)dx$</li><li>若 f 为奇函数 → 0；若为偶函数 → 2∫₀ᵃ f(x)dx</li><li>例：$\int_{-1}^{1} x^3 dx = 0$</li></ul>
+                    </div>
+                </section>
+                <section class="panel animation-pane">
+                    <header class="panel__header"><h3>动画执行提示</h3></header>
+                    <div class="panel__body">
+        <ol><li>图像展示奇偶对称性。</li><li>例题演示。</li></ol>
+                    </div>
+                </section>
+                <section class="panel narration-pane">
+                    <header class="panel__header"><h3>虚拟人讲稿</h3><span class="action-chip">动作：A_RH_point_O</span></header>
+                    <div class="panel__body">
+        <p>遇到对称区间时，先判断奇偶性，可以立刻大幅简化计算。</p>
+                    </div>
+                </section>
             </div>
         </div>
-        <div class="slide">
+        <div class="slide" data-slide="4">
             <div class="slide-content">
-                <div class="blackboard-text">
-                    <h2>练习</h2>
-      <ul><li>练习：$\int_0^{\pi} \sin x dx$</li><li>答案：2</li></ul>
-                </div>
-                <div class="animation-pane">
-                    <h3>动画执行提示</h3>
-      <ol><li>提供提示：原函数=−cos x。</li><li>答案揭示。</li></ol>
-                </div>
+                <aside class="slide-meta">
+                    <div class="slide-meta__badge">第 4 / 4 页</div>
+                    <div class="slide-meta__duration">⏱️ 45 秒</div>
+                    <div class="slide-progress"><div class="slide-progress__bar" style="width: 100%"></div></div>
+                    <div class="slide-meta__action">推荐动作：<span>A_RLH_welcome_O</span></div>
+                    <div class="slide-meta__note">自动播放会额外保留讲稿缓冲时间。</div>
+                </aside>
+                <section class="panel board-pane">
+                    <header class="panel__header"><h2>练习</h2></header>
+                    <div class="panel__body">
+        <ul><li>练习：$\int_0^{\pi} \sin x dx$</li><li>答案：2</li></ul>
+                    </div>
+                </section>
+                <section class="panel animation-pane">
+                    <header class="panel__header"><h3>动画执行提示</h3></header>
+                    <div class="panel__body">
+        <ol><li>提供提示：原函数=−cos x。</li><li>答案揭示。</li></ol>
+                    </div>
+                </section>
+                <section class="panel narration-pane">
+                    <header class="panel__header"><h3>虚拟人讲稿</h3><span class="action-chip">动作：A_RLH_welcome_O</span></header>
+                    <div class="panel__body">
+        <p>定积分题的关键仍在于熟练掌握原函数和技巧选择。</p>
+                    </div>
+                </section>
             </div>
         </div>
     </div>
-    <div class="subtitle-area" id="subtitleArea">欢迎学习定积分的计算技巧（换元与分部）！点击开始讲课启动虚拟人讲师。</div>
+    <div class="subtitle-area" id="subtitleArea">欢迎学习第6章 视频 6.2 定积分的计算技巧（换元与分部）！点击开始讲课启动虚拟人讲师。</div>
     <div class="control-bar">
         <div class="control-title">第 <span id="currentSlide">1</span> 页 / 共 <span id="totalSlides">4</span> 页</div>
         <button class="btn" onclick="previousSlide()">⬅️ 上一页</button>
@@ -113,30 +198,30 @@
         window.dispatchEvent(new CustomEvent('sdkReady'));
     </script>
     <script>
-        const lessonTitle = "定积分的计算技巧（换元与分部）";
+        const lessonTitle = "第6章 视频 6.2 定积分的计算技巧（换元与分部）";
         const subtitleScript = {
-    "1": "换元时别忘了同时替换积分限，否则会出现错误。",
-    "2": "定积分分部积分与不定积分类似，但要额外计算边界项。",
-    "3": "遇到对称区间时，先判断奇偶性，可以立刻大幅简化计算。",
-    "4": "定积分题的关键仍在于熟练掌握原函数和技巧选择。"
+  "1": "换元时别忘了同时替换积分限，否则会出现错误。",
+  "2": "定积分分部积分与不定积分类似，但要额外计算边界项。",
+  "3": "遇到对称区间时，先判断奇偶性，可以立刻大幅简化计算。",
+  "4": "定积分题的关键仍在于熟练掌握原函数和技巧选择。"
 };
         const actionMap = {
-    "1": "A_RLH_welcome_O",
-    "2": "A_LH_introduced_O",
-    "3": "A_RH_point_O",
-    "4": "A_RLH_welcome_O"
+  "1": "A_RLH_welcome_O",
+  "2": "A_LH_introduced_O",
+  "3": "A_RH_point_O",
+  "4": "A_RLH_welcome_O"
 };
         const slideTitles = {
-    "1": "定积分换元",
-    "2": "定积分分部",
-    "3": "对称性技巧",
-    "4": "练习"
+  "1": "定积分换元",
+  "2": "定积分分部",
+  "3": "对称性技巧",
+  "4": "练习"
 };
         const slideDurations = {
-    "1": 70000,
-    "2": 80000,
-    "3": 55000,
-    "4": 45000
+  "1": 80500,
+  "2": 92000,
+  "3": 63249,
+  "4": 51749
 };
         const totalSlides = 4;
 
@@ -147,6 +232,7 @@
         let isAutoPlaying = false;
 
         const slides = document.querySelectorAll('.slide');
+        const timelineItems = document.querySelectorAll('.timeline-item');
 
         function showSlide(index) {
             slides.forEach((slide, i) => slide.classList.toggle('active', i === index));
@@ -155,6 +241,7 @@
             if (window.MathJax && window.MathJax.typesetPromise) {
                 window.MathJax.typesetPromise([slides[index]]).catch(err => console.error(err));
             }
+            timelineItems.forEach((item, i) => item.classList.toggle('active', i === index));
         }
 
         function nextSlide() {
@@ -302,7 +389,7 @@
                 if (!isAutoPlaying) break;
                 showSlide(slide - 1);
                 speakContent(slide);
-                const duration = slideDurations[slide] || 15000;
+                const duration = slideDurations[slide] || 18000;
                 await new Promise(resolve => setTimeout(resolve, duration));
             }
 
@@ -311,6 +398,17 @@
             autoBtn.classList.remove('stop');
             updateStatus('课程播放结束');
         }
+
+        timelineItems.forEach((item, index) => {
+            item.addEventListener('click', () => {
+                isAutoPlaying = false;
+                const autoBtn = document.getElementById('autoPlayBtn');
+                autoBtn.textContent = '🎬 自动播放';
+                autoBtn.classList.remove('stop');
+                showSlide(index);
+                speakContent(index + 1);
+            });
+        });
 
         document.addEventListener('keydown', (event) => {
             if (event.key === 'ArrowRight' || event.key === ' ') {

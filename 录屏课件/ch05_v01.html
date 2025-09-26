@@ -33,60 +33,145 @@
 </head>
 <body class="blackboard">
     <div id="statusIndicator" class="status-indicator">等待连接</div>
+    <header class="lesson-topbar">
+        <div class="lesson-meta">
+            <h1>第5章 视频 5.1 原函数与不定积分的概念</h1>
+            <div class="lesson-meta__row">
+                <span class="lesson-chip">章节 5.1</span>
+                <span class="lesson-chip">预计总时长：4 分 10 秒 / 250 秒</span>
+                <span class="lesson-chip">共 4 页</span>
+            </div>
+            <p class="lesson-subtitle">虚拟人录屏课件模板 · 自动生成的板书、动画、讲稿三栏脚本</p>
+        </div>
+        <div class="lesson-timeline">
+            <button class="timeline-item active" data-target="1"><span class="timeline-index">01</span><span class="timeline-title">概念引入</span><span class="timeline-duration">50秒</span></button>
+            <button class="timeline-item" data-target="2"><span class="timeline-index">02</span><span class="timeline-title">基本积分公式</span><span class="timeline-duration">70秒</span></button>
+            <button class="timeline-item" data-target="3"><span class="timeline-index">03</span><span class="timeline-title">基本运算性质</span><span class="timeline-duration">55秒</span></button>
+            <button class="timeline-item" data-target="4"><span class="timeline-index">04</span><span class="timeline-title">练习</span><span class="timeline-duration">45秒</span></button>
+        </div>
+    </header>
     <div class="avatar-container">
         <div class="wrapper" id="avatarWrapper"></div>
     </div>
     <div id="slide-container" class="slide-container flex-grow">
-        <div class="slide active">
+        <div class="slide active" data-slide="1">
             <div class="slide-content">
-                <div class="blackboard-text">
-                    <h2>概念引入</h2>
-      <ul><li>导数→不定积分：求导的逆过程</li><li>定义：F'(x)=f(x) ⇒ F(x)+C 为不定积分</li><li>记号：$\int f(x)dx$</li></ul>
-                </div>
-                <div class="animation-pane">
-                    <h3>动画执行提示</h3>
-      <ol><li>箭头由导数指向积分，强调“逆操作”。</li><li>常数 C 以滑块形式出现，表示无限多原函数。</li></ol>
-                </div>
+                <aside class="slide-meta">
+                    <div class="slide-meta__badge">第 1 / 4 页</div>
+                    <div class="slide-meta__duration">⏱️ 50 秒</div>
+                    <div class="slide-progress"><div class="slide-progress__bar" style="width: 0%"></div></div>
+                    <div class="slide-meta__action">推荐动作：<span>A_RLH_welcome_O</span></div>
+                    <div class="slide-meta__note">自动播放会额外保留讲稿缓冲时间。</div>
+                </aside>
+                <section class="panel board-pane">
+                    <header class="panel__header"><h2>概念引入</h2></header>
+                    <div class="panel__body">
+        <ul><li>导数→不定积分：求导的逆过程</li><li>定义：F'(x)=f(x) ⇒ F(x)+C 为不定积分</li><li>记号：$\int f(x)dx$</li></ul>
+                    </div>
+                </section>
+                <section class="panel animation-pane">
+                    <header class="panel__header"><h3>动画执行提示</h3></header>
+                    <div class="panel__body">
+        <ol><li>箭头由导数指向积分，强调“逆操作”。</li><li>常数 C 以滑块形式出现，表示无限多原函数。</li></ol>
+                    </div>
+                </section>
+                <section class="panel narration-pane">
+                    <header class="panel__header"><h3>虚拟人讲稿</h3><span class="action-chip">动作：A_RLH_welcome_O</span></header>
+                    <div class="panel__body">
+        <p>不定积分就是寻找导数等于 f(x) 的函数族，记得加上常数 C。</p>
+                    </div>
+                </section>
             </div>
         </div>
-        <div class="slide">
+        <div class="slide" data-slide="2">
             <div class="slide-content">
-                <div class="blackboard-text">
-                    <h2>基本积分公式</h2>
-      <ul><li>常见原函数：</li><li>$\int x^n dx = \frac{x^{n+1}}{n+1}+C$ (n≠−1)</li><li>$\int e^x dx = e^x + C$</li><li>$\int a^x dx = \frac{a^x}{\ln a} + C$</li><li>$\int \sin x dx = -\cos x + C$</li><li>$\int \cos x dx = \sin x + C$</li><li>$\int \frac{1}{x} dx = \ln|x| + C$</li></ul>
-                </div>
-                <div class="animation-pane">
-                    <h3>动画执行提示</h3>
-      <ol><li>积分表依次展开。</li><li>与导数公式进行镜像对比。</li></ol>
-                </div>
+                <aside class="slide-meta">
+                    <div class="slide-meta__badge">第 2 / 4 页</div>
+                    <div class="slide-meta__duration">⏱️ 70 秒</div>
+                    <div class="slide-progress"><div class="slide-progress__bar" style="width: 33%"></div></div>
+                    <div class="slide-meta__action">推荐动作：<span>A_LH_introduced_O</span></div>
+                    <div class="slide-meta__note">自动播放会额外保留讲稿缓冲时间。</div>
+                </aside>
+                <section class="panel board-pane">
+                    <header class="panel__header"><h2>基本积分公式</h2></header>
+                    <div class="panel__body">
+        <ul><li>常见原函数：</li><li>$\int x^n dx = \frac{x^{n+1}}{n+1}+C$ (n≠−1)</li><li>$\int e^x dx = e^x + C$</li><li>$\int a^x dx = \frac{a^x}{\ln a} + C$</li><li>$\int \sin x dx = -\cos x + C$</li><li>$\int \cos x dx = \sin x + C$</li><li>$\int \frac{1}{x} dx = \ln|x| + C$</li></ul>
+                    </div>
+                </section>
+                <section class="panel animation-pane">
+                    <header class="panel__header"><h3>动画执行提示</h3></header>
+                    <div class="panel__body">
+        <ol><li>积分表依次展开。</li><li>与导数公式进行镜像对比。</li></ol>
+                    </div>
+                </section>
+                <section class="panel narration-pane">
+                    <header class="panel__header"><h3>虚拟人讲稿</h3><span class="action-chip">动作：A_LH_introduced_O</span></header>
+                    <div class="panel__body">
+        <p>把求导公式倒过来记忆最直观，但别忘了常数项。</p>
+                    </div>
+                </section>
             </div>
         </div>
-        <div class="slide">
+        <div class="slide" data-slide="3">
             <div class="slide-content">
-                <div class="blackboard-text">
-                    <h2>基本运算性质</h2>
-      <ul><li>线性性质：$\int (af+bg)dx = a\int fdx + b\int gdx$</li><li>例：$\int (2x^3+\cos x)dx = \frac{1}{2}x^4+\sin x + C$</li></ul>
-                </div>
-                <div class="animation-pane">
-                    <h3>动画执行提示</h3>
-      <ol><li>用拆分动画展示线性性。</li><li>例题分步计算。</li></ol>
-                </div>
+                <aside class="slide-meta">
+                    <div class="slide-meta__badge">第 3 / 4 页</div>
+                    <div class="slide-meta__duration">⏱️ 55 秒</div>
+                    <div class="slide-progress"><div class="slide-progress__bar" style="width: 66%"></div></div>
+                    <div class="slide-meta__action">推荐动作：<span>A_RH_point_O</span></div>
+                    <div class="slide-meta__note">自动播放会额外保留讲稿缓冲时间。</div>
+                </aside>
+                <section class="panel board-pane">
+                    <header class="panel__header"><h2>基本运算性质</h2></header>
+                    <div class="panel__body">
+        <ul><li>线性性质：$\int (af+bg)dx = a\int fdx + b\int gdx$</li><li>例：$\int (2x^3+\cos x)dx = \frac{1}{2}x^4+\sin x + C$</li></ul>
+                    </div>
+                </section>
+                <section class="panel animation-pane">
+                    <header class="panel__header"><h3>动画执行提示</h3></header>
+                    <div class="panel__body">
+        <ol><li>用拆分动画展示线性性。</li><li>例题分步计算。</li></ol>
+                    </div>
+                </section>
+                <section class="panel narration-pane">
+                    <header class="panel__header"><h3>虚拟人讲稿</h3><span class="action-chip">动作：A_RH_point_O</span></header>
+                    <div class="panel__body">
+        <p>遇到多项式或简单组合时，直接拆分积分即可。</p>
+                    </div>
+                </section>
             </div>
         </div>
-        <div class="slide">
+        <div class="slide" data-slide="4">
             <div class="slide-content">
-                <div class="blackboard-text">
-                    <h2>练习</h2>
-      <ul><li>练习：$\int (3x^2 + \frac{1}{x}) dx$</li><li>答案：x³ + ln|x| + C</li></ul>
-                </div>
-                <div class="animation-pane">
-                    <h3>动画执行提示</h3>
-      <ol><li>给出思考时间 8 秒。</li><li>显示答案并强调“+C”。</li></ol>
-                </div>
+                <aside class="slide-meta">
+                    <div class="slide-meta__badge">第 4 / 4 页</div>
+                    <div class="slide-meta__duration">⏱️ 45 秒</div>
+                    <div class="slide-progress"><div class="slide-progress__bar" style="width: 100%"></div></div>
+                    <div class="slide-meta__action">推荐动作：<span>A_RLH_welcome_O</span></div>
+                    <div class="slide-meta__note">自动播放会额外保留讲稿缓冲时间。</div>
+                </aside>
+                <section class="panel board-pane">
+                    <header class="panel__header"><h2>练习</h2></header>
+                    <div class="panel__body">
+        <ul><li>练习：$\int (3x^2 + \frac{1}{x}) dx$</li><li>答案：x³ + ln|x| + C</li></ul>
+                    </div>
+                </section>
+                <section class="panel animation-pane">
+                    <header class="panel__header"><h3>动画执行提示</h3></header>
+                    <div class="panel__body">
+        <ol><li>给出思考时间 8 秒。</li><li>显示答案并强调“+C”。</li></ol>
+                    </div>
+                </section>
+                <section class="panel narration-pane">
+                    <header class="panel__header"><h3>虚拟人讲稿</h3><span class="action-chip">动作：A_RLH_welcome_O</span></header>
+                    <div class="panel__body">
+        <p>任何不定积分都别忘了常数项，这是最容易扣分的地方。</p>
+                    </div>
+                </section>
             </div>
         </div>
     </div>
-    <div class="subtitle-area" id="subtitleArea">欢迎学习原函数与不定积分的概念！点击开始讲课启动虚拟人讲师。</div>
+    <div class="subtitle-area" id="subtitleArea">欢迎学习第5章 视频 5.1 原函数与不定积分的概念！点击开始讲课启动虚拟人讲师。</div>
     <div class="control-bar">
         <div class="control-title">第 <span id="currentSlide">1</span> 页 / 共 <span id="totalSlides">4</span> 页</div>
         <button class="btn" onclick="previousSlide()">⬅️ 上一页</button>
@@ -113,30 +198,30 @@
         window.dispatchEvent(new CustomEvent('sdkReady'));
     </script>
     <script>
-        const lessonTitle = "原函数与不定积分的概念";
+        const lessonTitle = "第5章 视频 5.1 原函数与不定积分的概念";
         const subtitleScript = {
-    "1": "不定积分就是寻找导数等于 f(x) 的函数族，记得加上常数 C。",
-    "2": "把求导公式倒过来记忆最直观，但别忘了常数项。",
-    "3": "遇到多项式或简单组合时，直接拆分积分即可。",
-    "4": "任何不定积分都别忘了常数项，这是最容易扣分的地方。"
+  "1": "不定积分就是寻找导数等于 f(x) 的函数族，记得加上常数 C。",
+  "2": "把求导公式倒过来记忆最直观，但别忘了常数项。",
+  "3": "遇到多项式或简单组合时，直接拆分积分即可。",
+  "4": "任何不定积分都别忘了常数项，这是最容易扣分的地方。"
 };
         const actionMap = {
-    "1": "A_RLH_welcome_O",
-    "2": "A_LH_introduced_O",
-    "3": "A_RH_point_O",
-    "4": "A_RLH_welcome_O"
+  "1": "A_RLH_welcome_O",
+  "2": "A_LH_introduced_O",
+  "3": "A_RH_point_O",
+  "4": "A_RLH_welcome_O"
 };
         const slideTitles = {
-    "1": "概念引入",
-    "2": "基本积分公式",
-    "3": "基本运算性质",
-    "4": "练习"
+  "1": "概念引入",
+  "2": "基本积分公式",
+  "3": "基本运算性质",
+  "4": "练习"
 };
         const slideDurations = {
-    "1": 50000,
-    "2": 70000,
-    "3": 55000,
-    "4": 45000
+  "1": 57499,
+  "2": 80500,
+  "3": 63249,
+  "4": 51749
 };
         const totalSlides = 4;
 
@@ -147,6 +232,7 @@
         let isAutoPlaying = false;
 
         const slides = document.querySelectorAll('.slide');
+        const timelineItems = document.querySelectorAll('.timeline-item');
 
         function showSlide(index) {
             slides.forEach((slide, i) => slide.classList.toggle('active', i === index));
@@ -155,6 +241,7 @@
             if (window.MathJax && window.MathJax.typesetPromise) {
                 window.MathJax.typesetPromise([slides[index]]).catch(err => console.error(err));
             }
+            timelineItems.forEach((item, i) => item.classList.toggle('active', i === index));
         }
 
         function nextSlide() {
@@ -302,7 +389,7 @@
                 if (!isAutoPlaying) break;
                 showSlide(slide - 1);
                 speakContent(slide);
-                const duration = slideDurations[slide] || 15000;
+                const duration = slideDurations[slide] || 18000;
                 await new Promise(resolve => setTimeout(resolve, duration));
             }
 
@@ -311,6 +398,17 @@
             autoBtn.classList.remove('stop');
             updateStatus('课程播放结束');
         }
+
+        timelineItems.forEach((item, index) => {
+            item.addEventListener('click', () => {
+                isAutoPlaying = false;
+                const autoBtn = document.getElementById('autoPlayBtn');
+                autoBtn.textContent = '🎬 自动播放';
+                autoBtn.classList.remove('stop');
+                showSlide(index);
+                speakContent(index + 1);
+            });
+        });
 
         document.addEventListener('keydown', (event) => {
             if (event.key === 'ArrowRight' || event.key === ' ') {
