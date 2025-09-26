@@ -42,10 +42,15 @@
             box-sizing: border-box;
         }
 
+        html {
+            font-size: 16px;
+        }
+
         body {
-            font-family: 'Microsoft YaHei', 'Segoe UI', sans-serif;
+            font-family: 'Source Han Sans SC', 'Noto Sans SC', 'Microsoft YaHei', 'PingFang SC', 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
             background: #f0f2f5; /* 使用淡灰色背景 */
             overflow: hidden; /* 防止body滚动 */
+            color: #2c3e50;
         }
 
         /* 幻灯片主容器 */
@@ -54,30 +59,34 @@
             height: 100vh;
             display: flex;
             position: relative;
+            gap: 24px;
+            padding: 0 24px;
         }
 
         /* 左侧文本内容区域 */
         .left-content {
-            width: 50%;
-            height: 100vh;
-            padding: 40px 50px;
-            background: #ffffff;
+            width: 40%;
+            height: calc(100vh - 48px);
+            padding: 48px 56px;
+            background: #fdfaf3;
             overflow-y: auto; /* 内容过长时允许滚动 */
-            font-size: 17px;
-            line-height: 1.9;
-            color: #333;
+            font-size: 1.1rem;
+            line-height: 1.7;
+            border-radius: 24px;
+            box-shadow: 0 6px 24px rgba(0, 0, 0, 0.06);
         }
 
         /* 右侧可视化区域 */
         .right-visual {
-            width: 50%;
-            height: 100vh;
-            background: #fdfdfd;
+            width: 60%;
+            height: calc(100vh - 48px);
+            background: #f5f7fa;
             display: flex;
             align-items: center;
             justify-content: center;
             position: relative;
-            border-left: 1px solid #e0e0e0;
+            border-radius: 24px;
+            box-shadow: 0 6px 24px rgba(0, 0, 0, 0.05);
         }
 
         /* 幻灯片可见性与动画 */
@@ -96,10 +105,54 @@
         }
 
         /* 标题排版 */
-        h1 { color: #1a1a2e; font-size: 36px; margin-bottom: 25px; padding-bottom: 15px; border-bottom: 4px solid #4a90e2; }
-        h2 { color: #34495e; font-size: 28px; margin: 30px 0 15px; }
-        h3 { color: #555; font-size: 24px; margin: 25px 0 10px; }
-        h4 { color: #666; font-size: 20px; margin: 20px 0 10px; }
+        h1 {
+            color: #1a1a2e;
+            font-size: 2rem;
+            line-height: 1.4;
+            font-weight: 700;
+            margin: 2rem 0 1.25rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 4px solid #4a90e2;
+        }
+
+        h2 {
+            color: #2f3b52;
+            font-size: 1.5rem;
+            line-height: 1.4;
+            font-weight: 700;
+            margin: 2rem 0 1.25rem;
+        }
+
+        h3 {
+            color: #334155;
+            font-size: 1.25rem;
+            line-height: 1.4;
+            font-weight: 700;
+            margin: 1.75rem 0 1.25rem;
+        }
+
+        h4 {
+            color: #3f4d63;
+            font-size: 1.1rem;
+            line-height: 1.4;
+            font-weight: 600;
+            margin: 1.5rem 0 1rem;
+        }
+
+        p {
+            margin-bottom: 1rem;
+        }
+
+        ul,
+        ol {
+            margin-left: 1.25rem;
+            margin-bottom: 1rem;
+            line-height: 1.7;
+        }
+
+        li {
+            margin: 0.5rem 0;
+        }
 
         /* 内容模块样式 */
         .definition, .theorem, .example, .note {
@@ -340,8 +393,8 @@
 
         
         /* 其他UI元素 */
-        ul, ol { margin-left: 25px; }
-        li { margin: 10px 0; }
+        ul, ol { margin-left: 1.25rem; }
+        li { margin: 0.5rem 0; }
 
         table { width: 100%; border-collapse: collapse; margin: 20px 0; }
         th { background: #3498db; color: white; padding: 12px; text-align: left; }
@@ -352,14 +405,20 @@
         @media (max-width: 768px) {
             .slide-container {
                 flex-direction: column;
+                gap: 16px;
+                padding: 16px;
             }
-            .left-content, .right-visual {
+            .left-content,
+            .right-visual {
                 width: 100%;
-                height: 50vh;
+                height: auto;
             }
             .left-content {
-                padding: 20px;
-                font-size: 14px;
+                padding: 24px;
+                font-size: 1rem;
+            }
+            .right-visual {
+                padding: 16px;
             }
             .nav-container {
                 bottom: 10px;
@@ -703,14 +762,14 @@
                     </ol>
                 </div>
                 <div class="student-pain-points">
-                    <h3>⚠️ 学生常见困难点</h3>
+                    <h3>⚠️ 学生常见困惑</h3>
                     <ul>
-                        <li><strong>符号理解</strong>：$\lim_{n\to\infty}$、$\varepsilon$-$N$定义看不懂</li>
-                        <li><strong>概念混淆</strong>：极限值 vs 数列的项，无限接近 vs 等于</li>
-                        <li><strong>计算技能</strong>：遇到0/0型不知道如何处理</li>
+                        <li><strong>要点 1：</strong>“无限接近”到底是什么意思？</li>
+                        <li><strong>要点 2：</strong>怎样判断一个变化过程的“最终结果”？</li>
+                        <li><strong>要点 3：</strong>碰到 $\frac{0}{0}$ 这种怪现象应该怎么办？</li>
                     </ul>
                     <div class="teacher-note">
-                        <strong>教学策略</strong>：多用生活类比，分步骤展示解题过程，强调"先试后想"的解题习惯
+                        <strong>教学策略</strong>：用直观画面和生活语言拆解抽象概念，再带学生一步步操作和总结方法。
                     </div>
                 </div>`,
                 animation: "objective"
@@ -916,19 +975,16 @@
                     </div>
 
                     <div class="step-item" data-step="2">
-                        <div class="definition">
-                            <strong>定义2</strong> 对于数列 $\\{x_{n}\\}$,如果当n无限增大时,数列的一般项 $x_{n}$ 无限地接近于某一确定的数值a,则称常数a是数列 $\\{x_{n}\\}$ 的极限,或称数列 $\\{x_{n}\\}$ 收敛于a,记作 $$\displaystyle\lim_{n\to\infty}x_{n}=a$$
-                        </div>
-                        <p>如果数列没有极限,就说数列是发散的。</p>
-                        <button class="step-btn" data-action="next">下一步：ε-N承诺</button>
+                        <div class="formula-highlight">$$\displaystyle\lim_{n\to\infty} x_n = a$$</div>
+                        <p>翻译成口语：当 $n$ 越来越大时，$x_n$ 的目标就是靠近数字 $a$，虽然总差一点点，但方向不会偏。</p>
+                        <p>始终围着一个目标转叫<strong>收敛</strong>；没有固定目标就叫<strong>发散</strong>。</p>
+                        <button class="step-btn" data-action="next">下一步：画面感</button>
                     </div>
 
                     <div class="step-item" data-step="3">
-                        <h4>📐 ε-N承诺理解</h4>
-                        <p><strong>承包商承诺</strong>：就像承包商说"给我足够时间(N)，我能把误差控制在你要求的范围(ε)内"</p>
-                        <div class="teacher-note">
-                            书上的 ε-N 定义其实就是在说：无论你要求多小的误差（ε），我总能找到一个位置（N），从这个位置往后，所有的数都满足你的误差要求。这像不像一个承诺？
-                        </div>
+                        <h4>🎬 画面想象</h4>
+                        <p>在数轴上放一个小点，让它依次取 $\frac{1}{2}, \frac{2}{3}, \frac{3}{4}, \dots$，你会看到它紧紧贴着 1 靠近。</p>
+                        <div class="teacher-note">右侧可展示动画：点的位置随着 $n$ 变化一路逼近目标点 $a$，帮助学生形成视觉记忆。</div>
                         <button class="step-btn completed" data-action="reset">重新开始</button>
                     </div>
                 </div>`,
@@ -941,7 +997,7 @@
             },
             {
                 title: "收敛与发散",
-                content: `<h4>"收敛"与"发散"</h4><div class="definition"><strong>收敛 (Convergent)</strong>：就是数列有极限。想象所有的项最终都"收"拢到极限那个点附近。</div><div class="theorem"><strong>发散 (Divergent)</strong>：就是数列没有极限。发散有两种主要情况：<ul><li>一种是项的值越来越大或越来越小，奔向无穷了</li><li>另一种是项的值在几个数之间来回"震荡"，总也稳定不下来</li></ul></div>`,
+                content: `<h4>收敛还是发散？</h4><ul><li><strong>收敛：</strong>像回家过年，所有项都往同一个目的地挤——目标值 $a$。</li><li><strong>发散：</strong>要么一路狂奔向无穷远方，要么在几个值之间来回跳，迟迟找不到落脚点。</li></ul><div class="teacher-note">配合三幅图像：<em>收敛</em>→点围拢到一条线；<em>发散到无穷</em>→点越飘越远；<em>震荡发散</em>→点在两条线间跳动。</div>`,
                 animation: "convergence"
             },
             {
@@ -1168,16 +1224,16 @@
             },
             {
                 title: "无穷小量",
-                content: `<h3>2.1.3 无穷小量与无穷大量</h3><h4>1. 无穷小量</h4><div class="definition"><strong>定义5</strong> 在自变量x的某一变化过程中,若函数 $f(x)$ 的极限为0,即 $\lim f(x)=0$,则称 $f(x)$ 为在该变化过程中的<strong>无穷小量</strong>。</div><div class="note"><strong>注意</strong>：无穷小不是一个"很小的数"，而是一个以零为极限的函数。</div>`,
+                content: `<h3>2.1.3 无穷小量与无穷大量</h3><h4>1. 无穷小量</h4><p>如果一个量在某个过程里越跑越接近 0，我们就叫它<strong>无穷小量</strong>。</p><div class="note">它不是一个具体的“小数”，而是一种趋势：就像温度持续下降，虽然一刻也没到达 0℃，但你知道它的终点就是 0。</div>`,
                 animation: "infinitesimal"
             },
             {
                 title: "无穷小的性质",
-                content: `<h4>无穷小的性质</h4><div class="theorem"><strong>性质1</strong> 有限个无穷小的代数和仍是无穷小。<br><strong>性质2</strong> 有限个无穷小的乘积仍是无穷小。<br><strong>性质3</strong> 有界函数与无穷小的乘积仍是无穷小。</div><div class="example"><strong>例8</strong> 求 $\\displaystyle\\lim_{x\\to\\infty}\\frac{1}{x}\\cos x$ 。<br><strong>解</strong>: $\\frac{1}{x}$ 是无穷小, $|\\cos x|\\geq 1$ 是有界函数, 故极限为0。</div>`,
+                content: `<h4>无穷小的性质</h4><div class="theorem"><strong>性质1</strong> 有限个无穷小的代数和仍是无穷小。<br><strong>性质2</strong> 有限个无穷小的乘积仍是无穷小。<br><strong>性质3</strong> 有界函数与无穷小的乘积仍是无穷小。</div><div class="example"><strong>例8</strong> 求 $\displaystyle\lim_{x\to\infty}\frac{1}{x}\cos x$ 。<br><strong>解</strong>: $\frac{1}{x}$ 是无穷小, $|\cos x|\geq 1$ 是有界函数, 故极限为0。</div>`,
                 animation: "infinitesimal_prop"
             },            {
                 title: "无穷大量：概念",
-                content: `<h3>无穷大量的定义</h3><p>在某个变化过程中，若 $|f(x)|$ 无限增大，则称 $f(x)$ 为<strong>无穷大量</strong>，记作 $\displaystyle\lim f(x)=\infty$。</p><div class="visual-hint">📈 想象函数值越走越远，没有上界。</div>`,
+                content: `<h3>无穷大量的定义</h3><p>在某个变化过程中，若 $|f(x)|$ 无限增大，则称 $f(x)$ 为<strong>无穷大量</strong>，记作 $\displaystyle\lim_{x\to x_0} f(x)=\infty$。</p><div class="visual-hint">📈 想象函数值越走越远，没有上界。</div>`,
                 animation: "infinite"
             },
             {
@@ -1196,13 +1252,13 @@
                 animation: "infinite"
             },
             {
-                title: "极限的性质",
-                content: `<h2>2.2 极限的性质和运算法则</h2><h3>2.2.1 极限的性质</h3><div class="theorem"><p><strong>定理1（唯一性）</strong> 如果极限存在,则极限唯一。</p><p><strong>定理2（有界性）</strong> 如果极限存在,则在某邻域内有界。</p><p><strong>定理3（保号性）</strong> 如果函数值 $\geq 0$,则极限也 $\geq 0$。</p></div>`,
+                title: "极限的直观性质",
+                content: `<h2>2.2 极限的性质和运算法则</h2><h3>2.2.1 极限的直观性质</h3><ul><li><strong>目的地只有一个：</strong>同一条路不可能通向两个不同终点，所以极限要么不存在，要么只有一个答案。</li><li><strong>路上不会失控：</strong>既然准备靠近目标，沿途数值自然被限制在一个范围内，不会突然飙到天外去。</li><li><strong>方向保持一致：</strong>如果一路上都大于 0，那最终靠近的目标也不会变成负数。</li></ul>`,
                 animation: "limit_properties"
             },
             {
-                title: "极限的运算法则",
-                content: `<h3>2.2.2 极限的运算法则</h3><div class="theorem"><strong>定理4</strong> 设 $\lim f(x)=A$ , $\lim g(x)=B$ ,则<ol><li>$\lim [f(x)\pm g(x)]=A\pm B$</li><li>$\lim [f(x)\cdot g(x)]=A\cdot B$</li><li>$\lim \frac{f(x)}{g(x)}=\frac{A}{B}(B\geq 0)$</li></ol></div>`,
+                title: "极限的运算规则",
+                content: `<h3>2.2.2 极限的四则法则</h3><ul><li><strong>加减：</strong>各自找到终点，再把终点相加减。</li><li><strong>乘法：</strong>终点相乘即可。</li><li><strong>除法：</strong>分母的终点不能是 0，否则旅程会崩溃。</li></ul><div class="teacher-note">板书时提醒：$\lim_{x\to x_0}[f(x)\pm g(x)] = \lim_{x\to x_0}f(x) \pm \lim_{x\to x_0}g(x)$ 等等，是对这些直观描述的精准表述。</div>`,
                 animation: "limit_rules"
             },
             {
@@ -1238,19 +1294,19 @@
             {
                 title: "无穷小比较：全局视图",
                 content: `<h3>2.3.2 无穷小的比较</h3>
-                <p>设 $\alpha, \beta$ 是无穷小量，通过比较 $\displaystyle\lim\frac{\beta}{\alpha}$ 的值来判断谁“跑得更快”。</p>
+                <p>设 $\alpha(x), \beta(x)$ 是在 $x\to 0$ 时趋向 0 的量，通过比较 $\displaystyle\lim_{x\to 0}\frac{\beta(x)}{\alpha(x)}$ 的数值来判断谁“跑得更快”。</p>
                 <div style="display: grid; gap: 12px; margin: 20px 0;">
                     <div style="background: rgba(52, 152, 219, 0.1); padding: 12px; border-radius: 8px; border-left: 4px solid #3498db;">
-                        <strong>高阶无穷小：</strong>$\displaystyle\lim\frac{\beta}{\alpha}=0$ → $\beta$ 比 $\alpha$ “小得更快”
+                        <strong>高阶无穷小：</strong>$\displaystyle\lim_{x\to 0}\frac{\beta(x)}{\alpha(x)}=0$ → $\beta$ 比 $\alpha$ “小得更快”
                     </div>
                     <div style="background: rgba(231, 76, 60, 0.1); padding: 12px; border-radius: 8px; border-left: 4px solid #e74c3c;">
-                        <strong>低阶无穷小：</strong>$\displaystyle\lim\frac{\beta}{\alpha}=\infty$ → $\beta$ 比 $\alpha$ “小得更慢”
+                        <strong>低阶无穷小：</strong>$\displaystyle\lim_{x\to 0}\frac{\beta(x)}{\alpha(x)}=\infty$ → $\beta$ 比 $\alpha$ “小得更慢”
                     </div>
                     <div style="background: rgba(155, 89, 182, 0.1); padding: 12px; border-radius: 8px; border-left: 4px solid #9b59b6;">
-                        <strong>同阶无穷小：</strong>$\displaystyle\lim\frac{\beta}{\alpha}=c\neq0$ → $\beta$ 与 $\alpha$ “小得一样快”
+                        <strong>同阶无穷小：</strong>$\displaystyle\lim_{x\to 0}\frac{\beta(x)}{\alpha(x)}=c\neq0$ → $\beta$ 与 $\alpha$ “小得一样快”
                     </div>
                     <div style="background: rgba(46, 204, 113, 0.1); padding: 12px; border-radius: 8px; border-left: 4px solid #2ecc71;">
-                        <strong>等价无穷小：</strong>$\displaystyle\lim\frac{\beta}{\alpha}=1$ → $\beta$ 与 $\alpha$ “几乎相等”，记作 $\alpha\sim\beta$
+                        <strong>等价无穷小：</strong>$\displaystyle\lim_{x\to 0}\frac{\beta(x)}{\alpha(x)}=1$ → $\beta$ 与 $\alpha$ “几乎相等”，记作 $\alpha\sim\beta$
                     </div>
                 </div>
                 <div class="visual-hint">🏃‍♂️ 四种“跑向 0” 的节奏，决定我们如何比较无穷小。</div>`,
@@ -1260,7 +1316,7 @@
                 title: "高阶无穷小",
                 content: `<h3>高阶无穷小：掉得更快</h3>
                 <div class="definition" style="background: rgba(52, 152, 219, 0.1); padding: 20px; border-radius: 10px; border-left: 4px solid #3498db;">
-                    <p><strong>定义：</strong>若 $\displaystyle\lim\frac{\beta}{\alpha}=0$，则 $\beta = o(\alpha)$，即 $\beta$ 比 $\alpha$ “小得更快”。</p>
+                    <p><strong>定义：</strong>若 $\displaystyle\lim_{x\to 0}\frac{\beta(x)}{\alpha(x)}=0$，则 $\beta = o(\alpha)$，即 $\beta$ 比 $\alpha$ “小得更快”。</p>
                 </div>
                 <div style="margin: 20px 0;">
                     <h4>📝 典型例子</h4>
@@ -1278,7 +1334,7 @@
                 title: "低阶无穷小",
                 content: `<h3>低阶无穷小：掉得更慢</h3>
                 <div class="definition" style="background: rgba(231, 76, 60, 0.1); padding: 20px; border-radius: 10px; border-left: 4px solid #e74c3c;">
-                    <p><strong>定义：</strong>若 $\displaystyle\lim\frac{\beta}{\alpha}=\infty$，则 $\beta$ 是比 $\alpha$ 更低阶的无穷小。</p>
+                    <p><strong>定义：</strong>若 $\displaystyle\lim_{x\to 0}\frac{\beta(x)}{\alpha(x)}=\infty$，则 $\beta$ 是比 $\alpha$ 更低阶的无穷小。</p>
                 </div>
                 <div style="margin: 20px 0;">
                     <h4>📝 典型例子</h4>
@@ -1296,7 +1352,7 @@
                 title: "同阶无穷小",
                 content: `<h3>同阶无穷小：并驾齐驱</h3>
                 <div class="definition" style="background: rgba(155, 89, 182, 0.1); padding: 20px; border-radius: 10px; border-left: 4px solid #9b59b6;">
-                    <p><strong>定义：</strong>若 $\displaystyle\lim\frac{\beta}{\alpha}=c\neq0$，则 $\beta$ 与 $\alpha$ 是同阶无穷小。</p>
+                    <p><strong>定义：</strong>若 $\displaystyle\lim_{x\to 0}\frac{\beta(x)}{\alpha(x)}=c\neq0$，则 $\beta$ 与 $\alpha$ 是同阶无穷小。</p>
                     <p><strong>理解：</strong>两个量朝 0 的“速度”一致。</p>
                 </div>
                 <div style="margin: 20px 0;">
@@ -1315,7 +1371,7 @@
                 title: "等价无穷小：可互换的替身",
                 content: `<h3>等价无穷小：计算里的黄金搭档</h3>
                 <div class="definition" style="background: rgba(46, 204, 113, 0.12); padding: 20px; border-radius: 10px; border-left: 4px solid #2ecc71;">
-                    <p><strong>定义：</strong>若 $\displaystyle\lim\frac{\beta}{\alpha}=1$，记作 $\alpha\sim\beta$，它们在极限运算中可以互换。</p>
+                    <p><strong>定义：</strong>若 $\displaystyle\lim_{x\to 0}\frac{\beta(x)}{\alpha(x)}=1$，记作 $\alpha\sim\beta$，它们在极限运算中可以互换。</p>
                     <p><strong>意义：</strong>把复杂表达式换成熟悉的“替身”，能显著简化极限运算。</p>
                 </div>
                 <div class="prompt-card">在下一张幻灯片，我们整理了最常用的等价无穷小表，讲题时直接引用即可。</div>
@@ -1351,7 +1407,7 @@
             },
             {
                 title: "连续性概念",
-                content: `<h2>2.4 函数的连续性</h2><h3>2.4.1 连续函数的概念</h3><h4>1. 函数的增量</h4><p>自变量的增量: $\Delta x = x - x_0$</p><p>函数的增量: $\Delta y=f(x_{0}+\Delta x)-f(x_{0})$</p><div class="note">一个微小的x变化($\Delta x \to 0$), 只会引起一个微小的y变化($\Delta y \to 0$), 这就是连续。</div>`,
+                content: `<h2>2.4 函数的连续性</h2><h3>2.4.1 连续的直观理解</h3><p>想象在纸上画函数图像：如果笔尖可以一路滑过去而不需要抬起，这个点就被称为<strong>连续</strong>。</p><div class="note">课堂可以让学生用手指在图像上“走一遍”，感受有没有掉坑、断桥或跳跃。</div>`,
                 animation: "continuity_concept"
             },
             {
@@ -1439,6 +1495,97 @@
         // 渲染器状态
         let renderingInProgress = false;
 
+        // MathJax 辅助函数，确保在任何地方调用时都能按顺序安全渲染
+        function waitForMathJaxReady(timeout = 10000) {
+            return new Promise((resolve, reject) => {
+                const start = Date.now();
+
+                const check = () => {
+                    const mj = window.MathJax;
+                    if (mj && mj.typesetPromise) {
+                        const startupPromise = mj.startup && mj.startup.promise;
+                        if (startupPromise && typeof startupPromise.then === 'function') {
+                            const elapsed = Date.now() - start;
+                            if (elapsed >= timeout) {
+                                reject(new Error('MathJax startup timeout'));
+                                return;
+                            }
+                            const remaining = timeout - elapsed;
+                            const timeoutId = setTimeout(() => {
+                                reject(new Error('MathJax startup timeout'));
+                            }, remaining);
+                            startupPromise.then(() => {
+                                clearTimeout(timeoutId);
+                                resolve(mj);
+                            }).catch((err) => {
+                                clearTimeout(timeoutId);
+                                reject(err);
+                            });
+                        } else {
+                            resolve(mj);
+                        }
+                        return;
+                    }
+
+                    if (Date.now() - start >= timeout) {
+                        reject(new Error('MathJax not available after timeout'));
+                        return;
+                    }
+
+                    setTimeout(check, 100);
+                };
+
+                check();
+            });
+        }
+
+        const queueMathTypeset = (() => {
+            let chain = Promise.resolve();
+            return function(rootElements) {
+                if (!window.MathJax || !window.MathJax.typesetPromise) {
+                    return Promise.resolve();
+                }
+
+                let elements;
+                if (Array.isArray(rootElements)) {
+                    elements = rootElements;
+                } else if (rootElements && typeof rootElements.length === 'number' && typeof rootElements !== 'string') {
+                    elements = Array.from(rootElements);
+                } else if (rootElements) {
+                    elements = [rootElements];
+                }
+
+                chain = chain.then(() => {
+                    if (!window.MathJax || !window.MathJax.typesetPromise) {
+                        return true;
+                    }
+                    const promise = (elements && elements.length > 0)
+                        ? window.MathJax.typesetPromise(elements)
+                        : window.MathJax.typesetPromise();
+                    return promise.then(() => true);
+                }).catch((err) => {
+                    console.error('MathJax typeset error:', err);
+                    return false;
+                });
+
+                return chain;
+            };
+        })();
+
+        function resetMathJaxState() {
+            if (!window.MathJax) {
+                return;
+            }
+            if (typeof window.MathJax.texReset === 'function') {
+                window.MathJax.texReset();
+            }
+            if (typeof window.MathJax.typesetClear === 'function') {
+                window.MathJax.typesetClear();
+            } else if (window.MathJax.startup && window.MathJax.startup.document && typeof window.MathJax.startup.document.state === 'function') {
+                window.MathJax.startup.document.state(0);
+            }
+        }
+
         // 初始化并创建所有幻灯片
         async function initSlides() {
             try {
@@ -1460,33 +1607,19 @@
                     container.appendChild(slideDiv);
                 });
 
-                const waitForMathJax = () => new Promise((resolve, reject) => {
-                    if (window.MathJax && window.MathJax.typesetPromise) {
-                        resolve(window.MathJax);
-                        return;
-                    }
-
-                    let attempts = 0;
-                    const check = () => {
-                        attempts++;
-                        if (window.MathJax && window.MathJax.typesetPromise) {
-                            resolve(window.MathJax);
-                        } else if (attempts < 50) { // 5秒超时
-                            setTimeout(check, 100);
-                        } else {
-                            reject(new Error('MathJax not available after timeout'));
-                        }
-                    };
-                    setTimeout(check, 100);
-                });
-
                 // 等待MathJax加载完成后渲染
-                waitForMathJax()
-                    .then(async (MathJax) => {
+                waitForMathJaxReady()
+                    .then(() => {
                         console.log('开始渲染数学公式...');
                         // 渲染所有幻灯片
-                        await MathJax.typesetPromise();
-                        console.log('公式渲染完成');
+                        return queueMathTypeset();
+                    })
+                    .then((success) => {
+                        if (!success) {
+                            console.warn('初始公式渲染过程中出现问题');
+                        } else {
+                            console.log('公式渲染完成');
+                        }
                         drawAnimation(1);
                         hideLoading();
                     })
@@ -2823,7 +2956,11 @@
 
                 // Re-render MathJax for new content
                 if (window.MathJax && window.MathJax.typesetPromise) {
-                    window.MathJax.typesetPromise([targetStep]).catch((err) => console.log(err.message));
+                    queueMathTypeset(targetStep).then((success) => {
+                        if (!success) {
+                            console.warn('步骤内容的公式渲染未成功');
+                        }
+                    });
                 }
 
                 // Update animation based on step
@@ -3169,8 +3306,7 @@
                 return new Promise((resolve) => {
                     __mj_timer = setTimeout(() => {
                         try {
-                            const p = Array.isArray(rootElements) ? window.MathJax.typesetPromise(rootElements) : window.MathJax.typesetPromise();
-                            p.then(() => resolve()).catch(() => resolve());
+                            queueMathTypeset(rootElements).then((success) => resolve(success));
                         } catch (e) {
                             resolve();
                         }
@@ -3185,22 +3321,8 @@
             try {
                 // 确保 MathJax 已加载
                 const ensureMathJax = () => {
-                    return new Promise((resolve) => {
-                        if (window.MathJax && window.MathJax.typesetPromise) {
-                            resolve();
-                            return;
-                        }
-                        const checkInterval = setInterval(() => {
-                            if (window.MathJax && window.MathJax.typesetPromise) {
-                                clearInterval(checkInterval);
-                                resolve();
-                            }
-                        }, 100);
-                        // 10秒后超时
-                        setTimeout(() => {
-                            clearInterval(checkInterval);
-                            resolve();
-                        }, 10000);
+                    return waitForMathJaxReady().catch((err) => {
+                        console.warn('MathJax readiness timeout:', err);
                     });
                 };
 
@@ -3214,19 +3336,13 @@
                     // 强制重新渲染所有公式
                     setTimeout(() => {
                         if (window.MathJax && window.MathJax.typesetPromise) {
-                            // 清理所有旧的MathJax渲染
-                            const oldMath = document.querySelectorAll('mjx-container, .MathJax');
-                            oldMath.forEach(el => el.remove());
-                            
-                            // 重新渲染
-                            window.MathJax.typesetPromise().then(() => {
-                                console.log('所有公式渲染完成');
-                            }).catch(err => {
-                                console.log('公式渲染错误:', err);
-                                // 如果失败，尝试重新加载MathJax
-                                if (window.MathJax && window.MathJax.startup) {
-                                    window.MathJax.startup.document.state(0);
-                                    window.MathJax.typesetPromise();
+                            resetMathJaxState();
+
+                            queueMathTypeset().then((success) => {
+                                if (!success) {
+                                    console.warn('所有公式重新渲染时发生错误');
+                                } else {
+                                    console.log('所有公式渲染完成');
                                 }
                             });
                         }
@@ -3239,8 +3355,11 @@
                         if (window.MathJax && window.MathJax.typesetPromise) {
                             const currentSlide = document.querySelector('.slide.active');
                             if (currentSlide) {
-                                window.MathJax.typesetPromise([currentSlide])
-                                    .catch((err) => console.log('Slide change typeset error:', err));
+                                queueMathTypeset(currentSlide).then((success) => {
+                                    if (!success) {
+                                        console.warn('幻灯片切换时的公式渲染未成功');
+                                    }
+                                });
                             }
                         }
                     };
@@ -3259,17 +3378,16 @@
         function forceRerenderMath() {
             console.log('开始强制重新渲染公式...');
             if (window.MathJax && window.MathJax.typesetPromise) {
-                // 清理所有旧的MathJax渲染
-                const oldMath = document.querySelectorAll('mjx-container, .MathJax');
-                oldMath.forEach(el => el.remove());
-                
-                // 重新渲染
-                window.MathJax.typesetPromise().then(() => {
-                    console.log('强制重新渲染完成');
-                    alert('公式重新渲染完成！');
-                }).catch(err => {
-                    console.log('强制重新渲染错误:', err);
-                    alert('重新渲染失败，请检查控制台错误信息');
+                resetMathJaxState();
+
+                queueMathTypeset().then((success) => {
+                    if (success) {
+                        console.log('强制重新渲染完成');
+                        alert('公式重新渲染完成！');
+                    } else {
+                        console.log('强制重新渲染过程中出现错误');
+                        alert('重新渲染失败，请检查控制台错误信息');
+                    }
                 });
             } else {
                 alert('MathJax未加载，请刷新页面');
