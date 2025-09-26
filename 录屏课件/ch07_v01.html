@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>第7章 视频 7.1 微分方程的基本概念</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="./assets/noto-serif-sc.css">
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\(', '\)']],
+                displayMath: [['$$', '$$'], ['\[', '\]']],
+                processEscapes: true,
+                processEnvironments: true
+            },
+            options: {
+                skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre'],
+                ignoreHtmlClass: 'tex2jax_ignore',
+                processHtmlClass: 'tex2jax_process'
+            },
+            startup: {
+                ready: () => {
+                    console.log('✅ MathJax已加载并配置完成');
+                    MathJax.startup.defaultReady();
+                }
+            }
+        };
+    </script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="stylesheet" href="./assets/lesson-template.css">
+</head>
+<body class="blackboard">
+    <div id="statusIndicator" class="status-indicator">等待连接</div>
+    <header class="lesson-topbar">
+        <div class="lesson-meta">
+            <h1>第7章 视频 7.1 微分方程的基本概念</h1>
+            <div class="lesson-meta__row">
+                <span class="lesson-chip">章节 7.1</span>
+                <span class="lesson-chip">预计总时长：4 分 15 秒 / 255 秒</span>
+                <span class="lesson-chip">共 4 页</span>
+            </div>
+            <p class="lesson-subtitle">虚拟人录屏课件模板 · 自动生成的板书、动画、讲稿三栏脚本</p>
+        </div>
+        <div class="lesson-timeline">
+            <button class="timeline-item active" data-target="1"><span class="timeline-index">01</span><span class="timeline-title">概念引入</span><span class="timeline-duration">50秒</span></button>
+            <button class="timeline-item" data-target="2"><span class="timeline-index">02</span><span class="timeline-title">通解与特解</span><span class="timeline-duration">60秒</span></button>
+            <button class="timeline-item" data-target="3"><span class="timeline-index">03</span><span class="timeline-title">阶与次数</span><span class="timeline-duration">55秒</span></button>
+            <button class="timeline-item" data-target="4"><span class="timeline-index">04</span><span class="timeline-title">总结</span><span class="timeline-duration">40秒</span></button>
+        </div>
+    </header>
+    <div class="avatar-container">
+        <div class="wrapper" id="avatarWrapper"></div>
+    </div>
+    <div id="slide-container" class="slide-container flex-grow">
+        <div class="slide active" data-slide="1">
+            <div class="slide-content">
+                <aside class="slide-meta">
+                    <div class="slide-meta__badge">第 1 / 4 页</div>
+                    <div class="slide-meta__duration">⏱️ 50 秒</div>
+                    <div class="slide-progress"><div class="slide-progress__bar" style="width: 0%"></div></div>
+                    <div class="slide-meta__action">推荐动作：<span>A_RLH_welcome_O</span></div>
+                    <div class="slide-meta__note">自动播放会额外保留讲稿缓冲时间。</div>
+                </aside>
+                <section class="panel board-pane">
+                    <header class="panel__header"><h2>概念引入</h2></header>
+                    <div class="panel__body">
+        <ul><li>微分方程 = 含未知函数及其导数的方程</li><li>阶：最高导数的阶数</li><li>解：满足方程的函数族</li></ul>
+                    </div>
+                </section>
+                <section class="panel animation-pane">
+                    <header class="panel__header"><h3>动画执行提示</h3></header>
+                    <div class="panel__body">
+        <ol><li>显示 y' + y = 0 等例子。</li><li>标注“方程 + 导数”的结构。</li></ol>
+                    </div>
+                </section>
+                <section class="panel narration-pane">
+                    <header class="panel__header"><h3>虚拟人讲稿</h3><span class="action-chip">动作：A_RLH_welcome_O</span></header>
+                    <div class="panel__body">
+        <p>微分方程描述变量之间的动态关系，是研究变化的核心工具。</p>
+                    </div>
+                </section>
+            </div>
+        </div>
+        <div class="slide" data-slide="2">
+            <div class="slide-content">
+                <aside class="slide-meta">
+                    <div class="slide-meta__badge">第 2 / 4 页</div>
+                    <div class="slide-meta__duration">⏱️ 60 秒</div>
+                    <div class="slide-progress"><div class="slide-progress__bar" style="width: 33%"></div></div>
+                    <div class="slide-meta__action">推荐动作：<span>A_LH_introduced_O</span></div>
+                    <div class="slide-meta__note">自动播放会额外保留讲稿缓冲时间。</div>
+                </aside>
+                <section class="panel board-pane">
+                    <header class="panel__header"><h2>通解与特解</h2></header>
+                    <div class="panel__body">
+        <ul><li>通解：包含常数 C 的函数族</li><li>特解：满足初始条件的具体函数</li><li>例：y' = y → 通解 y=C e^x，若 y(0)=2 → 特解 y=2e^x</li></ul>
+                    </div>
+                </section>
+                <section class="panel animation-pane">
+                    <header class="panel__header"><h3>动画执行提示</h3></header>
+                    <div class="panel__body">
+        <ol><li>展示多个指数函数族。</li><li>通过初值点选出特解。</li></ol>
+                    </div>
+                </section>
+                <section class="panel narration-pane">
+                    <header class="panel__header"><h3>虚拟人讲稿</h3><span class="action-chip">动作：A_LH_introduced_O</span></header>
+                    <div class="panel__body">
+        <p>初始条件像一个定位器，帮我们从通解中挑出唯一的解。</p>
+                    </div>
+                </section>
+            </div>
+        </div>
+        <div class="slide" data-slide="3">
+            <div class="slide-content">
+                <aside class="slide-meta">
+                    <div class="slide-meta__badge">第 3 / 4 页</div>
+                    <div class="slide-meta__duration">⏱️ 55 秒</div>
+                    <div class="slide-progress"><div class="slide-progress__bar" style="width: 66%"></div></div>
+                    <div class="slide-meta__action">推荐动作：<span>A_RH_point_O</span></div>
+                    <div class="slide-meta__note">自动播放会额外保留讲稿缓冲时间。</div>
+                </aside>
+                <section class="panel board-pane">
+                    <header class="panel__header"><h2>阶与次数</h2></header>
+                    <div class="panel__body">
+        <ul><li>阶：最高导数阶数</li><li>次数：最高阶导数的指数</li><li>例：$(y'')^2 + y = 0$ 是二阶方程，次数 2</li></ul>
+                    </div>
+                </section>
+                <section class="panel animation-pane">
+                    <header class="panel__header"><h3>动画执行提示</h3></header>
+                    <div class="panel__body">
+        <ol><li>高亮最高阶导数。</li><li>解释阶、次数差别。</li></ol>
+                    </div>
+                </section>
+                <section class="panel narration-pane">
+                    <header class="panel__header"><h3>虚拟人讲稿</h3><span class="action-chip">动作：A_RH_point_O</span></header>
+                    <div class="panel__body">
+        <p>别把阶和次数混淆，阶是导数的层数，次数是指数。</p>
+                    </div>
+                </section>
+            </div>
+        </div>
+        <div class="slide" data-slide="4">
+            <div class="slide-content">
+                <aside class="slide-meta">
+                    <div class="slide-meta__badge">第 4 / 4 页</div>
+                    <div class="slide-meta__duration">⏱️ 40 秒</div>
+                    <div class="slide-progress"><div class="slide-progress__bar" style="width: 100%"></div></div>
+                    <div class="slide-meta__action">推荐动作：<span>A_RLH_welcome_O</span></div>
+                    <div class="slide-meta__note">自动播放会额外保留讲稿缓冲时间。</div>
+                </aside>
+                <section class="panel board-pane">
+                    <header class="panel__header"><h2>总结</h2></header>
+                    <div class="panel__body">
+        <ul><li>关键词：微分方程、通解、特解、阶、次数</li></ul>
+                    </div>
+                </section>
+                <section class="panel animation-pane">
+                    <header class="panel__header"><h3>动画执行提示</h3></header>
+                    <div class="panel__body">
+        <ol><li>关键词弹幕。</li><li>预告下一节分离变量法。</li></ol>
+                    </div>
+                </section>
+                <section class="panel narration-pane">
+                    <header class="panel__header"><h3>虚拟人讲稿</h3><span class="action-chip">动作：A_RLH_welcome_O</span></header>
+                    <div class="panel__body">
+        <p>掌握基本概念后，我们开始学习最常见的解法——可分离变量法。</p>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+    <div class="subtitle-area" id="subtitleArea">欢迎学习第7章 视频 7.1 微分方程的基本概念！点击开始讲课启动虚拟人讲师。</div>
+    <div class="control-bar">
+        <div class="control-title">第 <span id="currentSlide">1</span> 页 / 共 <span id="totalSlides">4</span> 页</div>
+        <button class="btn" onclick="previousSlide()">⬅️ 上一页</button>
+        <button class="btn primary" onclick="startTeaching()" id="startBtn">🎀 开始讲课</button>
+        <button class="btn" onclick="nextSlide()">下一页 ➡️</button>
+        <button class="btn" onclick="restart()">🔄 重新开始</button>
+        <button class="btn autoplay" onclick="startAutoPlay()" id="autoPlayBtn">🎬 自动播放</button>
+        <div class="control-hint">💡 录制提示：点击自动播放后立即开始录屏，系统会自动完成全部演示。</div>
+        <div class="control-shortcuts">💡 快捷键：空格/→ 下一页，← 上一页，Enter 播放当前页</div>
+    </div>
+    <script type="module">
+        try {
+            const { default: AvatarPlatform, SDKEvents, PlayerEvents, RecorderEvents, UserMedia } = await import('./avatar-sdk-web_3.1.2.1002/index.js');
+            window.AvatarPlatform = AvatarPlatform;
+            window.SDKEvents = SDKEvents;
+            window.PlayerEvents = PlayerEvents;
+            window.RecorderEvents = RecorderEvents;
+            window.UserMedia = UserMedia;
+            console.log('✅ 讯飞官方SDK模块已加载');
+            console.log('SDK版本:', AvatarPlatform.getVersion());
+        } catch (error) {
+            console.error('❌ SDK模块加载失败:', error);
+        }
+        window.dispatchEvent(new CustomEvent('sdkReady'));
+    </script>
+    <script>
+        const lessonTitle = "第7章 视频 7.1 微分方程的基本概念";
+        const subtitleScript = {
+  "1": "微分方程描述变量之间的动态关系，是研究变化的核心工具。",
+  "2": "初始条件像一个定位器，帮我们从通解中挑出唯一的解。",
+  "3": "别把阶和次数混淆，阶是导数的层数，次数是指数。",
+  "4": "掌握基本概念后，我们开始学习最常见的解法——可分离变量法。"
+};
+        const actionMap = {
+  "1": "A_RLH_welcome_O",
+  "2": "A_LH_introduced_O",
+  "3": "A_RH_point_O",
+  "4": "A_RLH_welcome_O"
+};
+        const slideTitles = {
+  "1": "概念引入",
+  "2": "通解与特解",
+  "3": "阶与次数",
+  "4": "总结"
+};
+        const slideDurations = {
+  "1": 57499,
+  "2": 69000,
+  "3": 63249,
+  "4": 46000
+};
+        const totalSlides = 4;
+
+        let avatarPlatform = null;
+        let isConnected = false;
+        let isTeaching = false;
+        let currentSlide = 0;
+        let isAutoPlaying = false;
+
+        const slides = document.querySelectorAll('.slide');
+        const timelineItems = document.querySelectorAll('.timeline-item');
+
+        function showSlide(index) {
+            slides.forEach((slide, i) => slide.classList.toggle('active', i === index));
+            currentSlide = index;
+            document.getElementById('currentSlide').textContent = index + 1;
+            if (window.MathJax && window.MathJax.typesetPromise) {
+                window.MathJax.typesetPromise([slides[index]]).catch(err => console.error(err));
+            }
+            timelineItems.forEach((item, i) => item.classList.toggle('active', i === index));
+        }
+
+        function nextSlide() {
+            if (currentSlide < totalSlides - 1) {
+                showSlide(currentSlide + 1);
+                if (!isAutoPlaying) speakContent(currentSlide + 1);
+            }
+        }
+
+        function previousSlide() {
+            if (currentSlide > 0) {
+                showSlide(currentSlide - 1);
+                if (!isAutoPlaying) speakContent(currentSlide + 1);
+            }
+        }
+
+        function restart() {
+            showSlide(0);
+            if (!isAutoPlaying) speakContent(1);
+        }
+
+        function updateSubtitle(text) {
+            const area = document.getElementById('subtitleArea');
+            if (area) {
+                area.textContent = text;
+            }
+        }
+
+        function updateStatus(message, type = 'normal') {
+            const indicator = document.getElementById('statusIndicator');
+            if (!indicator) return;
+            indicator.textContent = message;
+            indicator.className = 'status-indicator';
+            if (type === 'connected') indicator.classList.add('connected');
+            if (type === 'error') indicator.classList.add('error');
+            if (type === 'connecting') indicator.classList.add('connecting');
+            if (type === 'recording') indicator.classList.add('recording');
+        }
+
+        const READING_SPEED = 3.7;
+
+        function estimateSpeechDuration(text) {
+            if (!text) return 0;
+            const normalized = text
+                .replace(/[，。、？！,.!?；;：:]/g, ' ')
+                .replace(/\s+/g, ' ')
+                .trim();
+            const characterCount = normalized.replace(/\s+/g, '').length;
+            const formulaMatches = text.match(/\$[^$]+\$/g) || [];
+            const baseDuration = Math.ceil(characterCount / READING_SPEED) * 1000;
+            const formulaBuffer = formulaMatches.length * 2000;
+            return baseDuration + formulaBuffer + 1500;
+        }
+
+        function calculateSlideWait(slide) {
+            const scripted = slideDurations[slide] || 18000;
+            const narration = subtitleScript[slide] || '';
+            const estimated = estimateSpeechDuration(narration);
+            return Math.max(scripted, estimated);
+        }
+
+        function enterRecordingMode() {
+            document.body.classList.add('recording-mode');
+        }
+
+        function exitRecordingMode() {
+            document.body.classList.remove('recording-mode');
+        }
+
+        function waitForSDK() {
+            return new Promise((resolve, reject) => {
+                if (typeof AvatarPlatform !== 'undefined') {
+                    resolve();
+                    return;
+                }
+                const timeout = setTimeout(() => {
+                    reject(new Error('SDK加载超时，请刷新页面重试'));
+                }, 10000);
+                window.addEventListener('sdkReady', function handler() {
+                    clearTimeout(timeout);
+                    window.removeEventListener('sdkReady', handler);
+                    resolve();
+                });
+            });
+        }
+
+        async function startTeaching() {
+            const startBtn = document.getElementById('startBtn');
+            startBtn.textContent = '🔄 启动中...';
+            startBtn.disabled = true;
+            try {
+                updateStatus('等待SDK加载...', 'connecting');
+                await waitForSDK();
+                if (avatarPlatform) {
+                    avatarPlatform.destroy();
+                }
+                avatarPlatform = new AvatarPlatform({ useInlinePlayer: true });
+                avatarPlatform
+                    .on('connected', () => {
+                        isConnected = true;
+                        isTeaching = true;
+                        updateStatus('已连接', 'connected');
+                        startBtn.textContent = '💖 虚拟人已就绪';
+                        setTimeout(() => speakContent(currentSlide + 1), 500);
+                    })
+                    .on('disconnected', () => {
+                        isConnected = false;
+                        isTeaching = false;
+                        updateStatus('连接断开', 'error');
+                        startBtn.textContent = '重新连接';
+                        startBtn.disabled = false;
+                    })
+                    .on('error', (error) => {
+                        console.error('❌ 虚拟人错误:', error);
+                        updateStatus('错误: ' + error.message, 'error');
+                        startBtn.textContent = '连接失败';
+                        startBtn.disabled = false;
+                    });
+
+                avatarPlatform.setApiInfo({
+                    appId: 'b4889d02',
+                    apiKey: 'de174061f9ffd1f4e7f1827aa98881be',
+                    apiSecret: 'NWMyZThkMWVkMDZmYThlOTA5ZGE2NjM2',
+                    sceneId: '213607046975721472',
+                    serverUrl: 'wss://avatar.cn-huadong-1.xf-yun.com/v1/interact'
+                });
+
+                avatarPlatform.setGlobalParams({
+                    stream: { protocol: 'xrtc', alpha: 1, bitrate: 1000000, fps: 25 },
+                    avatar: { avatar_id: '110332017', width: 1920, height: 1080, scale: 1, move_h: 0, move_v: 0, audio_format: 1 },
+                    tts: { vcn: 'x4_yiting', speed: 50, pitch: 50, volume: 100 },
+                    avatar_dispatch: { interactive_mode: 1, content_analysis: 0 }
+                });
+
+                await avatarPlatform.start({ wrapper: document.getElementById('avatarWrapper') });
+            } catch (error) {
+                console.error('❌ 启动失败:', error);
+                updateStatus('启动失败', 'error');
+                startBtn.textContent = '🔄 重试';
+                startBtn.disabled = false;
+                alert('启动失败: ' + error.message);
+            }
+        }
+
+        async function speakContent(slideNum) {
+            const text = subtitleScript[slideNum] || '';
+            updateSubtitle(text ? `【第${slideNum}页/${totalSlides}页】` + text : `第${slideNum}页`);
+            if (!isTeaching || !isConnected || !avatarPlatform || !text) return;
+            try {
+                const action = actionMap[slideNum];
+                if (action) {
+                    await avatarPlatform.writeCmd('action', action);
+                }
+                await avatarPlatform.writeText(text, { nlp: false });
+            } catch (error) {
+                console.error('❌ 语音播报失败:', error);
+            }
+        }
+
+        async function startAutoPlay() {
+            const autoBtn = document.getElementById('autoPlayBtn');
+            if (isAutoPlaying) {
+                isAutoPlaying = false;
+                autoBtn.textContent = '🎬 自动播放';
+                autoBtn.classList.remove('stop');
+                exitRecordingMode();
+                updateStatus('自动播放已停止');
+                return;
+            }
+            isAutoPlaying = true;
+            autoBtn.textContent = '⏹️ 停止播放';
+            autoBtn.classList.add('stop');
+            updateStatus('🎬 自动播放将在 3 秒后开始，请准备录屏！', 'recording');
+            await new Promise(resolve => setTimeout(resolve, 3000));
+            if (!isAutoPlaying) {
+                autoBtn.textContent = '🎬 自动播放';
+                autoBtn.classList.remove('stop');
+                updateStatus('自动播放已取消');
+                return;
+            }
+
+            enterRecordingMode();
+
+            for (let slide = 1; slide <= totalSlides; slide++) {
+                if (!isAutoPlaying) break;
+                showSlide(slide - 1);
+                speakContent(slide);
+                const duration = calculateSlideWait(slide);
+                await new Promise(resolve => setTimeout(resolve, duration));
+            }
+
+            exitRecordingMode();
+            isAutoPlaying = false;
+            autoBtn.textContent = '🎬 自动播放';
+            autoBtn.classList.remove('stop');
+            updateStatus('课程播放结束');
+        }
+
+        timelineItems.forEach((item, index) => {
+            item.addEventListener('click', () => {
+                isAutoPlaying = false;
+                const autoBtn = document.getElementById('autoPlayBtn');
+                autoBtn.textContent = '🎬 自动播放';
+                autoBtn.classList.remove('stop');
+                exitRecordingMode();
+                showSlide(index);
+                speakContent(index + 1);
+            });
+        });
+
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'ArrowRight' || event.key === ' ') {
+                event.preventDefault();
+                nextSlide();
+            } else if (event.key === 'ArrowLeft') {
+                event.preventDefault();
+                previousSlide();
+            } else if (event.key === 'Enter') {
+                event.preventDefault();
+                speakContent(currentSlide + 1);
+            } else if ((event.key === 'r' || event.key === 'R') && event.shiftKey) {
+                event.preventDefault();
+                if (document.body.classList.contains('recording-mode')) {
+                    exitRecordingMode();
+                } else {
+                    enterRecordingMode();
+                }
+            }
+        });
+
+        window.addEventListener('beforeunload', () => {
+            if (avatarPlatform && isConnected) {
+                avatarPlatform.stop();
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('totalSlides').textContent = totalSlides;
+            showSlide(0);
+        });
+    </script>
+</body>
+</html>
