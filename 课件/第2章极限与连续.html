@@ -2,8 +2,38 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <script src="../common-assets/js/mathjax-config.js"></script>
-    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg.js"></script>
+    <script>
+    window.MathJax = {
+        tex: {
+            inlineMath: [['$', '$'], ['\\(', '\\)']],
+            displayMath: [['$$', '$$'], ['\\[', '\\]']],
+            processEscapes: true,
+            processEnvironments: true,
+            packages: {'[+]': ['ams', 'noerrors', 'color']},
+            macros: {
+                RR: '{\\mathbb{R}}',
+                NN: '{\\mathbb{N}}',
+                ZZ: '{\\mathbb{Z}}',
+                QQ: '{\\mathbb{Q}}',
+                CC: '{\\mathbb{C}}'
+            }
+        },
+        options: {
+            ignoreHtmlClass: 'tex2jax_ignore',
+            processHtmlClass: 'tex2jax_process',
+            renderActions: {
+                addMenu: []
+            }
+        },
+        startup: {
+            ready: () => {
+                console.log('MathJax is ready');
+                MathJax.startup.defaultReady();
+            }
+        }
+    };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
     <style>
         /* 页面整体样式 */
         * {
@@ -647,6 +677,7 @@
         <span class="slide-number" id="slideNumber">1 / 48</span>
         <button class="nav-btn" onclick="nextSlide()" aria-label="下一页">下一页</button>
         <button class="nav-btn" onclick="autoPlay()" id="autoPlayBtn" aria-label="自动播放">自动播放</button>
+        <button class="nav-btn" onclick="forceRerenderMath()" id="rerenderMathBtn" style="background: #f59e0b; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; margin-left: 10px;">重新渲染公式</button>
     </div>
 
     <!-- AI数列助手悬浮按钮 -->
@@ -674,7 +705,7 @@
                 <div class="student-pain-points">
                     <h3>⚠️ 学生常见困难点</h3>
                     <ul>
-                        <li><strong>符号理解</strong>：$\\lim_{n\\to\\infty}$、$\\varepsilon$-$N$定义看不懂</li>
+                        <li><strong>符号理解</strong>：$\lim_{n\to\infty}$、$\varepsilon$-$N$定义看不懂</li>
                         <li><strong>概念混淆</strong>：极限值 vs 数列的项，无限接近 vs 等于</li>
                         <li><strong>计算技能</strong>：遇到0/0型不知道如何处理</li>
                     </ul>
@@ -706,7 +737,7 @@
 
                     <div class="step-item" data-step="2">
                         <div class="definition">
-                            <strong>定义1</strong> 在某一法则下,当 $n(n\\in N^{+})$ 依次取 $1,2,3,\cdots,n,\cdots$ 时,对应的实数排成一列数 $x_{1},x_{2},x_{3},...,x_{n},\cdots$,这列数就称为数列,记作 $\\{x_n\\}$。
+                            <strong>定义1</strong> 在某一法则下,当 $n(n\in N^{+})$ 依次取 $1,2,3,\cdots,n,\cdots$ 时,对应的实数排成一列数 $x_{1},x_{2},x_{3},...,x_{n},\cdots$,这列数就称为数列,记作 $\\{x_n\\}$。
                         </div>
                         <p>数列中的每一个数称为数列的项,第n项 $x_{n}$ 称为数列的一般项或通项。</p>
                         <button class="step-btn" data-action="next">下一步：常见误区</button>
@@ -753,7 +784,7 @@
                             <li><strong>研究对象：</strong>整个数列，尤其是无限多项的趋势</li>
                             <li><strong>核心问题：</strong>
                                 <ul>
-                                    <li>当 $n \to \\infty$ 时，$a_n$ 趋向哪个值？</li>
+                                    <li>当 $n \to \infty$ 时，$a_n$ 趋向哪个值？</li>
                                     <li>数列收敛还是发散？</li>
                                 </ul>
                             </li>
@@ -769,17 +800,17 @@
                 content: `
                 <h2>🏃‍♂️ 观察数列的变化趋势</h2>
                 <div class="prompt-card">
-                    <strong>教师提问</strong>：我们来看这个数列 $x_n = \\frac{n}{n+1}$。当 n=1, 2, 10, 100 时，这个数分别是多少？你发现 n 越来越大时，这个数越来越接近哪个固定的数字？它会等于那个数吗？
+                    <strong>教师提问</strong>：我们来看这个数列 $x_n = \frac{n}{n+1}$。当 n=1, 2, 10, 100 时，这个数分别是多少？你发现 n 越来越大时，这个数越来越接近哪个固定的数字？它会等于那个数吗？
                 </div>
 
                 <div class="step-stack" id="trend-observation">
                     <div class="step-item active" data-step="1">
                         <h4>让学生计算几个值</h4>
                         <div style="background: #f8f9fa; padding: 15px; border-radius: 8px;">
-                            <p>$x_1 = \\frac{1}{1+1} = \\frac{1}{2} = 0.5$</p>
-                            <p>$x_2 = \\frac{2}{2+1} = \\frac{2}{3} ≈ 0.667$</p>
-                            <p>$x_{10} = \\frac{10}{10+1} = \\frac{10}{11} ≈ 0.909$</p>
-                            <p>$x_{100} = \\frac{100}{100+1} = \\frac{100}{101} ≈ 0.990$</p>
+                            <p>$x_1 = \frac{1}{1+1} = \frac{1}{2} = 0.5$</p>
+                            <p>$x_2 = \frac{2}{2+1} = \frac{2}{3} ≈ 0.667$</p>
+                            <p>$x_{10} = \frac{10}{10+1} = \frac{10}{11} ≈ 0.909$</p>
+                            <p>$x_{100} = \frac{100}{100+1} = \frac{100}{101} ≈ 0.990$</p>
                         </div>
                         <button class="step-btn" data-action="next">下一步：类比理解</button>
                     </div>
@@ -833,13 +864,13 @@
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
                     <div style="background: rgba(99,102,241,0.08); padding: 16px; border-radius: 12px; border-left: 4px solid #6366f1;">
                         <h3>数列写法</h3>
-                        <p>$\\{x_n\\}: x_1, x_2, x_3, \\cdots$</p>
-                        <p>例：$x_n=\\frac{n}{n+1} = \\frac{1}{2}, \\frac{2}{3}, \\frac{3}{4}, \\cdots$</p>
+                        <p>$\\{x_n\\}: x_1, x_2, x_3, \cdots$</p>
+                        <p>例：$x_n=\frac{n}{n+1} = \frac{1}{2}, \frac{2}{3}, \frac{3}{4}, \cdots$</p>
                     </div>
                     <div style="background: rgba(14,165,233,0.08); padding: 16px; border-radius: 12px; border-left: 4px solid #0ea5e9;">
                         <h3>函数写法</h3>
-                        <p>$f(n),\\ n\\in\\mathbb{N}^+$</p>
-                        <p>例：$f(n)=\\frac{n}{n+1}\\Rightarrow f(1)=\\frac{1}{2}, f(2)=\\frac{2}{3}$</p>
+                        <p>$f(n),\\ n\in\mathbb{N}^+$</p>
+                        <p>例：$f(n)=\frac{n}{n+1}\Rightarrow f(1)=\frac{1}{2}, f(2)=\frac{2}{3}$</p>
                     </div>
                 </div>
                 <div class="teacher-note">“换个视角，数列就是一个只在整数点上取值的离散函数。”</div>
@@ -853,11 +884,11 @@
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
                         <div style="background: rgba(251,191,36,0.12); padding: 16px; border-radius: 12px; border-left: 4px solid #fbbf24;">
                             <h3>数列：离散的道路</h3>
-                            <p>自变量只能取 $1,2,3,\\cdots$，唯一的逼近方式是 $n\to\\infty$。</p>
+                            <p>自变量只能取 $1,2,3,\cdots$，唯一的逼近方式是 $n\to\infty$。</p>
                         </div>
                         <div style="background: rgba(34,197,94,0.12); padding: 16px; border-radius: 12px; border-left: 4px solid #22c55e;">
                             <h3>函数：连续的高速公路</h3>
-                            <p>自变量是连续实数，可以左逼近、右逼近、趋向 $+\\infty$ 或 $-\\infty$。</p>
+                            <p>自变量是连续实数，可以左逼近、右逼近、趋向 $+\infty$ 或 $-\infty$。</p>
                         </div>
                     </div>
                     <div class="prompt-card">
@@ -886,7 +917,7 @@
 
                     <div class="step-item" data-step="2">
                         <div class="definition">
-                            <strong>定义2</strong> 对于数列 $\\{x_{n}\\}$,如果当n无限增大时,数列的一般项 $x_{n}$ 无限地接近于某一确定的数值a,则称常数a是数列 $\\{x_{n}\\}$ 的极限,或称数列 $\\{x_{n}\\}$ 收敛于a,记作 $$\\displaystyle\lim_{n\to\\infty}x_{n}=a$$
+                            <strong>定义2</strong> 对于数列 $\\{x_{n}\\}$,如果当n无限增大时,数列的一般项 $x_{n}$ 无限地接近于某一确定的数值a,则称常数a是数列 $\\{x_{n}\\}$ 的极限,或称数列 $\\{x_{n}\\}$ 收敛于a,记作 $$\displaystyle\lim_{n\to\infty}x_{n}=a$$
                         </div>
                         <p>如果数列没有极限,就说数列是发散的。</p>
                         <button class="step-btn" data-action="next">下一步：ε-N承诺</button>
@@ -915,12 +946,12 @@
             },
             {
                 title: "Collatz猜想",
-                content: `<h4>Collatz 猜想 (3n+1 数列)</h4><p>从任何正数开始并遵循两个简单规则：</p><ul><li>如果 $x_{n}$ 是偶数,则 $x_{n+1}=\\frac{x_{n}}{2}$</li><li>如果 $x_{n}$ 是奇数,则 $x_{n+1}=3x_{n}+1$</li></ul><p>猜想表明,无论起始数字如何,最终总会达到4, 2, 1的循环。</p>`,
+                content: `<h4>Collatz 猜想 (3n+1 数列)</h4><p>从任何正数开始并遵循两个简单规则：</p><ul><li>如果 $x_{n}$ 是偶数,则 $x_{n+1}=\frac{x_{n}}{2}$</li><li>如果 $x_{n}$ 是奇数,则 $x_{n+1}=3x_{n}+1$</li></ul><p>猜想表明,无论起始数字如何,最终总会达到4, 2, 1的循环。</p>`,
                 animation: "collatz"
             },
             {
                 title: "斐波那契数列",
-                content: `<h4>斐波那契数列与黄金分割</h4><div class="example"><p><strong>斐波那契数列</strong>: 每个数是前两个数的和。<br>0, 1, 1, 2, 3, 5, 8, 13, 21, 34,...</p><p><strong>黄金分割 $\\phi$</strong>: 约等于1.618。</p><div class="formula-highlight">$$\\displaystyle\\lim_{n\\to\\infty}\\frac{F(n)}{F(n-1)}=\\phi$$</div></div>`,
+                content: `<h4>斐波那契数列与黄金分割</h4><div class="example"><p><strong>斐波那契数列</strong>: 每个数是前两个数的和。<br>0, 1, 1, 2, 3, 5, 8, 13, 21, 34,...</p><p><strong>黄金分割 $\phi$</strong>: 约等于1.618。</p><div class="formula-highlight">$$\displaystyle\lim_{n\to\infty}\frac{F(n)}{F(n-1)}=\phi$$</div></div>`,
                 animation: "fibonacci"
             },
             {
@@ -929,7 +960,7 @@
                 <div class="step-stack" data-steps="example1_1">
                   <div class="step-item active" data-step="1">
                     <h4>题面</h4>
-                    <p>讨论数列 $x_n=\\frac{n}{n+1}$ 的变化趋势</p>
+                    <p>讨论数列 $x_n=\frac{n}{n+1}$ 的变化趋势</p>
                     <button class="step-btn" data-action="next">显示思考提示</button>
                   </div>
                   <div class="step-item" data-step="2">
@@ -939,7 +970,7 @@
                   </div>
                   <div class="step-item" data-step="3">
                     <h4>解析</h4>
-                    <p>$\\lim\\limits_{n\\to\\infty}\\frac{n}{n+1}=1$，无限接近但不等于 1。</p>
+                    <p>$\lim\limits_{n\to\infty}\frac{n}{n+1}=1$，无限接近但不等于 1。</p>
                   </div>
                 </div>
                 <div class="canvas-wrapper">
@@ -954,7 +985,7 @@
                 <div class="step-stack" data-steps="example1_2">
                   <div class="step-item active" data-step="1">
                     <h4>题面</h4>
-                    <p>数列 $x_{n}=\\frac{1}{2}[1+(-1)^{n}]$ 是否收敛？</p>
+                    <p>数列 $x_{n}=\frac{1}{2}[1+(-1)^{n}]$ 是否收敛？</p>
                     <button class="step-btn" data-action="next">显示思考提示</button>
                   </div>
                   <div class="step-item" data-step="2">
@@ -979,7 +1010,7 @@
                 <div class="step-stack" data-steps="example1_3">
                   <div class="step-item active" data-step="1">
                     <h4>题面</h4>
-                    <p>讨论 $x_{n}=\\frac{1}{(-3)^{n}}$ 的收敛性</p>
+                    <p>讨论 $x_{n}=\frac{1}{(-3)^{n}}$ 的收敛性</p>
                     <button class="step-btn" data-action="next">显示思考提示</button>
                   </div>
                   <div class="step-item" data-step="2">
@@ -989,7 +1020,7 @@
                   </div>
                   <div class="step-item" data-step="3">
                     <h4>解析</h4>
-                    <p>$\\lim\\limits_{n\\to\\infty} x_n = 0$，收敛到 0（符号交替但幅度衰减）。</p>
+                    <p>$\lim\limits_{n\to\infty} x_n = 0$，收敛到 0（符号交替但幅度衰减）。</p>
                   </div>
                 </div>
                 <div class="canvas-wrapper">
@@ -1014,7 +1045,7 @@
                   </div>
                   <div class="step-item" data-step="3">
                     <h4>解析</h4>
-                    <p>$\\lim\\limits_{n\\to\\infty} 8 = 8$，常数列的极限即该常数。</p>
+                    <p>$\lim\limits_{n\to\infty} 8 = 8$，常数列的极限即该常数。</p>
                   </div>
                 </div>
                 <div class="canvas-wrapper">
@@ -1027,10 +1058,7 @@
             title: "拓展案例：Collatz 猜想",
                 content: `
                 <h2>🔎 拓展案例：Collatz 猜想</h2>
-                <p>任意正整数按“奇数乘3加1、偶数除以2”的规则演化，似乎都会回到 $1 
-rightarrow 4 
-rightarrow 2 
-rightarrow 1$ 的循环。</p>
+                <p>任意正整数按“奇数乘3加1、偶数除以2”的规则演化，似乎都会回到 $1 \rightarrow 4 \rightarrow 2 \rightarrow 1$ 的循环。</p>
                 <div class="note">未被证明的开放问题：所有起点是否都最终进入该循环？</div>
                 `,
                 animation: "collatz"
@@ -1039,8 +1067,8 @@ rightarrow 1$ 的循环。</p>
                 title: "拓展案例：斐波那契与黄金分割",
                 content: `
                 <h2>📐 斐波那契数列与黄金分割</h2>
-                <p>斐波那契数列：$0,1,1,2,3,5,8,\\cdots$</p>
-                <p>比值极限：$\displaystyle\lim_{n\to\\infty}\frac{F_n}{F_{n-1}}=\Phi\approx1.618$</p>
+                <p>斐波那契数列：$0,1,1,2,3,5,8,\cdots$</p>
+                <p>比值极限：$\displaystyle\lim_{n\to\infty}\frac{F_n}{F_{n-1}}=\Phi\approx1.618$</p>
                 <div class="teacher-note">这个极限解释了自然界与艺术中反复出现的黄金比例。</div>
                 `,
                 animation: "fibonacci"
@@ -1060,7 +1088,7 @@ rightarrow 1$ 的循环。</p>
             },
             {
                 title: "函数的极限：x → ∞",
-                content: `<h3>$x \to \\infty$（趋向无穷）</h3><ul><li><strong>含义：</strong>$x$ 的绝对值无限增大</li><li><strong>记号：</strong>$\displaystyle\lim_{x\to\\infty}f(x)=L$</li><li><strong>几何意义：</strong>沿数轴向两端移动时，函数值越来越接近 $L$。</li></ul>`,
+                content: `<h3>$x \to \infty$（趋向无穷）</h3><ul><li><strong>含义：</strong>$x$ 的绝对值无限增大</li><li><strong>记号：</strong>$\displaystyle\lim_{x\to\infty}f(x)=L$</li><li><strong>几何意义：</strong>沿数轴向两端移动时，函数值越来越接近 $L$。</li></ul>`,
                 animation: "function_infinity"
             },
             {
@@ -1090,62 +1118,62 @@ rightarrow 1$ 的循环。</p>
             },
             {
                 title: "函数的极限通俗理解",
-                content: `<h4>函数极限的通俗理解</h4><div class="note"><p><strong>当 $x \to \\infty$ 时：</strong><br>好比你站在函数图像上，沿着x轴一直向右($x \to +\infty$)或向左($x \to -\infty$)走。我们关心的是，当你走得非常远时，你所在位置的高度(y值)是否会稳定在某一个值？</p><p><strong>当 $x \to x_0$ 时：</strong><br>我们关心x<strong>无限靠近</strong> $x_0$ 时函数的高度 $f(x)$ 会怎样。<strong>只关心 $x_0$ 点附近的趋势，不在乎函数在 $x_0$ 点本身的值！</strong></p></div>`,
+                content: `<h4>函数极限的通俗理解</h4><div class="note"><p><strong>当 $x \to \infty$ 时：</strong><br>好比你站在函数图像上，沿着x轴一直向右($x \to +\infty$)或向左($x \to -\infty$)走。我们关心的是，当你走得非常远时，你所在位置的高度(y值)是否会稳定在某一个值？</p><p><strong>当 $x \to x_0$ 时：</strong><br>我们关心x<strong>无限靠近</strong> $x_0$ 时函数的高度 $f(x)$ 会怎样。<strong>只关心 $x_0$ 点附近的趋势，不在乎函数在 $x_0$ 点本身的值！</strong></p></div>`,
                 animation: "function_limit_concept"
             },
             {
                 title: "实例1 动物数量",
-                content: `<div class="example"><strong>实例1 自然保护区中动物数量的变化规律</strong><br>动物群体数量会逐渐增长，但由于资源限制，群体不可能无限增大，它应达到某一饱和状态。饱和状态就是时间 $t \to \\infty$ 时动物群的数量。</div>`,
+                content: `<div class="example"><strong>实例1 自然保护区中动物数量的变化规律</strong><br>动物群体数量会逐渐增长，但由于资源限制，群体不可能无限增大，它应达到某一饱和状态。饱和状态就是时间 $t \to \infty$ 时动物群的数量。</div>`,
                 animation: "population"
             },
             {
-                title: "$x \to \\infty$ 时极限定义",
-                content: `<div class="definition"><strong>定义3</strong> 如果当 $x\to\\infty$ 时,函数值 $f(x)$ 无限趋近于某一个确定的常数A,那么A就称为函数 $f(x)$ 当 $x\to\\infty$ 时的极限,记作 $$\\displaystyle\\lim_{x\\to\\infty}f(x)=A$$</div><div class="theorem"><strong>定理1</strong> $$\\displaystyle\\lim_{x\\to\\infty}f(x)=A \iff \\lim_{x\to+\infty}f(x)=\\lim_{x\to-\infty}f(x)=A$$</div>`,
+                title: "$x \to \infty$ 时极限定义",
+                content: `<div class="definition"><strong>定义3</strong> 如果当 $x\to\infty$ 时,函数值 $f(x)$ 无限趋近于某一个确定的常数A,那么A就称为函数 $f(x)$ 当 $x\to\infty$ 时的极限,记作 $$\displaystyle\lim_{x\to\infty}f(x)=A$$</div><div class="theorem"><strong>定理1</strong> $$\displaystyle\lim_{x\to\infty}f(x)=A \iff \lim_{x\to+\infty}f(x)=\lim_{x\to-\infty}f(x)=A$$</div>`,
                 animation: "function_infinity"
             },
             {
                 title: "例3 y=1/x",
-                content: `<div class="example"><strong>例3</strong> 讨论当 $x\to+\infty$ 时,函数 $y=\\frac{1}{x}$ 的变化趋势。</div><p><strong>解</strong>: 当x沿x轴正方向无限增大时,曲线 $y=\\frac{1}{x}$ 无限接近于x轴,故极限为0。</p><div class="formula-highlight">$$\\displaystyle\\lim_{x\to+\infty}\\frac{1}{x}=0$$</div>`,
+                content: `<div class="example"><strong>例3</strong> 讨论当 $x\to+\infty$ 时,函数 $y=\frac{1}{x}$ 的变化趋势。</div><p><strong>解</strong>: 当x沿x轴正方向无限增大时,曲线 $y=\frac{1}{x}$ 无限接近于x轴,故极限为0。</p><div class="formula-highlight">$$\displaystyle\lim_{x\to+\infty}\frac{1}{x}=0$$</div>`,
                 animation: "one_over_x"
             },
             {
                 title: "例4 反正切函数",
-                content: `<div class="example"><strong>例4</strong> 讨论反正切函数 $y=\\arctan x$ 的极限。</div><p><strong>解</strong>: $$\\displaystyle\\lim_{x\to+\infty}\\arctan x=\\frac{\\pi}{2}$$ $$\\displaystyle\\lim_{x\to-\infty}\\arctan x=-\\frac{\\pi}{2}$$</p><p>由于左右极限不相等, 所以 $\\displaystyle\\lim_{x\\to\\infty}\\arctan x$ 不存在。</p>`,
+                content: `<div class="example"><strong>例4</strong> 讨论反正切函数 $y=\arctan x$ 的极限。</div><p><strong>解</strong>: $$\displaystyle\lim_{x\to+\infty}\arctan x=\frac{\pi}{2}$$ $$\displaystyle\lim_{x\to-\infty}\arctan x=-\frac{\pi}{2}$$</p><p>由于左右极限不相等, 所以 $\displaystyle\lim_{x\to\infty}\arctan x$ 不存在。</p>`,
                 animation: "arctan"
             },
             {
                 title: "x趋向x0时的极限",
-                content: `<h4>2. 当 $x\to x_{0}$ 时,函数 $f(x)$ 的极限</h4><div class="example"><strong>实例4 人影长度</strong><br>若一个人走向路灯正下方,他越靠近目标 $(x \\to 0)$,其影子长度越短,逐渐趋于 $0(y \\to 0)$。</div>`,
+                content: `<h4>2. 当 $x\to x_{0}$ 时,函数 $f(x)$ 的极限</h4><div class="example"><strong>实例4 人影长度</strong><br>若一个人走向路灯正下方,他越靠近目标 $(x \to 0)$,其影子长度越短,逐渐趋于 $0(y \to 0)$。</div>`,
                 animation: "shadow"
             },
             {
                 title: "函数在点的极限定义",
-                content: `<div class="definition"><strong>定义2-3</strong> 如果当 $x \to x_0$ 时, 函数 $f(x)$ 无限接近于一个确定的常数A, 那么称A为函数 $f(x)$ 在 $x \to x_0$ 时的极限, 记为 $$\\displaystyle\\lim_{x \to x_0} f(x) = A$$</div>`,
+                content: `<div class="definition"><strong>定义2-3</strong> 如果当 $x \to x_0$ 时, 函数 $f(x)$ 无限接近于一个确定的常数A, 那么称A为函数 $f(x)$ 在 $x \to x_0$ 时的极限, 记为 $$\displaystyle\lim_{x \to x_0} f(x) = A$$</div>`,
                 animation: "point_limit"
             },
             {
                 title: "瞬时速度",
-                content: `<div class="example"><strong>实例5 瞬时速度</strong><br>自由落体运动的路程函数为 $s = \\frac{1}{2}gt^2$。$t_0$ 时刻的瞬时速度就是 $t_0$ 到 $t$ 的平均速度在 $t \to t_0$ 时的极限。</div><p>$$v(t_0) = \\displaystyle\\lim_{t \to t_0} \\frac{s(t) - s(t_0)}{t - t_0} = gt_0$$</p>`,
+                content: `<div class="example"><strong>实例5 瞬时速度</strong><br>自由落体运动的路程函数为 $s = \frac{1}{2}gt^2$。$t_0$ 时刻的瞬时速度就是 $t_0$ 到 $t$ 的平均速度在 $t \to t_0$ 时的极限。</div><p>$$v(t_0) = \displaystyle\lim_{t \to t_0} \frac{s(t) - s(t_0)}{t - t_0} = gt_0$$</p>`,
                 animation: "velocity"
             },
             {
                 title: "例6",
-                content: `<div class="example"><strong>例6</strong> 设 $f(x)=\\begin{cases}x+2, & x\geq 1 \\\\ 3x, & x<1\\end{cases}$,判断 $\\displaystyle\\lim_{x\to 1}f(x)$ 是否存在。</div><p><strong>解</strong>: $\\displaystyle\\lim_{x\to 1^{+}}f(x)=\\lim_{x\to 1^{+}}(x+2)=3$</p><p>$\\displaystyle\\lim_{x\to 1^{-}}f(x)=\\lim_{x\to 1^{-}}3x=3$</p><p>左右极限存在且相等, 所以 $\\displaystyle\\lim_{x\to 1}f(x)=3$。</p>`,
+                content: `<div class="example"><strong>例6</strong> 设 $f(x)=\begin{cases}x+2, & x\geq 1 \\ 3x, & x<1\end{cases}$,判断 $\displaystyle\lim_{x\to 1}f(x)$ 是否存在。</div><p><strong>解</strong>: $\displaystyle\lim_{x\to 1^{+}}f(x)=\lim_{x\to 1^{+}}(x+2)=3$</p><p>$\displaystyle\lim_{x\to 1^{-}}f(x)=\lim_{x\to 1^{-}}3x=3$</p><p>左右极限存在且相等, 所以 $\displaystyle\lim_{x\to 1}f(x)=3$。</p>`,
                 animation: "piecewise1"
             },
             {
                 title: "例7",
-                content: `<div class="example"><strong>例7</strong> 设 $f(x)=\\begin{cases}x^{2}, & x\geq 0 \\\\ x+1, & x<0\\end{cases}$ 讨论 $\\displaystyle\\lim_{x\to 0}f(x)$ 是否存在?</div><p><strong>解</strong>: $\\displaystyle\\lim_{x\to 0^{-}}f(x)=\\lim_{x\to 0^{-}}(x+1)=1$</p><p>$\\displaystyle\\lim_{x\to 0^{+}}f(x)=\\lim_{x\to 0^{+}}x^{2}=0$</p><p>左右极限不相等, 所以 $\\displaystyle\\lim_{x\to 0}f(x)$ 不存在。</p>`,
+                content: `<div class="example"><strong>例7</strong> 设 $f(x)=\begin{cases}x^{2}, & x\geq 0 \\ x+1, & x<0\end{cases}$ 讨论 $\displaystyle\lim_{x\to 0}f(x)$ 是否存在?</div><p><strong>解</strong>: $\displaystyle\lim_{x\to 0^{-}}f(x)=\lim_{x\to 0^{-}}(x+1)=1$</p><p>$\displaystyle\lim_{x\to 0^{+}}f(x)=\lim_{x\to 0^{+}}x^{2}=0$</p><p>左右极限不相等, 所以 $\displaystyle\lim_{x\to 0}f(x)$ 不存在。</p>`,
                 animation: "piecewise2"
             },
             {
                 title: "无穷小量",
-                content: `<h3>2.1.3 无穷小量与无穷大量</h3><h4>1. 无穷小量</h4><div class="definition"><strong>定义5</strong> 在自变量x的某一变化过程中,若函数 $f(x)$ 的极限为0,即 $\\lim f(x)=0$,则称 $f(x)$ 为在该变化过程中的<strong>无穷小量</strong>。</div><div class="note"><strong>注意</strong>：无穷小不是一个"很小的数"，而是一个以零为极限的函数。</div>`,
+                content: `<h3>2.1.3 无穷小量与无穷大量</h3><h4>1. 无穷小量</h4><div class="definition"><strong>定义5</strong> 在自变量x的某一变化过程中,若函数 $f(x)$ 的极限为0,即 $\lim f(x)=0$,则称 $f(x)$ 为在该变化过程中的<strong>无穷小量</strong>。</div><div class="note"><strong>注意</strong>：无穷小不是一个"很小的数"，而是一个以零为极限的函数。</div>`,
                 animation: "infinitesimal"
             },
             {
                 title: "无穷小的性质",
-                content: `<h4>无穷小的性质</h4><div class="theorem"><strong>性质1</strong> 有限个无穷小的代数和仍是无穷小。<br><strong>性质2</strong> 有限个无穷小的乘积仍是无穷小。<br><strong>性质3</strong> 有界函数与无穷小的乘积仍是无穷小。</div><div class="example"><strong>例8</strong> 求 $\\displaystyle\\lim_{x\\to\\infty}\\frac{1}{x}\\cos x$ 。<br><strong>解</strong>: $\\frac{1}{x}$ 是无穷小, $|\\cos x|\geq 1$ 是有界函数, 故极限为0。</div>`,
+                content: `<h4>无穷小的性质</h4><div class="theorem"><strong>性质1</strong> 有限个无穷小的代数和仍是无穷小。<br><strong>性质2</strong> 有限个无穷小的乘积仍是无穷小。<br><strong>性质3</strong> 有界函数与无穷小的乘积仍是无穷小。</div><div class="example"><strong>例8</strong> 求 $\\displaystyle\\lim_{x\\to\\infty}\\frac{1}{x}\\cos x$ 。<br><strong>解</strong>: $\\frac{1}{x}$ 是无穷小, $|\\cos x|\\geq 1$ 是有界函数, 故极限为0。</div>`,
                 animation: "infinitesimal_prop"
             },            {
                 title: "无穷大量：概念",
@@ -1174,37 +1202,37 @@ rightarrow 1$ 的循环。</p>
             },
             {
                 title: "极限的运算法则",
-                content: `<h3>2.2.2 极限的运算法则</h3><div class="theorem"><strong>定理4</strong> 设 $\\lim f(x)=A$ , $\\lim g(x)=B$ ,则<ol><li>$\\lim [f(x)\\pm g(x)]=A\\pm B$</li><li>$\\lim [f(x)\\cdot g(x)]=A\\cdot B$</li><li>$\\lim \\frac{f(x)}{g(x)}=\\frac{A}{B}(B\geq 0)$</li></ol></div>`,
+                content: `<h3>2.2.2 极限的运算法则</h3><div class="theorem"><strong>定理4</strong> 设 $\lim f(x)=A$ , $\lim g(x)=B$ ,则<ol><li>$\lim [f(x)\pm g(x)]=A\pm B$</li><li>$\lim [f(x)\cdot g(x)]=A\cdot B$</li><li>$\lim \frac{f(x)}{g(x)}=\frac{A}{B}(B\geq 0)$</li></ol></div>`,
                 animation: "limit_rules"
             },
             {
                 title: "直接代入法",
-                content: `<h3>2.2.3 极限的求法</h3><h4>1. 直接代入法</h4><div class="example"><strong>例1</strong> 求 $\\displaystyle\\lim_{x \\to 1} \\frac{3x^2 + x + 1}{4x^3 + x^2 - x + 3}$<br><strong>解</strong>: $\\frac{3(1)^2 + 1 + 1}{4(1)^3 + 1^2 - 1 + 3} = \\frac{5}{7}$</div>`,
+                content: `<h3>2.2.3 极限的求法</h3><h4>1. 直接代入法</h4><div class="example"><strong>例1</strong> 求 $\displaystyle\lim_{x \to 1} \frac{3x^2 + x + 1}{4x^3 + x^2 - x + 3}$<br><strong>解</strong>: $\frac{3(1)^2 + 1 + 1}{4(1)^3 + 1^2 - 1 + 3} = \frac{5}{7}$</div>`,
                 animation: "direct_sub"
             },
             {
                 title: "0/0型极限",
-                content: `<h4>3. 分解因式,约去零因子法（$\\frac{0}{0}$ 型）</h4><p>$\\frac{0}{0}$ 型极限被称为"未定式"。它就像一场拔河比赛,分子想把结果拉向0,分母想把结果拉向无穷大。方法：将分子或分母分解因式,<strong>约去共同的零因子</strong>,再用直接代入法。</p>`,
+                content: `<h4>3. 分解因式,约去零因子法（$\frac{0}{0}$ 型）</h4><p>$\frac{0}{0}$ 型极限被称为"未定式"。它就像一场拔河比赛,分子想把结果拉向0,分母想把结果拉向无穷大。方法：将分子或分母分解因式,<strong>约去共同的零因子</strong>,再用直接代入法。</p>`,
                 animation: "zero_zero"
             },
             {
                 title: "有理化",
-                content: `<h4>4. 分子或分母有理化（$\\frac{0}{0}$ 型）</h4><div class="example"><strong>例3</strong> 求 $\\displaystyle\\lim_{x \\to 4} \\frac{x-4}{\\sqrt{x-2}-\\sqrt{2}}$<br><strong>解</strong>: $$\\displaystyle\\lim_{x \\to 4} \\frac{(x-4)(\\sqrt{x-2}+\\sqrt{2})}{(\\sqrt{x-2}-\\sqrt{2})(\\sqrt{x-2}+\\sqrt{2})} = \\lim_{x \\to 4} (\\sqrt{x-2}+\\sqrt{2}) = 2\\sqrt{2}$$</div>`,
+                content: `<h4>4. 分子或分母有理化（$\frac{0}{0}$ 型）</h4><div class="example"><strong>例3</strong> 求 $\displaystyle\lim_{x \to 4} \frac{x-4}{\sqrt{x-2}-\sqrt{2}}$<br><strong>解</strong>: $$\displaystyle\lim_{x \to 4} \frac{(x-4)(\sqrt{x-2}+\sqrt{2})}{(\sqrt{x-2}-\sqrt{2})(\sqrt{x-2}+\sqrt{2})} = \lim_{x \to 4} (\sqrt{x-2}+\sqrt{2}) = 2\sqrt{2}$$</div>`,
                 animation: "rationalize"
             },
             {
                 title: "无穷/无穷型",
-                content: `<h4>5. 公式法（$\\frac{\\infty}{\\infty}$ 型）</h4><div class="formula-highlight">$$\\displaystyle\\lim_{x\\to\\infty}\\frac{a_{0}x^{n}+\cdots}{b_{0}x^{m}+\cdots}=\\begin{cases} \\frac{a_{0}}{b_{0}}, & n=m \\\\ 0, & n<m \\\\ \\infty, & n>m \\end{cases}$$</div><p>极限的结果,取决于分子和分母中"跑得最快的那个领头项"。</p>`,
+                content: `<h4>5. 公式法（$\frac{\infty}{\infty}$ 型）</h4><div class="formula-highlight">$$\displaystyle\lim_{x\to\infty}\frac{a_{0}x^{n}+\cdots}{b_{0}x^{m}+\cdots}=\begin{cases} \frac{a_{0}}{b_{0}}, & n=m \\ 0, & n<m \\ \infty, & n>m \end{cases}$$</div><p>极限的结果,取决于分子和分母中"跑得最快的那个领头项"。</p>`,
                 animation: "infinity_infinity"
             },
             {
                 title: "第一个重要极限",
-                content: `<h2>2.3 两个重要极限及无穷小的比较</h2><h3>2.3.1 两个重要极限</h3><h4>第一个重要极限</h4><div class="formula-highlight">$$\\displaystyle\\lim_{x\to 0}\\frac{\\sin x}{x}=1$$</div><p>它揭示了：<strong>当角度x非常小时, $\\sin(x)$ 的值和 $x$ 的值几乎是一样的</strong> (x为弧度制)。</p>`,
+                content: `<h2>2.3 两个重要极限及无穷小的比较</h2><h3>2.3.1 两个重要极限</h3><h4>第一个重要极限</h4><div class="formula-highlight">$$\displaystyle\lim_{x\to 0}\frac{\sin x}{x}=1$$</div><p>它揭示了：<strong>当角度x非常小时, $\sin(x)$ 的值和 $x$ 的值几乎是一样的</strong> (x为弧度制)。</p>`,
                 animation: "sinx_x"
             },
             {
                 title: "第二个重要极限",
-                content: `<h4>第二个重要极限</h4><div class="formula-highlight">$$\\displaystyle\\lim_{x\\to\\infty}\\left(1+\\frac{1}{x}\\right)^{x}=e$$</div><p>它定义了自然常数 <strong>e (≈2.718)</strong>, 其背景是<strong>银行的连续复利</strong>。如果计息次数无限增多,最终得到的钱会趋向于极限值e。</p>`,
+                content: `<h4>第二个重要极限</h4><div class="formula-highlight">$$\displaystyle\lim_{x\to\infty}\left(1+\frac{1}{x}\right)^{x}=e$$</div><p>它定义了自然常数 <strong>e (≈2.718)</strong>, 其背景是<strong>银行的连续复利</strong>。如果计息次数无限增多,最终得到的钱会趋向于极限值e。</p>`,
                 animation: "e_limit"
             },
             {
@@ -1323,7 +1351,7 @@ rightarrow 1$ 的循环。</p>
             },
             {
                 title: "连续性概念",
-                content: `<h2>2.4 函数的连续性</h2><h3>2.4.1 连续函数的概念</h3><h4>1. 函数的增量</h4><p>自变量的增量: $\\Delta x = x - x_0$</p><p>函数的增量: $\\Delta y=f(x_{0}+\\Delta x)-f(x_{0})$</p><div class="note">一个微小的x变化($\\Delta x \\to 0$), 只会引起一个微小的y变化($\\Delta y \\to 0$), 这就是连续。</div>`,
+                content: `<h2>2.4 函数的连续性</h2><h3>2.4.1 连续函数的概念</h3><h4>1. 函数的增量</h4><p>自变量的增量: $\Delta x = x - x_0$</p><p>函数的增量: $\Delta y=f(x_{0}+\Delta x)-f(x_{0})$</p><div class="note">一个微小的x变化($\Delta x \to 0$), 只会引起一个微小的y变化($\Delta y \to 0$), 这就是连续。</div>`,
                 animation: "continuity_concept"
             },
             {
@@ -1363,7 +1391,7 @@ rightarrow 1$ 的循环。</p>
             },
             {
                 title: "实例3 冰融化",
-                content: `<div class="example"><strong>实例3 冰融化所需热量</strong><br>$f(x) = \\begin{cases} 2.1x + 84, & x \\geq 0 \\\\ 4.2x + 420, & x > 0 \\end{cases}$<br>当 $x=0$ 时,函数是否连续?</div><p><strong>解</strong>: $\\displaystyle\\lim_{x \\to 0^-} f(x) = 84$, $\\displaystyle\\lim_{x \\to 0^+} f(x) = 420$</p><p>左右极限不相等, 所以函数在 $x=0$ 处不连续。</p>`,
+                content: `<div class="example"><strong>实例3 冰融化所需热量</strong><br>$f(x) = \begin{cases} 2.1x + 84, & x \geq 0 \\ 4.2x + 420, & x > 0 \end{cases}$<br>当 $x=0$ 时,函数是否连续?</div><p><strong>解</strong>: $\displaystyle\lim_{x \to 0^-} f(x) = 84$, $\displaystyle\lim_{x \to 0^+} f(x) = 420$</p><p>左右极限不相等, 所以函数在 $x=0$ 处不连续。</p>`,
                 animation: "ice_melting"
             },
             {
@@ -1388,12 +1416,12 @@ rightarrow 1$ 的循环。</p>
             },
             {
                 title: "练习题1",
-                content: `<div class="example"><strong>练习1</strong> 若 $\\displaystyle\\lim_{x \\to -1} \\frac{x^3+ax^2-x+4}{x+1} = b$, 求a, b.</div><p><strong>解</strong>: 分母 $\\to 0$ 且极限存在 $\\implies$ 分子 $\\to 0$。<br>$(-1)^3 + a(-1)^2 - (-1) + 4 = 0 \\implies a = -4$</p><p>代入后约去零因子 $(x+1)$, 得 $b = \\displaystyle\\lim_{x \\to -1} (x^2-5x+4) = 10$</p>`,
+                content: `<div class="example"><strong>练习1</strong> 若 $\displaystyle\lim_{x \to -1} \frac{x^3+ax^2-x+4}{x+1} = b$, 求a, b.</div><p><strong>解</strong>: 分母 $\to 0$ 且极限存在 $\implies$ 分子 $\to 0$。<br>$(-1)^3 + a(-1)^2 - (-1) + 4 = 0 \implies a = -4$</p><p>代入后约去零因子 $(x+1)$, 得 $b = \displaystyle\lim_{x \to -1} (x^2-5x+4) = 10$</p>`,
                 animation: "exercise1"
             },
             {
                 title: "练习题2",
-                content: `<div class="example"><strong>练习2</strong> 求 $\\displaystyle\\lim_{x \\to 0} \\frac{\\sqrt{1+x}-\\sqrt{1-x}}{\\sin 3x}$</div><p><strong>解</strong>: 分子有理化并用等价无穷小替换 $\\sin 3x \\sim 3x$</p><p>$\\displaystyle\\lim_{x \\to 0} \\frac{(1+x)-(1-x)}{3x(\\sqrt{1+x}+\\sqrt{1-x})} = \\lim_{x \\to 0} \\frac{2x}{3x(\\sqrt{1+x}+\\sqrt{1-x})} = \\frac{2}{3(2)} = \\frac{1}{3}$</p>`,
+                content: `<div class="example"><strong>练习2</strong> 求 $\displaystyle\lim_{x \to 0} \frac{\sqrt{1+x}-\sqrt{1-x}}{\sin 3x}$</div><p><strong>解</strong>: 分子有理化并用等价无穷小替换 $\sin 3x \sim 3x$</p><p>$\displaystyle\lim_{x \to 0} \frac{(1+x)-(1-x)}{3x(\sqrt{1+x}+\sqrt{1-x})} = \lim_{x \to 0} \frac{2x}{3x(\sqrt{1+x}+\sqrt{1-x})} = \frac{2}{3(2)} = \frac{1}{3}$</p>`,
                 animation: "exercise2"
             },
             {
@@ -1408,8 +1436,11 @@ rightarrow 1$ 的循环。</p>
         let autoPlayInterval = null;
         let animationFrameId = null;
 
+        // 渲染器状态
+        let renderingInProgress = false;
+
         // 初始化并创建所有幻灯片
-        function initSlides() {
+        async function initSlides() {
             try {
                 const container = document.getElementById('slidesContainer');
                 if (!container) {
@@ -1417,40 +1448,53 @@ rightarrow 1$ 的循环。</p>
                     return;
                 }
 
+                // 清空容器
+                container.innerHTML = '';
+
+                // 创建所有幻灯片
                 slidesData.forEach((slide, index) => {
                     const slideDiv = document.createElement('div');
                     slideDiv.className = `slide ${index === 0 ? 'active' : ''}`;
                     slideDiv.id = `slide${index + 1}`;
-                    slideDiv.innerHTML = `<div class="slide-container"><div class="left-content">${slide.content}</div><div class="right-visual"><canvas id="canvas${index + 1}" width="600" height="400"></canvas></div></div>`;
-                    container.appendChild(slideDiv);
+                    slideDiv.innerHTML = `<div class="slide-container"><div class="left-content tex2jax_process">${slide.content}</div><div class="right-visual"><canvas id="canvas${index + 1}" width="600" height="400"></canvas></div></div>`;
                     container.appendChild(slideDiv);
                 });
 
-                if (window.MathJax && MathJax.typesetPromise) {
-                    // 强制清除缓存并重新渲染SVG公式
-                    console.log('Starting MathJax SVG typeset...');
+                const waitForMathJax = () => new Promise((resolve, reject) => {
+                    if (window.MathJax && window.MathJax.typesetPromise) {
+                        resolve(window.MathJax);
+                        return;
+                    }
 
-                    MathJax.typesetPromise().then(() => {
-                        console.log('MathJax SVG typeset completed successfully');
-                        // 额外等待确保SVG完全渲染
-                        setTimeout(() => {
-                            drawAnimation(1);
-                            hideLoading();
-                        }, 800);
-                    }).catch((err) => {
-                        console.error('MathJax SVG typeset failed:', err);
-                        setTimeout(() => {
-                            drawAnimation(1);
-                            hideLoading();
-                        }, 800);
-                    });
-                } else {
-                    console.warn('MathJax not available, waiting longer...');
-                    setTimeout(() => {
+                    let attempts = 0;
+                    const check = () => {
+                        attempts++;
+                        if (window.MathJax && window.MathJax.typesetPromise) {
+                            resolve(window.MathJax);
+                        } else if (attempts < 50) { // 5秒超时
+                            setTimeout(check, 100);
+                        } else {
+                            reject(new Error('MathJax not available after timeout'));
+                        }
+                    };
+                    setTimeout(check, 100);
+                });
+
+                // 等待MathJax加载完成后渲染
+                waitForMathJax()
+                    .then(async (MathJax) => {
+                        console.log('开始渲染数学公式...');
+                        // 渲染所有幻灯片
+                        await MathJax.typesetPromise();
+                        console.log('公式渲染完成');
                         drawAnimation(1);
                         hideLoading();
-                    }, 1500);
-                }
+                    })
+                    .catch((err) => {
+                        console.error('MathJax typeset error:', err);
+                        drawAnimation(1);
+                        hideLoading();
+                    });
             } catch (error) {
                 console.error('Error initializing slides:', error);
             }
@@ -1464,21 +1508,19 @@ rightarrow 1$ 的循环。</p>
             }
             const slides = document.getElementsByClassName('slide');
             currentSlide = (n > totalSlides) ? 1 : (n < 1) ? totalSlides : n;
+            
+            // 移除所有活动状态
             Array.from(slides).forEach(s => s.classList.remove('active'));
-            slides[currentSlide - 1].classList.add('active');
+            
+            // 获取目标幻灯片
+            const targetSlide = slides[currentSlide - 1];
+            targetSlide.classList.add('active');
+            
+            // 更新页码显示
             document.getElementById('slideNumber').textContent = `${currentSlide} / ${totalSlides}`;
-            if (window.MathJax && MathJax.typesetPromise) {
-                console.log(`Rendering SVG formulas for slide ${currentSlide}...`);
-                MathJax.typesetPromise([slides[currentSlide - 1]]).then(() => {
-                    console.log(`SVG formulas rendered for slide ${currentSlide}`);
-                    setTimeout(() => drawAnimation(currentSlide), 400);
-                }).catch((err) => {
-                    console.error('MathJax SVG typeset failed for slide:', err);
-                    setTimeout(() => drawAnimation(currentSlide), 400);
-                });
-            } else {
-                setTimeout(() => drawAnimation(currentSlide), 400);
-            }
+            
+            // 直接绘制动画，MathJax会自动处理公式
+            setTimeout(() => drawAnimation(currentSlide), 100);
         }
 
         // 导航功能
@@ -3046,11 +3088,12 @@ rightarrow 1$ 的循环。</p>
                         const currentIndex = items.findIndex(el => el.classList.contains('active'));
                         const nextIndex = Math.min(currentIndex + 1, items.length - 1);
                         if (nextIndex !== currentIndex) {
+                            // 先移除旧项的活动状态
                             items[currentIndex].classList.remove('active');
+                            // 添加新项的活动状态
                             items[nextIndex].classList.add('active');
-                            if (window.MathJax && MathJax.typesetPromise) {
-                                MathJax.typesetPromise([items[nextIndex]]).catch(()=>{});
-                            }
+                            // 使用 scheduleMathRender 重新渲染数学公式
+                            window.scheduleMathRender([items[nextIndex]]);
                             const slideEl = e.target.closest('.slide');
                             const canvas = slideEl && slideEl.querySelector('.step-canvas');
                             if (canvas) {
@@ -3114,18 +3157,94 @@ rightarrow 1$ 的循环。</p>
             };
         }
 
+        // 提供一个安全的、带防抖的全局方法供其他脚本调用以触发 MathJax 渲染
+        // 这样 lab-math-enhancer 等动态插入内容的脚本可以调用 window.scheduleMathRender()
+        window.scheduleMathRender = (function() {
+            let __mj_timer = null;
+            return function(rootElements) {
+                if (!window.MathJax || !window.MathJax.typesetPromise) {
+                    return Promise.resolve();
+                }
+                if (__mj_timer) clearTimeout(__mj_timer);
+                return new Promise((resolve) => {
+                    __mj_timer = setTimeout(() => {
+                        try {
+                            const p = Array.isArray(rootElements) ? window.MathJax.typesetPromise(rootElements) : window.MathJax.typesetPromise();
+                            p.then(() => resolve()).catch(() => resolve());
+                        } catch (e) {
+                            resolve();
+                        }
+                        __mj_timer = null;
+                    }, 50);
+                });
+            };
+        })();
+
         // 初始化
         window.onload = () => {
             try {
-                initSlides();
-                initInteractiveButtons();
-                initAIFloatButton();
-                initStepStacks(); // Initialize step-by-step learning components
+                // 确保 MathJax 已加载
+                const ensureMathJax = () => {
+                    return new Promise((resolve) => {
+                        if (window.MathJax && window.MathJax.typesetPromise) {
+                            resolve();
+                            return;
+                        }
+                        const checkInterval = setInterval(() => {
+                            if (window.MathJax && window.MathJax.typesetPromise) {
+                                clearInterval(checkInterval);
+                                resolve();
+                            }
+                        }, 100);
+                        // 10秒后超时
+                        setTimeout(() => {
+                            clearInterval(checkInterval);
+                            resolve();
+                        }, 10000);
+                    });
+                };
 
-                // Re-render MathJax after all content is loaded
-                if (window.MathJax && window.MathJax.typesetPromise) {
-                    window.MathJax.typesetPromise().catch((err) => console.log(err.message));
-                }
+                ensureMathJax().then(() => {
+                    // 初始化所有功能
+                    initSlides();
+                    initInteractiveButtons();
+                    initAIFloatButton();
+                    initStepStacks();
+                    
+                    // 强制重新渲染所有公式
+                    setTimeout(() => {
+                        if (window.MathJax && window.MathJax.typesetPromise) {
+                            // 清理所有旧的MathJax渲染
+                            const oldMath = document.querySelectorAll('mjx-container, .MathJax');
+                            oldMath.forEach(el => el.remove());
+                            
+                            // 重新渲染
+                            window.MathJax.typesetPromise().then(() => {
+                                console.log('所有公式渲染完成');
+                            }).catch(err => {
+                                console.log('公式渲染错误:', err);
+                                // 如果失败，尝试重新加载MathJax
+                                if (window.MathJax && window.MathJax.startup) {
+                                    window.MathJax.startup.document.state(0);
+                                    window.MathJax.typesetPromise();
+                                }
+                            });
+                        }
+                    }, 2000);
+
+                    // 监听幻灯片切换事件
+                    const originalShowSlide = window.showSlide;
+                    window.showSlide = function(n) {
+                        originalShowSlide(n);
+                        if (window.MathJax && window.MathJax.typesetPromise) {
+                            const currentSlide = document.querySelector('.slide.active');
+                            if (currentSlide) {
+                                window.MathJax.typesetPromise([currentSlide])
+                                    .catch((err) => console.log('Slide change typeset error:', err));
+                            }
+                        }
+                    };
+                });
             } catch (error) {
                 console.error('Failed to initialize slides:', error);
                 hideLoading();
@@ -3135,6 +3254,30 @@ rightarrow 1$ 的循环。</p>
                 }
             }
         };
+
+        // 强制重新渲染所有公式的函数
+        function forceRerenderMath() {
+            console.log('开始强制重新渲染公式...');
+            if (window.MathJax && window.MathJax.typesetPromise) {
+                // 清理所有旧的MathJax渲染
+                const oldMath = document.querySelectorAll('mjx-container, .MathJax');
+                oldMath.forEach(el => el.remove());
+                
+                // 重新渲染
+                window.MathJax.typesetPromise().then(() => {
+                    console.log('强制重新渲染完成');
+                    alert('公式重新渲染完成！');
+                }).catch(err => {
+                    console.log('强制重新渲染错误:', err);
+                    alert('重新渲染失败，请检查控制台错误信息');
+                });
+            } else {
+                alert('MathJax未加载，请刷新页面');
+            }
+        }
+
+        // 添加全局函数供调试使用
+        window.forceRerenderMath = forceRerenderMath;
 
         // Lab Menu Toggle Function
         function toggleLabMenu() {

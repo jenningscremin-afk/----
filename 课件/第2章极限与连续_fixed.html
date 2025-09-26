@@ -1,0 +1,3120 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>高等数学第二章：极限与连续 - 完整可视化课件</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.9/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+    <script>
+        MathJax.Hub.Config({
+            tex2jax: {
+                inlineMath: [['$','$'], ['\\(','\\)']],
+                displayMath: [['$$','$$'], ['\\[','\\]']],
+                processEscapes: true
+            },
+            "HTML-CSS": { scale: 100 }
+        });
+    </script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft YaHei', 'Segoe UI', sans-serif;
+            background: #1a1a2e;
+            overflow: hidden;
+        }
+
+        .slide-container {
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            position: relative;
+        }
+
+        .left-content {
+            width: 50%;
+            height: 100vh;
+            padding: 10px;
+            background: #f8f9fa;
+            overflow-y: auto;
+            font-size: 16px;
+            line-height: 1.8;
+        }
+
+        .right-visual {
+            width: 50%;
+            height: 100vh;
+            background: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .slide {
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+
+        .slide.active {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 {
+            color: #2c3e50;
+            font-size: 32px;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #3498db;
+        }
+
+        h2 {
+            color: #34495e;
+            font-size: 28px;
+            margin: 20px 0;
+        }
+
+        h3 {
+            color: #555;
+            font-size: 24px;
+            margin: 15px 0;
+        }
+
+        h4 {
+            color: #666;
+            font-size: 20px;
+            margin: 10px 0;
+        }
+
+        .definition {
+            background: #e8f4f8;
+            border-left: 4px solid #3498db;
+            padding: 15px;
+            margin: 15px 0;
+        }
+
+        .theorem {
+            background: #fff9e6;
+            border-left: 4px solid #f39c12;
+            padding: 15px;
+            margin: 15px 0;
+        }
+
+        .example {
+            background: #f0f8ff;
+            border-left: 4px solid #2ecc71;
+            padding: 15px;
+            margin: 15px 0;
+        }
+
+        .note {
+            background: #ffe6f0;
+            border-left: 4px solid #e91e63;
+            padding: 15px;
+            margin: 15px 0;
+            font-style: italic;
+        }
+
+        .formula-highlight {
+            background: #f0f0f0;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+            font-size: 1.2em;
+            border-radius: 5px;
+        }
+
+        canvas {
+            max-width: 100%;
+            max-height: 80vh;
+            border: 1px solid #e0e0e0;
+            border-radius: 5px;
+        }
+
+        .nav-container {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 15px 30px;
+            border-radius: 30px;
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .nav-btn {
+            padding: 8px 16px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .nav-btn:hover {
+            background: #2980b9;
+            transform: scale(1.05);
+        }
+
+        .slide-number {
+            color: white;
+            font-size: 14px;
+            padding: 0 20px;
+        }
+
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #3498db, #2ecc71);
+            transition: width 0.3s;
+            z-index: 1001;
+        }
+
+        .animation-controls {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+            z-index: 100;
+        }
+
+        .control-btn {
+            padding: 8px 12px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .control-btn:hover {
+            background: #2980b9;
+        }
+
+        .visual-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .visual-title {
+            font-size: 20px;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        ul {
+            margin-left: 20px;
+        }
+
+        li {
+            margin: 8px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+
+        th {
+            background: #3498db;
+            color: white;
+            padding: 10px;
+            text-align: left;
+        }
+
+        td {
+            padding: 8px;
+            border: 1px solid #ddd;
+        }
+
+        .highlight {
+            background: #ffeb3b;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+
+        .slide-content {
+            padding: 20px;
+        }
+
+        .animation-area {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="progress-bar" id="progressBar"></div>
+
+    <!-- Slides will be dynamically generated -->
+    <div id="slidesContainer"></div>
+
+    <!-- Navigation -->
+    <div class="nav-container">
+        <button class="nav-btn" onclick="prevSlide()">上一页</button>
+        <span class="slide-number" id="slideNumber">1 / 48</span>
+        <button class="nav-btn" onclick="nextSlide()">下一页</button>
+        <button class="nav-btn" onclick="autoPlay()" id="autoPlayBtn">自动播放</button>
+    </div>
+
+    <script>
+        // Slide content data
+        const slidesData = [
+            {
+                title: "第2章 极限与连续",
+                content: `
+                    <h1>第2章 极限与连续</h1>
+                    <h2>本章内容</h2>
+                    <ul>
+                        <li><strong>01</strong> 极限的概念</li>
+                        <li><strong>02</strong> 极限的性质和运算法则</li>
+                        <li><strong>03</strong> 两个重要极限及无穷小的比较</li>
+                        <li><strong>04</strong> 函数的连续性</li>
+                    </ul>
+                    <div class="note">
+                        函数极限的概念和思想是整个高等数学的灵魂，随后我们要学习的导数、积分、级数等概念的建立，都是以极限思想为出发点的，没有极限就没有整个微积分。
+                    </div>
+                `,
+                animation: "title"
+            },
+            {
+                title: "数列的极限 - 定义",
+                content: `
+                    <h2>2.1 极限的概念</h2>
+                    <h3>2.1.1 数列的极限</h3>
+                    <div class="definition">
+                        <strong>定义1</strong> 在某一法则下，当 $n(n\\in N^{+})$ 依次取 $1,2,3,\\cdots,n,\\cdots$ 时，对应的实数排成一列数 $x_{1},x_{2},x_{3},\\ldots,x_{n},\\cdots$，这列数就称为数列，记作 $\\{x_n\\}$。
+                    </div>
+                    <p>数列中的每一个数称为数列的项，第n项 $x_{n}$ 称为数列的一般项或通项。</p>
+                `,
+                animation: "sequence"
+            },
+            {
+                title: "数列的通俗理解",
+                content: `
+                    <h4>补充说明（讲得更细一点）</h4>
+                    <ul>
+                        <li><strong>"数列"到底是什么？</strong><br>
+                        你可以把"数列"想象成一排无限长的队伍。队伍里的每个人都有一个编号，而且这个编号必须是从1开始的、连续的正整数（1号, 2号, 3号...）。队伍里的每个人手里都举着一个数字牌，这个数字就是"项"。</li>
+                        <li><strong>"n"是什么？"$x_n$"又是什么？</strong><br>
+                        <strong>n</strong>：就是队伍里每个人的编号，我们叫它"项数"。<br>
+                        <strong>$x_n$</strong>：就是编号为n的那个人手里的数字。</li>
+                    </ul>
+                `,
+                animation: "queue"
+            },
+            {
+                title: "极限的定义",
+                content: `
+                    <div class="definition">
+                        <strong>定义2</strong> 对于数列 $\\{x_{n}\\}$，如果当n无限增大时，数列的一般项 $x_{n}$ 无限地接近于某一确定的数值a，则称常数a是数列 $\\{x_{n}\\}$ 的极限，或称数列 $\\{x_{n}\\}$ 收敛于a，记作 $$\\lim_{n\\rightarrow\\infty}x_{n}=a$$
+                    </div>
+                    <p>如果数列没有极限，就说数列是发散的。</p>
+                `,
+                animation: "limit"
+            },
+            {
+                title: "极限的通俗理解",
+                content: `
+                    <h4>极限的通俗理解</h4>
+                    <p><strong>极限就是一个"目标值"或"靶心"</strong>。想象一下，数列的每一项 $x_n$ 就像一个射手在不同时间点（时间点就是n）射出的一支箭。</p>
+                    <ul>
+                        <li>如果随着时间的推移（n越来越大），这些箭射得越来越靠近一个固定的靶心（数值a），并且可以要多近有多近（无限接近），那么这个靶心"a"就是这个数列的极限。</li>
+                        <li>如果这些箭到处乱飞，没有一个明确的靶心，那它就没有极限。</li>
+                    </ul>
+                `,
+                animation: "target"
+            },
+            {
+                title: "收敛与发散",
+                content: `
+                    <h4>"收敛"与"发散"</h4>
+                    <div class="definition">
+                        <strong>收敛 (Convergent)</strong>：就是数列有极限。想象所有的项最终都"收"拢到极限那个点附近。
+                    </div>
+                    <div class="theorem">
+                        <strong>发散 (Divergent)</strong>：就是数列没有极限。发散有两种主要情况：
+                        <ul>
+                            <li>一种是项的值越来越大或越来越小，奔向无穷了</li>
+                            <li>另一种是项的值在几个数之间来回"震荡"，总也稳定不下来</li>
+                        </ul>
+                    </div>
+                `,
+                animation: "convergence"
+            },
+            {
+                title: "Collatz猜想",
+                content: `
+                    <h4>Collatz 猜想 (3n+1 数列)</h4>
+                    <p>Collatz 序列也称为"$3n+1$"序列，通过从任何正数开始并遵循两个简单规则生成：</p>
+                    <ul>
+                        <li>如果 $x_{n}$ 是偶数，则 $x_{n+1}=\\frac{x_{n}}{2}$</li>
+                        <li>如果 $x_{n}$ 是奇数，则 $x_{n+1}=3x_{n}+1$</li>
+                    </ul>
+                    <p>一遍又一遍地遵循这两条规则，猜想表明，无论起始数字如何，你最终总会达到4, 2, 1的循环。</p>
+                `,
+                animation: "collatz"
+            },
+            {
+                title: "斐波那契数列",
+                content: `
+                    <h4>斐波那契数列与黄金分割</h4>
+                    <div class="example">
+                        <p><strong>斐波那契数列</strong>: 每个数是前两个数的和。<br>
+                        数列的前几项是: 0, 1, 1, 2, 3, 5, 8, 13, 21, 34,...</p>
+                        <p><strong>黄金分割</strong>: 一个特殊的比率，约等于1.61803398875，通常用希腊字母 $\\Phi$ (phi)表示。</p>
+                        <div class="formula-highlight">
+                            $$\\lim_{n\\rightarrow\\infty}\\frac{F(n)}{F(n-1)}=\\Phi$$
+                        </div>
+                    </div>
+                `,
+                animation: "fibonacci"
+            },
+            {
+                title: "例1-1",
+                content: `
+                    <div class="example">
+                        <strong>例1</strong> 讨论下列数列的变化趋势，说明极限是否存在。<br>
+                        (1) $x_{n}=\\frac{n}{n+1}$
+                    </div>
+                    <p><strong>解</strong>: $x_{n}=\\frac{n}{n+1}$ 的项依次为 $$\\frac{1}{2},\\frac{2}{3},\\frac{3}{4},\\frac{4}{5},\\cdots,\\frac{n}{n+1},\\cdots$$</p>
+                    <p>当n无限增大时， $x_{n}$ 无限接近于1，所以 $$\\lim_{n\\rightarrow\\infty}\\frac{n}{n+1}=1$$</p>
+                `,
+                animation: "example1_1"
+            },
+            {
+                title: "例1-2",
+                content: `
+                    <div class="example">
+                        (2) $x_{n}=\\frac{1}{2}[1+(-1)^{n}]$
+                    </div>
+                    <p><strong>解</strong>: $x_{n}=\\frac{1}{2}[1+(-1)^{n}]$ 的项依次为 $$0,1,0,1,\\cdots$$</p>
+                    <p>当n无限增大时， $x_{n}$ 总是在0和1两数中跳动，不趋近于某一个常数，所以，该数列的极限不存在。</p>
+                `,
+                animation: "example1_2"
+            },
+            {
+                title: "例1-3",
+                content: `
+                    <div class="example">
+                        (3) $x_{n}=\\frac{1}{(-3)^{n}}$
+                    </div>
+                    <p><strong>解</strong>: $x_{n}=\\frac{1}{(-3)^{n}}$ 的项依次为 $$-\\frac{1}{3},\\frac{1}{9},-\\frac{1}{27},\\frac{1}{81},\\cdots$$</p>
+                    <p>当n无限增大时， $x_{n}$ 无限接近于0，所以 $$\\lim_{n\\rightarrow\\infty}\\frac{1}{(-3)^{n}}=0$$</p>
+                `,
+                animation: "example1_3"
+            },
+            {
+                title: "例1-4",
+                content: `
+                    <div class="example">
+                        (4) $x_{n}=8$
+                    </div>
+                    <p><strong>解</strong>: $x_{n}=8$ 为常数数列，无论n取怎样的正整数， $x_{n}$ 始终为8，所以 $$\\lim_{n\\rightarrow\\infty}8=8$$</p>
+                    <p>常数列{C} 的极限就是这个常数本身，即 $\\lim_{n\\rightarrow\\infty}C=C$ (C为常数)。</p>
+                `,
+                animation: "example1_4"
+            },
+            {
+                title: "例2 折旧问题",
+                content: `
+                    <div class="example">
+                        <strong>例2</strong> 某单位购置一批价格100万元的设备，该设备每年的折旧费是当年价格的 $\\frac{1}{10}$ ，那么随着时间的推移，该批设备的价格如何变化？
+                    </div>
+                    <p><strong>解</strong>: 这批设备的价格（单位：万元）</p>
+                    <ul>
+                        <li>第一年为100</li>
+                        <li>第二年为 $100\\times\\frac{9}{10}$</li>
+                        <li>第三年为 $100\\times(\\frac{9}{10})^{2}$</li>
+                        <li>第n年为 $100\\times(\\frac{9}{10})^{n-1}$</li>
+                    </ul>
+                    <p>当n无限增大时 $$\\lim_{n\\rightarrow\\infty}100\\times(\\frac{9}{10})^{n-1}=0$$</p>
+                `,
+                animation: "depreciation"
+            },
+            {
+                title: "函数的极限",
+                content: `
+                    <h3>2.1.2 函数的极限</h3>
+                    <p>自变量的变化趋势也称自变量的变化过程，有以下几种记号：</p>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>记号</th>
+                                <th>含义</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>$x \\to \\infty$</td>
+                                <td>$x$ 的绝对值无限增大</td>
+                            </tr>
+                            <tr>
+                                <td>$x \\to +\\infty$</td>
+                                <td>$x$ 取正值无限增大</td>
+                            </tr>
+                            <tr>
+                                <td>$x \\to -\\infty$</td>
+                                <td>$x$ 取负值而绝对值无限增大</td>
+                            </tr>
+                            <tr>
+                                <td>$x \\to x_0$</td>
+                                <td>$x$ 可以无限趋近于 $x_0$</td>
+                            </tr>
+                            <tr>
+                                <td>$x \\to x_0^+$</td>
+                                <td>$x$ 从 $x_0$ 的右侧无限趋近于 $x_0$</td>
+                            </tr>
+                            <tr>
+                                <td>$x \\to x_0^-$</td>
+                                <td>$x$ 从 $x_0$ 的左侧无限趋近于 $x_0$</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                `,
+                animation: "function_notation"
+            },
+            {
+                title: "函数极限的通俗理解",
+                content: `
+                    <h4>函数极限的通俗理解</h4>
+                    <p>函数极限和数列极限非常相似，都是在研究一种"靠近"的趋势。只不过数列的"编号n"只能是1, 2, 3...这样一个个跳着走；而函数的自变量"x"可以在数轴上连续地滑动。</p>
+                    <div class="note">
+                        <p><strong>当 $x \\rightarrow \\infty$ 时：</strong><br>
+                        这好比你站在函数的图像上，沿着x轴一直向右走或者一直向左走。我们在乎的是，当你走得非常非常远的时候，你所在位置的高度 (y值) 会不会稳定在某一个值？</p>
+                    </div>
+                `,
+                animation: "function_limit"
+            },
+            {
+                title: "实例1 动物数量",
+                content: `
+                    <div class="example">
+                        <strong>实例1 自然保护区中动物数量的变化规律</strong><br>
+                        在某一自然保护区中生长的一群野生动物，其群体数量会逐渐增长，但随着时间的推移，由于自然保护区内各种资源的限制，这一动物群体不可能无限地增大，它应达到某一饱和状态。
+                    </div>
+                    <p>饱和状态就是时间 $t \\to \\infty$ 时野生动物群的数量。</p>
+                `,
+                animation: "population"
+            },
+            {
+                title: "函数极限定义3",
+                content: `
+                    <div class="definition">
+                        <strong>定义3</strong> 如果当x的绝对值无限增大，即 $x\\rightarrow\\infty$ 时，函数值 $f(x)$ 无限趋近于某一个确定的常数A，那么A就称为函数 $f(x)$ 当 $x\\rightarrow\\infty$ 时的极限，记作 $\\lim_{x\\rightarrow\\infty}f(x)=A$
+                    </div>
+                    <div class="theorem">
+                        <strong>定理1</strong> $\\lim_{x\\rightarrow\\infty}f(x)=A$ 的充分必要条件是 $\\lim_{x\\rightarrow+\\infty}f(x)=\\lim_{x\\rightarrow-\\infty}f(x)=A$
+                    </div>
+                `,
+                animation: "function_infinity"
+            },
+            {
+                title: "例3 y=1/x",
+                content: `
+                    <div class="example">
+                        <strong>例3</strong> 讨论当 $x\\rightarrow+\\infty$ 时，函数 $y=\\frac{1}{x}$ 的变化趋势，并说出它的极限。
+                    </div>
+                    <p><strong>解</strong>: 当x沿x轴的正方向无限增大时，曲线 $y=\\frac{1}{x}$ 无限接近于x轴，故当 $x\\rightarrow+\\infty$ 时，函数 $y=\\frac{1}{x}$ 以0为极限。</p>
+                    <div class="formula-highlight">
+                        $\\lim_{x\\rightarrow+\\infty}\\frac{1}{x}=0$
+                    </div>
+                `,
+                animation: "one_over_x"
+            },
+            {
+                title: "例4 反正切函数",
+                content: `
+                    <div class="example">
+                        <strong>例4</strong> 讨论反正切函数 $y=\\arctan x$ 的极限。
+                    </div>
+                    <p><strong>解</strong>: $\\lim_{x\\rightarrow+\\infty}\\arctan x=\\frac{\\pi}{2}$
+                    $\\lim_{x\\rightarrow-\\infty}\\arctan x=-\\frac{\\pi}{2}$</p>
+                    <p>由于当 $x\\rightarrow+\\infty$ 和 $x\\rightarrow-\\infty$ 时，函数不是无限接近于同一个确定的常数，所以 $\\lim_{x\\rightarrow\\infty}\\arctan x$ 不存在。</p>
+                `,
+                animation: "arctan"
+            },
+            {
+                title: "x趋向x0时的极限",
+                content: `
+                    <h4>2. 当 $x\\rightarrow x_{0}$ 时，函数 $f(x)$ 的极限</h4>
+                    <div class="example">
+                        <strong>实例4 人影长度</strong><br>
+                        若一个人沿直线走向目标，路灯的正下方那一点，由常识知道，此人越靠近目标时，其影子长度越短，当人越来越接近目标 $(x \\to 0)$ 时，其影子的长度逐渐趋于 $0(y \\to 0)$。
+                    </div>
+                `,
+                animation: "shadow"
+            },
+            {
+                title: "函数在点的极限定义",
+                content: `
+                    <div class="definition">
+                        <strong>定义2-3</strong> 如果当 $x \\to x_0$ 时，函数 $f(x)$ 无限接近于一个确定的常数A，那么称A为函数 $f(x)$ 在 $x \\to x_0$ 时的极限，记为
+                        $\\lim_{x \\to x_0} f(x) = A$
+                    </div>
+                    <p>为了正确理解函数极限的概念，下面说明两点：</p>
+                    <ol>
+                        <li>$x \\to x_0$ 的趋近方式是任意的，即 $x$ 既可能从 $x_0$ 的左侧趋近，也可能从右侧趋近</li>
+                        <li>$\\lim_{x \\to x_0} f(x) = A$ 与函数 $f(x)$ 在 $x_0$ 处是否有定义无关</li>
+                    </ol>
+                `,
+                animation: "point_limit"
+            },
+            {
+                title: "瞬时速度",
+                content: `
+                    <div class="example">
+                        <strong>实例5 瞬时速度</strong><br>
+                        当物体做自由落体运动时，该物体所经过的路程和时间t的函数关系为 $s = \\frac{1}{2}gt^2$。
+                        求下落过程中时刻 $t_0$ 的瞬时速度 $v(t_0)$。
+                    </div>
+                    <p><strong>解</strong>: 取 $t_0$ 附近任意时刻t，考虑 $t_0$ 至t的时间间隔内的平均速度
+                    $\\bar{v} = \\frac{s(t) - s(t_0)}{t - t_0} = \\frac{\\frac{1}{2}g t^2 - \\frac{1}{2}g t_0^2}{t - t_0} = \\frac{1}{2}g(t+t_0)$</p>
+                    <p>瞬时速度就是平均速度的极限：$v(t_0) = \\lim_{t \\to t_0} \\bar{v} = gt_0$</p>
+                `,
+                animation: "velocity"
+            },
+            {
+                title: "左右极限",
+                content: `
+                    <div class="definition">
+                        <strong>定义2-4</strong>
+                        <p>如果当 $x \\to x_0^+$ 时，函数 $f(x)$ 无限接近于一个确定的常数A，那么称A为函数 $f(x)$ 的右极限，记为
+                        $\\lim_{x \\to x_0^+} f(x) = A$</p>
+                        <p>如果当 $x \\to x_0^-$ 时，函数 $f(x)$ 无限接近于一个确定的常数A，那么称A为函数 $f(x)$ 的左极限，记为
+                        $\\lim_{x \\to x_0^-} f(x) = A$</p>
+                    </div>
+                `,
+                animation: "left_right"
+            },
+            {
+                title: "例6",
+                content: `
+                    <div class="example">
+                        <strong>例6</strong> 设 $f(x)=\\begin{cases}x+2, & x\\ge1 \\\\ 3x, & x<1\\end{cases}$，试判断 $\\lim_{x\\rightarrow1}f(x)$ 是否存在。
+                    </div>
+                    <p><strong>解</strong>: </p>
+                    <p>$\\lim_{x\\rightarrow1^{+}}f(x)=\\lim_{x\\rightarrow1^{+}}(x+2)=3$</p>
+                    <p>$\\lim_{x\\rightarrow1^{-}}f(x)=\\lim_{x\\rightarrow1^{-}}3x=3$</p>
+                    <p>因为左右极限存在且相等，所以 $\\lim_{x\\rightarrow1}f(x)$ 存在，且 $\\lim_{x\\rightarrow1}f(x)=3$。</p>
+                `,
+                animation: "piecewise1"
+            },
+            {
+                title: "例7",
+                content: `
+                    <div class="example">
+                        <strong>例7</strong> 设 $f(x)=\\begin{cases}x^{2}, & x\\ge0 \\\\ x+1, & x<0\\end{cases}$ 讨论极限 $\\lim_{x\\rightarrow0}f(x)$ 是否存在?
+                    </div>
+                    <p><strong>解</strong>: $\\lim_{x\\rightarrow0^{-}}f(x)=\\lim_{x\\rightarrow0^{-}}(x+1)=1$</p>
+                    <p>$\\lim_{x\\rightarrow0^{+}}f(x)=\\lim_{x\\rightarrow0^{+}}x^{2}=0$</p>
+                    <p>因为左右极限不相等，所以 $\\lim_{x\\rightarrow0}f(x)$ 不存在。</p>
+                `,
+                animation: "piecewise2"
+            },
+            {
+                title: "无穷小量",
+                content: `
+                    <h3>2.1.3 无穷小量与无穷大量</h3>
+                    <h4>1. 无穷小量</h4>
+                    <div class="definition">
+                        <strong>定义5</strong> 在自变量x的某一变化过程中，若函数 $f(x)$ 的极限为0，即 $\\lim f(x)=0$，则称 $f(x)$ 为在该变化过程中的无穷小量，简称无穷小。
+                    </div>
+                    <div class="note">
+                        <strong>注意</strong>：无穷小不是一个"很小的数"，而是一个以零为极限的函数。
+                    </div>
+                `,
+                animation: "infinitesimal"
+            },
+            {
+                title: "无穷小的性质",
+                content: `
+                    <h4>无穷小的性质</h4>
+                    <div class="theorem">
+                        <strong>性质1</strong> 有限个无穷小的代数和仍是无穷小。<br>
+                        <strong>性质2</strong> 有限个无穷小的乘积仍是无穷小。<br>
+                        <strong>性质3</strong> 有界函数与无穷小的乘积仍是无穷小。
+                    </div>
+                    <div class="example">
+                        <strong>例8</strong> 求 $\\lim_{x\\rightarrow\\infty}\\frac{1}{x}\\cos x$ 。<br>
+                        <strong>解</strong>: 因为 $\\lim_{x\\rightarrow\\infty}\\frac{1}{x}=0$，所以 $\\frac{1}{x}$ 是 $x\\rightarrow\\infty$ 时的无穷小。<br>
+                        又因 $|\\cos x|\\le1$，所以$\\cos x$是有界函数。<br>
+                        由性质3知， $\\lim_{x\\rightarrow\\infty}\\frac{1}{x}\\cos x=0$。
+                    </div>
+                `,
+                animation: "infinitesimal_prop"
+            },
+            {
+                title: "无穷大量",
+                content: `
+                    <h4>2. 无穷大量</h4>
+                    <div class="definition">
+                        <strong>定义6</strong> 在自变量x的某一变化过程中，若函数值的绝对值 $|f(x)|$ 无限增大，则称 $f(x)$ 为在该变化过程中的无穷大量，简称无穷大。记 $\\lim f(x)=\\infty$。
+                    </div>
+                    <div class="theorem">
+                        <strong>定理3</strong> 在自变量的同一变化过程中，无穷大、无穷小互为倒数关系。
+                    </div>
+                `,
+                animation: "infinite"
+            },
+            {
+                title: "极限的性质",
+                content: `
+                    <h2>2.2 极限的性质和运算法则</h2>
+                    <h3>2.2.1 极限的性质</h3>
+                    <div class="theorem">
+                        <p><strong>定理1（唯一性）</strong> 如果函数 $f(x)$ 在某一变化过程中有极限，则其极限唯一。</p>
+                        <p><strong>定理2（有界性）</strong> 如果函数 $f(x)$ 在 $x\\rightarrow x_{0}$ 时存在极限，则必存在 $x_{0}$ 的某一邻域，使得 $f(x)$ 在该邻域内有界。</p>
+                        <p><strong>定理3（保号性）</strong> 若在 $x_{0}$ 的左右近旁，恒有 $f(x)\\ge0$ 且 $\\lim_{x\\rightarrow x_{0}}f(x)=A$ ，则 $A\\ge0$。</p>
+                    </div>
+                `,
+                animation: "limit_properties"
+            },
+            {
+                title: "极限的运算法则",
+                content: `
+                    <h3>2.2.2 极限的运算法则</h3>
+                    <div class="theorem">
+                        <strong>定理4</strong> 设 $\\lim_{x\\rightarrow x_{0}}f(x)=A$ ， $\\lim_{x\\rightarrow x_{0}}g(x)=B$ ，则
+                        <ol>
+                            <li>$\\lim_{x\\rightarrow x_{0}}[f(x)\\pm g(x)]=A\\pm B$</li>
+                            <li>$\\lim_{x\\rightarrow x_{0}}[f(x)\\cdot g(x)]=A\\cdot B$</li>
+                            <li>$\\lim_{x\\rightarrow x_{0}}\\frac{f(x)}{g(x)}=\\frac{A}{B}(B\\ne0)$</li>
+                        </ol>
+                    </div>
+                    <p><strong>推论1</strong> $\\lim_{x\\rightarrow x_{0}}Cf(x)=CA$ (C为常数)</p>
+                    <p><strong>推论2</strong> $\\lim_{x\\rightarrow x_{0}}[f(x)]^{n}=A^{n}$ (n为非负整数)</p>
+                `,
+                animation: "limit_rules"
+            },
+            {
+                title: "直接代入法",
+                content: `
+                    <h3>2.2.3 极限的求法</h3>
+                    <h4>1. 直接代入法</h4>
+                    <div class="example">
+                        <strong>例1</strong> 求 $\\lim_{x \\to 1} \\frac{3x^2 + x + 1}{4x^3 + x^2 - x + 3}$<br>
+                        <strong>解</strong>: 此种类型的题目均采用的是直接代入法，
+                        $\\lim_{x \\to 1} \\frac{3x^2 + x + 1}{4x^3 + x^2 - x + 3} = \\frac{3+1+1}{4+1-1+3} = \\frac{5}{7}$
+                    </div>
+                `,
+                animation: "direct_sub"
+            },
+            {
+                title: "0/0型极限",
+                content: `
+                    <h4>3. 分解因式，约去零因子法（$\\frac{0}{0}$ 型）</h4>
+                    <p>$\\frac{0}{0}$ 型极限被称为"未定式"，意思是结果不确定，可能是0，可能是无穷，也可能是任何一个常数。</p>
+                    <div class="note">
+                        它就像一场拔河比赛，分子想把结果拉向0，分母想把结果拉向无穷大。到底谁赢？就看谁的力量更大。
+                    </div>
+                    <p>方法：将分子或分母分解因式，约去共同的零因子，再用直接代入法。</p>
+                `,
+                animation: "zero_zero"
+            },
+            {
+                title: "有理化",
+                content: `
+                    <h4>4. 分子或分母有理化（$\\frac{0}{0}$ 型）</h4>
+                    <div class="example">
+                        <strong>例3</strong> 求 $\\lim_{x \\to 4} \\frac{x-4}{\\sqrt{x-2}-\\sqrt{2}}$<br>
+                        <strong>解</strong>:
+                        $\\lim_{x \\to 4} \\frac{x-4}{\\sqrt{x-2}-\\sqrt{2}} = \\lim_{x \\to 4} \\frac{(x-4)(\\sqrt{x-2}+\\sqrt{2})}{(\\sqrt{x-2}-\\sqrt{2})(\\sqrt{x-2}+\\sqrt{2})}$
+                        $= \\lim_{x \\to 4} (\\sqrt{x-2}+\\sqrt{2}) = 2\\sqrt{2}$
+                    </div>
+                `,
+                animation: "rationalize"
+            },
+            {
+                title: "无穷/无穷型",
+                content: `
+                    <h4>5. 公式法（$\\frac{\\infty}{\\infty}$ 型）</h4>
+                    <div class="formula-highlight">
+                        $\\lim_{x\\rightarrow\\infty}\\frac{a_{0}x^{n}+\\cdots+a_{n}}{b_{0}x^{m}+\\cdots+b_{m}}=\\begin{cases} \\frac{a_{0}}{b_{0}}, & n=m \\\\ 0, & n<m \\\\ \\infty, & n>m \\end{cases}$
+                    </div>
+                    <p>整个极限的结果，就只取决于分子和分母中"跑得最快的那个领头项"。</p>
+                `,
+                animation: "infinity_infinity"
+            },
+            {
+                title: "第一个重要极限",
+                content: `
+                    <h2>2.3 两个重要极限及无穷小的比较</h2>
+                    <h3>2.3.1 两个重要极限</h3>
+                    <h4>第一个重要极限</h4>
+                    <div class="formula-highlight">
+                        $\\lim_{x\\rightarrow0}\\frac{\\sin x}{x}=1$
+                    </div>
+                    <p>它揭示了一个深刻的联系：<strong>在角度非常非常小的时候（当x趋近于0时），sin(x) 的值和 x 的值几乎是一模一样的</strong>（这里x必须是弧度制）。</p>
+                `,
+                animation: "sinx_x"
+            },
+            {
+                title: "第一个重要极限例题",
+                content: `
+                    <div class="example">
+                        <strong>例5</strong> 求下列极限<br>
+                        (1) $\\lim_{x \\to 0} \\frac{\\sin 3x}{x}$<br>
+                        <strong>解</strong>: $\\lim_{x \\to 0} \\frac{\\sin 3x}{x} = \\lim_{x \\to 0} \\frac{\\sin 3x}{3x} \\cdot 3 = 1 \\cdot 3 = 3$<br><br>
+                        (2) $\\lim_{x \\to 0} \\frac{\\tan x}{4x}$<br>
+                        <strong>解</strong>: $\\lim_{x \\to 0} \\frac{\\tan x}{4x} = \\lim_{x \\to 0} \\frac{\\sin x}{4x \\cos x} = \\lim_{x \\to 0} \\frac{\\sin x}{x} \\cdot \\frac{1}{4 \\cos x} = 1 \\cdot \\frac{1}{4} = \\frac{1}{4}$
+                    </div>
+                `,
+                animation: "sinx_examples"
+            },
+            {
+                title: "第二个重要极限",
+                content: `
+                    <h4>第二个重要极限</h4>
+                    <div class="formula-highlight">
+                        $\\lim_{x\\rightarrow\\infty}(1+\\frac{1}{x})^{x}=e$
+                    </div>
+                    <p>它定义了自然常数 <strong>e (≈2.718)</strong>，这个数字在自然科学中和 $\\pi$ 一样重要。</p>
+                    <p>它的背景是<strong>银行的连续复利</strong>：如果计息的次数无限增多，你最终得到的钱会趋向于一个极限值e。</p>
+                `,
+                animation: "e_limit"
+            },
+            {
+                title: "第二个重要极限例题",
+                content: `
+                    <div class="example">
+                        <strong>例6</strong> 求下列极限<br>
+                        (1) $\\lim_{x \\to \\infty} (1 + \\frac{1}{x-2})^x$<br>
+                        <strong>解</strong>:
+                        $\\lim_{x \\to \\infty} (1 + \\frac{1}{x-2})^x = \\lim_{x \\to \\infty} (1 + \\frac{1}{x-2})^{(x-2) \\cdot \\frac{x}{x-2}} = e^{\\lim_{x \\to \\infty} \\frac{x}{x-2}} = e^1 = e$<br>
+                        (2) $\\lim_{x \\to 3} (x-2)^{\\frac{1}{x^2-9}}$<br>
+                        <strong>解</strong>: $\\lim_{x \\to 3} (1+x-3)^{\\frac{1}{(x-3)(x+3)}} = e^{\\lim_{x \\to 3} \\frac{1}{x+3}} = e^{\\frac{1}{6}}$
+                    </div>
+                `,
+                animation: "e_examples"
+            },
+            {
+                title: "无穷小的比较",
+                content: `
+                    <h3>2.3.2 无穷小的比较</h3>
+                    <div class="theorem">
+                        <strong>定理4</strong> 设 $\\alpha, \\beta$ 是自变量的同一变化过程中的无穷小量：
+                        <ol>
+                            <li>若 $\\lim\\frac{\\beta}{\\alpha}=0$ ，则称 $\\beta$ 是比 $\\alpha$ <strong>高阶的无穷小</strong></li>
+                            <li>若 $\\lim\\frac{\\beta}{\\alpha}=\\infty$ ，则称 $\\beta$ 是比 $\\alpha$ <strong>低阶的无穷小</strong></li>
+                            <li>若 $\\lim\\frac{\\beta}{\\alpha}=c\\ne0$ ，则称 $\\beta$ 与 $\\alpha$ 是<strong>同阶的无穷小</strong></li>
+                            <li>若 $c=1$，即 $\\lim\\frac{\\beta}{\\alpha}=1$ ，则称 $\\beta$ 与 $\\alpha$ 是<strong>等价的无穷小</strong>，记作 $\\alpha\\sim\\beta$</li>
+                        </ol>
+                    </div>
+                `,
+                animation: "infinitesimal_compare"
+            },
+            {
+                title: "常用等价无穷小",
+                content: `
+                    <h4>常用的等价无穷小</h4>
+                    <p>当 $x\\rightarrow0$ 时：</p>
+                    <div class="theorem">
+                        <ul>
+                            <li>$\\sin x\\sim x$， $\\tan x\\sim x$</li>
+                            <li>$\\arcsin x\\sim x$， $\\arctan x\\sim x$</li>
+                            <li>$1-\\cos x\\sim\\frac{1}{2}x^{2}$</li>
+                            <li>$\\ln(1+x)\\sim x$</li>
+                            <li>$e^{x}-1\\sim x$</li>
+                            <li>$\\sqrt[n]{1+x} - 1 \\sim \\frac{1}{n}x$</li>
+                        </ul>
+                    </div>
+                    <div class="example">
+                        <strong>例7</strong> 求 $\\lim_{x \\to 0} \\frac{\\tan x - \\sin x}{x^3}$<br>
+                        <strong>解</strong>: $\\lim_{x \\to 0} \\frac{\\sin x(1-\\cos x)}{x^3 \\cos x} = \\lim_{x \\to 0} \\frac{x(\\frac{1}{2}x^2)}{x^3 \\cos x} = \\frac{1}{2}$
+                    </div>
+                `,
+                animation: "equivalent_infinitesimal"
+            },
+            {
+                title: "连续性概念",
+                content: `
+                    <h2>2.4 函数的连续性</h2>
+                    <h3>2.4.1 连续函数的概念</h3>
+                    <p>在自然界中有许多现象，如气温的变化、植物的生长等都是连续地变化着的。</p>
+                    <h4>1. 函数的增量</h4>
+                    <p>自变量从初值 $x_{0}$ 变为终值x时，终值与初值的差 $x-x_{0}$ 称为自变量x的增量 $\\Delta x$。</p>
+                    <p>函数的增量：$\\Delta y=f(x_{0}+\\Delta x)-f(x_{0})$</p>
+                `,
+                animation: "continuity_concept"
+            },
+            {
+                title: "连续的定义",
+                content: `
+                    <h4>2. 函数连续的定义</h4>
+                    <div class="definition">
+                        <strong>定义2</strong> 设函数 $y=f(x)$ 在点 $x_{0}$ 处及其邻域内有意义，如果当 $x\\rightarrow x_{0}$ 时，函数 $y=f(x)$ 的极限存在且等于函数在点 $x_{0}$ 处的函数值，即 $\\lim_{x\\rightarrow x_{0}}f(x)=f(x_{0})$ 则称函数 $y=f(x)$ 在点 $x_{0}$ 处连续。
+                    </div>
+                    <p>连续的定义要求，函数必须同时满足三个条件：</p>
+                    <ol>
+                        <li>$f(x)$ 在 $x_0$ 有定义</li>
+                        <li>$\\lim_{x \\to x_0} f(x)$ 存在</li>
+                        <li>$\\lim_{x \\to x_0} f(x) = f(x_0)$</li>
+                    </ol>
+                `,
+                animation: "continuity_def"
+            },
+            {
+                title: "实例3 冰融化",
+                content: `
+                    <div class="example">
+                        <strong>实例3 冰融化所需要的热量</strong><br>
+                        设1g冰从-40℃升到100℃所需要的热量 (单位: J) 的函数为
+                        $f(x) = \\begin{cases} 2.1x + 84, & -40 \\le x \\le 0 \\\\ 4.2x + 420, & x > 0 \\end{cases}$
+                        试问当 $x=0$ 时，函数是否连续?
+                    </div>
+                    <p><strong>解</strong>: $\\lim_{x \\to 0^-} f(x) = 84$, $\\lim_{x \\to 0^+} f(x) = 420$</p>
+                    <p>因为左右极限不相等，所以函数在 $x=0$ 处不连续。</p>
+                `,
+                animation: "ice_melting"
+            },
+            {
+                title: "间断点",
+                content: `
+                    <h3>2.4.2 函数的间断点</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th colspan="2">间断点包括三种情形</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>(1)</td>
+                                <td>$f(x)$ 在 $x_0$ 无定义</td>
+                            </tr>
+                            <tr>
+                                <td>(2)</td>
+                                <td>$f(x)$ 在 $x \\to x_0$ 时无极限</td>
+                            </tr>
+                            <tr>
+                                <td>(3)</td>
+                                <td>$f(x)$ 在 $x \\to x_0$ 时有极限但不等于 $f(x_0)$</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <p><strong>判断间断点顺序</strong>:</p>
+                    <ol>
+                        <li>求左右极限</li>
+                        <li>若左右极限都存在但不相等，则为跳跃间断点</li>
+                        <li>若左右极限相等但函数值不等或不存在，则为可去间断点</li>
+                    </ol>
+                `,
+                animation: "discontinuity"
+            },
+            {
+                title: "第一类间断点",
+                content: `
+                    <h4>第一类间断点</h4>
+                    <p>这类断点比较"温和"。从左边和右边走过来，都能找到一个明确的落脚点（左右极限都存在）。</p>
+                    <div class="definition">
+                        <strong>可去间断点</strong>：就像路上的一个小坑。左边的路和右边的路本来是对齐的（左极限=右极限），但唯独这个点是空的。
+                    </div>
+                    <div class="theorem">
+                        <strong>跳跃间断点</strong>：就像路上的一个台阶。从左边走过来是一个高度，从右边走过来是另一个不同的高度。
+                    </div>
+                `,
+                animation: "first_discontinuity"
+            },
+            {
+                title: "第二类间断点",
+                content: `
+                    <h4>第二类间断点</h4>
+                    <p>这类断点比较"狂野"。从左边或右边走过来时，至少有一边找不到明确的落脚点。</p>
+                    <div class="definition">
+                        <strong>无穷间断点</strong>：就像一个无底深渊或通天塔。当你靠近这个点时，图像会向上或向下疯狂延伸到无穷远。<br>
+                        例：$y = \\tan x$ 在 $x = \\frac{\\pi}{2}$ 处
+                    </div>
+                    <div class="theorem">
+                        <strong>震荡间断点</strong>：就像一个地震带。当你靠近这个点时，图像会以极快的频率疯狂上下摆动。<br>
+                        例：$y = \\sin \\frac{1}{x}$ 在 $x=0$ 处
+                    </div>
+                `,
+                animation: "second_discontinuity"
+            },
+            {
+                title: "初等函数的连续性",
+                content: `
+                    <h3>2.4.3 初等函数的连续性</h3>
+                    <div class="theorem">
+                        <strong>定理1</strong> 如果函数 $f(x)$ 和 $g(x)$ 都在点 $x_0$ 处连续，那么它们的和、差、积、商（分母不等于0）也都在点 $x_{0}$ 处连续。
+                    </div>
+                    <div class="theorem">
+                        <strong>定理2</strong> 若函数 $y=f(u)$ 在 $u_{0}$ 处连续，函数 $u=\\varphi(x)$ 在点 $x_{0}$ 处连续，且 $u_{0}=\\varphi(x_{0})$，则复合函数 $y=f[\\varphi(x)]$ 在 $x_{0}$ 处连续。
+                    </div>
+                    <div class="theorem">
+                        <strong>定理3</strong> 一切初等函数在其定义区间内都是连续的。
+                    </div>
+                `,
+                animation: "elementary_continuity"
+            },
+            {
+                title: "连续性例题",
+                content: `
+                    <div class="example">
+                        <strong>例5</strong> 求函数 $y=\\sqrt{x+4}-\\frac{1}{x^{2}-1}$ 的连续区间。<br>
+                        <strong>解</strong>: 要使函数有意义，需要：
+                        <ul>
+                            <li>$x+4 \\ge 0$，即 $x \\ge -4$</li>
+                            <li>$x^2-1 \\ne 0$，即 $x \\ne \\pm 1$</li>
+                        </ul>
+                        所以函数的定义域为 $[-4,-1)\\cup(-1,1)\\cup(1,+\\infty)$<br>
+                        由于初等函数在其定义域内连续，所以连续区间也为 $[-4,-1)\\cup(-1,1)\\cup(1,+\\infty)$
+                    </div>
+                `,
+                animation: "continuity_example"
+            },
+            {
+                title: "练习题1",
+                content: `
+                    <h2>练习题精选</h2>
+                    <div class="example">
+                        <strong>练习1</strong> 若 $\\lim_{x \\to -1} \\frac{x^3+ax^2-x+4}{x+1} = b$ (常数), 求a, b.<br>
+                        <strong>解</strong>: 因为 $x \\to -1$ 时，分母 $x+1 \\to 0$，且极限存在，所以分子也必须趋于0。<br>
+                        $(-1)^3 + a(-1)^2 - (-1) + 4 = 0$<br>
+                        $-1 + a + 1 + 4 = 0$<br>
+                        $a = -4$<br>
+                        代入后：
+                        $b = \\lim_{x \\to -1} \\frac{x^3-4x^2-x+4}{x+1} = \\lim_{x \\to -1} (x^2-5x+4) = 10$
+                    </div>
+                `,
+                animation: "exercise1"
+            },
+            {
+                title: "练习题2",
+                content: `
+                    <div class="example">
+                        <strong>练习2</strong> 求 $\\lim_{x \\to 0} \\frac{\\sqrt{1+x}-\\sqrt{1-x}}{\\sin 3x}$<br>
+                        <strong>解</strong>: 分子分母有理化：
+                        $\\lim_{x \\to 0} \\frac{(\\sqrt{1+x}-\\sqrt{1-x})(\\sqrt{1+x}+\\sqrt{1-x})}{(\\sin 3x)(\\sqrt{1+x}+\\sqrt{1-x})}$
+                        $= \\lim_{x \\to 0} \\frac{2x}{3x(\\sqrt{1+x}+\\sqrt{1-x})}$
+                        $= \\lim_{x \\to 0} \\frac{2}{3(\\sqrt{1+x}+\\sqrt{1-x})} = \\frac{2}{6} = \\frac{1}{3}$
+                    </div>
+                `,
+                animation: "exercise2"
+            },
+            {
+                title: "总结",
+                content: `
+                    <h2>本章总结</h2>
+                    <h3>核心概念</h3>
+                    <ul>
+                        <li><strong>极限</strong>：函数变化的"目标值"</li>
+                        <li><strong>连续</strong>：没有"跳跃"的函数</li>
+                        <li><strong>无穷小</strong>：趋向于0的变量</li>
+                        <li><strong>两个重要极限</strong>：微积分的基石</li>
+                    </ul>
+                    <h3>重要方法</h3>
+                    <ul>
+                        <li>直接代入法、因式分解法、有理化法</li>
+                        <li>等价无穷小替换</li>
+                        <li>左右极限判断法</li>
+                    </ul>
+                    <div class="note">
+                        极限与连续是微积分的基础，掌握好这些概念对后续学习至关重要！
+                    </div>
+                `,
+                animation: "summary"
+            }
+        ];
+
+        let currentSlide = 1;
+        const totalSlides = slidesData.length;
+        let autoPlayInterval = null;
+        let animationFrameId = null;
+
+        // Initialize slides
+        function initSlides() {
+            const container = document.getElementById('slidesContainer');
+            slidesData.forEach((slide, index) => {
+                const slideDiv = document.createElement('div');
+                slideDiv.className = `slide ${index === 0 ? 'active' : ''}`;
+                slideDiv.id = `slide${index + 1}`;
+                slideDiv.innerHTML = `
+                    <div class="slide-container">
+                        <div class="left-content">
+                            ${slide.content}
+                        </div>
+                        <div class="right-visual">
+                            <canvas id="canvas${index + 1}" width="600" height="400"></canvas>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(slideDiv);
+            });
+
+            // Trigger MathJax rendering
+            MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
+
+            // Start first animation
+            setTimeout(() => {
+                drawAnimation(1);
+            }, 500);
+        }
+
+        function showSlide(n) {
+            // Cancel previous animation
+            if (animationFrameId) {
+                cancelAnimationFrame(animationFrameId);
+                animationFrameId = null;
+            }
+
+            const slides = document.getElementsByClassName('slide');
+            if (n > totalSlides) currentSlide = 1;
+            if (n < 1) currentSlide = totalSlides;
+
+            for (let i = 0; i < slides.length; i++) {
+                slides[i].classList.remove('active');
+            }
+
+            slides[currentSlide - 1].classList.add('active');
+            document.getElementById('slideNumber').textContent = `${currentSlide} / ${totalSlides}`;
+            document.getElementById('progressBar').style.width = `${(currentSlide / totalSlides) * 100}%`;
+
+            // Trigger MathJax for new slide
+            MathJax.Hub.Queue(["Typeset", MathJax.Hub, slides[currentSlide - 1]]);
+
+            // Draw animation for current slide
+            setTimeout(() => {
+                drawAnimation(currentSlide);
+            }, 300);
+        }
+
+        function nextSlide() {
+            currentSlide++;
+            showSlide(currentSlide);
+        }
+
+        function prevSlide() {
+            currentSlide--;
+            showSlide(currentSlide);
+        }
+
+        function autoPlay() {
+            const btn = document.getElementById('autoPlayBtn');
+            if (autoPlayInterval) {
+                clearInterval(autoPlayInterval);
+                autoPlayInterval = null;
+                btn.textContent = '自动播放';
+            } else {
+                autoPlayInterval = setInterval(nextSlide, 5000);
+                btn.textContent = '停止播放';
+            }
+        }
+
+        // Animation functions
+        function drawAnimation(slideNum) {
+            const canvas = document.getElementById(`canvas${slideNum}`);
+            if (!canvas) return;
+
+            const ctx = canvas.getContext('2d');
+            const animation = slidesData[slideNum - 1].animation;
+
+            switch(animation) {
+                case "title":
+                    drawTitleAnimation(ctx, canvas);
+                    break;
+                case "sequence":
+                    drawSequenceAnimation(ctx, canvas);
+                    break;
+                case "queue":
+                    drawQueueVisualization(ctx, canvas);
+                    break;
+                case "limit":
+                    drawLimitConcept(ctx, canvas);
+                    break;
+                case "target":
+                    drawTargetAnimation(ctx, canvas);
+                    break;
+                case "convergence":
+                    drawConvergenceDivergence(ctx, canvas);
+                    break;
+                case "collatz":
+                    drawCollatzSequence(ctx, canvas);
+                    break;
+                case "fibonacci":
+                    drawFibonacciRatio(ctx, canvas);
+                    break;
+                case "example1_1":
+                    drawExample1_1(ctx, canvas);
+                    break;
+                case "example1_2":
+                    drawExample1_2(ctx, canvas);
+                    break;
+                case "example1_3":
+                    drawExample1_3(ctx, canvas);
+                    break;
+                case "example1_4":
+                    drawExample1_4(ctx, canvas);
+                    break;
+                case "depreciation":
+                    drawDepreciation(ctx, canvas);
+                    break;
+                case "function_notation":
+                    drawFunctionNotation(ctx, canvas);
+                    break;
+                case "function_limit":
+                    drawFunctionLimitConcept(ctx, canvas);
+                    break;
+                case "population":
+                    drawPopulationGrowth(ctx, canvas);
+                    break;
+                case "function_infinity":
+                    drawFunctionInfinity(ctx, canvas);
+                    break;
+                case "one_over_x":
+                    drawOneOverX(ctx, canvas);
+                    break;
+                case "arctan":
+                    drawArctan(ctx, canvas);
+                    break;
+                case "shadow":
+                    drawShadowAnimation(ctx, canvas);
+                    break;
+                case "point_limit":
+                    drawPointLimit(ctx, canvas);
+                    break;
+                case "velocity":
+                    drawVelocity(ctx, canvas);
+                    break;
+                case "left_right":
+                    drawLeftRightLimits(ctx, canvas);
+                    break;
+                case "piecewise1":
+                    drawPiecewise1(ctx, canvas);
+                    break;
+                case "piecewise2":
+                    drawPiecewise2(ctx, canvas);
+                    break;
+                case "infinitesimal":
+                    drawInfinitesimalConcept(ctx, canvas);
+                    break;
+                case "infinitesimal_prop":
+                    drawInfinitesimalProperties(ctx, canvas);
+                    break;
+                case "infinite":
+                    drawInfiniteConcept(ctx, canvas);
+                    break;
+                case "limit_properties":
+                    drawLimitProperties(ctx, canvas);
+                    break;
+                case "limit_rules":
+                    drawLimitRules(ctx, canvas);
+                    break;
+                case "direct_sub":
+                    drawDirectSubstitution(ctx, canvas);
+                    break;
+                case "zero_zero":
+                    drawZeroOverZero(ctx, canvas);
+                    break;
+                case "rationalize":
+                    drawRationalization(ctx, canvas);
+                    break;
+                case "infinity_infinity":
+                    drawInfinityOverInfinity(ctx, canvas);
+                    break;
+                case "sinx_x":
+                    drawSinXOverX(ctx, canvas);
+                    break;
+                case "sinx_examples":
+                    drawSinXExamples(ctx, canvas);
+                    break;
+                case "e_limit":
+                    drawELimit(ctx, canvas);
+                    break;
+                case "e_examples":
+                    drawEExamples(ctx, canvas);
+                    break;
+                case "infinitesimal_compare":
+                    drawInfinitesimalComparison(ctx, canvas);
+                    break;
+                case "equivalent_infinitesimal":
+                    drawEquivalentInfinitesimal(ctx, canvas);
+                    break;
+                case "continuity_concept":
+                    drawContinuityConcept(ctx, canvas);
+                    break;
+                case "continuity_def":
+                    drawContinuityDefinition(ctx, canvas);
+                    break;
+                case "ice_melting":
+                    drawIceMelting(ctx, canvas);
+                    break;
+                case "discontinuity":
+                    drawDiscontinuityTypes(ctx, canvas);
+                    break;
+                case "first_discontinuity":
+                    drawFirstDiscontinuity(ctx, canvas);
+                    break;
+                case "second_discontinuity":
+                    drawSecondDiscontinuity(ctx, canvas);
+                    break;
+                case "elementary_continuity":
+                    drawElementaryContinuity(ctx, canvas);
+                    break;
+                case "continuity_example":
+                    drawContinuityExample(ctx, canvas);
+                    break;
+                case "exercise1":
+                    drawExercise1(ctx, canvas);
+                    break;
+                case "exercise2":
+                    drawExercise2(ctx, canvas);
+                    break;
+                case "summary":
+                    drawSummaryAnimation(ctx, canvas);
+                    break;
+                default:
+                    drawDefaultAnimation(ctx, canvas);
+            }
+        }
+
+        // Animation implementations
+        function drawTitleAnimation(ctx, canvas) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Animated sine wave
+            function animate() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                ctx.strokeStyle = '#3498db';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+
+                for (let x = 0; x < canvas.width; x++) {
+                    const y = canvas.height/2 + Math.sin((x + Date.now()/100) * 0.02) * 50;
+                    if (x === 0) ctx.moveTo(x, y);
+                    else ctx.lineTo(x, y);
+                }
+                ctx.stroke();
+
+                // Title
+                ctx.font = 'bold 36px Arial';
+                ctx.fillStyle = '#2c3e50';
+                ctx.textAlign = 'center';
+                ctx.fillText('极限与连续', canvas.width/2, canvas.height/2 - 50);
+                ctx.font = '20px Arial';
+                ctx.fillText('微积分的基础', canvas.width/2, canvas.height/2 + 20);
+
+                animationFrameId = requestAnimationFrame(animate);
+            }
+            animate();
+        }
+
+        function drawSequenceAnimation(ctx, canvas) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawCoordinateSystem(ctx, canvas);
+
+            // Draw sequence points
+            ctx.fillStyle = '#3498db';
+            for (let n = 1; n <= 10; n++) {
+                const x = 50 + n * 50;
+                const y = canvas.height - 50 - (n/(n+1)) * 200;
+                ctx.beginPath();
+                ctx.arc(x, y, 4, 0, 2*Math.PI);
+                ctx.fill();
+
+                // Label
+                ctx.font = '12px Arial';
+                ctx.fillText(`n=${n}`, x, canvas.height - 30);
+            }
+
+            // Draw limit line
+            ctx.strokeStyle = '#e74c3c';
+            ctx.lineWidth = 2;
+            ctx.setLineDash([5, 5]);
+            ctx.beginPath();
+            ctx.moveTo(50, canvas.height - 250);
+            ctx.lineTo(canvas.width - 50, canvas.height - 250);
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            ctx.fillStyle = '#e74c3c';
+            ctx.fillText('极限 = 1', canvas.width - 100, canvas.height - 255);
+        }
+
+        function drawQueueVisualization(ctx, canvas) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Draw people in queue
+            const people = [1, 2, 3, 4, 5];
+            const values = [1/2, 2/3, 3/4, 4/5, 5/6];
+
+            for (let i = 0; i < people.length; i++) {
+                const x = 100 + i * 100;
+                const y = 200;
+
+                // Draw person
+                ctx.fillStyle = '#3498db';
+                ctx.beginPath();
+                ctx.arc(x, y, 20, 0, 2*Math.PI);
+                ctx.fill();
+
+                // Draw body
+                ctx.fillRect(x - 15, y + 20, 30, 40);
+
+                // Draw number sign
+                ctx.fillStyle = '#fff';
+                ctx.font = 'bold 16px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText(people[i], x, y + 5);
+
+                // Draw value
+                ctx.fillStyle = '#2c3e50';
+                ctx.fillText(values[i].toFixed(3), x, y + 80);
+            }
+
+            // Arrow
+            ctx.strokeStyle = '#e74c3c';
+            ctx.lineWidth = 3;
+            drawArrow(ctx, 50, 300, canvas.width - 50, 300);
+            ctx.fillStyle = '#e74c3c';
+            ctx.font = '16px Arial';
+            ctx.fillText('n → ∞', canvas.width/2, 330);
+        }
+
+        function drawLimitConcept(ctx, canvas) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawCoordinateSystem(ctx, canvas);
+
+            // Draw convergent sequence
+            ctx.strokeStyle = '#3498db';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+
+            for (let n = 1; n <= 30; n++) {
+                const x = 50 + n * 15;
+                const y = canvas.height/2 - (1 - 1/n) * 150;
+
+                if (n === 1) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+
+                // Draw points
+                ctx.fillStyle = '#3498db';
+                ctx.beginPath();
+                ctx.arc(x, y, 2, 0, 2*Math.PI);
+                ctx.fill();
+            }
+            ctx.stroke();
+
+            // Limit line
+            ctx.strokeStyle = '#e74c3c';
+            ctx.setLineDash([5, 5]);
+            ctx.beginPath();
+            ctx.moveTo(50, canvas.height/2 - 150);
+            ctx.lineTo(canvas.width - 50, canvas.height/2 - 150);
+            ctx.stroke();
+            ctx.setLineDash([]);
+        }
+
+        function drawTargetAnimation(ctx, canvas) {
+            function animate() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                const centerX = canvas.width / 2;
+                const centerY = canvas.height / 2;
+
+                // Draw target circles
+                for (let r = 150; r > 0; r -= 30) {
+                    ctx.strokeStyle = `rgba(52, 152, 219, ${0.2 + (150-r)/150 * 0.8})`;
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    ctx.arc(centerX, centerY, r, 0, 2*Math.PI);
+                    ctx.stroke();
+                }
+
+                // Draw arrows approaching center
+                const time = Date.now() / 1000;
+                for (let i = 0; i < 8; i++) {
+                    const angle = i * Math.PI / 4;
+                    const distance = 100 + Math.sin(time + i) * 30;
+                    const x = centerX + Math.cos(angle) * distance;
+                    const y = centerY + Math.sin(angle) * distance;
+
+                    ctx.fillStyle = '#e74c3c';
+                    ctx.beginPath();
+                    ctx.arc(x, y, 3, 0, 2*Math.PI);
+                    ctx.fill();
+                }
+
+                ctx.fillStyle = '#2c3e50';
+                ctx.font = 'bold 16px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText('极限（靶心）', centerX, centerY);
+
+                animationFrameId = requestAnimationFrame(animate);
+            }
+            animate();
+        }
+
+        function drawConvergenceDivergence(ctx, canvas) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            const width = canvas.width / 2;
+
+            // Convergent sequence
+            ctx.save();
+            ctx.translate(0, 0);
+            drawCoordinateSystem(ctx, {width: width, height: canvas.height});
+
+            ctx.fillStyle = '#2ecc71';
+            for (let n = 1; n <= 20; n++) {
+                const x = 20 + n * 12;
+                const y = canvas.height/2 - (1 - 1/n) * 100;
+                ctx.beginPath();
+                ctx.arc(x, y, 2, 0, 2*Math.PI);
+                ctx.fill();
+            }
+
+            ctx.fillStyle = '#2c3e50';
+            ctx.font = '14px Arial';
+            ctx.fillText('收敛', width/2, 30);
+            ctx.restore();
+
+            // Divergent sequence
+            ctx.save();
+            ctx.translate(width, 0);
+            drawCoordinateSystem(ctx, {width: width, height: canvas.height});
+
+            ctx.fillStyle = '#e74c3c';
+            for (let n = 1; n <= 15; n++) {
+                const x = 20 + n * 15;
+                const y = canvas.height/2 - n * 10;
+                if (y > 20) {
+                    ctx.beginPath();
+                    ctx.arc(x, y, 2, 0, 2*Math.PI);
+                    ctx.fill();
+                }
+            }
+
+            ctx.fillStyle = '#2c3e50';
+            ctx.font = '14px Arial';
+            ctx.fillText('发散', width/2, 30);
+            ctx.restore();
+        }
+
+        function drawCollatzSequence(ctx, canvas) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Collatz sequence
+            let n = 27;
+            const sequence = [n];
+            while (n !== 1 && sequence.length < 30) {
+                if (n % 2 === 0) n = n / 2;
+                else n = 3 * n + 1;
+                sequence.push(n);
+            }
+
+            drawCoordinateSystem(ctx, canvas);
+
+            // Draw sequence
+            ctx.strokeStyle = '#9b59b6';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            for (let i = 0; i < sequence.length; i++) {
+                const x = 50 + i * (canvas.width - 100) / sequence.length;
+                const y = canvas.height - 50 - Math.min(sequence[i] * 2, canvas.height - 100);
+                if (i === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+
+                ctx.fillStyle = '#9b59b6';
+                ctx.beginPath();
+                ctx.arc(x, y, 3, 0, 2*Math.PI);
+                ctx.fill();
+            }
+            ctx.stroke();
+
+            ctx.fillStyle = '#2c3e50';
+            ctx.font = '16px Arial';
+            ctx.fillText('3n+1 序列 (起始: 27)', canvas.width/2, 30);
+        }
+
+        function drawFibonacciRatio(ctx, canvas) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawCoordinateSystem(ctx, canvas);
+
+            let a = 0, b = 1;
+            const ratios = [];
+            for (let i = 0; i < 15; i++) {
+                const temp = b;
+                b = a + b;
+                a = temp;
+                if (a > 0) ratios.push(b / a);
+            }
+
+            // Draw ratios
+            ctx.strokeStyle = '#f39c12';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            for (let i = 0; i < ratios.length; i++) {
+                const x = 50 + i * (canvas.width - 100) / ratios.length;
+                const y = canvas.height - 50 - ratios[i] * 100;
+                if (i === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+
+                ctx.fillStyle = '#f39c12';
+                ctx.beginPath();
+                ctx.arc(x, y, 3, 0, 2*Math.PI);
+                ctx.fill();
+            }
+            ctx.stroke();
+
+            // Golden ratio line
+            const phi = 1.618;
+            ctx.strokeStyle = '#e74c3c';
+            ctx.setLineDash([5, 5]);
+            ctx.beginPath();
+            ctx.moveTo(50, canvas.height - 50 - phi * 100);
+            ctx.lineTo(canvas.width - 50, canvas.height - 50 - phi * 100);
+            ctx.stroke();
+            ctx.setLineDash([]);
+        }
+
+        function drawExample1_1(ctx, canvas) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawCoordinateSystem(ctx, canvas);
+
+            // Draw n/(n+1) sequence
+            ctx.strokeStyle = '#3498db';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+
+            for (let n = 1; n <= 20; n++) {
+                const x = 50 + n * 25;
+                const y = canvas.height - 50 - (n/(n+1)) * 250;
+
+                if (n === 1) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+
+                ctx.fillStyle = '#3498db';
+                ctx.beginPath();
+                ctx.arc(x, y, 3, 0, 2*Math.PI);
+                ctx.fill();
+            }
+            ctx.stroke();
+
+            // Limit line at y = 1
+            ctx.strokeStyle = '#e74c3c';
+            ctx.setLineDash([5, 5]);
+            ctx.beginPath();
+            ctx.moveTo(50, canvas.height - 300);
+            ctx.lineTo(canvas.width - 50, canvas.height - 300);
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            ctx.fillStyle = '#e74c3c';
+            ctx.font = '14px Arial';
+            ctx.fillText('极限 = 1', canvas.width - 100, canvas.height - 305);
+        }
+
+        function drawExample1_2(ctx, canvas) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawCoordinateSystem(ctx, canvas);
+
+            // Oscillating sequence
+            for (let n = 1; n <= 20; n++) {
+                const x = 50 + n * 25;
+                const value = (1 + Math.pow(-1, n)) / 2;
+                const y = canvas.height - 50 - value * 200;
+
+                ctx.fillStyle = n % 2 === 0 ? '#e74c3c' : '#3498db';
+                ctx.beginPath();
+                ctx.arc(x, y, 4, 0, 2*Math.PI);
+                ctx.fill();
+            }
+
+            ctx.fillStyle = '#2c3e50';
+            ctx.font = '14px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText('振荡数列（无极限）', canvas.width/2, 30);
+        }
+
+        function drawExample1_3(ctx, canvas) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawCoordinateSystem(ctx, canvas);
+
+            // 1/(-3)^n sequence
+            for (let n = 1; n <= 10; n++) {
+                const x = 50 + n * 50;
+                const value = 1 / Math.pow(-3, n);
+                const y = canvas.height/2 - value * 1000;
+
+                ctx.fillStyle = n % 2 === 0 ? '#2ecc71' : '#e74c3c';
+                ctx.beginPath();
+                ctx.arc(x, y, 3, 0, 2*Math.PI);
+                ctx.fill();
+            }
+
+            // Zero line
+            ctx.strokeStyle = '#9b59b6';
+            ctx.setLineDash([5, 5]);
+            ctx.beginPath();
+            ctx.moveTo(50, canvas.height/2);
+            ctx.lineTo(canvas.width - 50, canvas.height/2);
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            ctx.fillStyle = '#9b59b6';
+            ctx.font = '14px Arial';
+            ctx.fillText('极限 = 0', canvas.width - 100, canvas.height/2 - 5);
+        }
+
+        function drawExample1_4(ctx, canvas) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawCoordinateSystem(ctx, canvas);
+
+            // Constant sequence
+            ctx.strokeStyle = '#9b59b6';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.moveTo(50, canvas.height/2 - 80);
+            ctx.lineTo(canvas.width - 50, canvas.height/2 - 80);
+            ctx.stroke();
+
+            // Draw points
+            for (let n = 1; n <= 20; n++) {
+                const x = 50 + n * 25;
+                const y = canvas.height/2 - 80;
+
+                ctx.fillStyle = '#9b59b6';
+                ctx.beginPath();
+                ctx.arc(x, y, 3, 0, 2*Math.PI);
+                ctx.fill();
+            }
+
+            ctx.fillStyle = '#2c3e50';
+            ctx.font = '16px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText('常数数列 = 8', canvas.width/2, 30);
+        }
+
+        function drawDepreciation(ctx, canvas) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawCoordinateSystem(ctx, canvas);
+
+            // Exponential decay
+            ctx.strokeStyle = '#e74c3c';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+
+            for (let n = 0; n <= 30; n++) {
+                const x = 50 + n * 15;
+                const value = 100 * Math.pow(0.9, n);
+                const y = canvas.height - 50 - value * 2;
+
+                if (n === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+
+                if (n % 5 === 0) {
+                    ctx.fillStyle = '#e74c3c';
+                    ctx.beginPath();
+                    ctx.arc(x, y, 3, 0, 2*Math.PI);
+                    ctx.fill();
+                }
+            }
+            ctx.stroke();
+
+            ctx.fillStyle = '#2c3e50';
+            ctx.font = '14px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText('设备价值递减曲线', canvas.width/2, 30);
+        }
+
+
+        function drawFunctionLimitConcept(ctx, canvas) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawCoordinateSystem(ctx, canvas);
+
+            // Draw continuous function approaching limit
+            ctx.strokeStyle = '#3498db';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+
+            for (let x = -3; x <= 3; x += 0.1) {
+                const pixelX = canvas.width/2 + x * 80;
+                const pixelY = canvas.height/2 - Math.exp(-x*x) * 150;
+                if (x === -3) ctx.moveTo(pixelX, pixelY);
+                else ctx.lineTo(pixelX, pixelY);
+            }
+            ctx.stroke();
+        }
+
+        function drawPopulationGrowth(ctx, canvas) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawCoordinateSystem(ctx, canvas);
+
+            // Logistic growth curve
+            ctx.strokeStyle = '#2ecc71';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            for (let t = 0; t <= 50; t++) {
+                const x = 50 + t * 10;
+                const K = 150; // Carrying capacity
+                const value = K / (1 + 10 * Math.exp(-0.1 * t));
+                const y = canvas.height - 50 - value;
+                if (t === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            }
+            ctx.stroke();
+
+            // Carrying capacity line
+            ctx.strokeStyle = '#e74c3c';
+            ctx.setLineDash([5, 5]);
+            ctx.beginPath();
+            ctx.moveTo(50, canvas.height - 200);
+            ctx.lineTo(canvas.width - 50, canvas.height - 200);
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            ctx.fillStyle = '#e74c3c';
+            ctx.font = '14px Arial';
+            ctx.fillText('饱和状态', canvas.width - 100, canvas.height - 205);
+        }
+
+        function drawFunctionInfinity(ctx, canvas) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawCoordinateSystem(ctx, canvas);
+
+            // Function approaching horizontal asymptote
+            ctx.strokeStyle = '#3498db';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            for (let x = 0.1; x <= 10; x += 0.1) {
+                const pixelX = 50 + x * 50;
+                const pixelY = canvas.height/2 - (2 - 2/x) * 50;
+                if (x === 0.1) ctx.moveTo(pixelX, pixelY);
+                else ctx.lineTo(pixelX, pixelY);
+            }
+            ctx.stroke();
+
+            // Asymptote
+            ctx.strokeStyle = '#e74c3c';
+            ctx.setLineDash([5, 5]);
+            ctx.beginPath();
+            ctx.moveTo(50, canvas.height/2 - 100);
+            ctx.lineTo(canvas.width - 50, canvas.height/2 - 100);
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            ctx.fillStyle = '#e74c3c';
+            ctx.fillText('A = 2', canvas.width - 80, canvas.height/2 - 105);
+        }
+
+        function drawOneOverX(ctx, canvas) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawCoordinateSystem(ctx, canvas);
+
+            // Draw 1/x function
+            ctx.strokeStyle = '#3498db';
+            ctx.lineWidth = 2;
+
+            // Positive part
+            ctx.beginPath();
+            for (let x = 0.1; x <= 5; x += 0.1) {
+                const pixelX = canvas.width/2 + x * 60;
+                const pixelY = canvas.height/2 - (1/x) * 60;
+                if (x === 0.1) ctx.moveTo(pixelX, pixelY);
+                else ctx.lineTo(pixelX, pixelY);
+            }
+            ctx.stroke();
+
+            // Negative part
+            ctx.beginPath();
+            for (let x = -5; x <= -0.1; x += 0.1) {
+                const pixelX = canvas.width/2 + x * 60;
+                const pixelY = canvas.height/2 - (1/x) * 60;
+                if (x === -5) ctx.moveTo(pixelX, pixelY);
+                else ctx.lineTo(pixelX, pixelY);
+            }
+            ctx.stroke();
+
+            ctx.fillStyle = '#2c3e50';
+            ctx.font = '16px Arial';
+            ctx.fillText('y = 1/x', canvas.width - 100, 50);
+        }
+
+        function drawArctan(ctx, canvas) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawCoordinateSystem(ctx, canvas);
+
+            // Draw arctan function
+            ctx.strokeStyle = '#9b59b6';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            for (let x = -5; x <= 5; x += 0.1) {
+                const pixelX = canvas.width/2 + x * 50;
+                const pixelY = canvas.height/2 - Math.atan(x) * 80;
+                if (x === -5) ctx.moveTo(pixelX, pixelY);
+                else ctx.lineTo(pixelX, pixelY);
+            }
+            ctx.stroke();
+
+            // Horizontal asymptotes
+            ctx.strokeStyle = '#e74c3c';
+            ctx.setLineDash([5, 5]);
+
+            ctx.beginPath();
+            ctx.moveTo(50, canvas.height/2 - Math.PI/2 * 80);
+            ctx.lineTo(canvas.width - 50, canvas.height/2 - Math.PI/2 * 80);
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.moveTo(50, canvas.height/2 + Math.PI/2 * 80);
+            ctx.lineTo(canvas.width - 50, canvas.height/2 + Math.PI/2 * 80);
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            ctx.fillStyle = '#e74c3c';
+            ctx.font = '12px Arial';
+            ctx.fillText('π/2', 30, canvas.height/2 - Math.PI/2 * 80);
+            ctx.fillText('-π/2', 30, canvas.height/2 + Math.PI/2 * 80);
+        }
+
+        function drawShadowAnimation(ctx, canvas) {
+            function animate() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                const time = Date.now() / 1000;
+                const personX = 200 + Math.sin(time) * 100;
+                const lightX = canvas.width / 2;
+                const groundY = canvas.height - 100;
+
+                // Ground
+                ctx.fillStyle = '#95a5a6';
+                ctx.fillRect(0, groundY, canvas.width, 100);
+
+                // Light pole
+                ctx.fillStyle = '#34495e';
+                ctx.fillRect(lightX - 5, groundY - 150, 10, 150);
+
+                // Light
+                ctx.fillStyle = '#f39c12';
+                ctx.beginPath();
+                ctx.arc(lightX, groundY - 150, 15, 0, 2*Math.PI);
+                ctx.fill();
+
+                // Person
+                ctx.fillStyle = '#2c3e50';
+                ctx.fillRect(personX - 10, groundY - 60, 20, 60);
+                ctx.beginPath();
+                ctx.arc(personX, groundY - 75, 15, 0, 2*Math.PI);
+                ctx.fill();
+
+                // Shadow
+                const shadowLength = Math.abs(lightX - personX) * 0.5;
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
+                ctx.beginPath();
+                ctx.moveTo(personX, groundY);
+                ctx.lineTo(personX - shadowLength * Math.sign(lightX - personX), groundY);
+                ctx.lineTo(personX - shadowLength * 1.5 * Math.sign(lightX - personX), groundY + 20);
+                ctx.closePath();
+                ctx.fill();
+
+                animationFrameId = requestAnimationFrame(animate);
+            }
+            animate();
+        }
+
+        function drawPointLimit(ctx, canvas) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawCoordinateSystem(ctx, canvas);
+
+            const x0 = canvas.width/2;
+            const y0 = canvas.height/2 - 80;
+
+            // Draw function approaching point
+            ctx.strokeStyle = '#3498db';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            for (let x = -2; x <= 2; x += 0.1) {
+                if (Math.abs(x) > 0.1) {
+                    const pixelX = x0 + x * 80;
+                    const pixelY = canvas.height/2 - (x*x + 1) * 40;
+                    if (x === -2) ctx.moveTo(pixelX, pixelY);
+                    else ctx.lineTo(pixelX, pixelY);
+                }
+            }
+            ctx.stroke();
+
+            // Point
+            ctx.fillStyle = '#e74c3c';
+            ctx.beginPath();
+            ctx.arc(x0, y0, 5, 0, 2*Math.PI);
+            ctx.fill();
+
+            // Arrows
+            drawArrow(ctx, x0 - 60, y0, x0 - 10, y0);
+            drawArrow(ctx, x0 + 60, y0, x0 + 10, y0);
+        }
+
+        function drawVelocity(ctx, canvas) {
+            function animate() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                const time = Date.now() / 1000;
+                const t = 2 + Math.sin(time);
+                const g = 9.8;
+                const s = 0.5 * g * t * t;
+
+                // Draw falling object
+                const y = 50 + s * 2;
+
+                ctx.fillStyle = '#3498db';
+                ctx.beginPath();
+                ctx.arc(canvas.width/2, Math.min(y, canvas.height - 50), 20, 0, 2*Math.PI);
+                ctx.fill();
+
+                // Draw velocity vector
+                const v = g * t;
+                ctx.strokeStyle = '#e74c3c';
+                ctx.lineWidth = 3;
+                drawArrow(ctx, canvas.width/2 + 50, y, canvas.width/2 + 50, y + v * 5);
+
+                // Labels
+                ctx.fillStyle = '#2c3e50';
+                ctx.font = '16px Arial';
+                ctx.fillText(`t = ${t.toFixed(2)} s`, 50, 50);
+                ctx.fillText(`v = ${v.toFixed(2)} m/s`, 50, 80);
+                ctx.fillText(`s = ${s.toFixed(2)} m`, 50, 110);
+
+                animationFrameId = requestAnimationFrame(animate);
+            }
+            animate();
+        }
+
+        function drawLeftRightLimits(ctx, canvas) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawCoordinateSystem(ctx, canvas);
+
+            const x0 = canvas.width / 2;
+            const y0 = canvas.height / 2;
+
+            // Left part
+            ctx.strokeStyle = '#3498db';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(50, y0 + 50);
+            ctx.lineTo(x0 - 5, y0 - 50);
+            ctx.stroke();
+
+            // Right part
+            ctx.strokeStyle = '#2ecc71';
+            ctx.beginPath();
+            ctx.moveTo(x0 + 5, y0 - 100);
+            ctx.lineTo(canvas.width - 50, y0 - 150);
+            ctx.stroke();
+
+            // Limit points
+            ctx.fillStyle = '#3498db';
+            ctx.beginPath();
+            ctx.arc(x0, y0 - 50, 5, 0, 2*Math.PI);
+            ctx.stroke();
+
+            ctx.fillStyle = '#2ecc71';
+            ctx.beginPath();
+            ctx.arc(x0, y0 - 100, 5, 0, 2*Math.PI);
+            ctx.stroke();
+
+            // Labels
+            ctx.fillStyle = '#3498db';
+            ctx.font = '12px Arial';
+            ctx.fillText('左极限', x0 - 50, y0 - 55);
+
+            ctx.fillStyle = '#2ecc71';
+            ctx.fillText('右极限', x0 + 10, y0 - 105);
+        }
+
+        function drawPiecewise1(ctx, canvas) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawCoordinateSystem(ctx, canvas);
+
+            const x0 = canvas.width / 2 + 50;
+            const y0 = canvas.height / 2;
+
+            // f(x) = x+2 for x >= 1
+            ctx.strokeStyle = '#2ecc71';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(x0, y0 - 150);
+            ctx.lineTo(canvas.width - 50, y0 - 200);
+            ctx.stroke();
+
+            // f(x) = 3x for x < 1
+            ctx.strokeStyle = '#3498db';
+            ctx.beginPath();
+            ctx.moveTo(50, y0 + 100);
+            ctx.lineTo(x0, y0 - 150);
+            ctx.stroke();
+
+            // Point at x = 1
+            ctx.fillStyle = '#e74c3c';
+            ctx.beginPath();
+            ctx.arc(x0, y0 - 150, 5, 0, 2*Math.PI);
+            ctx.fill();
+
+            ctx.fillStyle = '#2c3e50';
+            ctx.font = '14px Arial';
+            ctx.fillText('x = 1', x0 + 10, y0 - 130);
+            ctx.fillText('极限存在 = 3', x0 + 10, y0 - 110);
+        }
+
+        function drawPiecewise2(ctx, canvas) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawCoordinateSystem(ctx, canvas);
+
+            const x0 = canvas.width / 2;
+            const y0 = canvas.height / 2;
+
+            // f(x) = x^2 for x >= 0
+            ctx.strokeStyle = '#2ecc71';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            for (let x = 0; x <= 2; x += 0.1) {
+                const pixelX = x0 + x * 80;
+                const pixelY = y0 - x * x * 50;
+                if (x === 0) ctx.moveTo(pixelX, pixelY);
+                else ctx.lineTo(pixelX, pixelY);
+            }
+            ctx.stroke();
+
+            // f(x) = x+1 for x < 0
+            ctx.strokeStyle = '#3498db';
+            ctx.beginPath();
+            for (let x = -2; x < 0; x += 0.1) {
+                const pixelX = x0 + x * 80;
+                const pixelY = y0 - (x + 1) * 50;
+                if (x === -2) ctx.moveTo(pixelX, pixelY);
+                else ctx.lineTo(pixelX, pixelY);
+            }
+            ctx.stroke();
+
+            // Different limits at 0
+            ctx.strokeStyle = '#e74c3c';
+            ctx.beginPath();
+            ctx.arc(x0, y0, 5, 0, 2*Math.PI);
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.arc(x0, y0 - 50, 5, 0, 2*Math.PI);
+            ctx.stroke();
+
+            ctx.fillStyle = '#2c3e50';
+            ctx.font = '14px Arial';
+            ctx.fillText('左极限 = 1', x0 - 80, y0 - 55);
+            ctx.fillText('右极限 = 0', x0 + 10, y0 + 20);
+        }
+
+        function drawInfinitesimalConcept(ctx, canvas) {
+            function animate() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                drawCoordinateSystem(ctx, canvas);
+
+                const time = Date.now() / 2000;
+                const scale = Math.exp(-time % 3);
+
+                // Function approaching 0
+                ctx.strokeStyle = '#3498db';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                for (let x = -3; x <= 3; x += 0.1) {
+                    const pixelX = canvas.width/2 + x * 80;
+                    const pixelY = canvas.height/2 - Math.exp(-x*x) * 100 * scale;
+                    if (x === -3) ctx.moveTo(pixelX, pixelY);
+                    else ctx.lineTo(pixelX, pixelY);
+                }
+                ctx.stroke();
+
+                // Zero line
+                ctx.strokeStyle = '#e74c3c';
+                ctx.setLineDash([5, 5]);
+                ctx.beginPath();
+                ctx.moveTo(50, canvas.height/2);
+                ctx.lineTo(canvas.width - 50, canvas.height/2);
+                ctx.stroke();
+                ctx.setLineDash([]);
+
+                ctx.fillStyle = '#2c3e50';
+                ctx.font = '16px Arial';
+                ctx.fillText('趋向于 0', canvas.width/2, 30);
+
+                animationFrameId = requestAnimationFrame(animate);
+            }
+            animate();
+        }
+
+        function drawInfinitesimalProperties(ctx, canvas) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Visualize three properties
+            const centerY = canvas.height / 4;
+
+            // Property 1: Sum
+            ctx.fillStyle = '#3498db';
+            ctx.font = '14px Arial';
+            ctx.fillText('α + β → 0', 100, centerY);
+
+            // Property 2: Product
+            ctx.fillText('α · β → 0', 250, centerY);
+
+            // Property 3: Bounded × Infinitesimal
+            ctx.fillText('M · α → 0', 400, centerY);
+
+            // Visual representations
+            ctx.strokeStyle = '#2ecc71';
+            ctx.lineWidth = 2;
+
+            // Draw decreasing sequences
+            for (let i = 0; i < 3; i++) {
+                ctx.beginPath();
+                for (let n = 1; n <= 10; n++) {
+                    const x = 100 + i * 150 + n * 10;
+                    const y = centerY + 50 + (1/n) * 100;
+                    if (n === 1) ctx.moveTo(x, y);
+                    else ctx.lineTo(x, y);
+
+                    ctx.fillStyle = '#2ecc71';
+                    ctx.beginPath();
+                    ctx.arc(x, y, 2, 0, 2*Math.PI);
+                    ctx.fill();
+                }
+                ctx.stroke();
+            }
+        }
+
+        function drawInfiniteConcept(ctx, canvas) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawCoordinateSystem(ctx, canvas);
+
+            // Function approaching infinity
+            ctx.strokeStyle = '#e74c3c';
+            ctx.lineWidth = 2;
+
+            // Right part
+            ctx.beginPath();
+            for (let x = 0.05; x <= 2; x += 0.05) {
+                const pixelX = canvas.width/2 + x * 100;
+                const pixelY = canvas.height/2 - (1/x) * 50;
+                if (pixelY > 20 && pixelY < canvas.height - 20) {
+                    if (x === 0.05) ctx.moveTo(pixelX, pixelY);
+                    else ctx.lineTo(pixelX, pixelY);
+                }
+            }
+            ctx.stroke();
+
+            // Left part
+            ctx.beginPath();
+            for (let x = -2; x <= -0.05; x += 0.05) {
+                const pixelX = canvas.width/2 + x * 100;
+                const pixelY = canvas.height/2 - (1/x) * 50;
+                if (pixelY > 20 && pixelY < canvas.height - 20) {
+                    if (x === -2) ctx.moveTo(pixelX, pixelY);
+                    else ctx.lineTo(pixelX, pixelY);
+                }
+            }
+            ctx.stroke();
+
+            // Vertical asymptote
+            ctx.strokeStyle = '#9b59b6';
+            ctx.setLineDash([5, 5]);
+            ctx.beginPath();
+            ctx.moveTo(canvas.width/2, 20);
+            ctx.lineTo(canvas.width/2, canvas.height - 20);
+            ctx.stroke();
+            ctx.setLineDash([]);
+        }
+
+        function drawLimitProperties(ctx, canvas) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Visualize limit properties
+            const properties = ['唯一性', '有界性', '保号性'];
+            const colors = ['#3498db', '#2ecc71', '#e74c3c'];
+
+            for (let i = 0; i < 3; i++) {
+                const x = (i + 1) * canvas.width / 4;
+                const y = canvas.height / 2;
+
+                ctx.fillStyle = colors[i];
+                ctx.beginPath();
+                ctx.arc(x, y, 50, 0, 2*Math.PI);
+                ctx.fill();
+
+                ctx.fillStyle = 'white';
+                ctx.font = 'bold 16px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText(properties[i], x, y + 5);
+            }
+        }
+
+        function drawLimitRules(ctx, canvas) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Visualize arithmetic rules
+            const rules = ['+', '×', '÷'];
+            const y = canvas.height / 2;
+
+            for (let i = 0; i < 3; i++) {
+                const x = (i + 1) * canvas.width / 4;
+
+                // Draw operation
+                ctx.font = 'bold 48px Arial';
+                ctx.fillStyle = '#3498db';
+                ctx.textAlign = 'center';
+                ctx.fillText(rules[i], x, y);
+
+                // Draw limits
+                ctx.font = '16px Arial';
+                ctx.fillStyle = '#2c3e50';
+                ctx.fillText('lim f(x) = A', x - 50, y - 60);
+                ctx.fillText('lim g(x) = B', x + 50, y - 60);
+                ctx.fillText(`lim = A ${rules[i]} B`, x, y + 60);
+            }
+        }
+
+        function drawDirectSubstitution(ctx, canvas) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Show direct substitution process
+            ctx.font = '20px Arial';
+            ctx.fillStyle = '#2c3e50';
+            ctx.textAlign = 'center';
+
+            const steps = [
+                'lim (3x² + x + 1)/(4x³ + x² - x + 3)',
+                'x → 1',
+                '= (3·1² + 1 + 1)/(4·1³ + 1² - 1 + 3)',
+                '= 5/7'
+            ];
+
+            for (let i = 0; i < steps.length; i++) {
+                ctx.fillText(steps[i], canvas.width/2, 100 + i * 50);
+            }
+        }
+
+        function drawZeroOverZero(ctx, canvas) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Tug of war visualization
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+
+            // Draw rope
+            ctx.strokeStyle = '#8b4513';
+            ctx.lineWidth = 10;
+            ctx.beginPath();
+            ctx.moveTo(100, centerY);
+            ctx.lineTo(canvas.width - 100, centerY);
+            ctx.stroke();
+
+            // Draw teams
+            ctx.fillStyle = '#3498db';
+            ctx.fillRect(80, centerY - 40, 40, 80);
+            ctx.fillStyle = '#e74c3c';
+            ctx.fillRect(canvas.width - 120, centerY - 40, 40, 80);
+
+            // Labels
+            ctx.fillStyle = '#2c3e50';
+            ctx.font = '16px Arial';
+            ctx.fillText('分子 → 0', 100, centerY - 50);
+            ctx.fillText('分母 → ∞', canvas.width - 100, centerY - 50);
+
+            ctx.font = '20px Arial';
+            ctx.fillText('0/0 未定式', centerX, 50);
+        }
+
+        function drawRationalization(ctx, canvas) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Show rationalization steps
+            const steps = [
+                '原式: (x-4)/(√(x-2) - √2)',
+                '乘以共轭: (√(x-2) + √2)',
+                '分子: (x-4)(√(x-2) + √2)',
+                '分母: (x-2) - 2 = x-4',
+                '结果: √(x-2) + √2 → 2√2'
+            ];
+
+            ctx.font = '16px Arial';
+            ctx.fillStyle = '#2c3e50';
+            for (let i = 0; i < steps.length; i++) {
+                ctx.fillText(steps[i], 50, 80 + i * 40);
+            }
+        }
+
+        function drawInfinityOverInfinity(ctx, canvas) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Race visualization
+            const time = Date.now() / 1000;
+
+            // Draw race tracks
+            ctx.strokeStyle = '#95a5a6';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(50, 150);
+            ctx.lineTo(canvas.width - 50, 150);
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.moveTo(50, 250);
+            ctx.lineTo(canvas.width - 50, 250);
+            ctx.stroke();
+
+            // Racers (different powers of x)
+            const x1 = 50 + (time * 30) % (canvas.width - 100);
+            const x2 = 50 + (time * time * 5) % (canvas.width - 100);
+
+            ctx.fillStyle = '#3498db';
+            ctx.beginPath();
+            ctx.arc(x1, 150, 10, 0, 2*Math.PI);
+            ctx.fill();
+
+            ctx.fillStyle = '#e74c3c';
+            ctx.beginPath();
+            ctx.arc(x2, 250, 10, 0, 2*Math.PI);
+            ctx.fill();
+
+            ctx.fillStyle = '#2c3e50';
+            ctx.font = '14px Arial';
+            ctx.fillText('x (低次项)', 50, 130);
+            ctx.fillText('x² (高次项-领头)', 50, 230);
+        }
+
+        function drawSinXOverX(ctx, canvas) {
+            function animate() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                drawCoordinateSystem(ctx, canvas);
+
+                // sin(x)/x function
+                ctx.strokeStyle = '#3498db';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                for (let x = -3; x <= 3; x += 0.05) {
+                    if (Math.abs(x) > 0.01) {
+                        const pixelX = canvas.width/2 + x * 80;
+                        const pixelY = canvas.height/2 - (Math.sin(x)/x) * 150;
+                        if (x === -3) ctx.moveTo(pixelX, pixelY);
+                        else ctx.lineTo(pixelX, pixelY);
+                    }
+                }
+                ctx.stroke();
+
+                // Limit point at (0, 1)
+                ctx.fillStyle = '#e74c3c';
+                ctx.beginPath();
+                ctx.arc(canvas.width/2, canvas.height/2 - 150, 5, 0, 2*Math.PI);
+                ctx.fill();
+
+                ctx.fillStyle = '#2c3e50';
+                ctx.font = '16px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText('sin(x)/x → 1', canvas.width/2, 30);
+
+                animationFrameId = requestAnimationFrame(animate);
+            }
+            animate();
+        }
+
+        function drawSinXExamples(ctx, canvas) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Show multiple sin(x) related limits
+            const examples = [
+                'sin(3x)/x = 3·sin(3x)/(3x) → 3',
+                'tan(x)/(4x) = sin(x)/(4x·cos(x)) → 1/4',
+                'sin(x-1)/(x²-1) → 1/2'
+            ];
+
+            ctx.font = '18px Arial';
+            ctx.fillStyle = '#2c3e50';
+            for (let i = 0; i < examples.length; i++) {
+                ctx.fillText(examples[i], 50, 100 + i * 60);
+            }
+        }
+
+        function drawELimit(ctx, canvas) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawCoordinateSystem(ctx, canvas);
+
+            // (1+1/x)^x approaching e
+            ctx.strokeStyle = '#2ecc71';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            for (let x = 1; x <= 50; x++) {
+                const value = Math.pow(1 + 1/x, x);
+                const pixelX = 50 + x * 10;
+                const pixelY = canvas.height - 50 - (value - 2) * 200;
+                if (x === 1) ctx.moveTo(pixelX, pixelY);
+                else ctx.lineTo(pixelX, pixelY);
+
+                if (x % 5 === 0) {
+                    ctx.fillStyle = '#2ecc71';
+                    ctx.beginPath();
+                    ctx.arc(pixelX, pixelY, 3, 0, 2*Math.PI);
+                    ctx.fill();
+                }
+            }
+            ctx.stroke();
+
+            // e line
+            const e = 2.71828;
+            ctx.strokeStyle = '#e74c3c';
+            ctx.setLineDash([5, 5]);
+            ctx.beginPath();
+            ctx.moveTo(50, canvas.height - 50 - (e - 2) * 200);
+            ctx.lineTo(canvas.width - 50, canvas.height - 50 - (e - 2) * 200);
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            ctx.fillStyle = '#e74c3c';
+            ctx.font = '14px Arial';
+            ctx.fillText('e ≈ 2.718', canvas.width - 100, canvas.height - 50 - (e - 2) * 200 - 5);
+        }
+
+        function drawEExamples(ctx, canvas) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Compound interest visualization
+            const principal = 1;
+            const rate = 1; // 100%
+
+            ctx.font = '16px Arial';
+            ctx.fillStyle = '#2c3e50';
+
+            const compounds = [1, 2, 4, 12, 365, 'continuous'];
+            const values = [2, 2.25, 2.4414, 2.6130, 2.7146, 2.71828];
+
+            for (let i = 0; i < compounds.length; i++) {
+                const y = 80 + i * 50;
+                ctx.fillText(`复利次数: ${compounds[i]}`, 50, y);
+                ctx.fillText(`最终金额: ${values[i]}`, 250, y);
+
+                // Bar graph
+                ctx.fillStyle = '#3498db';
+                ctx.fillRect(400, y - 15, values[i] * 50, 20);
+            }
+        }
+
+        function drawInfinitesimalComparison(ctx, canvas) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawCoordinateSystem(ctx, canvas);
+
+            // Compare different orders of infinitesimals
+            const colors = ['#3498db', '#2ecc71', '#e74c3c', '#9b59b6'];
+            const labels = ['x', 'x²', 'x³', 'sin(x)'];
+
+            for (let i = 0; i < 4; i++) {
+                ctx.strokeStyle = colors[i];
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+
+                for (let x = -2; x <= 2; x += 0.1) {
+                    const pixelX = canvas.width/2 + x * 100;
+                    let pixelY;
+
+                    switch(i) {
+                        case 0: pixelY = canvas.height/2 - x * 100; break;
+                        case 1: pixelY = canvas.height/2 - x*x * 100; break;
+                        case 2: pixelY = canvas.height/2 - x*x*x * 100; break;
+                        case 3: pixelY = canvas.height/2 - Math.sin(x) * 100; break;
+                    }
+
+                    if (x === -2) ctx.moveTo(pixelX, pixelY);
+                    else ctx.lineTo(pixelX, pixelY);
+                }
+                ctx.stroke();
+
+                ctx.fillStyle = colors[i];
+                ctx.font = '14px Arial';
+                ctx.fillText(labels[i], 550, 50 + i * 20);
+            }
+        }
+
+        function drawEquivalentInfinitesimal(ctx, canvas) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Table of equivalent infinitesimals
+            const equivalents = [
+                ['sin x', '~', 'x'],
+                ['tan x', '~', 'x'],
+                ['1 - cos x', '~', 'x²/2'],
+                ['ln(1+x)', '~', 'x'],
+                ['eˣ - 1', '~', 'x']
+            ];
+
+            ctx.font = '18px Arial';
+            ctx.fillStyle = '#2c3e50';
+
+            for (let i = 0; i < equivalents.length; i++) {
+                const y = 80 + i * 50;
+                ctx.fillText(equivalents[i][0], 100, y);
+                ctx.fillText(equivalents[i][1], 250, y);
+                ctx.fillText(equivalents[i][2], 350, y);
+            }
+        }
+
+        function drawContinuityConcept(ctx, canvas) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Increment visualization
+            const x0 = 200;
+            const y0 = 200;
+            const dx = 50;
+            const dy = -30;
+
+            drawCoordinateSystem(ctx, canvas);
+
+            // Original point
+            ctx.fillStyle = '#3498db';
+            ctx.beginPath();
+            ctx.arc(x0, y0, 5, 0, 2*Math.PI);
+            ctx.fill();
+
+            // New point
+            ctx.fillStyle = '#2ecc71';
+            ctx.beginPath();
+            ctx.arc(x0 + dx, y0 + dy, 5, 0, 2*Math.PI);
+            ctx.fill();
+
+            // Δx
+            ctx.strokeStyle = '#e74c3c';
+            ctx.lineWidth = 2;
+            drawArrow(ctx, x0, y0 + 30, x0 + dx, y0 + 30);
+            ctx.fillStyle = '#e74c3c';
+            ctx.font = '14px Arial';
+            ctx.fillText('Δx', x0 + dx/2, y0 + 50);
+
+            // Δy
+            drawArrow(ctx, x0 + dx + 30, y0, x0 + dx + 30, y0 + dy);
+            ctx.fillText('Δy', x0 + dx + 45, y0 + dy/2);
+        }
+
+        function drawContinuityDefinition(ctx, canvas) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawCoordinateSystem(ctx, canvas);
+
+            // Continuous function
+            ctx.strokeStyle = '#3498db';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            for (let x = -3; x <= 3; x += 0.1) {
+                const pixelX = canvas.width/2 + x * 80;
+                const pixelY = canvas.height/2 - Math.sin(x) * 80 - x * 20;
+                if (x === -3) ctx.moveTo(pixelX, pixelY);
+                else ctx.lineTo(pixelX, pixelY);
+            }
+            ctx.stroke();
+
+            // Point of continuity
+            const x0 = canvas.width/2;
+            const y0 = canvas.height/2;
+
+            ctx.fillStyle = '#e74c3c';
+            ctx.beginPath();
+            ctx.arc(x0, y0, 5, 0, 2*Math.PI);
+            ctx.fill();
+
+            ctx.fillStyle = '#2c3e50';
+            ctx.font = '14px Arial';
+            ctx.fillText('lim f(x) = f(x₀)', x0 + 10, y0 - 10);
+        }
+
+        function drawIceMelting(ctx, canvas) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawCoordinateSystem(ctx, canvas);
+
+            // Piecewise function for ice melting
+            ctx.strokeStyle = '#3498db';
+            ctx.lineWidth = 2;
+
+            // Below 0°C
+            ctx.beginPath();
+            ctx.moveTo(100, canvas.height - 100);
+            ctx.lineTo(canvas.width/2, canvas.height/2);
+            ctx.stroke();
+
+            // Above 0°C
+            ctx.strokeStyle = '#e74c3c';
+            ctx.beginPath();
+            ctx.moveTo(canvas.width/2, 100);
+            ctx.lineTo(canvas.width - 100, 50);
+            ctx.stroke();
+
+            // Discontinuity at 0°C
+            ctx.strokeStyle = '#9b59b6';
+            ctx.setLineDash([5, 5]);
+            ctx.beginPath();
+            ctx.moveTo(canvas.width/2, canvas.height/2);
+            ctx.lineTo(canvas.width/2, 100);
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            ctx.fillStyle = '#2c3e50';
+            ctx.font = '14px Arial';
+            ctx.fillText('0°C (相变点)', canvas.width/2 + 10, canvas.height/2 - 50);
+        }
+
+        function drawDiscontinuityTypes(ctx, canvas) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Show different types of discontinuities
+            const types = ['无定义', '无极限', '极限≠函数值'];
+            const y = canvas.height / 3;
+
+            for (let i = 0; i < 3; i++) {
+                const x = (i + 1) * canvas.width / 4;
+
+                ctx.strokeStyle = '#3498db';
+                ctx.lineWidth = 2;
+
+                switch(i) {
+                    case 0: // Undefined
+                        ctx.beginPath();
+                        ctx.moveTo(x - 40, y - 20);
+                        ctx.lineTo(x - 5, y - 20);
+                        ctx.stroke();
+                        ctx.beginPath();
+                        ctx.moveTo(x + 5, y - 20);
+                        ctx.lineTo(x + 40, y - 20);
+                        ctx.stroke();
+
+                        ctx.strokeStyle = '#e74c3c';
+                        ctx.beginPath();
+                        ctx.arc(x, y - 20, 3, 0, 2*Math.PI);
+                        ctx.stroke();
+                        break;
+
+                    case 1: // No limit
+                        ctx.beginPath();
+                        ctx.moveTo(x - 40, y);
+                        ctx.lineTo(x - 5, y - 20);
+                        ctx.stroke();
+                        ctx.beginPath();
+                        ctx.moveTo(x + 5, y + 20);
+                        ctx.lineTo(x + 40, y);
+                        ctx.stroke();
+                        break;
+
+                    case 2: // Limit ≠ value
+                        ctx.beginPath();
+                        ctx.moveTo(x - 40, y - 20);
+                        ctx.lineTo(x + 40, y - 20);
+                        ctx.stroke();
+
+                        ctx.fillStyle = '#e74c3c';
+                        ctx.beginPath();
+                        ctx.arc(x, y + 20, 3, 0, 2*Math.PI);
+                        ctx.fill();
+                        break;
+                }
+
+                ctx.fillStyle = '#2c3e50';
+                ctx.font = '12px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText(types[i], x, y + 60);
+            }
+        }
+
+        function drawFirstDiscontinuity(ctx, canvas) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawCoordinateSystem(ctx, canvas);
+
+            const x0 = canvas.width/2;
+            const y0 = canvas.height/2;
+
+            // Removable discontinuity
+            ctx.strokeStyle = '#3498db';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(50, y0);
+            ctx.lineTo(x0 - 10, y0);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(x0 + 10, y0);
+            ctx.lineTo(canvas.width - 50, y0);
+            ctx.stroke();
+
+            // Hole
+            ctx.strokeStyle = '#e74c3c';
+            ctx.beginPath();
+            ctx.arc(x0, y0, 5, 0, 2*Math.PI);
+            ctx.stroke();
+
+            // Jump discontinuity
+            ctx.save();
+            ctx.translate(0, 150);
+
+            ctx.strokeStyle = '#3498db';
+            ctx.beginPath();
+            ctx.moveTo(50, 0);
+            ctx.lineTo(x0 - 5, -30);
+            ctx.stroke();
+
+            ctx.strokeStyle = '#2ecc71';
+            ctx.beginPath();
+            ctx.moveTo(x0 + 5, 30);
+            ctx.lineTo(canvas.width - 50, 0);
+            ctx.stroke();
+
+            ctx.restore();
+
+            ctx.fillStyle = '#2c3e50';
+            ctx.font = '14px Arial';
+            ctx.fillText('可去间断点', x0, y0 - 70);
+            ctx.fillText('跳跃间断点', x0, y0 + 80);
+        }
+
+        function drawSecondDiscontinuity(ctx, canvas) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawCoordinateSystem(ctx, canvas);
+
+            const x0 = canvas.width/2;
+            const y0 = canvas.height/2;
+
+            // Infinite discontinuity
+            ctx.strokeStyle = '#e74c3c';
+            ctx.lineWidth = 2;
+
+            // Vertical asymptote
+            ctx.setLineDash([5, 5]);
+            ctx.beginPath();
+            ctx.moveTo(x0, 20);
+            ctx.lineTo(x0, canvas.height - 20);
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            // tan(x) near π/2
+            ctx.strokeStyle = '#3498db';
+            ctx.beginPath();
+            for (let x = -1.5; x < -0.1; x += 0.1) {
+                const pixelX = x0 + x * 100;
+                const pixelY = y0 - Math.tan(x) * 30;
+                if (pixelY > 20 && pixelY < canvas.height - 20) {
+                    if (x === -1.5) ctx.moveTo(pixelX, pixelY);
+                    else ctx.lineTo(pixelX, pixelY);
+                }
+            }
+            ctx.stroke();
+
+            ctx.beginPath();
+            for (let x = 0.1; x < 1.5; x += 0.1) {
+                const pixelX = x0 + x * 100;
+                const pixelY = y0 - Math.tan(x) * 30;
+                if (pixelY > 20 && pixelY < canvas.height - 20) {
+                    if (x === 0.1) ctx.moveTo(pixelX, pixelY);
+                    else ctx.lineTo(pixelX, pixelY);
+                }
+            }
+            ctx.stroke();
+
+            ctx.fillStyle = '#2c3e50';
+            ctx.font = '14px Arial';
+            ctx.fillText('无穷间断点', x0 + 10, 40);
+        }
+
+        function drawElementaryContinuity(ctx, canvas) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawCoordinateSystem(ctx, canvas);
+
+            // Show continuity of elementary functions
+            const functions = [
+                { f: x => x*x, label: 'x²', color: '#3498db' },
+                { f: x => Math.sin(x), label: 'sin(x)', color: '#2ecc71' },
+                { f: x => Math.exp(x/2), label: 'e^(x/2)', color: '#e74c3c' }
+            ];
+
+            functions.forEach((func, i) => {
+                ctx.strokeStyle = func.color;
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+
+                for (let x = -2; x <= 3; x += 0.1) {
+                    const pixelX = 100 + x * 80;
+                    const pixelY = canvas.height/2 - func.f(x) * 30;
+                    if (x === -2) ctx.moveTo(pixelX, pixelY);
+                    else ctx.lineTo(pixelX, pixelY);
+                }
+                ctx.stroke();
+
+                ctx.fillStyle = func.color;
+                ctx.font = '14px Arial';
+                ctx.fillText(func.label, 500, 50 + i * 25);
+            });
+        }
+
+        function drawContinuityExample(ctx, canvas) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawCoordinateSystem(ctx, canvas);
+
+            // Function with discontinuities at x = ±1
+            ctx.strokeStyle = '#3498db';
+            ctx.lineWidth = 2;
+
+            // Draw function pieces
+            ctx.beginPath();
+            for (let x = -4; x < -1; x += 0.1) {
+                const pixelX = canvas.width/2 + x * 40;
+                const pixelY = canvas.height/2 - Math.sqrt(x + 4) * 40;
+                if (x === -4) ctx.moveTo(pixelX, pixelY);
+                else ctx.lineTo(pixelX, pixelY);
+            }
+            ctx.stroke();
+
+            ctx.beginPath();
+            for (let x = -0.9; x < 0.9; x += 0.1) {
+                const pixelX = canvas.width/2 + x * 40;
+                const pixelY = canvas.height/2 - 1/(x*x - 0.99) * 10;
+                if (Math.abs(pixelY - canvas.height/2) < 200) {
+                    if (x === -0.9) ctx.moveTo(pixelX, pixelY);
+                    else ctx.lineTo(pixelX, pixelY);
+                }
+            }
+            ctx.stroke();
+
+            // Mark discontinuities
+            ctx.strokeStyle = '#e74c3c';
+            ctx.setLineDash([5, 5]);
+            ctx.beginPath();
+            ctx.moveTo(canvas.width/2 - 40, 20);
+            ctx.lineTo(canvas.width/2 - 40, canvas.height - 20);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(canvas.width/2 + 40, 20);
+            ctx.lineTo(canvas.width/2 + 40, canvas.height - 20);
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            ctx.fillStyle = '#2c3e50';
+            ctx.font = '12px Arial';
+            ctx.fillText('x = -1', canvas.width/2 - 40, canvas.height - 25);
+            ctx.fillText('x = 1', canvas.width/2 + 40, canvas.height - 25);
+        }
+
+        function drawExercise1(ctx, canvas) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Show solution steps
+            const steps = [
+                '当 x → -1, 分母 → 0',
+                '极限存在 ⇒ 分子 → 0',
+                '代入: -1 + a + 1 + 4 = 0',
+                'a = -4',
+                '化简后: lim (x²-5x+4) = 10',
+                '∴ b = 10'
+            ];
+
+            ctx.font = '18px Arial';
+            ctx.fillStyle = '#2c3e50';
+
+            for (let i = 0; i < steps.length; i++) {
+                ctx.fillText(steps[i], 50, 60 + i * 50);
+
+                // Draw arrow for flow
+                if (i < steps.length - 1) {
+                    drawArrow(ctx, 30, 70 + i * 50, 30, 100 + i * 50);
+                }
+            }
+        }
+
+        function drawExercise2(ctx, canvas) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Animated solution
+            function animate() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                const time = Date.now() / 2000;
+                const step = Math.floor(time % 4);
+
+                ctx.font = '16px Arial';
+                ctx.fillStyle = '#2c3e50';
+
+                const steps = [
+                    '原式: (√(1+x) - √(1-x))/sin(3x)',
+                    '分子有理化: 乘以 (√(1+x) + √(1-x))',
+                    '分子变为: 2x',
+                    '结果: 2/(3·2) = 1/3'
+                ];
+
+                for (let i = 0; i <= step; i++) {
+                    ctx.fillText(steps[i], 50, 100 + i * 60);
+                }
+
+                animationFrameId = requestAnimationFrame(animate);
+            }
+            animate();
+        }
+
+        function drawSummaryAnimation(ctx, canvas) {
+            function animate() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                const time = Date.now() / 3000;
+                const concept = Math.floor(time) % 4;
+
+                ctx.font = 'bold 24px Arial';
+                ctx.fillStyle = '#2c3e50';
+                ctx.textAlign = 'center';
+                ctx.fillText('章节总结', canvas.width/2, 50);
+
+                ctx.font = '18px Arial';
+                const concepts = [
+                    '极限：函数变化的"目标值"',
+                    '连续：没有"跳跃"的函数',
+                    '无穷小：趋向于0的变量',
+                    '两个重要极限：微积分的基石'
+                ];
+
+                ctx.fillStyle = '#3498db';
+                ctx.fillText(concepts[concept], canvas.width/2, canvas.height/2);
+
+                // Draw corresponding icon
+                switch(concept) {
+                    case 0: // Target
+                        for (let r = 60; r > 0; r -= 20) {
+                            ctx.strokeStyle = `rgba(52, 152, 219, ${0.2 + (60-r)/60 * 0.8})`;
+                            ctx.beginPath();
+                            ctx.arc(canvas.width/2, canvas.height/2 + 80, r, 0, 2*Math.PI);
+                            ctx.stroke();
+                        }
+                        break;
+                    case 1: // Continuous line
+                        ctx.strokeStyle = '#2ecc71';
+                        ctx.lineWidth = 3;
+                        ctx.beginPath();
+                        ctx.moveTo(150, canvas.height/2 + 80);
+                        ctx.quadraticCurveTo(canvas.width/2, canvas.height/2 + 40, canvas.width - 150, canvas.height/2 + 80);
+                        ctx.stroke();
+                        break;
+                    case 2: // Shrinking circle
+                        const scale = 0.5 + 0.5 * Math.sin(time * 2);
+                        ctx.fillStyle = 'rgba(231, 76, 60, 0.5)';
+                        ctx.beginPath();
+                        ctx.arc(canvas.width/2, canvas.height/2 + 80, 40 * scale, 0, 2*Math.PI);
+                        ctx.fill();
+                        break;
+                    case 3: // Formula
+                        ctx.font = '20px Arial';
+                        ctx.fillStyle = '#9b59b6';
+                        ctx.fillText('sin(x)/x → 1', canvas.width/2, canvas.height/2 + 70);
+                        ctx.fillText('(1+1/x)ˣ → e', canvas.width/2, canvas.height/2 + 100);
+                        break;
+                }
+
+                animationFrameId = requestAnimationFrame(animate);
+            }
+            animate();
+        }
+
+        function drawDefaultAnimation(ctx, canvas) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Default visualization
+            drawCoordinateSystem(ctx, canvas);
+
+            ctx.fillStyle = '#3498db';
+            ctx.font = '20px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText('可视化演示', canvas.width/2, canvas.height/2);
+        }
+
+        // Helper functions
+        function drawCoordinateSystem(ctx, canvas) {
+            const width = canvas.width || canvas.width;
+            const height = canvas.height || canvas.height;
+
+            ctx.strokeStyle = '#95a5a6';
+            ctx.lineWidth = 1;
+
+            // X-axis
+            ctx.beginPath();
+            ctx.moveTo(50, height/2);
+            ctx.lineTo(width - 50, height/2);
+            ctx.stroke();
+
+            // Y-axis
+            ctx.beginPath();
+            ctx.moveTo(width/2, 50);
+            ctx.lineTo(width/2, height - 50);
+            ctx.stroke();
+
+            // Axis labels
+            ctx.fillStyle = '#7f8c8d';
+            ctx.font = '12px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText('x', width - 40, height/2 - 10);
+            ctx.fillText('y', width/2 + 10, 40);
+            ctx.fillText('O', width/2 - 15, height/2 + 15);
+        }
+
+        function drawArrow(ctx, fromX, fromY, toX, toY) {
+            const headLength = 10;
+            const angle = Math.atan2(toY - fromY, toX - fromX);
+
+            // Draw line
+            ctx.beginPath();
+            ctx.moveTo(fromX, fromY);
+            ctx.lineTo(toX, toY);
+            ctx.stroke();
+
+            // Draw arrow head
+            ctx.beginPath();
+            ctx.moveTo(toX, toY);
+            ctx.lineTo(
+                toX - headLength * Math.cos(angle - Math.PI/6),
+                toY - headLength * Math.sin(angle - Math.PI/6)
+            );
+            ctx.moveTo(toX, toY);
+            ctx.lineTo(
+                toX - headLength * Math.cos(angle + Math.PI/6),
+                toY - headLength * Math.sin(angle + Math.PI/6)
+            );
+            ctx.stroke();
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowLeft') prevSlide();
+            if (e.key === 'ArrowRight') nextSlide();
+            if (e.key === ' ') {
+                e.preventDefault();
+                autoPlay();
+            }
+        });
+
+        // Initialize on load
+        window.onload = function() {
+            initSlides();
+        };
+    </script>
+</body>
+</html>
+
