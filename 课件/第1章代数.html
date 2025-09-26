@@ -25,618 +25,365 @@
             --warning-color: #f39c12;
             --info-color: #9b59b6;
             --text-color: #34495e;
-            --heading-font: 'Noto Serif SC', serif;
-            --handwriting-font: 'Noto Serif SC', serif;
+            --heading-font: 'Microsoft YaHei', 'Segoe UI', sans-serif;
+            --handwriting-font: 'Microsoft YaHei', 'Segoe UI', sans-serif;
         }
 
         body {
             font-family: var(--heading-font);
+            background: #f0f2f5;
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
-            overflow: auto;
-            height: 100vh;
-            width: 100vw;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            overflow: hidden;
             margin: 0;
+            color: var(--text-color);
+            min-height: 100vh;
         }
-        
+
         #presentation-container {
-            width: 100vw;
+            width: 100%;
             height: 100vh;
             max-width: 100vw;
-            aspect-ratio: 16 / 9;
             position: relative;
-            background: rgba(255, 255, 255, 0);
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
-            border-radius: 8px;
-            overflow: auto;
+            background: #ffffff;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+            border-radius: 0;
+            overflow: hidden;
         }
 
         .slide {
-            position: absolute;
             width: 100%;
             height: 100%;
+            display: none;
             opacity: 0;
             visibility: hidden;
-            display: flex;
+            align-items: stretch;
             transition: opacity 0.6s ease-in-out;
         }
 
         .slide.active {
+            display: flex;
             opacity: 1;
             visibility: visible;
-            z-index: 10;
+            animation: fadeIn 0.6s ease-in-out;
         }
 
-        /* iframe容器样式 */
-        .iframe-container {
-            position: relative;
-            width: 100%;
-            height: 100%;
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(15px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
-        .iframe-nav-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1000;
-            pointer-events: none;
-            background: transparent;
-        }
+        /* 清理旧版本的浮层样式，使用第二章统一的简洁布局 */
 
-        /* 全局控制面板样式 */
-        .global-control-panel {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: rgba(0, 0, 0, 0.9);
-            border: 2px solid rgba(0, 255, 255, 0.5);
-            border-radius: 10px;
-            padding: 15px;
-            z-index: 1000;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
-        }
-
-        .control-title {
-            color: #00ffff;
-            font-size: 16px;
-            font-weight: bold;
-            margin-bottom: 10px;
-            text-align: center;
-            font-family: 'Orbitron', monospace;
-        }
-
-        .control-buttons {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-
-        /* 添加导航提示 */
-        .iframe-nav-hint {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: rgba(0, 0, 0, 0.7);
-            color: white;
-            padding: 5px 10px;
-            border-radius: 5px;
-            font-size: 12px;
-            z-index: 1002;
-            pointer-events: none;
-        }
-
-        .chalkboard {
-            flex: 0 0 35%;
-            background-color: #2c3e50 !important;
-            background-image: url('../common-assets/images/black-felt.png');
-            border: 10px solid #8B4513;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.5), inset 0 0 15px rgba(0,0,0,0.7);
-            color: var(--chalk-text, #f0f0f0);
-            padding: 10px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            overflow-y: auto;
-            box-sizing: border-box;
-        }
-
-        .chalkboard h2 {
-            font-family: var(--handwriting-font);
-            font-size: 2.2rem;
-            color: #f1c40f;
-            border-bottom: 2px solid rgba(241, 196, 15, 0.5);
-            padding-bottom: 2px;
-            margin-bottom: 3px;
-        }
-
-        .chalkboard h3 {
-            font-family: var(--handwriting-font);
-            font-size: 1.5rem;
-            color: var(--primary-color);
-            margin-top: 5px;
-            margin-bottom: 5px;
-        }
-
-        .chalkboard p, .chalkboard li {
-            font-size: 1.1rem;
-            line-height: 1.7;
-            margin-bottom: 15px;
-        }
-        
-        .chalkboard ol {
-            padding-left: 25px;
-        }
-
-        .chalkboard ul {
-            list-style-type: '→ ';
-            padding-left: 20px;
-        }
-
-        .math-formula {
-            font-size: 1.3rem;
-            color: #1abc9c;
-            background: rgba(0,0,0,0.2);
-            padding: 15px;
-            border-radius: 5px;
-            text-align: center;
-            margin: 15px 0;
-            line-height: 1.5;
-        }
-
-        .highlight {
-            color: var(--warning-color);
-            font-weight: bold;
-        }
-
-        .visualization {
-            flex: 1;
-            padding: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: auto;
-            position: relative;
-            box-sizing: border-box;
-        }
-
-        .visualization.full-width {
-            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
-        }
-        
-        .visualization.fullscreen {
-            background: white;
-            width: 100vw;
-            height: 100vh;
-            position: fixed;
-            top: 0;
-            left: 0;
-            z-index: 1000;
-            padding: 0;
-            margin: 0;
-        }
-        
-        .visualization.white-bg {
-            background: white;
-        }
-
-
-        /* 页码指示器 */
-        .page-indicator {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: rgba(0,0,0,0.8);
-            color: white;
-            padding: 8px 15px;
-            border-radius: 20px;
-            font-size: 14px;
-            z-index: 100;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        /* 返回面板样式 */
-        .return-home-panel {
-            position: fixed;
-            top: 16px;
-            left: 16px;
-            display: flex;
-            gap: 10px;
-            z-index: 9999;
-            flex-wrap: wrap;
-        }
-        
-        .return-home-panel .return-link {
-            padding: 8px 14px;
-            border-radius: 999px;
-            background: rgba(15, 23, 42, 0.8);
-            color: #f8fafc;
-            font-size: 14px;
-            text-decoration: none;
-            box-shadow: 0 6px 20px rgba(15, 23, 42, 0.25);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-        
-        .return-home-panel .return-link:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 12px 24px rgba(15, 23, 42, 0.35);
-        }
-        
-        .return-home-panel .return-link.return-main {
-            background: rgba(79, 70, 229, 0.85);
-        }
-
-        /* 首页导航按钮样式 - 简化版 */
-        .home-nav-buttons {
-            display: flex;
-            justify-content: center;
-            gap: 12px;
-            margin-top: 1.5rem;
-            flex-wrap: wrap;
-        }
-
-        .home-nav-btn {
-            display: flex;
-            align-items: center;
-            padding: 6px 12px;
-            background: rgba(255, 255, 255, 0.08);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 6px;
-            text-decoration: none;
-            color: rgba(255, 255, 255, 0.8);
-            transition: all 0.3s ease;
-            backdrop-filter: blur(8px);
-            font-size: 0.85rem;
-            font-weight: 500;
-        }
-
-        .home-nav-btn:hover {
-            background: rgba(255, 255, 255, 0.15);
-            border-color: rgba(255, 255, 255, 0.4);
-            color: white;
-            transform: translateY(-1px);
-        }
-
-        .home-nav-btn .btn-icon {
-            font-size: 0.8rem;
-            margin-right: 6px;
-            font-weight: bold;
-        }
-
-        .home-nav-btn .btn-text {
-            font-size: 0.8rem;
-        }
-
-        /* 翻页按钮样式 - 透明版 */
-        .nav-buttons {
-            position: fixed;
-            top: 50%;
-            right: 20px;
-            transform: translateY(-50%);
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            z-index: 1000;
-        }
-
-        .nav-btn {
-            width: 36px;
-            height: 36px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 50%;
-            background: rgba(0, 0, 0, 0.3);
-            color: rgba(255, 255, 255, 0.7);
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 14px;
-            font-weight: bold;
-            transition: all 0.3s ease;
-            backdrop-filter: blur(8px);
-        }
-
-        .nav-btn:hover {
-            background: rgba(0, 0, 0, 0.5);
-            color: white;
-            border-color: rgba(255, 255, 255, 0.4);
-            transform: translateY(-1px);
-        }
-
-        .nav-btn:disabled {
-            background: rgba(0, 0, 0, 0.2);
-            color: rgba(255, 255, 255, 0.3);
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        /* 页面指示器样式 */
-        .page-indicator {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: rgba(0,0,0,0.8);
-            color: white;
-            padding: 8px 15px;
-            border-radius: 20px;
-            font-size: 14px;
-            z-index: 1000;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        /* 全局动画控制面板样式 */
-        .global-animation-controls {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            display: flex;
-            gap: 8px;
-            z-index: 1000;
-        }
-
-
-
-        /* 统一控制面板样式 */
-        .unified-control-panel {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            z-index: 9999;
-            font-family: var(--heading-font);
-            display: flex;
-            gap: 10px;
-            align-items: flex-end;
-        }
-
-        /* 浮动菜单样式 - 简化版 */
-        #floating-menu {
-            position: relative;
-        }
-
-        /* 章节目录菜单样式 */
-        #chapter-menu {
-            position: relative;
-        }
-
-        .menu-toggle {
-            background: rgba(0, 0, 0, 0.2);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            color: rgba(255, 255, 255, 0.6);
-            padding: 5px 8px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 11px;
-            font-weight: normal;
-            transition: all 0.2s ease;
-            backdrop-filter: blur(5px);
-            min-width: 32px;
-            text-align: center;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .menu-toggle:hover {
-            background: rgba(0, 0, 0, 0.5);
-            color: rgba(255, 255, 255, 1);
-            border-color: rgba(255, 255, 255, 0.4);
-        }
-
-        .menu-toggle:active {
-            transform: scale(0.95);
-        }
-
-        .menu-toggle .menu-icon {
-            font-size: 12px;
-            font-weight: normal;
-            transition: transform 0.3s ease;
-        }
-
-        .menu-toggle.active .menu-icon {
-            transform: rotate(45deg);
-        }
-
-        .menu-content {
-            position: absolute;
-            bottom: 40px;
-            right: 0;
-            background: rgba(0, 0, 0, 0.8);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 8px;
-            padding: 8px 0;
-            backdrop-filter: blur(10px);
-            opacity: 0;
-            visibility: hidden;
-            transform: translateY(20px);
-            transition: all 0.3s ease;
-            min-width: 160px;
-            max-height: 300px;
-            overflow-y: auto;
-        }
-
-        .menu-content.active {
-            opacity: 1;
-            visibility: visible;
-            transform: translateY(0);
-        }
-
-        /* 自定义滚动条样式 */
-        .menu-content::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        .menu-content::-webkit-scrollbar-track {
-            background: rgba(0, 0, 0, 0.1);
-            border-radius: 3px;
-        }
-
-        .menu-content::-webkit-scrollbar-thumb {
-            background: rgba(102, 126, 234, 0.5);
-            border-radius: 3px;
-        }
-
-        .menu-content::-webkit-scrollbar-thumb:hover {
-            background: rgba(102, 126, 234, 0.7);
-        }
-
-        .menu-item {
-            display: flex;
-            align-items: center;
-            padding: 6px 12px;
-            text-decoration: none;
-            color: rgba(255, 255, 255, 0.8);
-            transition: all 0.3s ease;
-            border-radius: 4px;
-            margin: 0 4px;
-        }
-
-        .menu-item:hover {
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-            transform: translateX(2px);
-        }
-
-        .menu-item .menu-icon {
-            font-size: 12px;
-            margin-right: 8px;
-            width: 16px;
-            text-align: center;
-        }
-
-        .menu-item .menu-text {
-            font-size: 13px;
-            font-weight: 500;
-        }
-
-        /* 二级菜单样式 */
-        .menu-section {
-            margin-bottom: 8px;
-        }
-
-        .menu-section:last-child {
-            margin-bottom: 0;
-        }
-
-        .menu-section-title {
-            color: rgba(255, 255, 255, 0.6);
-            font-size: 10px;
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            padding: 4px 12px;
-            margin-bottom: 4px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
         .info-box-style {
-            background: rgba(255, 255, 255, 0.9);
-            padding: 15px;
+            background: #f8fbff;
+            border: 1px solid #dbe4ff;
             border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            color: #333;
-            font-size: 14px;
+            padding: 16px;
+            box-shadow: 0 10px 30px rgba(74, 144, 226, 0.12);
+            color: #34495e;
+            font-size: 0.95rem;
             line-height: 1.6;
-            margin-top: 20px;
-            border: 1px solid #eee;
         }
+
         .info-box-style .color-sine { color: var(--danger-color); }
         .info-box-style .color-cosine { color: var(--primary-color); }
         .info-box-style .color-tangent { color: var(--success-color); }
 
         .toc-local {
             margin-top: 20px;
-            padding-top: 15px;
-            border-top: 1px solid rgba(255,255,255,0.2);
-        }
-        .toc-local h4 {
-            font-size: 1rem;
-            color: var(--warning-color);
-            margin-bottom: 10px;
-        }
-        .toc-local a {
-            display: block;
-            color: var(--chalk-text);
-            text-decoration: none;
-            padding: 5px 0;
-            font-size: 0.9rem;
-            transition: color 0.2s;
-        }
-        .toc-local a:hover {
-            color: var(--primary-color);
+            padding: 16px;
+            border-radius: 10px;
+            background: #f5f8ff;
+            border: 1px solid #e2e8f0;
         }
 
-        #back-to-top-btn {
-            position: fixed;
-            bottom: 80px;
-            right: 30px;
-            width: 40px;
-            height: 40px;
-            background: rgba(0,0,0,0.5);
-            color: white;
-            border: 1px solid rgba(255,255,255,0.2);
-            border-radius: 50%;
+        .toc-local h4 {
+            font-size: 1rem;
+            color: #1d4ed8;
+            margin-bottom: 10px;
+        }
+
+        .toc-local a {
+            display: block;
+            color: #1f2937;
+            text-decoration: none;
+            padding: 4px 0;
+            font-size: 0.9rem;
+            transition: color 0.2s ease;
+        }
+
+        .toc-local a:hover {
+            color: #2563eb;
+        }
+
+        .chalkboard {
+            width: 50%;
+            height: 100%;
+            background: #ffffff;
+            color: #333333;
+            padding: 40px 50px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            overflow-y: auto;
+            box-sizing: border-box;
+            line-height: 1.9;
+            font-size: 17px;
+            border-right: 1px solid #e0e0e0;
+        }
+
+        .slide > .chalkboard:only-child {
+            width: 100%;
+            border-right: none;
+        }
+
+        .chalkboard h2 {
+            font-size: 28px;
+            color: #1a1a2e;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 4px solid #4a90e2;
+        }
+
+        .chalkboard h3 {
+            font-size: 24px;
+            color: #34495e;
+            margin: 25px 0 10px;
+        }
+
+        .chalkboard h4 {
+            font-size: 20px;
+            color: #555555;
+            margin: 20px 0 10px;
+        }
+
+        .chalkboard p {
+            margin: 10px 0;
+        }
+
+        .chalkboard ul {
+            padding-left: 20px;
+            margin: 10px 0;
+        }
+
+        .chalkboard li {
+            margin-bottom: 8px;
+        }
+
+        .highlight {
+            color: #d35400;
+            font-weight: bold;
+        }
+
+        .math-formula {
+            background: #f8f9fa;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+            font-size: 1.2rem;
+        }
+
+        .visualization {
+            width: 50%;
+            height: 100%;
+            background: #fdfdfd;
             display: flex;
             align-items: center;
             justify-content: center;
+            border-left: 1px solid #e0e0e0;
+            position: relative;
+        }
+
+        .slide > .visualization:only-child {
+            width: 100%;
+            border-left: none;
+        }
+
+        .visualization.full-width {
+            width: 100%;
+            border-left: none;
+            background: #ffffff;
+        }
+
+        .visualization.fullscreen {
+            width: 100%;
+            height: 100%;
+            border-left: none;
+            background: #ffffff;
+        }
+
+        .visualization.white-bg {
+            background: #ffffff;
+        }
+
+        .visualization.full-width.white-bg {
+            background: #ffffff;
+        }
+
+        .visualization canvas {
+            max-width: 90%;
+            max-height: 90%;
+        }
+
+        .visualization svg {
+            max-width: 95%;
+            max-height: 95%;
+        }
+
+        .visualization .math-formula {
+            background: transparent;
+            border: none;
+        }
+
+        .slide-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+        }
+
+        .slide-container .left-content {
+            width: 50%;
+        }
+
+        .slide-container .right-visual {
+            width: 50%;
+        }
+
+        .slide-container .left-content mjx-container {
+            max-width: 100%;
+        }
+
+        .slide-container .left-content mjx-container[display="true"] {
+            display: block;
+            text-align: center !important;
+        }
+
+        .chalkboard p, .chalkboard li {
+            font-size: 17px;
+            line-height: 1.9;
+            margin-bottom: 12px;
+        }
+
+        .chalkboard ol {
+            padding-left: 24px;
+        }
+
+        .chalkboard ul {
+            list-style-type: disc;
+            padding-left: 24px;
+        }
+
+        .math-formula {
+            font-size: 1.2rem;
+            color: #2c3e50;
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            margin: 20px 0;
+            line-height: 1.6;
+            border: 1px solid #e0e0e0;
+        }
+
+        .highlight {
+            color: #d35400;
+            font-weight: bold;
+        }
+
+        .visualization {
+            padding: 30px;
+            overflow: hidden;
+        }
+
+        .visualization.full-width {
+            background: #ffffff;
+        }
+
+        .visualization.fullscreen {
+            background: #ffffff;
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+
+        .visualization.white-bg {
+            background: #ffffff;
+        }
+
+
+        /* 底部导航容器（参照第二章样式） */
+        .nav-container {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 18px;
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid #dbe4ff;
+            border-radius: 999px;
+            box-shadow: 0 18px 45px rgba(15, 23, 42, 0.15);
+            backdrop-filter: blur(10px);
+            z-index: 1100;
+        }
+
+        .nav-container .nav-btn {
+            border: none;
+            background: #4a90e2;
+            color: #ffffff;
+            padding: 8px 16px;
+            border-radius: 999px;
+            font-size: 0.9rem;
+            font-weight: 600;
             cursor: pointer;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.3s, visibility 0.3s, transform 0.3s;
-            z-index: 2000;
-            backdrop-filter: blur(5px);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: 0 8px 16px rgba(74, 144, 226, 0.25);
         }
-        #back-to-top-btn.show {
-            opacity: 1;
-            visibility: visible;
+
+        .nav-container .nav-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 24px rgba(74, 144, 226, 0.35);
         }
-        #back-to-top-btn:hover {
-            background: rgba(0,0,0,0.8);
-            transform: scale(1.1);
+
+        .nav-container .nav-btn:disabled {
+            background: #e5edf8;
+            color: #94a3b8;
+            box-shadow: none;
+            cursor: not-allowed;
         }
+
+        #page-indicator {
+            font-size: 0.9rem;
+            color: #1f2937;
+            min-width: 80px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+
+
     </style>
 </head>
 <body>
-    <div class="return-home-panel">
-        <a class="return-link return-sub" href="index.html">← 返回课件目录</a>
-        <a class="return-link return-main" href="../index.html">⌂ 返回主站</a>
-    </div>
-
     <div id="presentation-container">
         
         <!-- 幻灯片0：标题页 -->
         <div class="slide active">
             <div class="chalkboard" style="flex: 1; text-align: center;">
                 <h2 style="font-size: 4rem; border: none;">第一章</h2>
-                <p style="font-size: 2.5rem; color: white;">代数与函数</p>
+                <p style="font-size: 2.5rem; color: #34495e;">代数与函数</p>
                 
-                <div class="home-nav-buttons">
-                    <a href="../index.html" class="home-nav-btn">
-                        <span class="btn-icon">HOME</span>
-                        <span class="btn-text">主页</span>
-                    </a>
-                    <a href="../故事书/index.html" class="home-nav-btn">
-                        <span class="btn-icon">STORY</span>
-                        <span class="btn-text">故事书</span>
-                    </a>
-                    <a href="../习题/index.html" class="home-nav-btn">
-                        <span class="btn-icon">EXERCISE</span>
-                        <span class="btn-text">习题</span>
-                    </a>
-                    <a href="../网页资源/index.html" class="home-nav-btn">
-                        <span class="btn-icon">RESOURCE</span>
-                        <span class="btn-text">网页资源</span>
-                    </a>
-                </div>
             </div>
         </div>
 
@@ -1210,218 +957,16 @@
             <div class="visualization" id="vis-composite-machine"></div>
         </div>
 
-        <!-- 翻页按钮 -->
-        <div class="nav-buttons">
-            <button class="nav-btn" id="prev-btn" onclick="previousSlide()" title="上一页 (←)">‹</button>
-            <button class="nav-btn" id="next-btn" onclick="nextSlide()" title="下一页 (→)">›</button>
+        <!-- 底部导航 -->
+        <div class="nav-container">
+            <button class="nav-btn" id="prev-btn" onclick="previousSlide()" title="上一页 (←)">上一页</button>
+            <span id="page-indicator">1 / 37</span>
+            <button class="nav-btn" id="next-btn" onclick="nextSlide()" title="下一页 (→)">下一页</button>
         </div>
-
-        <div class="page-indicator" id="page-indicator">1 / 37</div>
 </div>
 
 
  
-
-<!-- 统一控制面板 -->
-<div class="unified-control-panel">
-<!-- 浮动菜单按钮 -->
-<div id="floating-menu">
-    <div id="menu-toggle" class="menu-toggle">
-        <span class="menu-icon">☰</span>
-    </div>
-    <div id="menu-content" class="menu-content">
-        <div class="menu-section">
-            <div class="menu-section-title">实验室</div>
-        <a href="../网页资源/lab 1-1.html" target="_blank" class="menu-item">
-                <span class="menu-icon">📊</span>
-            <span class="menu-text">指数运算实验室</span>
-        </a>
-        <a href="../网页资源/lab 1-2.html" target="_blank" class="menu-item">
-                <span class="menu-icon">📈</span>
-            <span class="menu-text">对数运算实验室</span>
-        </a>
-        <a href="../网页资源/lab 1-3.html" target="_blank" class="menu-item">
-                <span class="menu-icon">🌊</span>
-                <span class="menu-text">三角函数实验室</span>
-        </a>
-        <a href="../网页资源/lab 1-4.html" target="_blank" class="menu-item">
-                <span class="menu-icon">🔄</span>
-                <span class="menu-text">反三角函数实验室</span>
-            </a>
-        <!-- 1章剩余 -->
-        <a href="../网页资源/lab 1-5.html" target="_blank" class="menu-item"><span class="menu-icon">🔬</span><span class="menu-text">Lab 1-5</span></a>
-        <a href="../网页资源/lab 1-6.html" target="_blank" class="menu-item"><span class="menu-icon">🔬</span><span class="menu-text">Lab 1-6</span></a>
-        <a href="../网页资源/lab 1-7.html" target="_blank" class="menu-item"><span class="menu-icon">🔬</span><span class="menu-text">Lab 1-7</span></a>
-        <a href="../网页资源/lab 1-8.html" target="_blank" class="menu-item"><span class="menu-icon">🔬</span><span class="menu-text">Lab 1-8</span></a>
-        <a href="../网页资源/lab 1-9.html" target="_blank" class="menu-item"><span class="menu-icon">🔬</span><span class="menu-text">Lab 1-9</span></a>
-
-        <!-- 2章 -->
-        <a href="../网页资源/lab 2-1.html" target="_blank" class="menu-item"><span class="menu-icon">2️⃣</span><span class="menu-text">Lab 2-1</span></a>
-        <a href="../网页资源/lab 2-2.html" target="_blank" class="menu-item"><span class="menu-icon">2️⃣</span><span class="menu-text">Lab 2-2</span></a>
-        <a href="../网页资源/lab 2-3.html" target="_blank" class="menu-item"><span class="menu-icon">2️⃣</span><span class="menu-text">Lab 2-3</span></a>
-        <a href="../网页资源/lab 2-4.html" target="_blank" class="menu-item"><span class="menu-icon">2️⃣</span><span class="menu-text">Lab 2-4</span></a>
-        <a href="../网页资源/lab 2-5.html" target="_blank" class="menu-item"><span class="menu-icon">2️⃣</span><span class="menu-text">Lab 2-5</span></a>
-        <a href="../网页资源/lab 2-6.html" target="_blank" class="menu-item"><span class="menu-icon">2️⃣</span><span class="menu-text">Lab 2-6</span></a>
-        <a href="../网页资源/lab 2-7.html" target="_blank" class="menu-item"><span class="menu-icon">2️⃣</span><span class="menu-text">Lab 2-7</span></a>
-        <a href="../网页资源/lab 2-8.html" target="_blank" class="menu-item"><span class="menu-icon">2️⃣</span><span class="menu-text">Lab 2-8</span></a>
-        <a href="../网页资源/lab 2-9.html" target="_blank" class="menu-item"><span class="menu-icon">2️⃣</span><span class="menu-text">Lab 2-9</span></a>
-        <a href="../网页资源/lab 2-10.html" target="_blank" class="menu-item"><span class="menu-icon">2️⃣</span><span class="menu-text">Lab 2-10</span></a>
-        <a href="../网页资源/lab 2-11.html" target="_blank" class="menu-item"><span class="menu-icon">2️⃣</span><span class="menu-text">Lab 2-11</span></a>
-        <a href="../网页资源/lab 2-12.html" target="_blank" class="menu-item"><span class="menu-icon">2️⃣</span><span class="menu-text">Lab 2-12</span></a>
-        <a href="../网页资源/lab 2-13.html" target="_blank" class="menu-item"><span class="menu-icon">2️⃣</span><span class="menu-text">Lab 2-13</span></a>
-
-        <!-- 3章 -->
-        <a href="../网页资源/lab 3-1.html" target="_blank" class="menu-item"><span class="menu-icon">3️⃣</span><span class="menu-text">Lab 3-1</span></a>
-        <a href="../网页资源/lab 3-2.html" target="_blank" class="menu-item"><span class="menu-icon">3️⃣</span><span class="menu-text">Lab 3-2</span></a>
-        <a href="../网页资源/lab 3-3.html" target="_blank" class="menu-item"><span class="menu-icon">3️⃣</span><span class="menu-text">Lab 3-3</span></a>
-        <a href="../网页资源/lab 3-4.html" target="_blank" class="menu-item"><span class="menu-icon">3️⃣</span><span class="menu-text">Lab 3-4</span></a>
-        <a href="../网页资源/lab 3-5.html" target="_blank" class="menu-item"><span class="menu-icon">3️⃣</span><span class="menu-text">Lab 3-5</span></a>
-        <a href="../网页资源/lab 3-6.html" target="_blank" class="menu-item"><span class="menu-icon">3️⃣</span><span class="menu-text">Lab 3-6</span></a>
-
-        <!-- 4章 -->
-        <a href="../网页资源/lab 4-1.html" target="_blank" class="menu-item"><span class="menu-icon">4️⃣</span><span class="menu-text">Lab 4-1</span></a>
-        <a href="../网页资源/lab 4-2.html" target="_blank" class="menu-item"><span class="menu-icon">4️⃣</span><span class="menu-text">Lab 4-2</span></a>
-        <a href="../网页资源/lab 4-3.html" target="_blank" class="menu-item"><span class="menu-icon">4️⃣</span><span class="menu-text">Lab 4-3</span></a>
-
-        <!-- 5章 -->
-        <a href="../网页资源/lab 5-1.html" target="_blank" class="menu-item"><span class="menu-icon">5️⃣</span><span class="menu-text">Lab 5-1</span></a>
-        <a href="../网页资源/lab 5-2.html" target="_blank" class="menu-item"><span class="menu-icon">5️⃣</span><span class="menu-text">Lab 5-2</span></a>
-        <a href="../网页资源/lab 5-3.html" target="_blank" class="menu-item"><span class="menu-icon">5️⃣</span><span class="menu-text">Lab 5-3</span></a>
-        <a href="../网页资源/lab 5-4.html" target="_blank" class="menu-item"><span class="menu-icon">5️⃣</span><span class="menu-text">Lab 5-4</span></a>
-        <a href="../网页资源/lab 5-5.html" target="_blank" class="menu-item"><span class="menu-icon">5️⃣</span><span class="menu-text">Lab 5-5</span></a>
-
-        <!-- 6章 -->
-        <a href="../网页资源/lab 6-1.html" target="_blank" class="menu-item"><span class="menu-icon">6️⃣</span><span class="menu-text">Lab 6-1</span></a>
-        <a href="../网页资源/lab 6-2.html" target="_blank" class="menu-item"><span class="menu-icon">6️⃣</span><span class="menu-text">Lab 6-2</span></a>
-        <a href="../网页资源/lab 6-3.html" target="_blank" class="menu-item"><span class="menu-icon">6️⃣</span><span class="menu-text">Lab 6-3</span></a>
-        <a href="../网页资源/lab 6-4.html" target="_blank" class="menu-item"><span class="menu-icon">6️⃣</span><span class="menu-text">Lab 6-4</span></a>
-        <a href="../网页资源/lab 6-5.html" target="_blank" class="menu-item"><span class="menu-icon">6️⃣</span><span class="menu-text">Lab 6-5</span></a>
-
-        <!-- 7章 -->
-        <a href="../网页资源/lab 7-1.html" target="_blank" class="menu-item"><span class="menu-icon">7️⃣</span><span class="menu-text">Lab 7-1</span></a>
-        <a href="../网页资源/lab 7-2.html" target="_blank" class="menu-item"><span class="menu-icon">7️⃣</span><span class="menu-text">Lab 7-2</span></a>
-        <a href="../网页资源/lab 7-3.html" target="_blank" class="menu-item"><span class="menu-icon">7️⃣</span><span class="menu-text">Lab 7-3</span></a>
-        <a href="../网页资源/lab 7-4.html" target="_blank" class="menu-item"><span class="menu-icon">7️⃣</span><span class="menu-text">Lab 7-4</span></a>
-        <a href="../网页资源/lab 7-5.html" target="_blank" class="menu-item"><span class="menu-icon">7️⃣</span><span class="menu-text">Lab 7-5</span></a>
-
-        <!-- 8章 -->
-        <a href="../网页资源/lab 8-1.html" target="_blank" class="menu-item"><span class="menu-icon">8️⃣</span><span class="menu-text">Lab 8-1</span></a>
-        <a href="../网页资源/lab 8-2.html" target="_blank" class="menu-item"><span class="menu-icon">8️⃣</span><span class="menu-text">Lab 8-2</span></a>
-        <a href="../网页资源/lab 8-3.html" target="_blank" class="menu-item"><span class="menu-icon">8️⃣</span><span class="menu-text">Lab 8-3</span></a>
-        <a href="../网页资源/lab 8-4.html" target="_blank" class="menu-item"><span class="menu-icon">8️⃣</span><span class="menu-text">Lab 8-4</span></a>
-        <a href="../网页资源/lab 8-5.html" target="_blank" class="menu-item"><span class="menu-icon">8️⃣</span><span class="menu-text">Lab 8-5</span></a>
-        <a href="../网页资源/lab 8-6.html" target="_blank" class="menu-item"><span class="menu-icon">8️⃣</span><span class="menu-text">Lab 8-6</span></a>
-
-        <!-- 9章 -->
-        <a href="../网页资源/lab 9-1.html" target="_blank" class="menu-item"><span class="menu-icon">9️⃣</span><span class="menu-text">Lab 9-1</span></a>
-        <a href="../网页资源/lab 9-2.html" target="_blank" class="menu-item"><span class="menu-icon">9️⃣</span><span class="menu-text">Lab 9-2</span></a>
-        <a href="../网页资源/lab 9-3.html" target="_blank" class="menu-item"><span class="menu-icon">9️⃣</span><span class="menu-text">Lab 9-3</span></a>
-
-        <!-- 10章 -->
-        <a href="../网页资源/lab 10-1.html" target="_blank" class="menu-item"><span class="menu-icon">🔟</span><span class="menu-text">Lab 10-1</span></a>
-        <a href="../网页资源/lab 10-2.html" target="_blank" class="menu-item"><span class="menu-icon">🔟</span><span class="menu-text">Lab 10-2</span></a>
-        <a href="../网页资源/lab 10-3.html" target="_blank" class="menu-item"><span class="menu-icon">🔟</span><span class="menu-text">Lab 10-3</span></a>
-        <a href="../网页资源/lab 10-4.html" target="_blank" class="menu-item"><span class="menu-icon">🔟</span><span class="menu-text">Lab 10-4</span></a>
-        <a href="../网页资源/lab 10-5.html" target="_blank" class="menu-item"><span class="menu-icon">🔟</span><span class="menu-text">Lab 10-5</span></a>
-        <a href="../网页资源/lab 10-6.html" target="_blank" class="menu-item"><span class="menu-icon">🔟</span><span class="menu-text">Lab 10-6</span></a>
-        <a href="../网页资源/lab 10-7.html" target="_blank" class="menu-item"><span class="menu-icon">🔟</span><span class="menu-text">Lab 10-7</span></a>
-
-        <!-- 11章 -->
-        <a href="../网页资源/lab 11-1.html" target="_blank" class="menu-item"><span class="menu-icon">1️⃣1️⃣</span><span class="menu-text">Lab 11-1</span></a>
-        <a href="../网页资源/lab 11-2.html" target="_blank" class="menu-item"><span class="menu-icon">1️⃣1️⃣</span><span class="menu-text">Lab 11-2</span></a>
-        <a href="../网页资源/lab 11-3.html" target="_blank" class="menu-item"><span class="menu-icon">1️⃣1️⃣</span><span class="menu-text">Lab 11-3</span></a>
-        <a href="../网页资源/lab 11-4.html" target="_blank" class="menu-item"><span class="menu-icon">1️⃣1️⃣</span><span class="menu-text">Lab 11-4</span></a>
-        <a href="../网页资源/lab 11-5.html" target="_blank" class="menu-item"><span class="menu-icon">1️⃣1️⃣</span><span class="menu-text">Lab 11-5</span></a>
-
-        <!-- 12章 -->
-        <a href="../网页资源/lab 12-1.html" target="_blank" class="menu-item"><span class="menu-icon">1️⃣2️⃣</span><span class="menu-text">Lab 12-1</span></a>
-        <a href="../网页资源/lab 12-2.html" target="_blank" class="menu-item"><span class="menu-icon">1️⃣2️⃣</span><span class="menu-text">Lab 12-2</span></a>
-        <a href="../网页资源/lab 12-3.html" target="_blank" class="menu-item"><span class="menu-icon">1️⃣2️⃣</span><span class="menu-text">Lab 12-3</span></a>
-        <a href="../网页资源/lab 12-4.html" target="_blank" class="menu-item"><span class="menu-icon">1️⃣2️⃣</span><span class="menu-text">Lab 12-4</span></a>
-        <a href="../网页资源/lab 12-5.html" target="_blank" class="menu-item"><span class="menu-icon">1️⃣2️⃣</span><span class="menu-text">Lab 12-5</span></a>
-        <a href="../网页资源/lab 12-6.html" target="_blank" class="menu-item"><span class="menu-icon">1️⃣2️⃣</span><span class="menu-text">Lab 12-6</span></a>
-
-        <!-- 13章 -->
-        <a href="../网页资源/lab 13-1.html" target="_blank" class="menu-item"><span class="menu-icon">1️⃣3️⃣</span><span class="menu-text">Lab 13-1</span></a>
-        <a href="../网页资源/lab 13-2.html" target="_blank" class="menu-item"><span class="menu-icon">1️⃣3️⃣</span><span class="menu-text">Lab 13-2</span></a>
-        <a href="../网页资源/lab 13-3.html" target="_blank" class="menu-item"><span class="menu-icon">1️⃣3️⃣</span><span class="menu-text">Lab 13-3</span></a>
-        <a href="../网页资源/lab 13-4.html" target="_blank" class="menu-item"><span class="menu-icon">1️⃣3️⃣</span><span class="menu-text">Lab 13-4</span></a>
-        <a href="../网页资源/lab 13-5.html" target="_blank" class="menu-item"><span class="menu-icon">1️⃣3️⃣</span><span class="menu-text">Lab 13-5</span></a>
-        <a href="../网页资源/lab 13-6.html" target="_blank" class="menu-item"><span class="menu-icon">1️⃣3️⃣</span><span class="menu-text">Lab 13-6</span></a>
-        </div>
-        <div class="menu-section">
-            <div class="menu-section-title">其他资源</div>
-            <a href="../故事书/index.html" target="_blank" class="menu-item">
-                <span class="menu-icon">📚</span>
-                <span class="menu-text">故事书</span>
-            </a>
-            <a href="../习题/index.html" target="_blank" class="menu-item">
-                <span class="menu-icon">📝</span>
-                <span class="menu-text">习题</span>
-            </a>
-        </div>
-    </div>
-</div>
-
-<!-- 章节目录菜单 -->
-<div id="chapter-menu">
-    <div id="chapter-toggle" class="menu-toggle">
-        <span class="menu-icon">📚</span>
-    </div>
-    <div id="chapter-content" class="menu-content">
-        <div class="menu-section">
-            <div class="menu-section-title">基础概念</div>
-        <a href="#" class="menu-item" onclick="goToSlide(0); toggleChapterMenu();">
-            <span class="menu-icon">🏠</span>
-            <span class="menu-text">标题页</span>
-        </a>
-        <a href="#" class="menu-item" onclick="goToSlide(1); toggleChapterMenu();">
-            <span class="menu-icon">📋</span>
-            <span class="menu-text">目录</span>
-        </a>
-        <a href="#" class="menu-item" onclick="goToSlide(3); toggleChapterMenu();">
-            <span class="menu-icon">1</span>
-            <span class="menu-text">集合、常量与变量</span>
-        </a>
-        <a href="#" class="menu-item" onclick="goToSlide(4); toggleChapterMenu();">
-            <span class="menu-icon">2</span>
-            <span class="menu-text">区间表示法</span>
-        </a>
-        <a href="#" class="menu-item" onclick="goToSlide(5); toggleChapterMenu();">
-            <span class="menu-icon">3</span>
-            <span class="menu-text">函数基础</span>
-        </a>
-        <a href="#" class="menu-item" onclick="goToSlide(6); toggleChapterMenu();">
-            <span class="menu-icon">4</span>
-            <span class="menu-text">定义域与值域</span>
-        </a>
-        </div>
-        <div class="menu-section">
-            <div class="menu-section-title">函数类型</div>
-        <a href="#" class="menu-item" onclick="goToSlide(10); toggleChapterMenu();">
-            <span class="menu-icon">5</span>
-            <span class="menu-text">指数运算</span>
-        </a>
-        <a href="#" class="menu-item" onclick="goToSlide(16); toggleChapterMenu();">
-            <span class="menu-icon">6</span>
-            <span class="menu-text">对数运算</span>
-        </a>
-        <a href="#" class="menu-item" onclick="goToSlide(24); toggleChapterMenu();">
-            <span class="menu-icon">7</span>
-            <span class="menu-text">函数性质</span>
-        </a>
-        <a href="#" class="menu-item" onclick="goToSlide(32); toggleChapterMenu();">
-            <span class="menu-icon">8</span>
-            <span class="menu-text">反函数</span>
-        </a>
-        <a href="#" class="menu-item" onclick="goToSlide(35); toggleChapterMenu();">
-            <span class="menu-icon">9</span>
-            <span class="menu-text">复合函数</span>
-        </a>
-        </div>
-    </div>
-    </div>
-</div>
 
 <script>
         // === 基础导航功能 ===
@@ -1521,88 +1066,13 @@
             // 这里可以添加重置页面内动画的逻辑
         }
 
-        // 初始化悬浮菜单
-        function initFloatingMenus() {
-            // 浮动菜单功能
-            const menuToggle = document.getElementById('menu-toggle');
-            const menuContent = document.getElementById('menu-content');
-            
-            if (menuToggle && menuContent) {
-                menuToggle.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    menuToggle.classList.toggle('active');
-                    menuContent.classList.toggle('active');
-                });
-                
-                // 点击页面其他地方关闭菜单
-                document.addEventListener('click', function(e) {
-                    if (!menuToggle.contains(e.target) && !menuContent.contains(e.target)) {
-                        menuToggle.classList.remove('active');
-                        menuContent.classList.remove('active');
-                    }
-                });
-                
-                // 防止菜单内容点击时关闭菜单
-                menuContent.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                });
-            }
-
-            // 章节目录菜单功能
-            const chapterToggle = document.getElementById('chapter-toggle');
-            const chapterContent = document.getElementById('chapter-content');
-            
-            if (chapterToggle && chapterContent) {
-                chapterToggle.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    chapterToggle.classList.toggle('active');
-                    chapterContent.classList.toggle('active');
-                });
-                
-                // 点击页面其他地方关闭菜单
-                document.addEventListener('click', function(e) {
-                    if (!chapterToggle.contains(e.target) && !chapterContent.contains(e.target)) {
-                        chapterToggle.classList.remove('active');
-                        chapterContent.classList.remove('active');
-                    }
-                });
-                
-                // 防止菜单内容点击时关闭菜单
-                chapterContent.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                });
-            }
-        }
-
-        // 章节目录菜单切换函数
-        function toggleChapterMenu() {
-            const chapterToggle = document.getElementById('chapter-toggle');
-            const chapterContent = document.getElementById('chapter-content');
-            
-            if (chapterToggle && chapterContent) {
-                chapterToggle.classList.toggle('active');
-                chapterContent.classList.toggle('active');
-            }
-        }
-
-        // 跳转到指定幻灯片
-        function goToSlide(index) {
-            if (index >= 0 && index < totalSlides) {
-                showSlide(index);
-            }
-        }
-
         document.addEventListener('DOMContentLoaded', function() {
             slides = document.querySelectorAll('.slide');
             totalSlides = slides.length;
             counter = document.getElementById('page-indicator');
-            
-            
-            
-            
-            // 初始化悬浮菜单
-            initFloatingMenus();
-            
+
+
+
             showSlide(0);
             
             // 键盘导航
