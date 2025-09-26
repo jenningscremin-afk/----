@@ -701,15 +701,16 @@
 
     <script>
         // 包含所有幻灯片内容的数组
+        const html = String.raw;
         const slidesData = [
             {
                 title: "第2章 极限与连续",
-                content: `<h1>第2章 极限与连续</h1><h2>本章内容</h2><ul><li><strong>01</strong> 极限的概念</li><li><strong>02</strong> 极限的性质和运算法则</li><li><strong>03</strong> 两个重要极限及无穷小的比较</li><li><strong>04</strong> 函数的连续性</li></ul><div class="note">函数极限的概念和思想是整个高等数学的灵魂, 随后我们要学习的导数、积分、级数等概念的建立, 都是以极限思想为出发点的, 没有极限就没有整个微积分.</div>`,
+                content: html`<h1>第2章 极限与连续</h1><h2>本章内容</h2><ul><li><strong>01</strong> 极限的概念</li><li><strong>02</strong> 极限的性质和运算法则</li><li><strong>03</strong> 两个重要极限及无穷小的比较</li><li><strong>04</strong> 函数的连续性</li></ul><div class="note">函数极限的概念和思想是整个高等数学的灵魂, 随后我们要学习的导数、积分、级数等概念的建立, 都是以极限思想为出发点的, 没有极限就没有整个微积分.</div>`,
                 animation: "title"
             },
             {
                 title: "课堂目标与学生痛点",
-                content: `
+                content: html`
                 <div class="knowledge-objective">
                     <h3>目标 本节课学生需要掌握的3件事</h3>
                     <ol>
@@ -733,7 +734,7 @@
             },
             {
                 title: "1. 认识数列",
-                content: `
+                content: html`
                 <h2>建筑 从生活中认识数列</h2>
                 <div class="prompt-card">
                     <strong>教师提问</strong>：我们生活中会遇到很多按顺序排列的数字，比如楼层号1, 2, 3... 这种按一定次序排列的一列数，我们叫它什么？
@@ -753,7 +754,7 @@
 
                     <div class="step-item" data-step="2">
                         <div class="definition">
-                            <strong>定义1</strong> 在某一法则下,当 $n(n\in N^{+})$ 依次取 $1,2,3,\cdots,n,\cdots$ 时,对应的实数排成一列数 $x_{1},x_{2},x_{3},...,x_{n},\cdots$,这列数就称为数列,记作 $\\{x_n\\}$。
+                            <strong>定义1</strong> 在某一法则下,当 $n(n\in N^{+})$ 依次取 $1,2,3,\cdots,n,\cdots$ 时,对应的实数排成一列数 $x_{1},x_{2},x_{3},...,x_{n},\cdots$,这列数就称为数列,记作 $\{x_n\}$。
                         </div>
                         <p>数列中的每一个数称为数列的项,第n项 $x_{n}$ 称为数列的一般项或通项。</p>
                         <button class="step-btn" data-action="next">下一步：常见误区</button>
@@ -774,7 +775,7 @@
             },
             {
                 title: "视角的转变：高中 vs 大学",
-                content: `
+                content: html`
                 <h2>观察 视角的转变：高中 vs 大学</h2>
                 <div class="prompt-card">
                     <strong>教师串词</strong>：“在高中阶段，我们研究数列时，关注的是它的内部规律和有限步骤；到了大学，我们要关心的是它的终点命运。”
@@ -813,7 +814,7 @@
             },
             {
                 title: "2. 观察趋势",
-                content: `
+                content: html`
                 <h2>跑步 观察数列的变化趋势</h2>
                 <div class="prompt-card">
                     <strong>教师提问</strong>：我们来看这个数列 $x_n = \frac{n}{n+1}$。当 n=1, 2, 10, 100 时，这个数分别是多少？你发现 n 越来越大时，这个数越来越接近哪个固定的数字？它会等于那个数吗？
@@ -860,7 +861,7 @@
             },
             {
                 title: "终点行为的三种命运",
-                content: `
+                content: html`
                 <h2>案例 数列的“终点行为”</h2>
                 <p>数列写到无穷时，可能出现三种典型命运：</p>
                 <ol>
@@ -874,13 +875,13 @@
             },
             {
                 title: "视角升级：数列是一种特殊的函数",
-                content: `
+                content: html`
                 <h2>循环 视角升级：数列 = 特殊的函数</h2>
                 <p>数列可以理解为定义域仅包含正整数的函数：</p>
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
                     <div style="background: rgba(99,102,241,0.08); padding: 16px; border-radius: 12px; border-left: 4px solid #6366f1;">
                         <h3>数列写法</h3>
-                        <p>$\\{x_n\\}: x_1, x_2, x_3, \cdots$</p>
+                        <p>$\{x_n\}: x_1, x_2, x_3, \cdots$</p>
                         <p>例：$x_n=\frac{n}{n+1} = \frac{1}{2}, \frac{2}{3}, \frac{3}{4}, \cdots$</p>
                     </div>
                     <div style="background: rgba(14,165,233,0.08); padding: 16px; border-radius: 12px; border-left: 4px solid #0ea5e9;">
@@ -895,7 +896,7 @@
             },
             {
                 title: "定义域决定逼近方式",
-                content: `
+                content: html`
                     <h2>轨迹 定义域不同，逼近方式也不同</h2>
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
                         <div style="background: rgba(251,191,36,0.12); padding: 16px; border-radius: 12px; border-left: 4px solid #fbbf24;">
@@ -916,7 +917,7 @@
 
             {
                 title: "3. 极限定义与通俗解释",
-                content: `
+                content: html`
                 <h2>目标 理解极限的本质</h2>
                 <div class="prompt-card">
                     <strong>教师提问</strong>：刚才我们看到的'无限接近'，在数学上就叫'极限'。谁能用自己的话描述一下什么是'极限'？它像一个我们永远也到不了，但可以无限靠近的目标。
@@ -949,27 +950,27 @@
             },
             {
                 title: "极限的通俗理解",
-                content: `<h4>极限的通俗理解</h4><p><strong>极限就是一个"目标值"或"靶心"</strong>。想象一下，数列的每一项 $x_n$ 就像一个射手在不同时间点（时间点就是n）射出的一支箭。</p><ul><li>如果随着时间的推移（n越来越大），这些箭射得<strong>越来越靠近一个固定的靶心</strong>（数值a），那么这个靶心"a"就是这个数列的<strong>极限</strong>。</li><li>如果这些箭到处乱飞，没有一个明确的靶心，那它就没有极限。</li></ul>`,
+                content: html`<h4>极限的通俗理解</h4><p><strong>极限就是一个"目标值"或"靶心"</strong>。想象一下，数列的每一项 $x_n$ 就像一个射手在不同时间点（时间点就是n）射出的一支箭。</p><ul><li>如果随着时间的推移（n越来越大），这些箭射得<strong>越来越靠近一个固定的靶心</strong>（数值a），那么这个靶心"a"就是这个数列的<strong>极限</strong>。</li><li>如果这些箭到处乱飞，没有一个明确的靶心，那它就没有极限。</li></ul>`,
                 animation: "target"
             },
             {
                 title: "收敛与发散",
-                content: `<h4>收敛还是发散？</h4><ul><li><strong>收敛：</strong>像回家过年，所有项都往同一个目的地挤——目标值 $a$。</li><li><strong>发散：</strong>要么一路狂奔向无穷远方，要么在几个值之间来回跳，迟迟找不到落脚点。</li></ul><div class="teacher-note">配合三幅图像：<em>收敛</em>→点围拢到一条线；<em>发散到无穷</em>→点越飘越远；<em>震荡发散</em>→点在两条线间跳动。</div>`,
+                content: html`<h4>收敛还是发散？</h4><ul><li><strong>收敛：</strong>像回家过年，所有项都往同一个目的地挤——目标值 $a$。</li><li><strong>发散：</strong>要么一路狂奔向无穷远方，要么在几个值之间来回跳，迟迟找不到落脚点。</li></ul><div class="teacher-note">配合三幅图像：<em>收敛</em>→点围拢到一条线；<em>发散到无穷</em>→点越飘越远；<em>震荡发散</em>→点在两条线间跳动。</div>`,
                 animation: "convergence"
             },
             {
                 title: "Collatz猜想",
-                content: `<h4>Collatz 猜想 (3n+1 数列)</h4><p>从任何正数开始并遵循两个简单规则：</p><ul><li>如果 $x_{n}$ 是偶数,则 $x_{n+1}=\frac{x_{n}}{2}$</li><li>如果 $x_{n}$ 是奇数,则 $x_{n+1}=3x_{n}+1$</li></ul><p>猜想表明,无论起始数字如何,最终总会达到4, 2, 1的循环。</p>`,
+                content: html`<h4>Collatz 猜想 (3n+1 数列)</h4><p>从任何正数开始并遵循两个简单规则：</p><ul><li>如果 $x_{n}$ 是偶数,则 $x_{n+1}=\frac{x_{n}}{2}$</li><li>如果 $x_{n}$ 是奇数,则 $x_{n+1}=3x_{n}+1$</li></ul><p>猜想表明,无论起始数字如何,最终总会达到4, 2, 1的循环。</p>`,
                 animation: "collatz"
             },
             {
                 title: "斐波那契数列",
-                content: `<h4>斐波那契数列与黄金分割</h4><div class="example"><p><strong>斐波那契数列</strong>: 每个数是前两个数的和。<br>0, 1, 1, 2, 3, 5, 8, 13, 21, 34,...</p><p><strong>黄金分割 $\phi$</strong>: 约等于1.618。</p><div class="formula-highlight">$$\displaystyle\lim\limits_{n\to\infty}\frac{F(n)}{F(n-1)}=\phi$$</div></div>`,
+                content: html`<h4>斐波那契数列与黄金分割</h4><div class="example"><p><strong>斐波那契数列</strong>: 每个数是前两个数的和。<br>0, 1, 1, 2, 3, 5, 8, 13, 21, 34,...</p><p><strong>黄金分割 $\phi$</strong>: 约等于1.618。</p><div class="formula-highlight">$$\displaystyle\lim\limits_{n\to\infty}\frac{F(n)}{F(n-1)}=\phi$$</div></div>`,
                 animation: "fibonacci"
             },
             {
                 title: "例1-1",
-                content: `
+                content: html`
                 <div class="step-stack" data-steps="example1_1">
                   <div class="step-item active" data-step="1">
                     <h4>题面</h4>
@@ -994,7 +995,7 @@
             },
             {
                 title: "例1-2",
-                content: `
+                content: html`
                 <div class="step-stack" data-steps="example1_2">
                   <div class="step-item active" data-step="1">
                     <h4>题面</h4>
@@ -1019,7 +1020,7 @@
             },
             {
                 title: "例1-3",
-                content: `
+                content: html`
                 <div class="step-stack" data-steps="example1_3">
                   <div class="step-item active" data-step="1">
                     <h4>题面</h4>
@@ -1044,7 +1045,7 @@
             },
             {
                 title: "例1-4",
-                content: `
+                content: html`
                 <div class="step-stack" data-steps="example1_4">
                   <div class="step-item active" data-step="1">
                     <h4>题面</h4>
@@ -1069,7 +1070,7 @@
             },
             {
             title: "拓展案例：Collatz 猜想",
-                content: `
+                content: html`
                 <h2>放大 拓展案例：Collatz 猜想</h2>
                 <p>任意正整数按“奇数乘3加1、偶数除以2”的规则演化，似乎都会回到 $1 \rightarrow 4 \rightarrow 2 \rightarrow 1$ 的循环。</p>
                 <div class="note">未被证明的开放问题：所有起点是否都最终进入该循环？</div>
@@ -1078,7 +1079,7 @@
             },
             {
                 title: "拓展案例：斐波那契与黄金分割",
-                content: `
+                content: html`
                 <h2>几何 斐波那契数列与黄金分割</h2>
                 <p>斐波那契数列：$0,1,1,2,3,5,8,\cdots$</p>
                 <p>比值极限：$\displaystyle\lim\limits_{n\to\infty}\frac{F_n}{F_{n-1}}=\Phi\approx1.618$</p>
@@ -1088,7 +1089,7 @@
             },
             {
                 title: "拓展案例：折旧模型",
-                content: `
+                content: html`
                 <h2>案例 折旧模型：现实中的收敛</h2>
                 <p>例：一台设备每年折旧 10%，价格模型 $V_n = V_0 (0.9)^{n}$。</p>
                 <p>随着 $n \to \infty$，$V_n \to 0$，说明实际价值将无限接近残值。</p>
@@ -1096,161 +1097,161 @@
                 animation: "depreciation"
             },            {
                 title: "函数的极限：整体视角",
-                content: `<h3>2.1.2 函数的极限</h3><p>自变量可以不限于整数，我们关注的是函数值在不同趋近方式下的表现。</p><div class="teacher-note">“函数极限”是把数列极限推广到连续自变量的第一步。</div>`,
+                content: html`<h3>2.1.2 函数的极限</h3><p>自变量可以不限于整数，我们关注的是函数值在不同趋近方式下的表现。</p><div class="teacher-note">“函数极限”是把数列极限推广到连续自变量的第一步。</div>`,
                 animation: "function_notation"
             },
             {
                 title: "函数的极限：x → ∞",
-                content: `<h3>$x \to \infty$（趋向无穷）</h3><ul><li><strong>含义：</strong>$x$ 的绝对值无限增大</li><li><strong>记号：</strong>$\displaystyle\lim\limits_{x\to\infty}f(x)=L$</li><li><strong>几何意义：</strong>沿数轴向两端移动时，函数值越来越接近 $L$。</li></ul>`,
+                content: html`<h3>$x \to \infty$（趋向无穷）</h3><ul><li><strong>含义：</strong>$x$ 的绝对值无限增大</li><li><strong>记号：</strong>$\displaystyle\lim\limits_{x\to\infty}f(x)=L$</li><li><strong>几何意义：</strong>沿数轴向两端移动时，函数值越来越接近 $L$。</li></ul>`,
                 animation: "function_infinity"
             },
             {
                 title: "函数的极限：x → +∞",
-                content: `<h3>$x \to +\infty$（趋向正无穷）</h3><ul><li><strong>含义：</strong>$x$ 取越来越大的正数</li><li><strong>记号：</strong>$\displaystyle\lim\limits_{x\to+\infty}f(x)=L$</li><li><strong>几何意义：</strong>沿数轴右端前进时，函数值逼近 $L$。</li></ul>`,
+                content: html`<h3>$x \to +\infty$（趋向正无穷）</h3><ul><li><strong>含义：</strong>$x$ 取越来越大的正数</li><li><strong>记号：</strong>$\displaystyle\lim\limits_{x\to+\infty}f(x)=L$</li><li><strong>几何意义：</strong>沿数轴右端前进时，函数值逼近 $L$。</li></ul>`,
                 animation: "function_infinity"
             },
             {
                 title: "函数的极限：x → -∞",
-                content: `<h3>$x \to -\infty$（趋向负无穷）</h3><ul><li><strong>含义：</strong>$x$ 取越来越小的负数</li><li><strong>记号：</strong>$\displaystyle\lim\limits_{x\to-\infty}f(x)=L$</li><li><strong>几何意义：</strong>沿数轴左端前进时，函数值逼近 $L$。</li></ul>`,
+                content: html`<h3>$x \to -\infty$（趋向负无穷）</h3><ul><li><strong>含义：</strong>$x$ 取越来越小的负数</li><li><strong>记号：</strong>$\displaystyle\lim\limits_{x\to-\infty}f(x)=L$</li><li><strong>几何意义：</strong>沿数轴左端前进时，函数值逼近 $L$。</li></ul>`,
                 animation: "function_infinity"
             },
             {
                 title: "函数的极限：x → x₀",
-                content: `<h3>$x \to x_0$（趋向某个点）</h3><ul><li><strong>含义：</strong>$x$ 可以从左右两边无限靠近 $x_0$。</li><li><strong>记号：</strong>$\displaystyle\lim\limits_{x\to x_0}f(x)=L$</li><li><strong>几何意义：</strong>在点 $x_0$ 附近观察函数的局部行为。</li></ul>`,
+                content: html`<h3>$x \to x_0$（趋向某个点）</h3><ul><li><strong>含义：</strong>$x$ 可以从左右两边无限靠近 $x_0$。</li><li><strong>记号：</strong>$\displaystyle\lim\limits_{x\to x_0}f(x)=L$</li><li><strong>几何意义：</strong>在点 $x_0$ 附近观察函数的局部行为。</li></ul>`,
                 animation: "point_limit"
             },
             {
                 title: "函数的右极限：x → x₀⁺",
-                content: `<h3>$x \to x_0^+$（从右侧逼近）</h3><ul><li><strong>含义：</strong>$x$ 取大于 $x_0$ 的值并逐渐接近它。</li><li><strong>记号：</strong>$\displaystyle\lim\limits_{x\to x_0^+}f(x)=L$</li><li><strong>理解：</strong>只沿数轴右侧靠近目标点。</li></ul>`,
+                content: html`<h3>$x \to x_0^+$（从右侧逼近）</h3><ul><li><strong>含义：</strong>$x$ 取大于 $x_0$ 的值并逐渐接近它。</li><li><strong>记号：</strong>$\displaystyle\lim\limits_{x\to x_0^+}f(x)=L$</li><li><strong>理解：</strong>只沿数轴右侧靠近目标点。</li></ul>`,
                 animation: "right_limit_viz"
             },
             {
                 title: "函数的左极限：x → x₀⁻",
-                content: `<h3>$x \to x_0^-$（从左侧逼近）</h3><ul><li><strong>含义：</strong>$x$ 取小于 $x_0$ 的值并逐渐接近它。</li><li><strong>记号：</strong>$\displaystyle\lim\limits_{x\to x_0^-}f(x)=L$</li><li><strong>理解：</strong>只沿数轴左侧靠近目标点。</li></ul>`,
+                content: html`<h3>$x \to x_0^-$（从左侧逼近）</h3><ul><li><strong>含义：</strong>$x$ 取小于 $x_0$ 的值并逐渐接近它。</li><li><strong>记号：</strong>$\displaystyle\lim\limits_{x\to x_0^-}f(x)=L$</li><li><strong>理解：</strong>只沿数轴左侧靠近目标点。</li></ul>`,
                 animation: "left_limit_viz"
             },
             {
                 title: "函数的极限通俗理解",
-                content: `<h4>函数极限的通俗理解</h4><div class="note"><p><strong>当 $x \to \infty$ 时：</strong><br>好比你站在函数图像上，沿着x轴一直向右($x \to +\infty$)或向左($x \to -\infty$)走。我们关心的是，当你走得非常远时，你所在位置的高度(y值)是否会稳定在某一个值？</p><p><strong>当 $x \to x_0$ 时：</strong><br>我们关心x<strong>无限靠近</strong> $x_0$ 时函数的高度 $f(x)$ 会怎样。<strong>只关心 $x_0$ 点附近的趋势，不在乎函数在 $x_0$ 点本身的值！</strong></p></div>`,
+                content: html`<h4>函数极限的通俗理解</h4><div class="note"><p><strong>当 $x \to \infty$ 时：</strong><br>好比你站在函数图像上，沿着x轴一直向右($x \to +\infty$)或向左($x \to -\infty$)走。我们关心的是，当你走得非常远时，你所在位置的高度(y值)是否会稳定在某一个值？</p><p><strong>当 $x \to x_0$ 时：</strong><br>我们关心x<strong>无限靠近</strong> $x_0$ 时函数的高度 $f(x)$ 会怎样。<strong>只关心 $x_0$ 点附近的趋势，不在乎函数在 $x_0$ 点本身的值！</strong></p></div>`,
                 animation: "function_limit_concept"
             },
             {
                 title: "实例1 动物数量",
-                content: `<div class="example"><strong>实例1 自然保护区中动物数量的变化规律</strong><br>动物群体数量会逐渐增长，但由于资源限制，群体不可能无限增大，它应达到某一饱和状态。饱和状态就是时间 $t \to \infty$ 时动物群的数量。</div>`,
+                content: html`<div class="example"><strong>实例1 自然保护区中动物数量的变化规律</strong><br>动物群体数量会逐渐增长，但由于资源限制，群体不可能无限增大，它应达到某一饱和状态。饱和状态就是时间 $t \to \infty$ 时动物群的数量。</div>`,
                 animation: "population"
             },
             {
                 title: "$x \to \infty$ 时极限定义",
-                content: `<div class="definition"><strong>定义3</strong> 如果当 $x\to\infty$ 时,函数值 $f(x)$ 无限趋近于某一个确定的常数A,那么A就称为函数 $f(x)$ 当 $x\to\infty$ 时的极限,记作 $$\displaystyle\lim\limits_{x\to\infty}f(x)=A$$</div><div class="theorem"><strong>定理1</strong> $$\displaystyle\lim\limits_{x\to\infty}f(x)=A \iff \lim\limits_{x\to+\infty}f(x)=\lim\limits_{x\to-\infty}f(x)=A$$</div>`,
+                content: html`<div class="definition"><strong>定义3</strong> 如果当 $x\to\infty$ 时,函数值 $f(x)$ 无限趋近于某一个确定的常数A,那么A就称为函数 $f(x)$ 当 $x\to\infty$ 时的极限,记作 $$\displaystyle\lim\limits_{x\to\infty}f(x)=A$$</div><div class="theorem"><strong>定理1</strong> $$\displaystyle\lim\limits_{x\to\infty}f(x)=A \iff \lim\limits_{x\to+\infty}f(x)=\lim\limits_{x\to-\infty}f(x)=A$$</div>`,
                 animation: "function_infinity"
             },
             {
                 title: "例3 y=1/x",
-                content: `<div class="example"><strong>例3</strong> 讨论当 $x\to+\infty$ 时,函数 $y=\frac{1}{x}$ 的变化趋势。</div><p><strong>解</strong>: 当x沿x轴正方向无限增大时,曲线 $y=\frac{1}{x}$ 无限接近于x轴,故极限为0。</p><div class="formula-highlight">$$\displaystyle\lim\limits_{x\to+\infty}\frac{1}{x}=0$$</div>`,
+                content: html`<div class="example"><strong>例3</strong> 讨论当 $x\to+\infty$ 时,函数 $y=\frac{1}{x}$ 的变化趋势。</div><p><strong>解</strong>: 当x沿x轴正方向无限增大时,曲线 $y=\frac{1}{x}$ 无限接近于x轴,故极限为0。</p><div class="formula-highlight">$$\displaystyle\lim\limits_{x\to+\infty}\frac{1}{x}=0$$</div>`,
                 animation: "one_over_x"
             },
             {
                 title: "例4 反正切函数",
-                content: `<div class="example"><strong>例4</strong> 讨论反正切函数 $y=\arctan x$ 的极限。</div><p><strong>解</strong>: $$\displaystyle\lim\limits_{x\to+\infty}\arctan x=\frac{\pi}{2}$$ $$\displaystyle\lim\limits_{x\to-\infty}\arctan x=-\frac{\pi}{2}$$</p><p>由于左右极限不相等, 所以 $\displaystyle\lim\limits_{x\to\infty}\arctan x$ 不存在。</p>`,
+                content: html`<div class="example"><strong>例4</strong> 讨论反正切函数 $y=\arctan x$ 的极限。</div><p><strong>解</strong>: $$\displaystyle\lim\limits_{x\to+\infty}\arctan x=\frac{\pi}{2}$$ $$\displaystyle\lim\limits_{x\to-\infty}\arctan x=-\frac{\pi}{2}$$</p><p>由于左右极限不相等, 所以 $\displaystyle\lim\limits_{x\to\infty}\arctan x$ 不存在。</p>`,
                 animation: "arctan"
             },
             {
                 title: "x趋向x0时的极限",
-                content: `<h4>2. 当 $x\to x_{0}$ 时,函数 $f(x)$ 的极限</h4><div class="example"><strong>实例4 人影长度</strong><br>若一个人走向路灯正下方,他越靠近目标 $(x \to 0)$,其影子长度越短,逐渐趋于 $0(y \to 0)$。</div>`,
+                content: html`<h4>2. 当 $x\to x_{0}$ 时,函数 $f(x)$ 的极限</h4><div class="example"><strong>实例4 人影长度</strong><br>若一个人走向路灯正下方,他越靠近目标 $(x \to 0)$,其影子长度越短,逐渐趋于 $0(y \to 0)$。</div>`,
                 animation: "shadow"
             },
             {
                 title: "函数在点的极限定义",
-                content: `<div class="definition"><strong>定义2-3</strong> 如果当 $x \to x_0$ 时, 函数 $f(x)$ 无限接近于一个确定的常数A, 那么称A为函数 $f(x)$ 在 $x \to x_0$ 时的极限, 记为 $$\displaystyle\lim\limits_{x \to x_0} f(x) = A$$</div>`,
+                content: html`<div class="definition"><strong>定义2-3</strong> 如果当 $x \to x_0$ 时, 函数 $f(x)$ 无限接近于一个确定的常数A, 那么称A为函数 $f(x)$ 在 $x \to x_0$ 时的极限, 记为 $$\displaystyle\lim\limits_{x \to x_0} f(x) = A$$</div>`,
                 animation: "point_limit"
             },
             {
                 title: "瞬时速度",
-                content: `<div class="example"><strong>实例5 瞬时速度</strong><br>自由落体运动的路程函数为 $s = \frac{1}{2}gt^2$。$t_0$ 时刻的瞬时速度就是 $t_0$ 到 $t$ 的平均速度在 $t \to t_0$ 时的极限。</div><p>$$v(t_0) = \displaystyle\lim\limits_{t \to t_0} \frac{s(t) - s(t_0)}{t - t_0} = gt_0$$</p>`,
+                content: html`<div class="example"><strong>实例5 瞬时速度</strong><br>自由落体运动的路程函数为 $s = \frac{1}{2}gt^2$。$t_0$ 时刻的瞬时速度就是 $t_0$ 到 $t$ 的平均速度在 $t \to t_0$ 时的极限。</div><p>$$v(t_0) = \displaystyle\lim\limits_{t \to t_0} \frac{s(t) - s(t_0)}{t - t_0} = gt_0$$</p>`,
                 animation: "velocity"
             },
             {
                 title: "例6",
-                content: `<div class="example"><strong>例6</strong> 设 $f(x)=\begin{cases}x+2, & x\geq 1 \\ 3x, & x<1\end{cases}$,判断 $\displaystyle\lim\limits_{x\to 1}f(x)$ 是否存在。</div><p><strong>解</strong>: $\displaystyle\lim\limits_{x\to 1^{+}}f(x)=\lim\limits_{x\to 1^{+}}(x+2)=3$</p><p>$\displaystyle\lim\limits_{x\to 1^{-}}f(x)=\lim\limits_{x\to 1^{-}}3x=3$</p><p>左右极限存在且相等, 所以 $\displaystyle\lim\limits_{x\to 1}f(x)=3$。</p>`,
+                content: html`<div class="example"><strong>例6</strong> 设 $f(x)=\begin{cases}x+2, & x\geq 1 \\ 3x, & x<1\end{cases}$,判断 $\displaystyle\lim\limits_{x\to 1}f(x)$ 是否存在。</div><p><strong>解</strong>: $\displaystyle\lim\limits_{x\to 1^{+}}f(x)=\lim\limits_{x\to 1^{+}}(x+2)=3$</p><p>$\displaystyle\lim\limits_{x\to 1^{-}}f(x)=\lim\limits_{x\to 1^{-}}3x=3$</p><p>左右极限存在且相等, 所以 $\displaystyle\lim\limits_{x\to 1}f(x)=3$。</p>`,
                 animation: "piecewise1"
             },
             {
                 title: "例7",
-                content: `<div class="example"><strong>例7</strong> 设 $f(x)=\begin{cases}x^{2}, & x\geq 0 \\ x+1, & x<0\end{cases}$ 讨论 $\displaystyle\lim\limits_{x\to 0}f(x)$ 是否存在?</div><p><strong>解</strong>: $\displaystyle\lim\limits_{x\to 0^{-}}f(x)=\lim\limits_{x\to 0^{-}}(x+1)=1$</p><p>$\displaystyle\lim\limits_{x\to 0^{+}}f(x)=\lim\limits_{x\to 0^{+}}x^{2}=0$</p><p>左右极限不相等, 所以 $\displaystyle\lim\limits_{x\to 0}f(x)$ 不存在。</p>`,
+                content: html`<div class="example"><strong>例7</strong> 设 $f(x)=\begin{cases}x^{2}, & x\geq 0 \\ x+1, & x<0\end{cases}$ 讨论 $\displaystyle\lim\limits_{x\to 0}f(x)$ 是否存在?</div><p><strong>解</strong>: $\displaystyle\lim\limits_{x\to 0^{-}}f(x)=\lim\limits_{x\to 0^{-}}(x+1)=1$</p><p>$\displaystyle\lim\limits_{x\to 0^{+}}f(x)=\lim\limits_{x\to 0^{+}}x^{2}=0$</p><p>左右极限不相等, 所以 $\displaystyle\lim\limits_{x\to 0}f(x)$ 不存在。</p>`,
                 animation: "piecewise2"
             },
             {
                 title: "无穷小量",
-                content: `<h3>2.1.3 无穷小量与无穷大量</h3><h4>1. 无穷小量</h4><p>如果一个量在某个过程里越跑越接近 0，我们就叫它<strong>无穷小量</strong>。</p><div class="note">它不是一个具体的“小数”，而是一种趋势：就像温度持续下降，虽然一刻也没到达 0℃，但你知道它的终点就是 0。</div>`,
+                content: html`<h3>2.1.3 无穷小量与无穷大量</h3><h4>1. 无穷小量</h4><p>如果一个量在某个过程里越跑越接近 0，我们就叫它<strong>无穷小量</strong>。</p><div class="note">它不是一个具体的“小数”，而是一种趋势：就像温度持续下降，虽然一刻也没到达 0℃，但你知道它的终点就是 0。</div>`,
                 animation: "infinitesimal"
             },
             {
                 title: "无穷小的性质",
-                content: `<h4>无穷小的性质</h4><div class="theorem"><strong>性质1</strong> 有限个无穷小的代数和仍是无穷小。<br><strong>性质2</strong> 有限个无穷小的乘积仍是无穷小。<br><strong>性质3</strong> 有界函数与无穷小的乘积仍是无穷小。</div><div class="example"><strong>例8</strong> 求 $\displaystyle\lim\limits_{x\to\infty}\frac{1}{x}\cos x$ 。<br><strong>解</strong>: $\frac{1}{x}$ 是无穷小, $|\cos x|\geq 1$ 是有界函数, 故极限为0。</div>`,
+                content: html`<h4>无穷小的性质</h4><div class="theorem"><strong>性质1</strong> 有限个无穷小的代数和仍是无穷小。<br><strong>性质2</strong> 有限个无穷小的乘积仍是无穷小。<br><strong>性质3</strong> 有界函数与无穷小的乘积仍是无穷小。</div><div class="example"><strong>例8</strong> 求 $\displaystyle\lim\limits_{x\to\infty}\frac{1}{x}\cos x$ 。<br><strong>解</strong>: $\frac{1}{x}$ 是无穷小, $|\cos x|\geq 1$ 是有界函数, 故极限为0。</div>`,
                 animation: "infinitesimal_prop"
             },            {
                 title: "无穷大量：概念",
-                content: `<h3>无穷大量的定义</h3><p>在某个变化过程中，若 $|f(x)|$ 无限增大，则称 $f(x)$ 为<strong>无穷大量</strong>，记作 $\displaystyle\lim\limits_{x\to x_0} f(x)=\infty$。</p><div class="visual-hint">上升 想象函数值越走越远，没有上界。</div>`,
+                content: html`<h3>无穷大量的定义</h3><p>在某个变化过程中，若 $|f(x)|$ 无限增大，则称 $f(x)$ 为<strong>无穷大量</strong>，记作 $\displaystyle\lim\limits_{x\to x_0} f(x)=\infty$。</p><div class="visual-hint">上升 想象函数值越走越远，没有上界。</div>`,
                 animation: "infinite"
             },
             {
                 title: "无穷大量：分类",
-                content: `<h3>常见三种情形</h3><ul><li><strong>正无穷：</strong>$f(x)\to +\infty$</li><li><strong>负无穷：</strong>$f(x)\to -\infty$</li><li><strong>无穷：</strong>$|f(x)|\to \infty$ 不区分正负。</li></ul>`,
+                content: html`<h3>常见三种情形</h3><ul><li><strong>正无穷：</strong>$f(x)\to +\infty$</li><li><strong>负无穷：</strong>$f(x)\to -\infty$</li><li><strong>无穷：</strong>$|f(x)|\to \infty$ 不区分正负。</li></ul>`,
                 animation: "infinite"
             },
             {
                 title: "无穷大量：与无穷小的关系",
-                content: `<h3>互为倒数</h3><p>若 $\alpha\to 0$，则 $\frac{1}{\alpha}\to \infty$；反之亦然。无穷大和无穷小是一对“镜像”概念。</p>`,
+                content: html`<h3>互为倒数</h3><p>若 $\alpha\to 0$，则 $\frac{1}{\alpha}\to \infty$；反之亦然。无穷大和无穷小是一对“镜像”概念。</p>`,
                 animation: "infinitesimal_compare"
             },
             {
                 title: "无穷大量：典型例子",
-                content: `<h3>三类常见例子</h3><ul><li>$\displaystyle\frac{1}{x}$ 当 $x\to 0$。</li><li>$e^x$ 当 $x\to +\infty$。</li><li>$\tan x$ 当 $x\to \frac{\pi}{2}$。</li></ul>`,
+                content: html`<h3>三类常见例子</h3><ul><li>$\displaystyle\frac{1}{x}$ 当 $x\to 0$。</li><li>$e^x$ 当 $x\to +\infty$。</li><li>$\tan x$ 当 $x\to \frac{\pi}{2}$。</li></ul>`,
                 animation: "infinite"
             },
             {
                 title: "极限的直观性质",
-                content: `<h2>2.2 极限的性质和运算法则</h2><h3>2.2.1 极限的直观性质</h3><ul><li><strong>目的地只有一个：</strong>同一条路不可能通向两个不同终点，所以极限要么不存在，要么只有一个答案。</li><li><strong>路上不会失控：</strong>既然准备靠近目标，沿途数值自然被限制在一个范围内，不会突然飙到天外去。</li><li><strong>方向保持一致：</strong>如果一路上都大于 0，那最终靠近的目标也不会变成负数。</li></ul>`,
+                content: html`<h2>2.2 极限的性质和运算法则</h2><h3>2.2.1 极限的直观性质</h3><ul><li><strong>目的地只有一个：</strong>同一条路不可能通向两个不同终点，所以极限要么不存在，要么只有一个答案。</li><li><strong>路上不会失控：</strong>既然准备靠近目标，沿途数值自然被限制在一个范围内，不会突然飙到天外去。</li><li><strong>方向保持一致：</strong>如果一路上都大于 0，那最终靠近的目标也不会变成负数。</li></ul>`,
                 animation: "limit_properties"
             },
             {
                 title: "极限的运算规则",
-                content: `<h3>2.2.2 极限的四则法则</h3><ul><li><strong>加减：</strong>各自找到终点，再把终点相加减。</li><li><strong>乘法：</strong>终点相乘即可。</li><li><strong>除法：</strong>分母的终点不能是 0，否则旅程会崩溃。</li></ul><div class="teacher-note">板书时提醒：$\lim\limits_{x\to x_0}[f(x)\pm g(x)] = \lim\limits_{x\to x_0}f(x) \pm \lim\limits_{x\to x_0}g(x)$ 等等，是对这些直观描述的精准表述。</div>`,
+                content: html`<h3>2.2.2 极限的四则法则</h3><ul><li><strong>加减：</strong>各自找到终点，再把终点相加减。</li><li><strong>乘法：</strong>终点相乘即可。</li><li><strong>除法：</strong>分母的终点不能是 0，否则旅程会崩溃。</li></ul><div class="teacher-note">板书时提醒：$\lim\limits_{x\to x_0}[f(x)\pm g(x)] = \lim\limits_{x\to x_0}f(x) \pm \lim\limits_{x\to x_0}g(x)$ 等等，是对这些直观描述的精准表述。</div>`,
                 animation: "limit_rules"
             },
             {
                 title: "直接代入法",
-                content: `<h3>2.2.3 极限的求法</h3><h4>1. 直接代入法</h4><div class="example"><strong>例1</strong> 求 $\displaystyle\lim\limits_{x \to 1} \frac{3x^2 + x + 1}{4x^3 + x^2 - x + 3}$<br><strong>解</strong>: $\frac{3(1)^2 + 1 + 1}{4(1)^3 + 1^2 - 1 + 3} = \frac{5}{7}$</div>`,
+                content: html`<h3>2.2.3 极限的求法</h3><h4>1. 直接代入法</h4><div class="example"><strong>例1</strong> 求 $\displaystyle\lim\limits_{x \to 1} \frac{3x^2 + x + 1}{4x^3 + x^2 - x + 3}$<br><strong>解</strong>: $\frac{3(1)^2 + 1 + 1}{4(1)^3 + 1^2 - 1 + 3} = \frac{5}{7}$</div>`,
                 animation: "direct_sub"
             },
             {
                 title: "0/0型极限",
-                content: `<h4>3. 分解因式,约去零因子法（$\frac{0}{0}$ 型）</h4><p>$\frac{0}{0}$ 型极限被称为"未定式"。它就像一场拔河比赛,分子想把结果拉向0,分母想把结果拉向无穷大。方法：将分子或分母分解因式,<strong>约去共同的零因子</strong>,再用直接代入法。</p>`,
+                content: html`<h4>3. 分解因式,约去零因子法（$\frac{0}{0}$ 型）</h4><p>$\frac{0}{0}$ 型极限被称为"未定式"。它就像一场拔河比赛,分子想把结果拉向0,分母想把结果拉向无穷大。方法：将分子或分母分解因式,<strong>约去共同的零因子</strong>,再用直接代入法。</p>`,
                 animation: "zero_zero"
             },
             {
                 title: "有理化",
-                content: `<h4>4. 分子或分母有理化（$\frac{0}{0}$ 型）</h4><div class="example"><strong>例3</strong> 求 $\displaystyle\lim\limits_{x \to 4} \frac{x-4}{\sqrt{x-2}-\sqrt{2}}$<br><strong>解</strong>: $$\displaystyle\lim\limits_{x \to 4} \frac{(x-4)(\sqrt{x-2}+\sqrt{2})}{(\sqrt{x-2}-\sqrt{2})(\sqrt{x-2}+\sqrt{2})} = \lim\limits_{x \to 4} (\sqrt{x-2}+\sqrt{2}) = 2\sqrt{2}$$</div>`,
+                content: html`<h4>4. 分子或分母有理化（$\frac{0}{0}$ 型）</h4><div class="example"><strong>例3</strong> 求 $\displaystyle\lim\limits_{x \to 4} \frac{x-4}{\sqrt{x-2}-\sqrt{2}}$<br><strong>解</strong>: $$\displaystyle\lim\limits_{x \to 4} \frac{(x-4)(\sqrt{x-2}+\sqrt{2})}{(\sqrt{x-2}-\sqrt{2})(\sqrt{x-2}+\sqrt{2})} = \lim\limits_{x \to 4} (\sqrt{x-2}+\sqrt{2}) = 2\sqrt{2}$$</div>`,
                 animation: "rationalize"
             },
             {
                 title: "无穷/无穷型",
-                content: `<h4>5. 公式法（$\frac{\infty}{\infty}$ 型）</h4><div class="formula-highlight">$$\displaystyle\lim\limits_{x\to\infty}\frac{a_{0}x^{n}+\cdots}{b_{0}x^{m}+\cdots}=\begin{cases} \frac{a_{0}}{b_{0}}, & n=m \\ 0, & n<m \\ \infty, & n>m \end{cases}$$</div><p>极限的结果,取决于分子和分母中"跑得最快的那个领头项"。</p>`,
+                content: html`<h4>5. 公式法（$\frac{\infty}{\infty}$ 型）</h4><div class="formula-highlight">$$\displaystyle\lim\limits_{x\to\infty}\frac{a_{0}x^{n}+\cdots}{b_{0}x^{m}+\cdots}=\begin{cases} \frac{a_{0}}{b_{0}}, & n=m \\ 0, & n<m \\ \infty, & n>m \end{cases}$$</div><p>极限的结果,取决于分子和分母中"跑得最快的那个领头项"。</p>`,
                 animation: "infinity_infinity"
             },
             {
                 title: "第一个重要极限",
-                content: `<h2>2.3 两个重要极限及无穷小的比较</h2><h3>2.3.1 两个重要极限</h3><h4>第一个重要极限</h4><div class="formula-highlight">$$\displaystyle\lim\limits_{x\to 0}\frac{\sin x}{x}=1$$</div><p>它揭示了：<strong>当角度x非常小时, $\sin(x)$ 的值和 $x$ 的值几乎是一样的</strong> (x为弧度制)。</p>`,
+                content: html`<h2>2.3 两个重要极限及无穷小的比较</h2><h3>2.3.1 两个重要极限</h3><h4>第一个重要极限</h4><div class="formula-highlight">$$\displaystyle\lim\limits_{x\to 0}\frac{\sin x}{x}=1$$</div><p>它揭示了：<strong>当角度x非常小时, $\sin(x)$ 的值和 $x$ 的值几乎是一样的</strong> (x为弧度制)。</p>`,
                 animation: "sinx_x"
             },
             {
                 title: "第二个重要极限",
-                content: `<h4>第二个重要极限</h4><div class="formula-highlight">$$\displaystyle\lim\limits_{x\to\infty}\left(1+\frac{1}{x}\right)^{x}=e$$</div><p>它定义了自然常数 <strong>e (≈2.718)</strong>, 其背景是<strong>银行的连续复利</strong>。如果计息次数无限增多,最终得到的钱会趋向于极限值e。</p>`,
+                content: html`<h4>第二个重要极限</h4><div class="formula-highlight">$$\displaystyle\lim\limits_{x\to\infty}\left(1+\frac{1}{x}\right)^{x}=e$$</div><p>它定义了自然常数 <strong>e (≈2.718)</strong>, 其背景是<strong>银行的连续复利</strong>。如果计息次数无限增多,最终得到的钱会趋向于极限值e。</p>`,
                 animation: "e_limit"
             },
             {
                 title: "无穷小比较：全局视图",
-                content: `<h3>2.3.2 无穷小的比较</h3>
+                content: html`<h3>2.3.2 无穷小的比较</h3>
                 <p>设 $\alpha(x), \beta(x)$ 是在 $x\to 0$ 时趋向 0 的量，通过比较 $\displaystyle\lim\limits_{x\to 0}\frac{\beta(x)}{\alpha(x)}$ 的数值来判断谁“跑得更快”。</p>
                 <div style="display: grid; gap: 12px; margin: 20px 0;">
                     <div style="background: rgba(52, 152, 219, 0.1); padding: 12px; border-radius: 8px; border-left: 4px solid #3498db;">
@@ -1271,7 +1272,7 @@
             },
             {
                 title: "高阶无穷小",
-                content: `<h3>高阶无穷小：掉得更快</h3>
+                content: html`<h3>高阶无穷小：掉得更快</h3>
                 <div class="definition" style="background: rgba(52, 152, 219, 0.1); padding: 20px; border-radius: 10px; border-left: 4px solid #3498db;">
                     <p><strong>定义：</strong>若 $\displaystyle\lim\limits_{x\to 0}\frac{\beta(x)}{\alpha(x)}=0$，则 $\beta = o(\alpha)$，即 $\beta$ 比 $\alpha$ “小得更快”。</p>
                 </div>
@@ -1289,7 +1290,7 @@
             },
             {
                 title: "低阶无穷小",
-                content: `<h3>低阶无穷小：掉得更慢</h3>
+                content: html`<h3>低阶无穷小：掉得更慢</h3>
                 <div class="definition" style="background: rgba(231, 76, 60, 0.1); padding: 20px; border-radius: 10px; border-left: 4px solid #e74c3c;">
                     <p><strong>定义：</strong>若 $\displaystyle\lim\limits_{x\to 0}\frac{\beta(x)}{\alpha(x)}=\infty$，则 $\beta$ 是比 $\alpha$ 更低阶的无穷小。</p>
                 </div>
@@ -1307,7 +1308,7 @@
             },
             {
                 title: "同阶无穷小",
-                content: `<h3>同阶无穷小：并驾齐驱</h3>
+                content: html`<h3>同阶无穷小：并驾齐驱</h3>
                 <div class="definition" style="background: rgba(155, 89, 182, 0.1); padding: 20px; border-radius: 10px; border-left: 4px solid #9b59b6;">
                     <p><strong>定义：</strong>若 $\displaystyle\lim\limits_{x\to 0}\frac{\beta(x)}{\alpha(x)}=c\neq0$，则 $\beta$ 与 $\alpha$ 是同阶无穷小。</p>
                     <p><strong>理解：</strong>两个量朝 0 的“速度”一致。</p>
@@ -1326,7 +1327,7 @@
             },
             {
                 title: "等价无穷小：可互换的替身",
-                content: `<h3>等价无穷小：计算里的黄金搭档</h3>
+                content: html`<h3>等价无穷小：计算里的黄金搭档</h3>
                 <div class="definition" style="background: rgba(46, 204, 113, 0.12); padding: 20px; border-radius: 10px; border-left: 4px solid #2ecc71;">
                     <p><strong>定义：</strong>若 $\displaystyle\lim\limits_{x\to 0}\frac{\beta(x)}{\alpha(x)}=1$，记作 $\alpha\sim\beta$，它们在极限运算中可以互换。</p>
                     <p><strong>意义：</strong>把复杂表达式换成熟悉的“替身”，能显著简化极限运算。</p>
@@ -1336,7 +1337,7 @@
                 animation: "infinitesimal_compare"
             },            {
                 title: "常用等价无穷小",
-                content: `<h3>常用的等价无穷小（当 $x\to 0$ 时）</h3>
+                content: html`<h3>常用的等价无穷小（当 $x\to 0$ 时）</h3>
                 <div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin: 20px 0;">
                     <div style="background: rgba(59,130,246,0.1); padding: 14px; border-radius: 10px; border-left: 4px solid #3b82f6;">
                         <p>$\sin x \sim x$</p>
@@ -1355,7 +1356,7 @@
                 animation: "equivalent_infinitesimal"
             },            {
                 title: "回归初心：谁能直接代入？",
-                content: `
+                content: html`
                 <h2>循环 回归初心：什么样的函数“好到可以直接代入”?</h2>
                 <p>我们最早接触的求极限方法——直接代入法，需要函数在目标点附近表现“平滑”。</p>
                 <div class="teacher-note">“连续性”正是用极限语言刻画这种好性质的工具。</div>
@@ -1364,12 +1365,12 @@
             },
             {
                 title: "连续性概念",
-                content: `<h2>2.4 函数的连续性</h2><h3>2.4.1 连续的直观理解</h3><p>想象在纸上画函数图像：如果笔尖可以一路滑过去而不需要抬起，这个点就被称为<strong>连续</strong>。</p><div class="note">课堂可以让学生用手指在图像上“走一遍”，感受有没有掉坑、断桥或跳跃。</div>`,
+                content: html`<h2>2.4 函数的连续性</h2><h3>2.4.1 连续的直观理解</h3><p>想象在纸上画函数图像：如果笔尖可以一路滑过去而不需要抬起，这个点就被称为<strong>连续</strong>。</p><div class="note">课堂可以让学生用手指在图像上“走一遍”，感受有没有掉坑、断桥或跳跃。</div>`,
                 animation: "continuity_concept"
             },
             {
                 title: "连续性的三位一体",
-                content: `
+                content: html`
                 <h2>结构 连续性的三位一体</h2>
                 <p>函数 $f(x)$ 在 $x_0$ 处连续，当且仅当以下三件事同时成立：</p>
                 <ol>
@@ -1383,7 +1384,7 @@
             },
             {
                 title: "如何诊断不连续：对症下药",
-                content: `
+                content: html`
                 <h2>诊断 诊断间断点：哪一步出了问题？</h2>
                 <ul>
                     <li><strong>可去间断：</strong>极限存在，但 $f(x_0)$ 没定义或不等于极限 —— “把缺口补上即可。”</li>
@@ -1395,7 +1396,7 @@
             },
             {
                 title: "好消息：初等函数都乖",
-                content: `
+                content: html`
                 <h2>提示 好消息：初等函数在定义域内都连续</h2>
                 <p>多项式、指数、对数、三角、反三角……这些熟悉的函数，只要所求的点在定义域内，就可以放心用“直接代入”。</p>
                 <div class="note">我们构建的极限理论，为这个“看似简单”的操作提供了严格保障。</div>
@@ -1404,42 +1405,42 @@
             },
             {
                 title: "实例3 冰融化",
-                content: `<div class="example"><strong>实例3 冰融化所需热量</strong><br>$f(x) = \begin{cases} 2.1x + 84, & x \geq 0 \\ 4.2x + 420, & x > 0 \end{cases}$<br>当 $x=0$ 时,函数是否连续?</div><p><strong>解</strong>: $\displaystyle\lim\limits_{x \to 0^-} f(x) = 84$, $\displaystyle\lim\limits_{x \to 0^+} f(x) = 420$</p><p>左右极限不相等, 所以函数在 $x=0$ 处不连续。</p>`,
+                content: html`<div class="example"><strong>实例3 冰融化所需热量</strong><br>$f(x) = \begin{cases} 2.1x + 84, & x \geq 0 \\ 4.2x + 420, & x > 0 \end{cases}$<br>当 $x=0$ 时,函数是否连续?</div><p><strong>解</strong>: $\displaystyle\lim\limits_{x \to 0^-} f(x) = 84$, $\displaystyle\lim\limits_{x \to 0^+} f(x) = 420$</p><p>左右极限不相等, 所以函数在 $x=0$ 处不连续。</p>`,
                 animation: "ice_melting"
             },
             {
                 title: "间断点",
-                content: `<h3>2.4.2 函数的间断点</h3><p>函数不连续的点称为<strong>间断点</strong>。有三种情形：(1)在 $x_0$ 无定义；(2)在 $x_0$ 无极限；(3)极限不等于函数值。</p>`,
+                content: html`<h3>2.4.2 函数的间断点</h3><p>函数不连续的点称为<strong>间断点</strong>。有三种情形：(1)在 $x_0$ 无定义；(2)在 $x_0$ 无极限；(3)极限不等于函数值。</p>`,
                 animation: "discontinuity"
             },
             {
                 title: "第一类间断点",
-                content: `<h4>第一类间断点 (左右极限都存在)</h4><div class="definition"><strong>可去间断点</strong>：就像路上的一个<strong>小坑</strong>。左右极限相等, 但该点无定义或函数值不等于极限值。</div><div class="theorem"><strong>跳跃间断点</strong>：就像路上的一个<strong>台阶</strong>。左右极限存在但不相等。</div>`,
+                content: html`<h4>第一类间断点 (左右极限都存在)</h4><div class="definition"><strong>可去间断点</strong>：就像路上的一个<strong>小坑</strong>。左右极限相等, 但该点无定义或函数值不等于极限值。</div><div class="theorem"><strong>跳跃间断点</strong>：就像路上的一个<strong>台阶</strong>。左右极限存在但不相等。</div>`,
                 animation: "first_discontinuity"
             },
             {
                 title: "第二类间断点",
-                content: `<h4>第二类间断点 (至少一个极限不存在)</h4><div class="definition"><strong>无穷间断点</strong>：就像一个<strong>无底深渊</strong>。极限为无穷大, 如 $y = \\tan x$ 在 $x = \\frac{\\pi}{2}$ 处。</div><div class="theorem"><strong>震荡间断点</strong>：就像一个<strong>地震带</strong>。函数在某点附近无限次震荡, 如 $y = \\sin \\frac{1}{x}$ 在 $x=0$ 处。</div>`,
+                content: html`<h4>第二类间断点 (至少一个极限不存在)</h4><div class="definition"><strong>无穷间断点</strong>：就像一个<strong>无底深渊</strong>。极限为无穷大, 如 $y = \tan x$ 在 $x = \frac{\pi}{2}$ 处。</div><div class="theorem"><strong>震荡间断点</strong>：就像一个<strong>地震带</strong>。函数在某点附近无限次震荡, 如 $y = \sin \frac{1}{x}$ 在 $x=0$ 处。</div>`,
                 animation: "second_discontinuity"
             },
             {
                 title: "初等函数的连续性",
-                content: `<h3>2.4.3 初等函数的连续性</h3><div class="theorem"><strong>定理3</strong> 一切初等函数在其定义区间内都是连续的。</div><div class="note">这意味着对于多项式、指数、对数、三角函数等，我们只需在定义域的分界点、或可能导致分母为0的点检查连续性。</div>`,
+                content: html`<h3>2.4.3 初等函数的连续性</h3><div class="theorem"><strong>定理3</strong> 一切初等函数在其定义区间内都是连续的。</div><div class="note">这意味着对于多项式、指数、对数、三角函数等，我们只需在定义域的分界点、或可能导致分母为0的点检查连续性。</div>`,
                 animation: "elementary_continuity"
             },
             {
                 title: "练习题1",
-                content: `<div class="example"><strong>练习1</strong> 若 $\displaystyle\lim\limits_{x \to -1} \frac{x^3+ax^2-x+4}{x+1} = b$, 求a, b.</div><p><strong>解</strong>: 分母 $\to 0$ 且极限存在 $\implies$ 分子 $\to 0$。<br>$(-1)^3 + a(-1)^2 - (-1) + 4 = 0 \implies a = -4$</p><p>代入后约去零因子 $(x+1)$, 得 $b = \displaystyle\lim\limits_{x \to -1} (x^2-5x+4) = 10$</p>`,
+                content: html`<div class="example"><strong>练习1</strong> 若 $\displaystyle\lim\limits_{x \to -1} \frac{x^3+ax^2-x+4}{x+1} = b$, 求a, b.</div><p><strong>解</strong>: 分母 $\to 0$ 且极限存在 $\implies$ 分子 $\to 0$。<br>$(-1)^3 + a(-1)^2 - (-1) + 4 = 0 \implies a = -4$</p><p>代入后约去零因子 $(x+1)$, 得 $b = \displaystyle\lim\limits_{x \to -1} (x^2-5x+4) = 10$</p>`,
                 animation: "exercise1"
             },
             {
                 title: "练习题2",
-                content: `<div class="example"><strong>练习2</strong> 求 $\displaystyle\lim\limits_{x \to 0} \frac{\sqrt{1+x}-\sqrt{1-x}}{\sin 3x}$</div><p><strong>解</strong>: 分子有理化并用等价无穷小替换 $\sin 3x \sim 3x$</p><p>$\displaystyle\lim\limits_{x \to 0} \frac{(1+x)-(1-x)}{3x(\sqrt{1+x}+\sqrt{1-x})} = \lim\limits_{x \to 0} \frac{2x}{3x(\sqrt{1+x}+\sqrt{1-x})} = \frac{2}{3(2)} = \frac{1}{3}$</p>`,
+                content: html`<div class="example"><strong>练习2</strong> 求 $\displaystyle\lim\limits_{x \to 0} \frac{\sqrt{1+x}-\sqrt{1-x}}{\sin 3x}$</div><p><strong>解</strong>: 分子有理化并用等价无穷小替换 $\sin 3x \sim 3x$</p><p>$\displaystyle\lim\limits_{x \to 0} \frac{(1+x)-(1-x)}{3x(\sqrt{1+x}+\sqrt{1-x})} = \lim\limits_{x \to 0} \frac{2x}{3x(\sqrt{1+x}+\sqrt{1-x})} = \frac{2}{3(2)} = \frac{1}{3}$</p>`,
                 animation: "exercise2"
             },
             {
                 title: "总结",
-                content: `<h2>本章总结</h2><h3>核心概念</h3><ul><li><strong>极限</strong>：函数变化的"目标值"</li><li><strong>连续</strong>：没有"跳跃"的函数</li><li><strong>无穷小</strong>：趋向于0的变量</li><li><strong>两个重要极限</strong>：微积分的基石</li></ul>`,
+                content: html`<h2>本章总结</h2><h3>核心概念</h3><ul><li><strong>极限</strong>：函数变化的"目标值"</li><li><strong>连续</strong>：没有"跳跃"的函数</li><li><strong>无穷小</strong>：趋向于0的变量</li><li><strong>两个重要极限</strong>：微积分的基石</li></ul>`,
                 animation: "summary"
             }
         ];
