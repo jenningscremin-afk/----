@@ -983,7 +983,7 @@
                   </div>
                   <div class="step-item" data-step="3">
                     <h4>解析</h4>
-                    <p>$\lim\limits_{n\to\infty}\frac{n}{n+1}=1$，无限接近但不等于 1。</p>
+                    <p>$\displaystyle\lim_{n\to\infty}\frac{n}{n+1}=1$，无限接近但不等于 1。</p>
                   </div>
                 </div>
                 <div class="canvas-wrapper">
@@ -1033,7 +1033,7 @@
                   </div>
                   <div class="step-item" data-step="3">
                     <h4>解析</h4>
-                    <p>$\lim\limits_{n\to\infty} x_n = 0$，收敛到 0（符号交替但幅度衰减）。</p>
+                    <p>$\displaystyle\lim_{n\to\infty} x_n = 0$，收敛到 0（符号交替但幅度衰减）。</p>
                   </div>
                 </div>
                 <div class="canvas-wrapper">
@@ -1058,7 +1058,7 @@
                   </div>
                   <div class="step-item" data-step="3">
                     <h4>解析</h4>
-                    <p>$\lim\limits_{n\to\infty} 8 = 8$，常数列的极限即该常数。</p>
+                    <p>$\displaystyle\lim_{n\to\infty} 8 = 8$，常数列的极限即该常数。</p>
                   </div>
                 </div>
                 <div class="canvas-wrapper">
@@ -1496,51 +1496,78 @@
             });
         }
 
-        const queueMathTypeset = (() => {
-            let chain = Promise.resolve();
-            return function(rootElements) {
-                if (!window.MathJax || !window.MathJax.typesetPromise) {
-                    return Promise.resolve();
-                }
+        const typesetQueue = [];
+        let isTypesetting = false;
 
-                let elements;
-                if (Array.isArray(rootElements)) {
-                    elements = rootElements;
-                } else if (rootElements && typeof rootElements.length === 'number' && typeof rootElements !== 'string') {
-                    elements = Array.from(rootElements);
-                } else if (rootElements) {
-                    elements = [rootElements];
-                }
-
-                chain = chain.then(() => {
-                    if (!window.MathJax || !window.MathJax.typesetPromise) {
-                        return true;
-                    }
-                    const promise = (elements && elements.length > 0)
-                        ? window.MathJax.typesetPromise(elements)
-                        : window.MathJax.typesetPromise();
-                    return promise.then(() => true);
-                }).catch((err) => {
-                    console.error('MathJax typeset error:', err);
-                    return false;
-                });
-
-                return chain;
-            };
-        })();
-
-        function resetMathJaxState() {
-            if (!window.MathJax) {
+        async function processTypesetQueue() {
+            if (isTypesetting) {
                 return;
             }
-            if (typeof window.MathJax.texReset === 'function') {
-                window.MathJax.texReset();
+
+            if (!typesetQueue.length) {
+                return;
             }
-            if (typeof window.MathJax.typesetClear === 'function') {
-                window.MathJax.typesetClear();
-            } else if (window.MathJax.startup && window.MathJax.startup.document && typeof window.MathJax.startup.document.state === 'function') {
-                window.MathJax.startup.document.state(0);
+
+            isTypesetting = true;
+
+            try {
+                const mj = await waitForMathJaxReady();
+                if (!mj || !mj.typesetPromise) {
+                    typesetQueue.length = 0;
+                    return;
+                }
+
+                if (mj.startup && mj.startup.promise) {
+                    try {
+                        await mj.startup.promise;
+                    } catch (err) {
+                        console.warn('MathJax startup promise rejected:', err);
+                    }
+                }
+
+                while (typesetQueue.length) {
+                    const { elements, resolve } = typesetQueue.shift();
+                    try {
+                        await mj.typesetPromise(elements);
+                    } catch (err) {
+                        console.error('MathJax typeset error:', err);
+                    } finally {
+                        if (typeof resolve === 'function') {
+                            resolve();
+                        }
+                    }
+                }
+            } finally {
+                isTypesetting = false;
+                if (typesetQueue.length) {
+                    processTypesetQueue();
+                }
             }
+        }
+
+        function queueTypeset(target) {
+            if (!target) {
+                return Promise.resolve();
+            }
+
+            let elements;
+            if (Array.isArray(target)) {
+                elements = target;
+            } else if (target && typeof target.length === 'number' && typeof target !== 'string') {
+                elements = Array.from(target);
+            } else {
+                elements = [target];
+            }
+
+            return new Promise((resolve) => {
+                if (!elements.length) {
+                    resolve();
+                    return;
+                }
+
+                typesetQueue.push({ elements, resolve });
+                processTypesetQueue();
+            });
         }
 
         // 初始化并创建所有幻灯片
@@ -1609,8 +1636,7 @@
                 return Promise.resolve();
             }
 
-            resetMathJaxState();
-            return queueMathTypeset(targetSlide).then(() => {
+            return queueTypeset(targetSlide).then(() => {
                 afterTypeset();
             }).catch((err) => {
                 console.error('MathJax typeset error:', err);
@@ -2918,10 +2944,8 @@
 
                 // Re-render MathJax for new content
                 if (window.MathJax && window.MathJax.typesetPromise) {
-                    queueMathTypeset(targetStep).then((success) => {
-                        if (!success) {
-                            console.warn('步骤内容的公式渲染未成功');
-                        }
+                    queueTypeset(targetStep).catch((err) => {
+                        console.warn('步骤内容的公式渲染未成功', err);
                     });
                 }
 
@@ -3259,7 +3283,7 @@
                 return new Promise((resolve) => {
                     __mj_timer = setTimeout(() => {
                         try {
-                            queueMathTypeset(rootElements).then((success) => resolve(success));
+                            queueTypeset(rootElements).then(() => resolve(true)).catch(() => resolve(false));
                         } catch (e) {
                             resolve();
                         }
@@ -3290,16 +3314,12 @@
         function forceRerenderMath() {
             console.log('开始强制重新渲染公式...');
             if (window.MathJax && window.MathJax.typesetPromise) {
-                resetMathJaxState();
-
-                queueMathTypeset().then((success) => {
-                    if (success) {
-                        console.log('强制重新渲染完成');
-                        alert('公式重新渲染完成！');
-                    } else {
-                        console.log('强制重新渲染过程中出现错误');
-                        alert('重新渲染失败，请检查控制台错误信息');
-                    }
+                queueTypeset(document.querySelectorAll('.tex2jax_process')).then(() => {
+                    console.log('强制重新渲染完成');
+                    alert('公式重新渲染完成！');
+                }).catch((err) => {
+                    console.log('强制重新渲染过程中出现错误', err);
+                    alert('重新渲染失败，请检查控制台错误信息');
                 });
             } else {
                 alert('MathJax未加载，请刷新页面');
