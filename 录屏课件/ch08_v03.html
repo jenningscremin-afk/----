@@ -320,6 +320,36 @@
             if (type === 'recording') indicator.classList.add('recording');
         }
 
+        const READING_SPEED = 3.7;
+
+        function estimateSpeechDuration(text) {
+            if (!text) return 0;
+            const normalized = text
+                .replace(/[，。、？！,.!?；;：:]/g, ' ')
+                .replace(/\s+/g, ' ')
+                .trim();
+            const characterCount = normalized.replace(/\s+/g, '').length;
+            const formulaMatches = text.match(/\$[^$]+\$/g) || [];
+            const baseDuration = Math.ceil(characterCount / READING_SPEED) * 1000;
+            const formulaBuffer = formulaMatches.length * 2000;
+            return baseDuration + formulaBuffer + 1500;
+        }
+
+        function calculateSlideWait(slide) {
+            const scripted = slideDurations[slide] || 18000;
+            const narration = subtitleScript[slide] || '';
+            const estimated = estimateSpeechDuration(narration);
+            return Math.max(scripted, estimated);
+        }
+
+        function enterRecordingMode() {
+            document.body.classList.add('recording-mode');
+        }
+
+        function exitRecordingMode() {
+            document.body.classList.remove('recording-mode');
+        }
+
         function waitForSDK() {
             return new Promise((resolve, reject) => {
                 if (typeof AvatarPlatform !== 'undefined') {
@@ -416,22 +446,33 @@
                 isAutoPlaying = false;
                 autoBtn.textContent = '🎬 自动播放';
                 autoBtn.classList.remove('stop');
+                exitRecordingMode();
                 updateStatus('自动播放已停止');
                 return;
             }
             isAutoPlaying = true;
             autoBtn.textContent = '⏹️ 停止播放';
             autoBtn.classList.add('stop');
-            updateStatus('🎬 自动播放开始！', 'recording');
+            updateStatus('🎬 自动播放将在 3 秒后开始，请准备录屏！', 'recording');
+            await new Promise(resolve => setTimeout(resolve, 3000));
+            if (!isAutoPlaying) {
+                autoBtn.textContent = '🎬 自动播放';
+                autoBtn.classList.remove('stop');
+                updateStatus('自动播放已取消');
+                return;
+            }
+
+            enterRecordingMode();
 
             for (let slide = 1; slide <= totalSlides; slide++) {
                 if (!isAutoPlaying) break;
                 showSlide(slide - 1);
                 speakContent(slide);
-                const duration = slideDurations[slide] || 18000;
+                const duration = calculateSlideWait(slide);
                 await new Promise(resolve => setTimeout(resolve, duration));
             }
 
+            exitRecordingMode();
             isAutoPlaying = false;
             autoBtn.textContent = '🎬 自动播放';
             autoBtn.classList.remove('stop');
@@ -444,6 +485,7 @@
                 const autoBtn = document.getElementById('autoPlayBtn');
                 autoBtn.textContent = '🎬 自动播放';
                 autoBtn.classList.remove('stop');
+                exitRecordingMode();
                 showSlide(index);
                 speakContent(index + 1);
             });
@@ -459,6 +501,13 @@
             } else if (event.key === 'Enter') {
                 event.preventDefault();
                 speakContent(currentSlide + 1);
+            } else if ((event.key === 'r' || event.key === 'R') && event.shiftKey) {
+                event.preventDefault();
+                if (document.body.classList.contains('recording-mode')) {
+                    exitRecordingMode();
+                } else {
+                    enterRecordingMode();
+                }
             }
         });
 

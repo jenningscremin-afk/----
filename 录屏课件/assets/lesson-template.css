@@ -303,6 +303,53 @@ body.blackboard {
 .status-indicator.connecting { background: rgba(251, 191, 36, 0.85); }
 .status-indicator.recording { background: rgba(59, 130, 246, 0.85); }
 
+body.recording-mode {
+    --topbar-height: 0px;
+}
+
+.recording-mode .lesson-topbar,
+.recording-mode .lesson-timeline,
+.recording-mode .timeline-item,
+.recording-mode .slide-meta,
+.recording-mode .narration-pane,
+.recording-mode .control-bar,
+.recording-mode .status-indicator {
+    display: none !important;
+}
+
+.recording-mode .slide-container {
+    height: 100vh;
+    margin-top: 0;
+}
+
+.recording-mode .slide {
+    padding: min(5vh, 56px) min(6vw, 96px);
+}
+
+.recording-mode .slide-content {
+    width: min(1500px, 92vw);
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas: 'board animation';
+    gap: 2.5rem;
+}
+
+.recording-mode .board-pane,
+.recording-mode .animation-pane {
+    display: flex;
+    flex-direction: column;
+}
+
+.recording-mode .panel {
+    background: rgba(15, 23, 42, 0.78);
+    border-radius: 20px;
+    box-shadow: 0 12px 30px rgba(2, 6, 23, 0.4);
+}
+
+.recording-mode .subtitle-area {
+    background: rgba(2, 6, 23, 0.6);
+    border-color: rgba(148, 163, 184, 0.25);
+}
+
 @media (max-width: 1280px) {
     .lesson-topbar { padding: 1.25rem 1.5rem; gap: 1.5rem; }
     .slide-content {
