@@ -26,10 +26,14 @@
             }
         },
         startup: {
+            // This prevents MathJax from running automatically on page load.
+            // We will call it manually after our slides are created.
             ready: () => {
-                console.log('MathJax is ready');
+                console.log('MathJax is ready, but we will render manually.');
                 MathJax.startup.defaultReady();
-            }
+            },
+            // Add this line to ensure the initial typeset is fully disabled
+            pageReady: () => {}
         }
     };
     </script>
@@ -1515,6 +1519,11 @@
             // 获取目标幻灯片
             const targetSlide = slides[currentSlide - 1];
             targetSlide.classList.add('active');
+            
+            // 重新渲染当前幻灯片的公式
+            if (window.MathJax && window.MathJax.typesetPromise) {
+                window.MathJax.typesetPromise([targetSlide]).catch((err) => console.log('MathJax typeset error:', err));
+            }
             
             // 更新页码显示
             document.getElementById('slideNumber').textContent = `${currentSlide} / ${totalSlides}`;
@@ -3214,20 +3223,19 @@
                     // 强制重新渲染所有公式
                     setTimeout(() => {
                         if (window.MathJax && window.MathJax.typesetPromise) {
-                            // 清理所有旧的MathJax渲染
-                            const oldMath = document.querySelectorAll('mjx-container, .MathJax');
-                            oldMath.forEach(el => el.remove());
-                            
-                            // 重新渲染
+                            if (typeof window.MathJax.texReset === 'function') {
+                                window.MathJax.texReset();
+                            }
+                            if (typeof window.MathJax.typesetClear === 'function') {
+                                window.MathJax.typesetClear();
+                            } else if (window.MathJax.startup && window.MathJax.startup.document && typeof window.MathJax.startup.document.state === 'function') {
+                                window.MathJax.startup.document.state(0);
+                            }
+
                             window.MathJax.typesetPromise().then(() => {
                                 console.log('所有公式渲染完成');
                             }).catch(err => {
                                 console.log('公式渲染错误:', err);
-                                // 如果失败，尝试重新加载MathJax
-                                if (window.MathJax && window.MathJax.startup) {
-                                    window.MathJax.startup.document.state(0);
-                                    window.MathJax.typesetPromise();
-                                }
                             });
                         }
                     }, 2000);
@@ -3259,11 +3267,15 @@
         function forceRerenderMath() {
             console.log('开始强制重新渲染公式...');
             if (window.MathJax && window.MathJax.typesetPromise) {
-                // 清理所有旧的MathJax渲染
-                const oldMath = document.querySelectorAll('mjx-container, .MathJax');
-                oldMath.forEach(el => el.remove());
-                
-                // 重新渲染
+                if (typeof window.MathJax.texReset === 'function') {
+                    window.MathJax.texReset();
+                }
+                if (typeof window.MathJax.typesetClear === 'function') {
+                    window.MathJax.typesetClear();
+                } else if (window.MathJax.startup && window.MathJax.startup.document && typeof window.MathJax.startup.document.state === 'function') {
+                    window.MathJax.startup.document.state(0);
+                }
+
                 window.MathJax.typesetPromise().then(() => {
                     console.log('强制重新渲染完成');
                     alert('公式重新渲染完成！');
