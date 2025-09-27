@@ -1,7 +1,7 @@
 ﻿from __future__ import annotations
 
 import json
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Dict, Iterable, List, Optional, Tuple
 
@@ -46,7 +46,7 @@ class GroupConfig:
 class SystemConfig:
     request_timeout: float = 30.0
     max_retries: int = 6
-    retry_backoff: RetryBackoff = RetryBackoff()
+    retry_backoff: RetryBackoff = field(default_factory=RetryBackoff)
     cooldown_seconds: float = 8.0
     rate_limit_cooldown: float = 60.0
     hard_block_seconds: float = 900.0
