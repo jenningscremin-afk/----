@@ -1,11 +1,12 @@
 <!DOCTYPE html>
+
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>无穷级数 (交互式课件)</title>
-    <script src="../common-assets/js/d3-7.8.5.min.js"></script>
-    <script>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>无穷级数 (交互式课件)</title>
+<script src="../common-assets/js/d3-7.8.5.min.js"></script>
+<script>
         window.MathJax = {
             tex: {
                 inlineMath: [['$', '$'], ['\\(', '\\)']],
@@ -25,7 +26,7 @@
             }
         };
     </script>
-      <script>
+<script>
         window.MathJax = {
             tex: {
                 inlineMath: [['$', '$'], ['\\(', '\\)']],
@@ -45,623 +46,160 @@
             }
         };
     </script>
-    <script type="text/javascript" id="MathJax-script" async
-            src="../common-assets/js/mathjax-3.2.2-tex-svg.min.js">
-    </script>
-
-    <style>
-        @import url('../common-assets/css/google-fonts.css');
-
+<script async="" id="MathJax-script" src="../common-assets/js/mathjax-3.2.2-tex-svg.min.js" type="text/javascript">
+</script>
+<style>
         :root {
-            --chalkboard-bg: transparent;
-            --chalk-text: #ecf0f1;
-            --visualization-bg: #fdfdfd00;
-            --primary-color: #3498db;
-            --accent-color: #e67e22;
-            --success-color: #2ecc71;
-            --danger-color: #e74c3c;
-            --warning-color: #f39c12;
-            --info-color: #9b59b6;
-            --text-color: #34495e;
-            --series-color: #16a085;
-            --convergent-color: #27ae60;
-            --divergent-color: #e74c3c;
-            --heading-font: 'Noto Serif SC', serif;
-            --handwriting-font: 'Noto Serif SC', serif;
+            --page-bg: #f0f4f8;
+            --card-bg: #ffffff;
+            --text-color: #1f2937;
+            --primary-color: #2563eb;
+            --accent-color: #f97316;
+            --muted-color: #64748b;
+            --axis-color: #475569;
+            --border-color: #e2e8f0;
+            --code-bg: #f8fafc;
         }
 
-        body {
-            font-family: var(--heading-font);
-            background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="chalkboard" x="0" y="0" width="4" height="4" patternUnits="userSpaceOnUse"><rect x="0" y="0" width="4" height="4" fill="%23234832"/><circle cx="2" cy="2" r="0.3" fill="%23345a42" opacity="0.3"/></pattern></defs><rect width="100%" height="100%" fill="url(%23chalkboard)"/></svg>');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            overflow: auto;
-            height: 100vh;
-            width: 100vw;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+        * {
             margin: 0;
-        }
-
-        #presentation-container {
-            width: 100vw;
-            height: 100vh;
-            max-width: 100vw;
-            aspect-ratio: 16 / 9;
-            position: relative;
-            background: rgba(255, 255, 255, 0);
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
-            border-radius: 8px;
-            overflow: auto;
-        }
-
-        .slide {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            opacity: 0;
-            visibility: hidden;
-            display: flex;
-            transition: opacity 0.6s ease-in-out;
-            background-color: var(--visualization-bg);
-        }
-
-        .slide.active {
-            opacity: 1;
-            visibility: visible;
-            z-index: 10;
-        }
-
-        .chalkboard {
-            flex: 0 0 35%;
-            background-color: transparent !important;
-            background: transparent !important;
-            color: var(--chalk-text);
-            padding: 30px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            border-right: 5px solid #bdc3c7;
-            overflow-y: auto;
+            padding: 0;
             box-sizing: border-box;
         }
 
-        .chalkboard h2 {
-            font-family: var(--handwriting-font);
-            font-size: 2.8rem;
-            color: #f1c40f;
-            border-bottom: 2px solid rgba(241, 196, 15, 0.5);
-            padding-bottom: 10px;
-            margin-bottom: 20px;
-        }
-
-        .chalkboard h3 {
-            font-family: var(--handwriting-font);
-            font-size: 1.8rem;
-            color: var(--primary-color);
-            margin-top: 20px;
-            margin-bottom: 10px;
-        }
-
-        .chalkboard p, .chalkboard li {
-            font-size: 1.1rem;
-            line-height: 1.7;
-            margin-bottom: 15px;
-        }
-
-        .chalkboard ol {
-            padding-left: 25px;
-        }
-
-        .chalkboard ul {
-            list-style-type: '→ ';
-            padding-left: 20px;
-        }
-
-        .math-formula {
-            font-size: 1.3rem;
-            color: #1abc9c;
-            background: rgba(0,0,0,0.2);
-            padding: 15px;
-            border-radius: 5px;
-            text-align: center;
-            margin: 15px 0;
-            line-height: 1.5;
-        }
-
-        .highlight {
-            color: var(--warning-color);
-            font-weight: bold;
-        }
-
-        .convergent {
-            color: var(--convergent-color);
-            font-weight: bold;
-        }
-
-        .divergent {
-            color: var(--divergent-color);
-            font-weight: bold;
-        }
-
-        .visualization {
-            flex: 1;
-            padding: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: auto;
-            background: linear-gradient(135deg, #f5f7fa 10%, #c3cfe2 100%);
-            position: relative;
-            box-sizing: border-box;
-        }
-
-        .visualization.full-width {
-            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
-        }
-
-        .visualization.white-bg {
-            background: white;
-        }
-
-        .visualization.series-bg {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        }
-
-        .vis-container {
-            width: 100%;
+        html, body {
             height: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .vis-title {
-            font-size: 1.2rem;
-            font-weight: bold;
-            color: var(--text-color);
-            margin-bottom: 10px;
-        }
-
-        .formula-rule {
-            font-size: 1.2rem;
-            color: #16a085;
-            background: rgba(0,0,0,0.15);
-            padding: 12px;
-            border-radius: 5px;
-            margin: 10px 0;
-        }
-
-        .page-indicator {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: rgba(0,0,0,0.8);
-            color: white;
-            padding: 8px 15px;
-            border-radius: 20px;
-            font-size: 14px;
-            z-index: 100;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .nav-buttons {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            display: flex;
-            gap: 8px;
-            z-index: 100;
-        }
-
-        .nav-btn {
-            background: rgba(0, 0, 0, 0.6);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            color: white;
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            backdrop-filter: blur(10px);
-            user-select: none;
-            min-width: 40px;
-            text-align: center;
-        }
-
-        .nav-btn:hover {
-            background: rgba(0, 0, 0, 0.8);
-            border-color: rgba(255, 255, 255, 0.6);
-            transform: translateY(-1px);
-        }
-
-        .nav-btn:active {
-            transform: translateY(0);
-            background: rgba(0, 0, 0, 0.9);
-        }
-
-        .nav-btn:disabled {
-            opacity: 0.4;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        /* 级数动画样式 */
-        .series-term {
-            opacity: 0;
-            transform: translateY(20px);
-            transition: all 0.5s ease;
-        }
-
-        .series-term.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .series-sum-display {
-            background: rgba(255, 255, 255, 0.9);
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            margin: 20px;
-            font-family: 'Monaco', monospace;
-        }
-
-        .partial-sum {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: var(--series-color);
-        }
-
-        .convergence-indicator {
-            padding: 10px 15px;
-            border-radius: 8px;
-            font-weight: bold;
-            text-align: center;
-            margin: 10px 0;
-        }
-
-        .convergent-indicator {
-            background: rgba(39, 174, 96, 0.2);
-            color: var(--convergent-color);
-            border: 2px solid var(--convergent-color);
-        }
-
-        .divergent-indicator {
-            background: rgba(231, 76, 60, 0.2);
-            color: var(--divergent-color);
-            border: 2px solid var(--divergent-color);
-        }
-
-        /* 几何级数可视化样式 */
-        .geometric-blocks {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: flex-end;
-            justify-content: center;
-            gap: 5px;
-            margin: 20px 0;
-        }
-
-        .geometric-block {
-            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-            border-radius: 4px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: bold;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-        }
-
-        /* 交错级数样式 */
-        .alternating-term {
-            display: inline-block;
-            padding: 8px 12px;
-            margin: 2px;
-            border-radius: 6px;
-            font-weight: bold;
-            transition: all 0.3s ease;
-        }
-
-        .positive-term {
-            background: rgba(39, 174, 96, 0.8);
-            color: white;
-        }
-
-        .negative-term {
-            background: rgba(231, 76, 60, 0.8);
-            color: white;
-        }
-
-        /* 控制面板样式 */
-        .control-panel {
-            position: absolute;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(255, 255, 255, 0.95);
-            padding: 15px 20px;
-            border-radius: 25px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-            display: none;
-            align-items: center;
-            gap: 15px;
-            z-index: 100;
-        }
-
-        .control-panel.active {
-            display: flex;
-        }
-
-        .control-btn {
-            background: var(--primary-color);
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 14px;
-            transition: all 0.3s ease;
-        }
-
-        .control-btn:hover {
-            background: var(--accent-color);
-            transform: translateY(-2px);
-        }
-
-        /* 动画关键帧 */
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes pulse {
-            0%, 100% {
-                transform: scale(1);
-            }
-            50% {
-                transform: scale(1.05);
-            }
-        }
-
-        @keyframes convergenceGlow {
-            0%, 100% {
-                box-shadow: 0 0 5px var(--convergent-color);
-            }
-            50% {
-                box-shadow: 0 0 20px var(--convergent-color);
-            }
-        }
-
-        .converging-animation {
-            animation: convergenceGlow 2s infinite;
-        }
-
-        /* 数学公式增强样式 */
-        .math-highlight {
-            background: linear-gradient(45deg, rgba(52, 152, 219, 0.2), rgba(155, 89, 182, 0.2));
-            padding: 20px;
-            border-radius: 10px;
-            border-left: 4px solid var(--primary-color);
-            margin: 20px 0;
-        }
-
-        /* 响应式设计 */
-        @media (max-width: 768px) {
-            .chalkboard {
-                flex: 0 0 40%;
-                font-size: 0.9rem;
-            }
-            
-            .chalkboard h2 {
-                font-size: 2.2rem;
-            }
-            
-            .chalkboard h3 {
-                font-size: 1.5rem;
-            }
-        }
-    
-        /* === 统一章节样式为第二章风格 === */
-        :root {
-            --heading-font: 'Microsoft YaHei', 'Segoe UI', sans-serif;
-            --handwriting-font: 'Microsoft YaHei', 'Segoe UI', sans-serif;
-            --text-color: #34495e;
         }
 
         body {
-            font-family: var(--heading-font);
-            background: #f0f2f5;
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            overflow: hidden;
-            margin: 0;
+            font-family: 'Microsoft YaHei', 'Segoe UI', sans-serif;
+            background: var(--page-bg);
             color: var(--text-color);
-            min-height: 100vh;
-            height: auto;
-            width: auto;
-            display: block;
-        }
-
-        body::before {
-            display: none;
-        }
-
-        #presentation-container {
-            width: 100%;
-            height: 100vh;
-            max-width: 100vw;
-            position: relative;
-            background: #ffffff;
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
-            border-radius: 0;
             overflow: hidden;
         }
 
         .slide {
-            width: 100%;
-            height: 100%;
             display: none;
-            opacity: 0;
-            visibility: hidden;
-            align-items: stretch;
-            transition: opacity 0.6s ease-in-out;
-        }
-
-        .slide.active {
-            display: flex;
-            opacity: 1;
-            visibility: visible;
             animation: fadeIn 0.6s ease-in-out;
         }
 
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(15px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        .slide.active {
+            display: block;
         }
 
-        .chalkboard {
-            width: 50%;
-            height: 100%;
-            background: #ffffff;
-            color: #333333;
-            padding: 40px 50px;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-start;
-            overflow-y: auto;
-            box-sizing: border-box;
-            line-height: 1.9;
-            font-size: 17px;
-            border-right: 1px solid #e0e0e0;
-            box-shadow: none;
-        }
-
-        .slide > .chalkboard:only-child {
+        .slide-container {
             width: 100%;
+            height: 100vh;
+            display: flex;
+            position: relative;
+        }
+
+        .slide-container.single-column {
+            justify-content: center;
+        }
+
+        .left-content {
+            width: 50%;
+            height: 100vh;
+            padding: 48px 56px;
+            background: var(--card-bg);
+            overflow-y: auto;
+            font-size: 17px;
+            line-height: 1.9;
+            color: var(--text-color);
+            border-right: 1px solid var(--border-color);
+        }
+
+        .slide-container.single-column .left-content {
+            width: 100%;
+            max-width: 960px;
             border-right: none;
         }
 
-        .chalkboard h2 {
-            font-size: 28px;
-            color: #1a1a2e;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 4px solid #4a90e2;
-            font-family: var(--heading-font);
-            text-shadow: none;
+        .left-content h2 {
+            font-size: 2.4rem;
+            margin-bottom: 1.2rem;
+            color: var(--primary-color);
         }
 
-        .chalkboard h3 {
-            font-size: 24px;
-            color: #34495e;
-            margin: 25px 0 10px;
-            font-family: var(--heading-font);
-            text-shadow: none;
+        .left-content h3 {
+            font-size: 1.6rem;
+            margin: 1.2rem 0 0.6rem;
+            color: var(--axis-color);
         }
 
-        .chalkboard h4 {
-            font-size: 20px;
-            color: #555555;
-            margin: 20px 0 10px;
+        .left-content p {
+            margin-bottom: 1rem;
         }
 
-        .chalkboard p, .chalkboard li {
-            font-size: 17px;
-            line-height: 1.9;
-            margin-bottom: 12px;
-            text-shadow: none;
+        .left-content ul,
+        .left-content ol {
+            margin: 1rem 0 1rem 1.25rem;
         }
 
-        .chalkboard ul {
-            padding-left: 24px;
-            list-style-type: disc;
-        }
-
-        .chalkboard ol {
-            padding-left: 24px;
+        .left-content li {
+            margin-bottom: 0.6rem;
         }
 
         .math-formula {
-            background: #f8f9fa;
-            padding: 20px;
-            margin: 20px 0;
-            text-align: center;
-            border-radius: 8px;
-            border: 1px solid #e0e0e0;
-            font-size: 1.2rem;
-            line-height: 1.6;
-            color: #2c3e50;
-            box-shadow: none;
+            background: var(--code-bg);
+            border-left: 4px solid var(--primary-color);
+            padding: 14px 18px;
+            margin: 1.2rem 0;
+            border-radius: 10px;
+            font-size: 1.05rem;
         }
 
         .highlight {
-            color: #d35400;
-            font-weight: bold;
-            text-shadow: none;
+            color: var(--primary-color);
+            font-weight: 600;
         }
 
-        .visualization {
+        .right-visual {
             width: 50%;
-            height: 100%;
-            background: #fdfdfd;
+            height: 100vh;
+            background: var(--code-bg);
             display: flex;
             align-items: center;
             justify-content: center;
-            border-left: 1px solid #e0e0e0;
-            position: relative;
-            padding: 30px;
-            box-sizing: border-box;
-            overflow: hidden;
-            box-shadow: none;
+            border-left: 1px solid var(--border-color);
+            padding: 32px;
         }
 
-        .slide > .visualization:only-child {
-            width: 100%;
-            border-left: none;
+        .slide-container.single-column .right-visual {
+            display: none;
         }
 
-        .visualization.full-width,
-        .visualization.white-bg,
-        .visualization.full-width.white-bg,
-        .visualization.fullscreen {
+        .right-visual > div {
             width: 100%;
             height: 100%;
-            border-left: none;
-            background: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--card-bg);
+            border-radius: 24px;
+            box-shadow: 0 24px 60px rgba(15, 23, 42, 0.12);
+            padding: 24px;
         }
 
-        .visualization canvas {
-            max-width: 90%;
-            max-height: 90%;
+        .right-visual > div > * {
+            width: 100%;
+            height: 100%;
         }
 
-        .visualization svg {
-            max-width: 95%;
-            max-height: 95%;
+        .right-visual canvas,
+        .right-visual svg {
+            max-width: 100%;
+            max-height: 100%;
         }
 
-        .visualization .math-formula {
-            background: transparent;
-            border: none;
+        .right-visual svg text {
+            fill: var(--text-color);
+        }
+
+        .right-visual svg .domain,
+        .right-visual svg .tick line {
+            stroke: var(--axis-color);
         }
 
         .nav-container {
@@ -671,46 +209,101 @@
             display: flex;
             align-items: center;
             gap: 12px;
-            padding: 10px 18px;
-            background: rgba(255, 255, 255, 0.9);
-            border: 1px solid #dbe4ff;
+            padding: 12px 20px;
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid var(--border-color);
             border-radius: 999px;
-            box-shadow: 0 18px 45px rgba(15, 23, 42, 0.15);
-            backdrop-filter: blur(10px);
+            box-shadow: 0 12px 30px rgba(15, 23, 42, 0.12);
+            backdrop-filter: blur(12px);
             z-index: 1100;
         }
 
-        .nav-container .nav-btn {
+        .nav-btn {
             border: none;
-            background: #4a90e2;
+            background: var(--primary-color);
             color: #ffffff;
             padding: 8px 16px;
             border-radius: 999px;
-            font-size: 0.9rem;
+            font-size: 0.95rem;
             font-weight: 600;
             cursor: pointer;
             transition: transform 0.2s ease, box-shadow 0.2s ease;
-            box-shadow: 0 8px 16px rgba(74, 144, 226, 0.25);
         }
 
-        .nav-container .nav-btn:hover:not(:disabled) {
+        .nav-btn:hover:not(:disabled) {
             transform: translateY(-2px);
-            box-shadow: 0 12px 24px rgba(74, 144, 226, 0.35);
+            box-shadow: 0 12px 24px rgba(37, 99, 235, 0.25);
         }
 
-        .nav-container .nav-btn:disabled {
-            background: #e5edf8;
-            color: #94a3b8;
-            box-shadow: none;
+        .nav-btn:disabled {
+            background: #e2e8f0;
+            color: var(--muted-color);
             cursor: not-allowed;
+            box-shadow: none;
         }
 
         #page-indicator {
-            font-size: 0.9rem;
-            color: #1f2937;
+            font-size: 0.95rem;
+            color: var(--axis-color);
             min-width: 80px;
             text-align: center;
             font-weight: 600;
+        }
+
+        .directory-toggle {
+            border: none;
+            background: var(--card-bg);
+            color: var(--axis-color);
+            padding: 8px 12px;
+            border-radius: 10px;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(15, 23, 42, 0.08);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .directory-toggle:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 24px rgba(15, 23, 42, 0.12);
+        }
+
+        .directory-menu {
+            position: fixed;
+            bottom: 90px;
+            right: 24px;
+            width: 320px;
+            max-height: 60vh;
+            overflow-y: auto;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 18px 45px rgba(15, 23, 42, 0.18);
+            display: none;
+            z-index: 1200;
+        }
+
+        .directory-menu.active {
+            display: block;
+        }
+
+        .directory-menu h3 {
+            margin-bottom: 16px;
+            font-size: 1.1rem;
+            color: var(--axis-color);
+        }
+
+        .directory-item {
+            margin-bottom: 12px;
+            color: var(--text-color);
+            text-decoration: none;
+            display: block;
+            padding: 10px 12px;
+            border-radius: 12px;
+            transition: background 0.2s ease;
+        }
+
+        .directory-item:hover {
+            background: rgba(37, 99, 235, 0.08);
         }
 
         .global-animation-controls {
@@ -719,49 +312,82 @@
             left: 24px;
             display: flex;
             gap: 12px;
-            padding: 10px 16px;
-            background: rgba(255, 255, 255, 0.9);
-            border: 1px solid #dbe4ff;
+            padding: 12px 18px;
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid var(--border-color);
             border-radius: 999px;
-            box-shadow: 0 18px 45px rgba(15, 23, 42, 0.1);
-            backdrop-filter: blur(10px);
+            box-shadow: 0 12px 30px rgba(15, 23, 42, 0.12);
+            backdrop-filter: blur(12px);
             z-index: 1100;
         }
 
         .global-control-btn {
             background: transparent;
             border: none;
-            color: #1f2937;
+            color: var(--axis-color);
             padding: 6px 12px;
             border-radius: 999px;
             cursor: pointer;
-            font-size: 0.9rem;
+            font-size: 0.95rem;
             font-weight: 600;
-            transition: transform 0.2s ease, color 0.2s ease;
+            transition: color 0.2s ease;
         }
 
         .global-control-btn:hover {
-            color: #2563eb;
-            transform: translateY(-1px);
+            color: var(--primary-color);
         }
 
         .global-control-btn.pause {
-            color: #e74c3c;
+            color: #dc2626;
         }
 
-        .return-home-panel,
-        .home-nav-buttons,
-        #floating-menu,
-        .menu-toggle,
-        .menu-content {
-            display: none !important;
+        .slide-note {
+            font-size: 0.95rem;
+            color: var(--muted-color);
+            margin-top: 12px;
         }
 
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 1200px) {
+            .slide-container {
+                flex-direction: column;
+            }
+
+            .left-content,
+            .right-visual {
+                width: 100%;
+                height: auto;
+                min-height: 50vh;
+            }
+
+            .right-visual {
+                border-left: none;
+                border-top: 1px solid var(--border-color);
+            }
+        }
+
+        @media print {
+            body {
+                overflow: visible;
+            }
+            .slide {
+                display: block !important;
+                page-break-after: always;
+            }
+            .nav-container,
+            .global-animation-controls,
+            .directory-menu,
+            .directory-toggle {
+                display: none !important;
+            }
+        }
     </style>
-    <link rel="stylesheet" href="../common-assets/css/chapter-light-overrides.css">
-
-
-    <style>
+<link href="../common-assets/css/chapter-light-overrides.css" rel="stylesheet"/>
+<style>
         .return-home-panel {
             position: fixed;
             top: 16px;
@@ -805,422 +431,300 @@
     </style>
 </head>
 <body>
-<div id="presentation-container">
-
-    <!-- 第1页：标题页 -->
-    <div class="slide active">
-        <div class="chalkboard" style="flex: 1; text-align: center; border: none;">
-            <h2 style="font-size: 4rem; border: none;">无穷级数</h2>
-            <p style="font-size: 2rem; color: white; margin-top: 40px;">无限个数的和</p>
-            <p style="font-size: 1.5rem; color: #bdc3c7; margin-top: 30px;">探索无穷的奥秘</p>
-        </div>
-    </div>
-
-    <!-- 第2页：什么是无穷级数 -->
-    <div class="slide">
-        <div class="chalkboard">
-            <h2>什么是无穷级数</h2>
-            <p>把无限个数加起来，就叫<span class="highlight">无穷级数</span>。</p>
-            
-            <h3>例子：切蛋糕问题</h3>
-            <ul>
-                <li>第一次吃掉一半：$\frac{1}{2}$</li>
-                <li>第二次吃掉剩下的一半：$\frac{1}{4}$</li>
-                <li>第三次继续吃掉一半：$\frac{1}{8}$</li>
-                <li>继续下去...</li>
-            </ul>
-            
-            <div class="math-formula">
+<div id="slidesContainer">
+<!-- 第1页：标题页 -->
+<div class="slide active"><div class="slide-container single-column"><div class="left-content tex2jax_process">
+<h2 style="font-size: 4rem">无穷级数</h2>
+<p style="font-size: 2rem; color: var(--text-color); margin-top: 40px">无限个数的和</p>
+<p style="font-size: 1.5rem; margin-top: 30px">探索无穷的奥秘</p>
+</div></div></div>
+<!-- 第2页：什么是无穷级数 -->
+<div class="slide"><div class="slide-container"><div class="left-content tex2jax_process">
+<h2>什么是无穷级数</h2>
+<p>把无限个数加起来，就叫<span class="highlight">无穷级数</span>。</p>
+<h3>例子：切蛋糕问题</h3>
+<ul>
+<li>第一次吃掉一半：$\frac{1}{2}$</li>
+<li>第二次吃掉剩下的一半：$\frac{1}{4}$</li>
+<li>第三次继续吃掉一半：$\frac{1}{8}$</li>
+<li>继续下去...</li>
+</ul>
+<div class="math-formula">
                 $\frac{1}{2} + \frac{1}{4} + \frac{1}{8} + \frac{1}{16} + \cdots = ?$
             </div>
-            
-            <p>这样无限加下去的式子就是<span class="highlight">无穷级数</span>！</p>
-        </div>
-        <div class="visualization" id="vis-what-is-series"></div>
-    </div>
-
-    <!-- 第3页：级数的部分和 -->
-    <div class="slide">
-        <div class="chalkboard">
-            <h2>部分和</h2>
-            <p>因为不可能真的加无限个数，所以我们先加前几个，叫<span class="highlight">部分和</span>。</p>
-            
-            <h3>符号表示</h3>
-            <div class="math-formula">
+<p>这样无限加下去的式子就是<span class="highlight">无穷级数</span>！</p>
+</div><div class="right-visual"><div id="vis-what-is-series"></div></div></div></div>
+<!-- 第3页：级数的部分和 -->
+<div class="slide"><div class="slide-container"><div class="left-content tex2jax_process">
+<h2>部分和</h2>
+<p>因为不可能真的加无限个数，所以我们先加前几个，叫<span class="highlight">部分和</span>。</p>
+<h3>符号表示</h3>
+<div class="math-formula">
                 $S_n = a_1 + a_2 + a_3 + \cdots + a_n$
             </div>
-            
-            <p>$S_n$ 表示前 $n$ 项的和。</p>
-            
-            <h3>还是蛋糕例子</h3>
-            <ul>
-                <li>$S_1 = \frac{1}{2} = 0.5$</li>
-                <li>$S_2 = \frac{1}{2} + \frac{1}{4} = 0.75$</li>
-                <li>$S_3 = \frac{1}{2} + \frac{1}{4} + \frac{1}{8} = 0.875$</li>
-                <li>$S_4 = 0.9375$</li>
-            </ul>
-            
-            <p>部分和越来越接近某个数了！</p>
-        </div>
-        <div class="visualization" id="vis-partial-sums"></div>
-    </div>
-
-    <!-- 第4页：收敛与发散 -->
-    <div class="slide">
-        <div class="chalkboard">
-            <h2>收敛与发散</h2>
-            <p>当我们不断增加项数时，部分和的行为有两种：</p>
-            
-            <h3>收敛</h3>
-            <p>部分和越来越接近某个<span class="convergent">固定的数</span>。</p>
-            <p>就像蛋糕例子，部分和接近1。</p>
-            
-            <h3>发散</h3>
-            <p>部分和<span class="divergent">无限增大</span>，或者来回跳动。</p>
-            
-            <div class="math-formula">
+<p>$S_n$ 表示前 $n$ 项的和。</p>
+<h3>还是蛋糕例子</h3>
+<ul>
+<li>$S_1 = \frac{1}{2} = 0.5$</li>
+<li>$S_2 = \frac{1}{2} + \frac{1}{4} = 0.75$</li>
+<li>$S_3 = \frac{1}{2} + \frac{1}{4} + \frac{1}{8} = 0.875$</li>
+<li>$S_4 = 0.9375$</li>
+</ul>
+<p>部分和越来越接近某个数了！</p>
+</div><div class="right-visual"><div id="vis-partial-sums"></div></div></div></div>
+<!-- 第4页：收敛与发散 -->
+<div class="slide"><div class="slide-container"><div class="left-content tex2jax_process">
+<h2>收敛与发散</h2>
+<p>当我们不断增加项数时，部分和的行为有两种：</p>
+<h3>收敛</h3>
+<p>部分和越来越接近某个<span class="convergent">固定的数</span>。</p>
+<p>就像蛋糕例子，部分和接近1。</p>
+<h3>发散</h3>
+<p>部分和<span class="divergent">无限增大</span>，或者来回跳动。</p>
+<div class="math-formula">
                 如果 $\lim\limits_{n \to \infty} S_n = S$（某个数）
-                <br>则级数<span class="convergent">收敛</span>于 $S$
-                <br>否则级数<span class="divergent">发散</span>
-            </div>
-            
-            <p>收敛的级数有和，发散的级数没有和。</p>
-        </div>
-        <div class="visualization" id="vis-convergence-divergence"></div>
-    </div>
-
-    <!-- 第5页：几何级数 -->
-    <div class="slide">
-        <div class="chalkboard">
-            <h2>几何级数</h2>
-            <p>最重要的级数类型！每一项都是前一项乘以<span class="highlight">相同的数</span>。</p>
-            
-            <h3>一般形式</h3>
-            <div class="math-formula">
+                <br/>则级数<span class="convergent">收敛</span>于 $S$
+                <br/>否则级数<span class="divergent">发散</span>
+</div>
+<p>收敛的级数有和，发散的级数没有和。</p>
+</div><div class="right-visual"><div id="vis-convergence-divergence"></div></div></div></div>
+<!-- 第5页：几何级数 -->
+<div class="slide"><div class="slide-container"><div class="left-content tex2jax_process">
+<h2>几何级数</h2>
+<p>最重要的级数类型！每一项都是前一项乘以<span class="highlight">相同的数</span>。</p>
+<h3>一般形式</h3>
+<div class="math-formula">
                 $a + ar + ar^2 + ar^3 + \cdots$
             </div>
-            <p>其中 $a$ 是<span class="highlight">首项</span>，$r$ 是<span class="highlight">公比</span>。</p>
-            
-            <h3>收敛条件</h3>
-            <ul>
-                <li>当 $|r| < 1$ 时，级数<span class="convergent">收敛</span></li>
-                <li>当 $|r| \geq 1$ 时，级数<span class="divergent">发散</span></li>
-            </ul>
-            
-            <p>蛋糕例子：$a = \frac{1}{2}$，$r = \frac{1}{2}$，所以收敛！</p>
-        </div>
-        <div class="visualization" id="vis-geometric-series"></div>
-    </div>
-
-    <!-- 第6页：几何级数求和公式 -->
-    <div class="slide">
-        <div class="chalkboard">
-            <h2>几何级数求和</h2>
-            <p>当 $|r| < 1$ 时，几何级数有一个<span class="highlight">简单的求和公式</span>！</p>
-            
-            <div class="math-formula">
+<p>其中 $a$ 是<span class="highlight">首项</span>，$r$ 是<span class="highlight">公比</span>。</p>
+<h3>收敛条件</h3>
+<ul>
+<li>当 $|r| &lt; 1$ 时，级数<span class="convergent">收敛</span></li>
+<li>当 $|r| \geq 1$ 时，级数<span class="divergent">发散</span></li>
+</ul>
+<p>蛋糕例子：$a = \frac{1}{2}$，$r = \frac{1}{2}$，所以收敛！</p>
+</div><div class="right-visual"><div id="vis-geometric-series"></div></div></div></div>
+<!-- 第6页：几何级数求和公式 -->
+<div class="slide"><div class="slide-container"><div class="left-content tex2jax_process">
+<h2>几何级数求和</h2>
+<p>当 $|r| &lt; 1$ 时，几何级数有一个<span class="highlight">简单的求和公式</span>！</p>
+<div class="math-formula">
                 $a + ar + ar^2 + ar^3 + \cdots = \frac{a}{1-r}$
             </div>
-            
-            <h3>推导思路</h3>
-            <p>设 $S = a + ar + ar^2 + ar^3 + \cdots$</p>
-            <p>两边同时乘以 $r$：</p>
-            <p>$rS = ar + ar^2 + ar^3 + \cdots$</p>
-            <p>两式相减：$S - rS = a$</p>
-            <p>所以：$S(1-r) = a$，得到 $S = \frac{a}{1-r}$</p>
-            
-            <h3>验证蛋糕例子</h3>
-            <p>$S = \frac{\frac{1}{2}}{1-\frac{1}{2}} = \frac{\frac{1}{2}}{\frac{1}{2}} = 1$ ✓</p>
-        </div>
-        <div class="visualization" id="vis-geometric-formula"></div>
-    </div>
-
-    <!-- 第7页：几何级数的例子 -->
-    <div class="slide">
-        <div class="chalkboard">
-            <h2>几何级数例子</h2>
-            
-            <h3>例子1：收敛</h3>
-            <div class="math-formula">
+<h3>推导思路</h3>
+<p>设 $S = a + ar + ar^2 + ar^3 + \cdots$</p>
+<p>两边同时乘以 $r$：</p>
+<p>$rS = ar + ar^2 + ar^3 + \cdots$</p>
+<p>两式相减：$S - rS = a$</p>
+<p>所以：$S(1-r) = a$，得到 $S = \frac{a}{1-r}$</p>
+<h3>验证蛋糕例子</h3>
+<p>$S = \frac{\frac{1}{2}}{1-\frac{1}{2}} = \frac{\frac{1}{2}}{\frac{1}{2}} = 1$ ✓</p>
+</div><div class="right-visual"><div id="vis-geometric-formula"></div></div></div></div>
+<!-- 第7页：几何级数的例子 -->
+<div class="slide"><div class="slide-container"><div class="left-content tex2jax_process">
+<h2>几何级数例子</h2>
+<h3>例子1：收敛</h3>
+<div class="math-formula">
                 $1 + \frac{1}{3} + \frac{1}{9} + \frac{1}{27} + \cdots$
             </div>
-            <p>$a = 1$，$r = \frac{1}{3}$，$|r| < 1$</p>
-            <p>和为：$\frac{1}{1-\frac{1}{3}} = \frac{3}{2} = 1.5$</p>
-            
-            <h3>例子2：发散</h3>
-            <div class="math-formula">
+<p>$a = 1$，$r = \frac{1}{3}$，$|r| &lt; 1$</p>
+<p>和为：$\frac{1}{1-\frac{1}{3}} = \frac{3}{2} = 1.5$</p>
+<h3>例子2：发散</h3>
+<div class="math-formula">
                 $1 + 2 + 4 + 8 + 16 + \cdots$
             </div>
-            <p>$a = 1$，$r = 2$，$|r| > 1$</p>
-            <p>发散，和为无穷大</p>
-            
-            <h3>例子3：振荡</h3>
-            <div class="math-formula">
+<p>$a = 1$，$r = 2$，$|r| &gt; 1$</p>
+<p>发散，和为无穷大</p>
+<h3>例子3：振荡</h3>
+<div class="math-formula">
                 $1 - 1 + 1 - 1 + 1 - \cdots$
             </div>
-            <p>$a = 1$，$r = -1$，$|r| = 1$</p>
-            <p>发散，部分和在0和1之间跳动</p>
-        </div>
-        <div class="visualization" id="vis-geometric-examples"></div>
-    </div>
-
-    <!-- 第8页：调和级数 -->
-    <div class="slide">
-        <div class="chalkboard">
-            <h2>调和级数</h2>
-            <p>一个看起来应该收敛，但实际<span class="divergent">发散</span>的著名级数！</p>
-            
-            <div class="math-formula">
+<p>$a = 1$，$r = -1$，$|r| = 1$</p>
+<p>发散，部分和在0和1之间跳动</p>
+</div><div class="right-visual"><div id="vis-geometric-examples"></div></div></div></div>
+<!-- 第8页：调和级数 -->
+<div class="slide"><div class="slide-container"><div class="left-content tex2jax_process">
+<h2>调和级数</h2>
+<p>一个看起来应该收敛，但实际<span class="divergent">发散</span>的著名级数！</p>
+<div class="math-formula">
                 $1 + \frac{1}{2} + \frac{1}{3} + \frac{1}{4} + \frac{1}{5} + \cdots = \sum_{n=1}^{\infty} \frac{1}{n}$
             </div>
-            
-            <h3>为什么发散？</h3>
-            <p>虽然每项越来越小，但小得不够快！</p>
-            
-            <h3>简单证明</h3>
-            <ul>
-                <li>$\frac{1}{3} + \frac{1}{4} > \frac{1}{4} + \frac{1}{4} = \frac{1}{2}$</li>
-                <li>$\frac{1}{5} + \frac{1}{6} + \frac{1}{7} + \frac{1}{8} > 4 \times \frac{1}{8} = \frac{1}{2}$</li>
-                <li>继续分组，每组都大于$\frac{1}{2}$</li>
-                <li>所以总和无限大！</li>
-            </ul>
-            
-            <p>记住：<span class="highlight">项趋于0不等于级数收敛</span>！</p>
-        </div>
-        <div class="visualization" id="vis-harmonic-series"></div>
-    </div>
-
-    <!-- 第9页：p级数 -->
-    <div class="slide">
-        <div class="chalkboard">
-            <h2>p级数</h2>
-            <p>调和级数的推广形式，非常重要的判断标准！</p>
-            
-            <div class="math-formula">
+<h3>为什么发散？</h3>
+<p>虽然每项越来越小，但小得不够快！</p>
+<h3>简单证明</h3>
+<ul>
+<li>$\frac{1}{3} + \frac{1}{4} &gt; \frac{1}{4} + \frac{1}{4} = \frac{1}{2}$</li>
+<li>$\frac{1}{5} + \frac{1}{6} + \frac{1}{7} + \frac{1}{8} &gt; 4 \times \frac{1}{8} = \frac{1}{2}$</li>
+<li>继续分组，每组都大于$\frac{1}{2}$</li>
+<li>所以总和无限大！</li>
+</ul>
+<p>记住：<span class="highlight">项趋于0不等于级数收敛</span>！</p>
+</div><div class="right-visual"><div id="vis-harmonic-series"></div></div></div></div>
+<!-- 第9页：p级数 -->
+<div class="slide"><div class="slide-container"><div class="left-content tex2jax_process">
+<h2>p级数</h2>
+<p>调和级数的推广形式，非常重要的判断标准！</p>
+<div class="math-formula">
                 $\sum_{n=1}^{\infty} \frac{1}{n^p} = 1 + \frac{1}{2^p} + \frac{1}{3^p} + \frac{1}{4^p} + \cdots$
             </div>
-            
-            <h3>收敛判别</h3>
-            <ul>
-                <li>当 $p > 1$ 时，级数<span class="convergent">收敛</span></li>
-                <li>当 $p \leq 1$ 时，级数<span class="divergent">发散</span></li>
-            </ul>
-            
-            <h3>常见例子</h3>
-            <ul>
-                <li>$p = 1$：调和级数，发散</li>
-                <li>$p = 2$：$1 + \frac{1}{4} + \frac{1}{9} + \frac{1}{16} + \cdots$，收敛于$\frac{\pi^2}{6}$</li>
-                <li>$p = 3$：收敛</li>
-                <li>$p = \frac{1}{2}$：发散</li>
-            </ul>
-        </div>
-        <div class="visualization" id="vis-p-series"></div>
-    </div>
-
-    <!-- 第10页：比值判别法 -->
-    <div class="slide">
-        <div class="chalkboard">
-            <h2>比值判别法</h2>
-            <p>判断级数收敛性的<span class="highlight">实用方法</span>！</p>
-            
-            <h3>方法</h3>
-            <p>对于级数 $\sum a_n$，计算：</p>
-            <div class="math-formula">
+<h3>收敛判别</h3>
+<ul>
+<li>当 $p &gt; 1$ 时，级数<span class="convergent">收敛</span></li>
+<li>当 $p \leq 1$ 时，级数<span class="divergent">发散</span></li>
+</ul>
+<h3>常见例子</h3>
+<ul>
+<li>$p = 1$：调和级数，发散</li>
+<li>$p = 2$：$1 + \frac{1}{4} + \frac{1}{9} + \frac{1}{16} + \cdots$，收敛于$\frac{\pi^2}{6}$</li>
+<li>$p = 3$：收敛</li>
+<li>$p = \frac{1}{2}$：发散</li>
+</ul>
+</div><div class="right-visual"><div id="vis-p-series"></div></div></div></div>
+<!-- 第10页：比值判别法 -->
+<div class="slide"><div class="slide-container"><div class="left-content tex2jax_process">
+<h2>比值判别法</h2>
+<p>判断级数收敛性的<span class="highlight">实用方法</span>！</p>
+<h3>方法</h3>
+<p>对于级数 $\sum a_n$，计算：</p>
+<div class="math-formula">
                 $L = \lim\limits_{n \to \infty} \left|\frac{a_{n+1}}{a_n}\right|$
             </div>
-            
-            <h3>判别结果</h3>
-            <ul>
-                <li>如果 $L < 1$，级数<span class="convergent">收敛</span></li>
-                <li>如果 $L > 1$，级数<span class="divergent">发散</span></li>
-                <li>如果 $L = 1$，方法失效</li>
-            </ul>
-            
-            <h3>应用技巧</h3>
-            <p>特别适合含有阶乘、指数的级数！</p>
-            
-            <p>例：$\sum \frac{2^n}{n!}$ 中，$L = \lim\limits_{n \to \infty} \frac{2}{n+1} = 0 < 1$，收敛</p>
-        </div>
-        <div class="visualization" id="vis-ratio-test"></div>
-    </div>
-
-    <!-- 第11页：交错级数 -->
-    <div class="slide">
-        <div class="chalkboard">
-            <h2>交错级数</h2>
-            <p>正负号<span class="highlight">交替出现</span>的级数！</p>
-            
-            <div class="math-formula">
+<h3>判别结果</h3>
+<ul>
+<li>如果 $L &lt; 1$，级数<span class="convergent">收敛</span></li>
+<li>如果 $L &gt; 1$，级数<span class="divergent">发散</span></li>
+<li>如果 $L = 1$，方法失效</li>
+</ul>
+<h3>应用技巧</h3>
+<p>特别适合含有阶乘、指数的级数！</p>
+<p>例：$\sum \frac{2^n}{n!}$ 中，$L = \lim\limits_{n \to \infty} \frac{2}{n+1} = 0 &lt; 1$，收敛</p>
+</div><div class="right-visual"><div id="vis-ratio-test"></div></div></div></div>
+<!-- 第11页：交错级数 -->
+<div class="slide"><div class="slide-container"><div class="left-content tex2jax_process">
+<h2>交错级数</h2>
+<p>正负号<span class="highlight">交替出现</span>的级数！</p>
+<div class="math-formula">
                 $a_1 - a_2 + a_3 - a_4 + a_5 - \cdots$
-                <br>或写作：$\sum_{n=1}^{\infty} (-1)^{n+1} a_n$
+                <br/>或写作：$\sum_{n=1}^{\infty} (-1)^{n+1} a_n$
             </div>
-            
-            <h3>莱布尼茨判别法</h3>
-            <p>如果：</p>
-            <ul>
-                <li>$a_n > 0$（各项本身为正）</li>
-                <li>$a_n$ 单调递减</li>
-                <li>$\lim\limits_{n \to \infty} a_n = 0$</li>
-            </ul>
-            <p>那么交错级数<span class="convergent">收敛</span>！</p>
-            
-            <h3>交错调和级数</h3>
-            <div class="math-formula">
+<h3>莱布尼茨判别法</h3>
+<p>如果：</p>
+<ul>
+<li>$a_n &gt; 0$（各项本身为正）</li>
+<li>$a_n$ 单调递减</li>
+<li>$\lim\limits_{n \to \infty} a_n = 0$</li>
+</ul>
+<p>那么交错级数<span class="convergent">收敛</span>！</p>
+<h3>交错调和级数</h3>
+<div class="math-formula">
                 $1 - \frac{1}{2} + \frac{1}{3} - \frac{1}{4} + \frac{1}{5} - \cdots = \ln 2$
             </div>
-            <p>虽然调和级数发散，但交错调和级数收敛！</p>
-        </div>
-        <div class="visualization" id="vis-alternating-series"></div>
-    </div>
-
-    <!-- 第12页：绝对收敛与条件收敛 -->
-    <div class="slide">
-        <div class="chalkboard">
-            <h2>绝对收敛与条件收敛</h2>
-            
-            <h3>绝对收敛</h3>
-            <p>如果 $\sum |a_n|$ 收敛，那么原级数 $\sum a_n$ <span class="convergent">绝对收敛</span>。</p>
-            <p>绝对收敛的级数一定收敛，而且<span class="highlight">可以任意重排项</span>！</p>
-            
-            <h3>条件收敛</h3>
-            <p>$\sum a_n$ 收敛，但 $\sum |a_n|$ 发散，叫做<span class="warning">条件收敛</span>。</p>
-            
-            <h3>例子对比</h3>
-            <ul>
-                <li>交错调和级数：$1 - \frac{1}{2} + \frac{1}{3} - \frac{1}{4} + \cdots$ 收敛</li>
-                <li>但：$1 + \frac{1}{2} + \frac{1}{3} + \frac{1}{4} + \cdots$ 发散</li>
-                <li>所以交错调和级数<span class="warning">条件收敛</span></li>
-            </ul>
-            
-            <p><span class="highlight">重要</span>：条件收敛的级数重排项后和可能改变！</p>
-        </div>
-        <div class="visualization" id="vis-absolute-convergence"></div>
-    </div>
-
-    <!-- 第13页：幂级数 -->
-    <div class="slide">
-        <div class="chalkboard">
-            <h2>幂级数</h2>
-            <p>含有变量 $x$ 的级数，是函数的<span class="highlight">无穷多项式</span>！</p>
-            
-            <div class="math-formula">
+<p>虽然调和级数发散，但交错调和级数收敛！</p>
+</div><div class="right-visual"><div id="vis-alternating-series"></div></div></div></div>
+<!-- 第12页：绝对收敛与条件收敛 -->
+<div class="slide"><div class="slide-container"><div class="left-content tex2jax_process">
+<h2>绝对收敛与条件收敛</h2>
+<h3>绝对收敛</h3>
+<p>如果 $\sum |a_n|$ 收敛，那么原级数 $\sum a_n$ <span class="convergent">绝对收敛</span>。</p>
+<p>绝对收敛的级数一定收敛，而且<span class="highlight">可以任意重排项</span>！</p>
+<h3>条件收敛</h3>
+<p>$\sum a_n$ 收敛，但 $\sum |a_n|$ 发散，叫做<span class="warning">条件收敛</span>。</p>
+<h3>例子对比</h3>
+<ul>
+<li>交错调和级数：$1 - \frac{1}{2} + \frac{1}{3} - \frac{1}{4} + \cdots$ 收敛</li>
+<li>但：$1 + \frac{1}{2} + \frac{1}{3} + \frac{1}{4} + \cdots$ 发散</li>
+<li>所以交错调和级数<span class="warning">条件收敛</span></li>
+</ul>
+<p><span class="highlight">重要</span>：条件收敛的级数重排项后和可能改变！</p>
+</div><div class="right-visual"><div id="vis-absolute-convergence"></div></div></div></div>
+<!-- 第13页：幂级数 -->
+<div class="slide"><div class="slide-container"><div class="left-content tex2jax_process">
+<h2>幂级数</h2>
+<p>含有变量 $x$ 的级数，是函数的<span class="highlight">无穷多项式</span>！</p>
+<div class="math-formula">
                 $\sum_{n=0}^{\infty} a_n x^n = a_0 + a_1 x + a_2 x^2 + a_3 x^3 + \cdots$
             </div>
-            
-            <h3>收敛半径</h3>
-            <p>存在 $R > 0$，使得：</p>
-            <ul>
-                <li>当 $|x| < R$ 时，级数收敛</li>
-                <li>当 $|x| > R$ 时，级数发散</li>
-                <li>$R$ 叫<span class="highlight">收敛半径</span></li>
-            </ul>
-            
-            <h3>几何级数是特例</h3>
-            <div class="math-formula">
-                $\frac{1}{1-x} = 1 + x + x^2 + x^3 + \cdots$，$|x| < 1$
+<h3>收敛半径</h3>
+<p>存在 $R &gt; 0$，使得：</p>
+<ul>
+<li>当 $|x| &lt; R$ 时，级数收敛</li>
+<li>当 $|x| &gt; R$ 时，级数发散</li>
+<li>$R$ 叫<span class="highlight">收敛半径</span></li>
+</ul>
+<h3>几何级数是特例</h3>
+<div class="math-formula">
+                $\frac{1}{1-x} = 1 + x + x^2 + x^3 + \cdots$，$|x| &lt; 1$
             </div>
-            
-            <p>幂级数在收敛区间内表示一个函数！</p>
-        </div>
-        <div class="visualization" id="vis-power-series"></div>
-    </div>
-
-    <!-- 第14页：泰勒级数 -->
-    <div class="slide">
-        <div class="chalkboard">
-            <h2>泰勒级数</h2>
-            <p>把函数用<span class="highlight">无穷级数</span>表示出来！</p>
-            
-            <h3>基本思想</h3>
-            <p>用无穷个多项式项来"拟合"一个函数。</p>
-            
-            <div class="math-formula">
+<p>幂级数在收敛区间内表示一个函数！</p>
+</div><div class="right-visual"><div id="vis-power-series"></div></div></div></div>
+<!-- 第14页：泰勒级数 -->
+<div class="slide"><div class="slide-container"><div class="left-content tex2jax_process">
+<h2>泰勒级数</h2>
+<p>把函数用<span class="highlight">无穷级数</span>表示出来！</p>
+<h3>基本思想</h3>
+<p>用无穷个多项式项来"拟合"一个函数。</p>
+<div class="math-formula">
                 $f(x) = f(0) + f'(0)x + \frac{f''(0)}{2!}x^2 + \frac{f'''(0)}{3!}x^3 + \cdots$
             </div>
-            
-            <h3>常见泰勒展开</h3>
-            <ul>
-                <li>$e^x = 1 + x + \frac{x^2}{2!} + \frac{x^3}{3!} + \cdots$</li>
-                <li>$\sin x = x - \frac{x^3}{3!} + \frac{x^5}{5!} - \frac{x^7}{7!} + \cdots$</li>
-                <li>$\cos x = 1 - \frac{x^2}{2!} + \frac{x^4}{4!} - \frac{x^6}{6!} + \cdots$</li>
-            </ul>
-            
-            <p>这些展开让复杂函数变成简单的加法！</p>
-        </div>
-        <div class="visualization" id="vis-taylor-series"></div>
-    </div>
-
-    <!-- 第15页：级数的应用 -->
-    <div class="slide">
-        <div class="chalkboard">
-            <h2>级数的应用</h2>
-            
-            <h3>近似计算</h3>
-            <p>用前几项来近似计算函数值！</p>
-            <p>例：$e \approx 1 + 1 + \frac{1}{2!} + \frac{1}{3!} + \frac{1}{4!} = 2.708\overline{3}$</p>
-            
-            <h3>解微分方程</h3>
-            <p>很多微分方程的解可以用级数表示。</p>
-            
-            <h3>数值积分</h3>
-            <p>一些积分无法直接计算，可以用级数展开后逐项积分。</p>
-            
-            <h3>概率计算</h3>
-            <p>正态分布等概率密度函数的积分常用级数计算。</p>
-            
-            <h3>工程应用</h3>
-            <ul>
-                <li>信号处理中的傅里叶级数</li>
-                <li>计算机图形学中的级数逼近</li>
-                <li>金融数学中的期权定价</li>
-            </ul>
-        </div>
-        <div class="visualization" id="vis-applications"></div>
-    </div>
-
-    <!-- 第16页：总结 -->
-    <div class="slide">
-        <div class="chalkboard">
-            <h2>总结</h2>
-            
-            <h3>重要概念</h3>
-            <ul>
-                <li><span class="highlight">无穷级数</span>：无限个数的和</li>
-                <li><span class="highlight">部分和</span>：前n项的和</li>
-                <li><span class="highlight">收敛/发散</span>：部分和是否趋于某个值</li>
-            </ul>
-            
-            <h3>重要级数类型</h3>
-            <ul>
-                <li><span class="convergent">几何级数</span>：$|r| < 1$ 时收敛于 $\frac{a}{1-r}$</li>
-                <li><span class="divergent">调和级数</span>：$\sum \frac{1}{n}$ 发散</li>
-                <li><span class="highlight">p级数</span>：$p > 1$ 时收敛</li>
-                <li><span class="highlight">交错级数</span>：正负交替</li>
-            </ul>
-            
-            <h3>判别方法</h3>
-            <ul>
-                <li>比值判别法：看相邻项的比值</li>
-                <li>莱布尼茨法：交错级数专用</li>
-            </ul>
-            
-            <p><span class="highlight">记住</span>：级数是连接有限与无限的桥梁！</p>
-        </div>
-        <div class="visualization series-bg" style="align-items: center; justify-content: center;">
-            <div style="text-align: center; color: white;">
-                <h1 style="font-size: 3rem; margin-bottom: 2rem;">∞</h1>
-                <p style="font-size: 1.5rem;">无穷级数的世界</p>
-                <p style="font-size: 1.2rem; opacity: 0.8; margin-top: 1rem;">从有限走向无限</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- 导航按钮 -->
-
-    <!-- 页面指示器 -->
-
+<h3>常见泰勒展开</h3>
+<ul>
+<li>$e^x = 1 + x + \frac{x^2}{2!} + \frac{x^3}{3!} + \cdots$</li>
+<li>$\sin x = x - \frac{x^3}{3!} + \frac{x^5}{5!} - \frac{x^7}{7!} + \cdots$</li>
+<li>$\cos x = 1 - \frac{x^2}{2!} + \frac{x^4}{4!} - \frac{x^6}{6!} + \cdots$</li>
+</ul>
+<p>这些展开让复杂函数变成简单的加法！</p>
+</div><div class="right-visual"><div id="vis-taylor-series"></div></div></div></div>
+<!-- 第15页：级数的应用 -->
+<div class="slide"><div class="slide-container"><div class="left-content tex2jax_process">
+<h2>级数的应用</h2>
+<h3>近似计算</h3>
+<p>用前几项来近似计算函数值！</p>
+<p>例：$e \approx 1 + 1 + \frac{1}{2!} + \frac{1}{3!} + \frac{1}{4!} = 2.708\overline{3}$</p>
+<h3>解微分方程</h3>
+<p>很多微分方程的解可以用级数表示。</p>
+<h3>数值积分</h3>
+<p>一些积分无法直接计算，可以用级数展开后逐项积分。</p>
+<h3>概率计算</h3>
+<p>正态分布等概率密度函数的积分常用级数计算。</p>
+<h3>工程应用</h3>
+<ul>
+<li>信号处理中的傅里叶级数</li>
+<li>计算机图形学中的级数逼近</li>
+<li>金融数学中的期权定价</li>
+</ul>
+</div><div class="right-visual"><div id="vis-applications"></div></div></div></div>
+<!-- 第16页：总结 -->
+<div class="slide"><div class="slide-container"><div class="left-content tex2jax_process">
+<h2>总结</h2>
+<h3>重要概念</h3>
+<ul>
+<li><span class="highlight">无穷级数</span>：无限个数的和</li>
+<li><span class="highlight">部分和</span>：前n项的和</li>
+<li><span class="highlight">收敛/发散</span>：部分和是否趋于某个值</li>
+</ul>
+<h3>重要级数类型</h3>
+<ul>
+<li><span class="convergent">几何级数</span>：$|r| &lt; 1$ 时收敛于 $\frac{a}{1-r}$</li>
+<li><span class="divergent">调和级数</span>：$\sum \frac{1}{n}$ 发散</li>
+<li><span class="highlight">p级数</span>：$p &gt; 1$ 时收敛</li>
+<li><span class="highlight">交错级数</span>：正负交替</li>
+</ul>
+<h3>判别方法</h3>
+<ul>
+<li>比值判别法：看相邻项的比值</li>
+<li>莱布尼茨法：交错级数专用</li>
+</ul>
+<p><span class="highlight">记住</span>：级数是连接有限与无限的桥梁！</p>
+</div><div class="right-visual"><div class="series-bg">
+<div style="text-align: center; color: ${themeColors.text};">
+<h1 style="font-size: 3rem; margin-bottom: 2rem;">∞</h1>
+<p style="font-size: 1.5rem;">无穷级数的世界</p>
+<p style="font-size: 1.2rem; opacity: 0.8; margin-top: 1rem;">从有限走向无限</p>
 </div>
-
+</div></div></div></div>
+<!-- 导航按钮 -->
+<!-- 页面指示器 -->
+</div>
 <script>
     let slides, totalSlides, counter, currentSlide = 0;
     let animationIntervals = [];
@@ -1318,7 +822,16 @@
     };
 
     // D3可视化辅助函数
-    function setupD3(containerId, margins = {top: 40, right: 40, bottom: 40, left: 40}) {
+    
+    const rootStyles = getComputedStyle(document.documentElement);
+    const themeColors = {
+        text: rootStyles.getPropertyValue('--text-color').trim() || '#34495e',
+        axis: rootStyles.getPropertyValue('--axis-color').trim() || '#475569',
+        muted: rootStyles.getPropertyValue('--muted-color').trim() || '#94a3b8',
+        surface: rootStyles.getPropertyValue('--card-bg').trim() || '#ffffff'
+    };
+
+function setupD3(containerId, margins = {top: 40, right: 40, bottom: 40, left: 40}) {
         const container = d3.select(`#${containerId}`);
         if (container.empty()) return null;
         
@@ -1421,7 +934,7 @@
                     .attr('d', arc)
                     .attr('transform', `translate(${centerX}, ${centerY})`)
                     .attr('fill', slice.color)
-                    .attr('stroke', 'white')
+                    .attr('stroke', themeColors.axis)
                     .attr('stroke-width', 2)
                     .style('opacity', 0)
                     .transition()
@@ -1440,7 +953,7 @@
                     .attr('dy', '0.35em')
                     .style('font-size', '16px')
                     .style('font-weight', 'bold')
-                    .style('fill', 'white')
+                    .style('fill', themeColors.text)
                     .style('opacity', 0)
                     .text(slice.label)
                     .transition()
@@ -1793,7 +1306,7 @@
             .style('background', 'rgba(255,255,255,0.9)')
             .style('padding', '15px')
             .style('border-radius', '10px')
-            .style('box-shadow', '0 2px 10px rgba(0,0,0,0.1)');
+            .style('box-shadow', '0 2px 10px rgba(15, 23, 42, 0.12)');
         
         controlPanel.append('div')
             .style('font-weight', 'bold')
@@ -1999,7 +1512,7 @@
                 .style('display', 'flex')
                 .style('align-items', 'center')
                 .style('justify-content', 'center')
-                .style('color', 'white')
+                .style('color', themeColors.text)
                 .style('font-size', '2rem')
                 .style('font-weight', 'bold');
             
@@ -2449,22 +1962,22 @@
                 <h2 style="margin-bottom: 30px; color: #2c3e50;">级数的实际应用</h2>
                 
                 <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; max-width: 800px; margin: 0 auto;">
-                    <div style="background: #3498db; color: white; padding: 20px; border-radius: 10px;">
+                    <div style="background: #3498db; color: ${themeColors.text}; padding: 20px; border-radius: 10px;">
                         <h3>计算 π</h3>
                         <p>π/4 = 1 - 1/3 + 1/5 - 1/7 + ...</p>
                     </div>
                     
-                    <div style="background: #2ecc71; color: white; padding: 20px; border-radius: 10px;">
+                    <div style="background: #2ecc71; color: ${themeColors.text}; padding: 20px; border-radius: 10px;">
                         <h3>计算 e</h3>
                         <p>e = 1 + 1/1! + 1/2! + 1/3! + ...</p>
                     </div>
                     
-                    <div style="background: #e74c3c; color: white; padding: 20px; border-radius: 10px;">
+                    <div style="background: #e74c3c; color: ${themeColors.text}; padding: 20px; border-radius: 10px;">
                         <h3>信号处理</h3>
                         <p>傅里叶级数分解信号</p>
                     </div>
                     
-                    <div style="background: #f39c12; color: white; padding: 20px; border-radius: 10px;">
+                    <div style="background: #f39c12; color: ${themeColors.text}; padding: 20px; border-radius: 10px;">
                         <h3>数值计算</h3>
                         <p>用级数逼近复杂函数</p>
                     </div>
@@ -2484,8 +1997,6 @@
     }
 
 </script>
-
 <!-- 翻页器组件 -->
-
 </body>
 </html>

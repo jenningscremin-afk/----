@@ -1,13 +1,14 @@
 ﻿<!DOCTYPE html>
+
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>第12章：向量代数与空间解析几何 (互动式课件)</title>
-    <script src="../common-assets/js/d3-7.8.5.min.js"></script>
-    <script src="../common-assets/js/three-r128.min.js"></script>
-    <script src="../common-assets/js/mathjax-config.js"></script>
-    <script>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>第12章：向量代数与空间解析几何 (互动式课件)</title>
+<script src="../common-assets/js/d3-7.8.5.min.js"></script>
+<script src="../common-assets/js/three-r128.min.js"></script>
+<script src="../common-assets/js/mathjax-config.js"></script>
+<script>
         window.MathJax = {
             tex: {
                 inlineMath: [['$', '$'], ['\\(', '\\)']],
@@ -27,585 +28,160 @@
             }
         };
     </script>
-    <script type="text/javascript" id="MathJax-script" async
-            src="../common-assets/js/mathjax-3.2.2-tex-svg.min.js">
-    </script>
-    
-    <style>
-        @import url('../common-assets/css/fonts.css');
-
+<script async="" id="MathJax-script" src="../common-assets/js/mathjax-3.2.2-tex-svg.min.js" type="text/javascript">
+</script>
+<style>
         :root {
-            --chalkboard-bg: transparent;
-            --chalk-text: #ecf0f1;
-            --visualization-bg: #fdfdfd00;
-            --primary-color: #3498db;
-            --accent-color: #e67e22;
-            --success-color: #2ecc71;
-            --danger-color: #e74c3c;
-            --warning-color: #f39c12;
-            --info-color: #9b59b6;
-            --text-color: #34495e;
-            --heading-font: 'Noto Serif SC', serif;
-            --handwriting-font: 'Noto Serif SC', serif;
+            --page-bg: #f0f4f8;
+            --card-bg: #ffffff;
+            --text-color: #1f2937;
+            --primary-color: #2563eb;
+            --accent-color: #f97316;
+            --muted-color: #64748b;
+            --axis-color: #475569;
+            --border-color: #e2e8f0;
+            --code-bg: #f8fafc;
         }
 
-        body {
-            font-family: var(--heading-font);
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            overflow: auto;
-            height: 100vh;
-            width: 100vw;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+        * {
             margin: 0;
-        }
-        
-        #presentation-container {
-            width: 100vw;
-            height: 100vh;
-            max-width: 100vw;
-            aspect-ratio: 16 / 9;
-            position: relative;
-            background: rgba(255, 255, 255, 0);
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
-            border-radius: 8px;
-            overflow: auto;
-        }
-
-        .slide {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            opacity: 0;
-            visibility: hidden;
-            display: flex;
-            transition: opacity 0.6s ease-in-out;
-        }
-
-        .slide.active {
-            opacity: 1;
-            visibility: visible;
-            z-index: 10;
-        }
-
-        .chalkboard {
-            flex: 0 0 35%;
-            background-color: #2c3e50 !important;
-            background-image: url('../common-assets/images/black-felt.png');
-            border: 10px solid #8B4513;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.5), inset 0 0 15px rgba(0,0,0,0.7);
-            color: var(--chalk-text, #f0f0f0);
-            padding: 30px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            overflow-y: auto;
+            padding: 0;
             box-sizing: border-box;
         }
 
-        .chalkboard h2 {
-            font-family: var(--handwriting-font);
-            font-size: 2.2rem;
-            color: #f1c40f;
-            border-bottom: 2px solid rgba(241, 196, 15, 0.5);
-            padding-bottom: 10px;
-            margin-bottom: 20px;
-        }
-
-        .chalkboard h3 {
-            font-family: var(--handwriting-font);
-            font-size: 1.5rem;
-            color: var(--primary-color);
-            margin-top: 15px;
-            margin-bottom: 10px;
-        }
-
-        .chalkboard p, .chalkboard li {
-            font-size: 1.1rem;
-            line-height: 1.7;
-            margin-bottom: 15px;
-        }
-
-        .chalkboard ul {
-            list-style-type: '→ ';
-            padding-left: 20px;
-        }
-
-        .math-formula {
-            font-size: 1.3rem;
-            color: #1abc9c;
-            background: rgba(0,0,0,0.2);
-            padding: 15px;
-            border-radius: 5px;
-            text-align: center;
-            margin: 15px 0;
-            line-height: 1.5;
-        }
-
-        .highlight {
-            color: var(--warning-color);
-            font-weight: bold;
-        }
-
-        .visualization {
-            flex: 1;
-            padding: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
-            position: relative;
-            box-sizing: border-box;
-            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
-        }
-
-        .visualization.full-width {
-            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
-        }
-
-        /* 页码指示器 */
-        .page-indicator {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: rgba(0,0,0,0.8);
-            color: white;
-            padding: 8px 15px;
-            border-radius: 20px;
-            font-size: 14px;
-            z-index: 100;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        /* 翻页按钮 */
-        .nav-buttons {
-            position: absolute;
-            top: 60px;
-            right: 20px;
-            display: flex;
-            gap: 5px;
-            z-index: 100;
-        }
-
-        .nav-btn {
-            background: rgba(0, 0, 0, 0.6);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            color: white;
-            padding: 4px 8px;
-            border-radius: 15px;
-            font-size: 10px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            backdrop-filter: blur(10px);
-            user-select: none;
-            min-width: 30px;
-            text-align: center;
-        }
-
-        .nav-btn:hover {
-            background: rgba(0, 0, 0, 0.8);
-            border-color: rgba(255, 255, 255, 0.6);
-            transform: translateY(-1px);
-        }
-
-        .nav-btn:disabled {
-            opacity: 0.4;
-            cursor: not-allowed;
-        }
-
-        /* 全局动画控制面板 */
-        .global-animation-controls {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            display: flex;
-            gap: 8px;
-            z-index: 1000;
-        }
-
-        .global-control-btn {
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: rgba(255, 255, 255, 0.8);
-            padding: 6px 12px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 12px;
-            font-weight: normal;
-            transition: all 0.2s ease;
-            backdrop-filter: blur(5px);
-            min-width: 50px;
-            text-align: center;
-        }
-
-        .global-control-btn:hover {
-            background: rgba(0, 0, 0, 0.5);
-            color: rgba(255, 255, 255, 1);
-            border-color: rgba(255, 255, 255, 0.4);
-        }
-
-        /* 实例卡片 */
-        .example-card {
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            border-radius: 10px;
-            padding: 15px;
-            margin: 10px 0;
-            backdrop-filter: blur(5px);
-        }
-
-        .example-card h4 {
-            color: #3498db;
-            margin-bottom: 8px;
-        }
-
-        /* 三维场景容器 */
-        #three-container {
-            width: 100%;
+        html, body {
             height: 100%;
-            position: relative;
-        }
-
-        /* 信息面板 */
-        .info-panel {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            background: rgba(0, 0, 0, 0.7);
-            color: white;
-            padding: 15px 20px;
-            border-radius: 10px;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            backdrop-filter: blur(10px);
-            z-index: 100;
-        }
-
-        /* 控制面板 */
-        .control-panel {
-            position: absolute;
-            bottom: 20px;
-            left: 20px;
-            background: rgba(0, 0, 0, 0.7);
-            padding: 15px;
-            border-radius: 10px;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            backdrop-filter: blur(10px);
-            z-index: 100;
-        }
-
-        .control-btn {
-            background: rgba(52, 152, 219, 0.3);
-            border: 1px solid #3498db;
-            color: white;
-            padding: 8px 15px;
-            margin: 5px;
-            border-radius: 20px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .control-btn:hover {
-            background: rgba(52, 152, 219, 0.5);
-            transform: scale(1.05);
-        }
-
-        .control-btn.active {
-            background: rgba(52, 152, 219, 0.7);
-            box-shadow: 0 0 15px rgba(52, 152, 219, 0.5);
-        }
-
-        /* 浮动菜单 */
-        #floating-menu {
-            position: fixed;
-            bottom: 20px;
-            right: 200px;
-            z-index: 9999;
-        }
-
-        .menu-toggle {
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: rgba(255, 255, 255, 0.8);
-            padding: 6px 12px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .menu-content {
-            position: absolute;
-            bottom: 50px;
-            right: 0;
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 15px;
-            padding: 10px 0;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
-            backdrop-filter: blur(10px);
-            opacity: 0;
-            visibility: hidden;
-            transform: translateY(20px);
-            transition: all 0.3s ease;
-            min-width: 220px;
-        }
-
-        .menu-content.active {
-            opacity: 1;
-            visibility: visible;
-            transform: translateY(0);
-        }
-
-        .menu-item {
-            display: flex;
-            align-items: center;
-            padding: 10px 15px;
-            text-decoration: none;
-            color: #333;
-            transition: all 0.3s ease;
-            border-radius: 10px;
-            margin: 0 8px;
-        }
-
-        .menu-item:hover {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            transform: translateX(5px);
-        }
-
-        /* 向量箭头样式 */
-        .vector-arrow {
-            stroke: #00ffff;
-            stroke-width: 3;
-            fill: none;
-            filter: drop-shadow(0 0 10px rgba(0, 255, 255, 0.8));
-        }
-
-        /* 动画效果 */
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
-        }
-
-        .floating {
-            animation: float 3s ease-in-out infinite;
-        }
-
-        @keyframes glow {
-            from { text-shadow: 0 0 20px rgba(255, 215, 0, 0.5); }
-            to { text-shadow: 0 0 30px rgba(255, 215, 0, 0.8), 0 0 40px rgba(255, 215, 0, 0.6); }
-        }
-
-        /* 标题页特殊样式 */
-        .title-slide {
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            background: radial-gradient(ellipse at center, #1a1a2e 0%, #16213e 50%, #0f0f23 100%);
-        }
-
-        .title-slide h1 {
-            font-size: 4rem;
-            color: #ffd700;
-            text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
-            animation: glow 2s ease-in-out infinite alternate;
-            margin-bottom: 20px;
-        }
-    
-        /* === 统一章节样式为第二章风格 === */
-        :root {
-            --heading-font: 'Microsoft YaHei', 'Segoe UI', sans-serif;
-            --handwriting-font: 'Microsoft YaHei', 'Segoe UI', sans-serif;
-            --text-color: #34495e;
         }
 
         body {
-            font-family: var(--heading-font);
-            background: #f0f2f5;
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            overflow: hidden;
-            margin: 0;
+            font-family: 'Microsoft YaHei', 'Segoe UI', sans-serif;
+            background: var(--page-bg);
             color: var(--text-color);
-            min-height: 100vh;
-            height: auto;
-            width: auto;
-            display: block;
-        }
-
-        body::before {
-            display: none;
-        }
-
-        #presentation-container {
-            width: 100%;
-            height: 100vh;
-            max-width: 100vw;
-            position: relative;
-            background: #ffffff;
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
-            border-radius: 0;
             overflow: hidden;
         }
 
         .slide {
-            width: 100%;
-            height: 100%;
             display: none;
-            opacity: 0;
-            visibility: hidden;
-            align-items: stretch;
-            transition: opacity 0.6s ease-in-out;
-        }
-
-        .slide.active {
-            display: flex;
-            opacity: 1;
-            visibility: visible;
             animation: fadeIn 0.6s ease-in-out;
         }
 
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(15px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        .slide.active {
+            display: block;
         }
 
-        .chalkboard {
-            width: 50%;
-            height: 100%;
-            background: #ffffff;
-            color: #333333;
-            padding: 40px 50px;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-start;
-            overflow-y: auto;
-            box-sizing: border-box;
-            line-height: 1.9;
-            font-size: 17px;
-            border-right: 1px solid #e0e0e0;
-            box-shadow: none;
-        }
-
-        .slide > .chalkboard:only-child {
+        .slide-container {
             width: 100%;
+            height: 100vh;
+            display: flex;
+            position: relative;
+        }
+
+        .slide-container.single-column {
+            justify-content: center;
+        }
+
+        .left-content {
+            width: 50%;
+            height: 100vh;
+            padding: 48px 56px;
+            background: var(--card-bg);
+            overflow-y: auto;
+            font-size: 17px;
+            line-height: 1.9;
+            color: var(--text-color);
+            border-right: 1px solid var(--border-color);
+        }
+
+        .slide-container.single-column .left-content {
+            width: 100%;
+            max-width: 960px;
             border-right: none;
         }
 
-        .chalkboard h2 {
-            font-size: 28px;
-            color: #1a1a2e;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 4px solid #4a90e2;
-            font-family: var(--heading-font);
-            text-shadow: none;
+        .left-content h2 {
+            font-size: 2.4rem;
+            margin-bottom: 1.2rem;
+            color: var(--primary-color);
         }
 
-        .chalkboard h3 {
-            font-size: 24px;
-            color: #34495e;
-            margin: 25px 0 10px;
-            font-family: var(--heading-font);
-            text-shadow: none;
+        .left-content h3 {
+            font-size: 1.6rem;
+            margin: 1.2rem 0 0.6rem;
+            color: var(--axis-color);
         }
 
-        .chalkboard h4 {
-            font-size: 20px;
-            color: #555555;
-            margin: 20px 0 10px;
+        .left-content p {
+            margin-bottom: 1rem;
         }
 
-        .chalkboard p, .chalkboard li {
-            font-size: 17px;
-            line-height: 1.9;
-            margin-bottom: 12px;
-            text-shadow: none;
+        .left-content ul,
+        .left-content ol {
+            margin: 1rem 0 1rem 1.25rem;
         }
 
-        .chalkboard ul {
-            padding-left: 24px;
-            list-style-type: disc;
-        }
-
-        .chalkboard ol {
-            padding-left: 24px;
+        .left-content li {
+            margin-bottom: 0.6rem;
         }
 
         .math-formula {
-            background: #f8f9fa;
-            padding: 20px;
-            margin: 20px 0;
-            text-align: center;
-            border-radius: 8px;
-            border: 1px solid #e0e0e0;
-            font-size: 1.2rem;
-            line-height: 1.6;
-            color: #2c3e50;
-            box-shadow: none;
+            background: var(--code-bg);
+            border-left: 4px solid var(--primary-color);
+            padding: 14px 18px;
+            margin: 1.2rem 0;
+            border-radius: 10px;
+            font-size: 1.05rem;
         }
 
         .highlight {
-            color: #d35400;
-            font-weight: bold;
-            text-shadow: none;
+            color: var(--primary-color);
+            font-weight: 600;
         }
 
-        .visualization {
+        .right-visual {
             width: 50%;
-            height: 100%;
-            background: #fdfdfd;
+            height: 100vh;
+            background: var(--code-bg);
             display: flex;
             align-items: center;
             justify-content: center;
-            border-left: 1px solid #e0e0e0;
-            position: relative;
-            padding: 30px;
-            box-sizing: border-box;
-            overflow: hidden;
-            box-shadow: none;
+            border-left: 1px solid var(--border-color);
+            padding: 32px;
         }
 
-        .slide > .visualization:only-child {
-            width: 100%;
-            border-left: none;
+        .slide-container.single-column .right-visual {
+            display: none;
         }
 
-        .visualization.full-width,
-        .visualization.white-bg,
-        .visualization.full-width.white-bg,
-        .visualization.fullscreen {
+        .right-visual > div {
             width: 100%;
             height: 100%;
-            border-left: none;
-            background: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--card-bg);
+            border-radius: 24px;
+            box-shadow: 0 24px 60px rgba(15, 23, 42, 0.12);
+            padding: 24px;
         }
 
-        .visualization canvas {
-            max-width: 90%;
-            max-height: 90%;
+        .right-visual > div > * {
+            width: 100%;
+            height: 100%;
         }
 
-        .visualization svg {
-            max-width: 95%;
-            max-height: 95%;
+        .right-visual canvas,
+        .right-visual svg {
+            max-width: 100%;
+            max-height: 100%;
         }
 
-        .visualization .math-formula {
-            background: transparent;
-            border: none;
+        .right-visual svg text {
+            fill: var(--text-color);
+        }
+
+        .right-visual svg .domain,
+        .right-visual svg .tick line {
+            stroke: var(--axis-color);
         }
 
         .nav-container {
@@ -615,46 +191,101 @@
             display: flex;
             align-items: center;
             gap: 12px;
-            padding: 10px 18px;
-            background: rgba(255, 255, 255, 0.9);
-            border: 1px solid #dbe4ff;
+            padding: 12px 20px;
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid var(--border-color);
             border-radius: 999px;
-            box-shadow: 0 18px 45px rgba(15, 23, 42, 0.15);
-            backdrop-filter: blur(10px);
+            box-shadow: 0 12px 30px rgba(15, 23, 42, 0.12);
+            backdrop-filter: blur(12px);
             z-index: 1100;
         }
 
-        .nav-container .nav-btn {
+        .nav-btn {
             border: none;
-            background: #4a90e2;
+            background: var(--primary-color);
             color: #ffffff;
             padding: 8px 16px;
             border-radius: 999px;
-            font-size: 0.9rem;
+            font-size: 0.95rem;
             font-weight: 600;
             cursor: pointer;
             transition: transform 0.2s ease, box-shadow 0.2s ease;
-            box-shadow: 0 8px 16px rgba(74, 144, 226, 0.25);
         }
 
-        .nav-container .nav-btn:hover:not(:disabled) {
+        .nav-btn:hover:not(:disabled) {
             transform: translateY(-2px);
-            box-shadow: 0 12px 24px rgba(74, 144, 226, 0.35);
+            box-shadow: 0 12px 24px rgba(37, 99, 235, 0.25);
         }
 
-        .nav-container .nav-btn:disabled {
-            background: #e5edf8;
-            color: #94a3b8;
-            box-shadow: none;
+        .nav-btn:disabled {
+            background: #e2e8f0;
+            color: var(--muted-color);
             cursor: not-allowed;
+            box-shadow: none;
         }
 
         #page-indicator {
-            font-size: 0.9rem;
-            color: #1f2937;
+            font-size: 0.95rem;
+            color: var(--axis-color);
             min-width: 80px;
             text-align: center;
             font-weight: 600;
+        }
+
+        .directory-toggle {
+            border: none;
+            background: var(--card-bg);
+            color: var(--axis-color);
+            padding: 8px 12px;
+            border-radius: 10px;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(15, 23, 42, 0.08);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .directory-toggle:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 24px rgba(15, 23, 42, 0.12);
+        }
+
+        .directory-menu {
+            position: fixed;
+            bottom: 90px;
+            right: 24px;
+            width: 320px;
+            max-height: 60vh;
+            overflow-y: auto;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 18px 45px rgba(15, 23, 42, 0.18);
+            display: none;
+            z-index: 1200;
+        }
+
+        .directory-menu.active {
+            display: block;
+        }
+
+        .directory-menu h3 {
+            margin-bottom: 16px;
+            font-size: 1.1rem;
+            color: var(--axis-color);
+        }
+
+        .directory-item {
+            margin-bottom: 12px;
+            color: var(--text-color);
+            text-decoration: none;
+            display: block;
+            padding: 10px 12px;
+            border-radius: 12px;
+            transition: background 0.2s ease;
+        }
+
+        .directory-item:hover {
+            background: rgba(37, 99, 235, 0.08);
         }
 
         .global-animation-controls {
@@ -663,49 +294,82 @@
             left: 24px;
             display: flex;
             gap: 12px;
-            padding: 10px 16px;
-            background: rgba(255, 255, 255, 0.9);
-            border: 1px solid #dbe4ff;
+            padding: 12px 18px;
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid var(--border-color);
             border-radius: 999px;
-            box-shadow: 0 18px 45px rgba(15, 23, 42, 0.1);
-            backdrop-filter: blur(10px);
+            box-shadow: 0 12px 30px rgba(15, 23, 42, 0.12);
+            backdrop-filter: blur(12px);
             z-index: 1100;
         }
 
         .global-control-btn {
             background: transparent;
             border: none;
-            color: #1f2937;
+            color: var(--axis-color);
             padding: 6px 12px;
             border-radius: 999px;
             cursor: pointer;
-            font-size: 0.9rem;
+            font-size: 0.95rem;
             font-weight: 600;
-            transition: transform 0.2s ease, color 0.2s ease;
+            transition: color 0.2s ease;
         }
 
         .global-control-btn:hover {
-            color: #2563eb;
-            transform: translateY(-1px);
+            color: var(--primary-color);
         }
 
         .global-control-btn.pause {
-            color: #e74c3c;
+            color: #dc2626;
         }
 
-        .return-home-panel,
-        .home-nav-buttons,
-        #floating-menu,
-        .menu-toggle,
-        .menu-content {
-            display: none !important;
+        .slide-note {
+            font-size: 0.95rem;
+            color: var(--muted-color);
+            margin-top: 12px;
         }
 
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 1200px) {
+            .slide-container {
+                flex-direction: column;
+            }
+
+            .left-content,
+            .right-visual {
+                width: 100%;
+                height: auto;
+                min-height: 50vh;
+            }
+
+            .right-visual {
+                border-left: none;
+                border-top: 1px solid var(--border-color);
+            }
+        }
+
+        @media print {
+            body {
+                overflow: visible;
+            }
+            .slide {
+                display: block !important;
+                page-break-after: always;
+            }
+            .nav-container,
+            .global-animation-controls,
+            .directory-menu,
+            .directory-toggle {
+                display: none !important;
+            }
+        }
     </style>
-    <link rel="stylesheet" href="../common-assets/css/chapter-light-overrides.css">
-
-
-    <style>
+<link href="../common-assets/css/chapter-light-overrides.css" rel="stylesheet"/>
+<style>
         .return-home-panel {
             position: fixed;
             top: 16px;
@@ -749,322 +413,219 @@
     </style>
 </head>
 <body>
-<div id="presentation-container">
-    
-    <!-- 第1页：标题页 -->
-    <div class="slide active title-slide">
-        <div style="text-align: center;">
-            <h1>向量代数与空间几何</h1>
-            <p style="font-size: 1.8rem; color: rgba(255, 255, 255, 0.8); margin-top: 20px;">
-                第12章：探索三维世界的数学语言
-            </p>
-            <p style="font-size: 1.2rem; margin-top: 40px; color: #3498db;">
-                让我们用简单有趣的方式理解向量！
-            </p>
-            <div style="margin-top: 50px;">
-                <div style="display: inline-block; margin: 0 20px;">
-                    <span style="font-size: 3rem;">🚀</span>
-                    <p style="color: #fff; margin-top: 10px;">航天轨道</p>
-                </div>
-                <div style="display: inline-block; margin: 0 20px;">
-                    <span style="font-size: 3rem;">🎮</span>
-                    <p style="color: #fff; margin-top: 10px;">游戏开发</p>
-                </div>
-                <div style="display: inline-block; margin: 0 20px;">
-                    <span style="font-size: 3rem;">🏗️</span>
-                    <p style="color: #fff; margin-top: 10px;">工程设计</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- 第2页：生活中的向量 -->
-    <div class="slide">
-        <div class="chalkboard">
-            <h2>生活中的向量</h2>
-            <h3>什么时候需要向量？</h3>
-            
-            <div class="example-card">
-                <h4>🚗 开车导航</h4>
-                <p>不仅要知道"距离多远"（10公里），还要知道"往哪个方向"（东北方向）</p>
-            </div>
-            
-            <div class="example-card">
-                <h4>⚽ 踢足球</h4>
-                <p>踢球的"力度"和"方向"决定了球的轨迹</p>
-            </div>
-            
-            <div class="example-card">
-                <h4>🎮 游戏角色移动</h4>
-                <p>角色的"速度"和"朝向"控制移动</p>
-            </div>
-            
-            <div class="math-formula">
+<div id="slidesContainer">
+<!-- 第1页：标题页 -->
+<div class="slide active"><div class="slide-container single-column"></div></div>
+<!-- 第2页：生活中的向量 -->
+<div class="slide"><div class="slide-container"><div class="left-content tex2jax_process">
+<h2>生活中的向量</h2>
+<h3>什么时候需要向量？</h3>
+<div class="example-card">
+<h4>🚗 开车导航</h4>
+<p>不仅要知道"距离多远"（10公里），还要知道"往哪个方向"（东北方向）</p>
+</div>
+<div class="example-card">
+<h4>⚽ 踢足球</h4>
+<p>踢球的"力度"和"方向"决定了球的轨迹</p>
+</div>
+<div class="example-card">
+<h4>🎮 游戏角色移动</h4>
+<p>角色的"速度"和"朝向"控制移动</p>
+</div>
+<div class="math-formula">
                 向量 = 大小 + 方向
             </div>
-            
-            <p><span class="highlight">记住：</span>向量就像是带箭头的线段，箭头指向告诉我们方向，长度告诉我们大小。</p>
-        </div>
-        <div class="visualization" id="vis-intro"></div>
-    </div>
-
-    <!-- 第3页：向量的表示 -->
-    <div class="slide">
-        <div class="chalkboard">
-            <h2>向量的表示方法</h2>
-            <h3>怎么写出一个向量？</h3>
-            
-            <p>在平面上（2D）：</p>
-            <div class="math-formula">
+<p><span class="highlight">记住：</span>向量就像是带箭头的线段，箭头指向告诉我们方向，长度告诉我们大小。</p>
+</div><div class="right-visual"><div id="vis-intro"></div></div></div></div>
+<!-- 第3页：向量的表示 -->
+<div class="slide"><div class="slide-container"><div class="left-content tex2jax_process">
+<h2>向量的表示方法</h2>
+<h3>怎么写出一个向量？</h3>
+<p>在平面上（2D）：</p>
+<div class="math-formula">
                 $\vec{a} = (3, 4)$
             </div>
-            <p>意思是：向右3个单位，向上4个单位</p>
-            
-            <p>在空间中（3D）：</p>
-            <div class="math-formula">
+<p>意思是：向右3个单位，向上4个单位</p>
+<p>在空间中（3D）：</p>
+<div class="math-formula">
                 $\vec{b} = (2, 3, 5)$
             </div>
-            <p>意思是：向右2个单位，向前3个单位，向上5个单位</p>
-            
-            <div class="example-card">
-                <h4>💡 小技巧</h4>
-                <p>把向量想象成从原点出发的箭头，坐标就是箭头尖端的位置！</p>
-            </div>
-        </div>
-        <div class="visualization" id="vis-vector-representation"></div>
-    </div>
-
-    <!-- 第4页：向量加法 -->
-    <div class="slide">
-        <div class="chalkboard">
-            <h2>向量加法</h2>
-            <h3>向量相加 = 接力赛</h3>
-            
-            <div class="example-card">
-                <h4>🏃 接力赛原理</h4>
-                <p>第一个人跑完后，第二个人从他停下的地方继续跑</p>
-            </div>
-            
-            <p>数学表示：</p>
-            <div class="math-formula">
+<p>意思是：向右2个单位，向前3个单位，向上5个单位</p>
+<div class="example-card">
+<h4>💡 小技巧</h4>
+<p>把向量想象成从原点出发的箭头，坐标就是箭头尖端的位置！</p>
+</div>
+</div><div class="right-visual"><div id="vis-vector-representation"></div></div></div></div>
+<!-- 第4页：向量加法 -->
+<div class="slide"><div class="slide-container"><div class="left-content tex2jax_process">
+<h2>向量加法</h2>
+<h3>向量相加 = 接力赛</h3>
+<div class="example-card">
+<h4>🏃 接力赛原理</h4>
+<p>第一个人跑完后，第二个人从他停下的地方继续跑</p>
+</div>
+<p>数学表示：</p>
+<div class="math-formula">
                 $\vec{a} + \vec{b} = (a_x + b_x, a_y + b_y)$
             </div>
-            
-            <p>实例：</p>
-            <p>$\vec{a} = (3, 2)$，$\vec{b} = (1, 4)$</p>
-            <p>$\vec{a} + \vec{b} = (3+1, 2+4) = (4, 6)$</p>
-            
-            <p><span class="highlight">记忆方法：</span>对应坐标相加即可！</p>
-        </div>
-        <div class="visualization" id="vis-vector-addition"></div>
-    </div>
-
-    <!-- 第5页：向量减法 -->
-    <div class="slide">
-        <div class="chalkboard">
-            <h2>向量减法</h2>
-            <h3>向量相减 = 求位移</h3>
-            
-            <div class="example-card">
-                <h4>🎯 从A点到B点</h4>
-                <p>向量减法告诉我们：从一个位置到另一个位置要怎么走</p>
-            </div>
-            
-            <div class="math-formula">
+<p>实例：</p>
+<p>$\vec{a} = (3, 2)$，$\vec{b} = (1, 4)$</p>
+<p>$\vec{a} + \vec{b} = (3+1, 2+4) = (4, 6)$</p>
+<p><span class="highlight">记忆方法：</span>对应坐标相加即可！</p>
+</div><div class="right-visual"><div id="vis-vector-addition"></div></div></div></div>
+<!-- 第5页：向量减法 -->
+<div class="slide"><div class="slide-container"><div class="left-content tex2jax_process">
+<h2>向量减法</h2>
+<h3>向量相减 = 求位移</h3>
+<div class="example-card">
+<h4>🎯 从A点到B点</h4>
+<p>向量减法告诉我们：从一个位置到另一个位置要怎么走</p>
+</div>
+<div class="math-formula">
                 $\vec{a} - \vec{b} = (a_x - b_x, a_y - b_y)$
             </div>
-            
-            <p>实例：</p>
-            <p>小明在$(5, 3)$，小红在$(2, 1)$</p>
-            <p>从小红走到小明：$(5-2, 3-1) = (3, 2)$</p>
-            <p>意思是：向右走3步，向前走2步</p>
-            
-            <p><span class="highlight">技巧：</span>终点坐标 - 起点坐标 = 位移向量</p>
-        </div>
-        <div class="visualization" id="vis-vector-subtraction"></div>
-    </div>
-
-    <!-- 第6页：向量数乘 -->
-    <div class="slide">
-        <div class="chalkboard">
-            <h2>向量的数乘</h2>
-            <h3>数乘 = 缩放向量</h3>
-            
-            <div class="math-formula">
+<p>实例：</p>
+<p>小明在$(5, 3)$，小红在$(2, 1)$</p>
+<p>从小红走到小明：$(5-2, 3-1) = (3, 2)$</p>
+<p>意思是：向右走3步，向前走2步</p>
+<p><span class="highlight">技巧：</span>终点坐标 - 起点坐标 = 位移向量</p>
+</div><div class="right-visual"><div id="vis-vector-subtraction"></div></div></div></div>
+<!-- 第6页：向量数乘 -->
+<div class="slide"><div class="slide-container"><div class="left-content tex2jax_process">
+<h2>向量的数乘</h2>
+<h3>数乘 = 缩放向量</h3>
+<div class="math-formula">
                 $k \cdot \vec{a} = (k \cdot a_x, k \cdot a_y)$
             </div>
-            
-            <div class="example-card">
-                <h4>不同k值的效果：</h4>
-                <ul>
-                    <li>$k = 2$：向量变为2倍长</li>
-                    <li>$k = 0.5$：向量变为一半长</li>
-                    <li>$k = -1$：向量反向</li>
-                    <li>$k = 0$：变成零向量</li>
-                </ul>
-            </div>
-            
-            <p>实例：速度加倍</p>
-            <p>原速度：$\vec{v} = (3, 4)$ km/h</p>
-            <p>加速2倍：$2\vec{v} = (6, 8)$ km/h</p>
-            
-            <p><span class="highlight">形象理解：</span>像调节音量一样调节向量的"强度"</p>
-        </div>
-        <div class="visualization" id="vis-scalar-multiplication"></div>
-    </div>
-
-    <!-- 第7页：点积 -->
-    <div class="slide">
-        <div class="chalkboard">
-            <h2>向量的点积</h2>
-            <h3>点积 = 投影 × 长度</h3>
-            
-            <div class="math-formula">
+<div class="example-card">
+<h4>不同k值的效果：</h4>
+<ul>
+<li>$k = 2$：向量变为2倍长</li>
+<li>$k = 0.5$：向量变为一半长</li>
+<li>$k = -1$：向量反向</li>
+<li>$k = 0$：变成零向量</li>
+</ul>
+</div>
+<p>实例：速度加倍</p>
+<p>原速度：$\vec{v} = (3, 4)$ km/h</p>
+<p>加速2倍：$2\vec{v} = (6, 8)$ km/h</p>
+<p><span class="highlight">形象理解：</span>像调节音量一样调节向量的"强度"</p>
+</div><div class="right-visual"><div id="vis-scalar-multiplication"></div></div></div></div>
+<!-- 第7页：点积 -->
+<div class="slide"><div class="slide-container"><div class="left-content tex2jax_process">
+<h2>向量的点积</h2>
+<h3>点积 = 投影 × 长度</h3>
+<div class="math-formula">
                 $\vec{a} \cdot \vec{b} = a_x b_x + a_y b_y + a_z b_z$
             </div>
-            
-            <div class="example-card">
-                <h4>🔦 手电筒照墙</h4>
-                <p>点积就像手电筒光束在墙上的投影长度</p>
-            </div>
-            
-            <p>点积的含义：</p>
-            <ul>
-                <li>结果 > 0：两向量夹角 < 90°（同向）</li>
-                <li>结果 = 0：两向量垂直</li>
-                <li>结果 < 0：两向量夹角 > 90°（反向）</li>
-            </ul>
-            
-            <p><span class="highlight">应用：</span>计算功、判断垂直、求夹角</p>
-        </div>
-        <div class="visualization" id="vis-dot-product"></div>
-    </div>
-
-    <!-- 第8页：叉积 -->
-    <div class="slide">
-        <div class="chalkboard">
-            <h2>向量的叉积</h2>
-            <h3>叉积 = 垂直新向量</h3>
-            
-            <div class="math-formula">
+<div class="example-card">
+<h4>🔦 手电筒照墙</h4>
+<p>点积就像手电筒光束在墙上的投影长度</p>
+</div>
+<p>点积的含义：</p>
+<ul>
+<li>结果 &gt; 0：两向量夹角 &lt; 90°（同向）</li>
+<li>结果 = 0：两向量垂直</li>
+<li>结果 &lt; 0：两向量夹角 &gt; 90°（反向）</li>
+</ul>
+<p><span class="highlight">应用：</span>计算功、判断垂直、求夹角</p>
+</div><div class="right-visual"><div id="vis-dot-product"></div></div></div></div>
+<!-- 第8页：叉积 -->
+<div class="slide"><div class="slide-container"><div class="left-content tex2jax_process">
+<h2>向量的叉积</h2>
+<h3>叉积 = 垂直新向量</h3>
+<div class="math-formula">
                 $\vec{a} \times \vec{b} = $ 垂直于$\vec{a}$和$\vec{b}$的新向量
             </div>
-            
-            <div class="example-card">
-                <h4>🔩 螺丝钉原理</h4>
-                <p>右手握住螺丝，四指从$\vec{a}$转向$\vec{b}$，大拇指指向就是叉积方向</p>
-            </div>
-            
-            <p>叉积的特点：</p>
-            <ul>
-                <li>结果是一个<span class="highlight">新向量</span></li>
-                <li>垂直于原来两个向量</li>
-                <li>大小等于平行四边形面积</li>
-            </ul>
-            
-            <p><span class="highlight">应用：</span>计算法向量、力矩、面积</p>
-        </div>
-        <div class="visualization" id="vis-cross-product"></div>
-    </div>
-
-    <!-- 第9页：空间坐标系 -->
-    <div class="slide">
-        <div class="chalkboard">
-            <h2>空间直角坐标系</h2>
-            <h3>三维定位系统</h3>
-            
-            <div class="example-card">
-                <h4>🏢 楼层定位</h4>
-                <p>X轴：东西方向（左右）</p>
-                <p>Y轴：南北方向（前后）</p>
-                <p>Z轴：上下方向（楼层）</p>
-            </div>
-            
-            <p>空间中任意一点：</p>
-            <div class="math-formula">
+<div class="example-card">
+<h4>🔩 螺丝钉原理</h4>
+<p>右手握住螺丝，四指从$\vec{a}$转向$\vec{b}$，大拇指指向就是叉积方向</p>
+</div>
+<p>叉积的特点：</p>
+<ul>
+<li>结果是一个<span class="highlight">新向量</span></li>
+<li>垂直于原来两个向量</li>
+<li>大小等于平行四边形面积</li>
+</ul>
+<p><span class="highlight">应用：</span>计算法向量、力矩、面积</p>
+</div><div class="right-visual"><div id="vis-cross-product"></div></div></div></div>
+<!-- 第9页：空间坐标系 -->
+<div class="slide"><div class="slide-container"><div class="left-content tex2jax_process">
+<h2>空间直角坐标系</h2>
+<h3>三维定位系统</h3>
+<div class="example-card">
+<h4>🏢 楼层定位</h4>
+<p>X轴：东西方向（左右）</p>
+<p>Y轴：南北方向（前后）</p>
+<p>Z轴：上下方向（楼层）</p>
+</div>
+<p>空间中任意一点：</p>
+<div class="math-formula">
                 $P(x, y, z)$
             </div>
-            
-            <p>例如：$P(3, 4, 5)$表示：</p>
-            <ul>
-                <li>向东3米</li>
-                <li>向北4米</li>
-                <li>向上5米（5楼）</li>
-            </ul>
-            
-            <p><span class="highlight">记忆技巧：</span>伸出右手，拇指X、食指Y、中指Z</p>
-        </div>
-        <div class="visualization" id="vis-3d-coordinate"></div>
-    </div>
-
-    <!-- 第10页：总结 -->
-    <div class="slide">
-        <div class="chalkboard" style="flex: 1; text-align: center;">
-            <h2 style="font-size: 3rem; margin-bottom: 30px;">本章小结</h2>
-            
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; text-align: left;">
-                <div class="example-card">
-                    <h4>向量基础</h4>
-                    <ul>
-                        <li>向量 = 大小 + 方向</li>
-                        <li>用坐标表示：(x, y, z)</li>
-                        <li>可以相加、相减、数乘</li>
-                    </ul>
-                </div>
-                
-                <div class="example-card">
-                    <h4>向量运算</h4>
-                    <ul>
-                        <li>点积：判断夹角关系</li>
-                        <li>叉积：得到垂直向量</li>
-                        <li>应用于力学、图形学</li>
-                    </ul>
-                </div>
-                
-                <div class="example-card">
-                    <h4>空间几何</h4>
-                    <ul>
-                        <li>三维坐标系定位</li>
-                        <li>点、线、面的描述</li>
-                        <li>距离和角度计算</li>
-                    </ul>
-                </div>
-                
-                <div class="example-card">
-                    <h4>实际应用</h4>
-                    <ul>
-                        <li>游戏开发中的移动</li>
-                        <li>工程中的力分析</li>
-                        <li>导航中的方向计算</li>
-                    </ul>
-                </div>
-            </div>
-            
-            <p style="margin-top: 30px; font-size: 1.2rem; color: #f39c12;">
+<p>例如：$P(3, 4, 5)$表示：</p>
+<ul>
+<li>向东3米</li>
+<li>向北4米</li>
+<li>向上5米（5楼）</li>
+</ul>
+<p><span class="highlight">记忆技巧：</span>伸出右手，拇指X、食指Y、中指Z</p>
+</div><div class="right-visual"><div id="vis-3d-coordinate"></div></div></div></div>
+<!-- 第10页：总结 -->
+<div class="slide"><div class="slide-container single-column"><div class="left-content tex2jax_process">
+<h2 style="font-size: 3rem; margin-bottom: 30px">本章小结</h2>
+<div style="display: grid; gap: 20px; text-align: left">
+<div class="example-card">
+<h4>向量基础</h4>
+<ul>
+<li>向量 = 大小 + 方向</li>
+<li>用坐标表示：(x, y, z)</li>
+<li>可以相加、相减、数乘</li>
+</ul>
+</div>
+<div class="example-card">
+<h4>向量运算</h4>
+<ul>
+<li>点积：判断夹角关系</li>
+<li>叉积：得到垂直向量</li>
+<li>应用于力学、图形学</li>
+</ul>
+</div>
+<div class="example-card">
+<h4>空间几何</h4>
+<ul>
+<li>三维坐标系定位</li>
+<li>点、线、面的描述</li>
+<li>距离和角度计算</li>
+</ul>
+</div>
+<div class="example-card">
+<h4>实际应用</h4>
+<ul>
+<li>游戏开发中的移动</li>
+<li>工程中的力分析</li>
+<li>导航中的方向计算</li>
+</ul>
+</div>
+</div>
+<p style="margin-top: 30px; font-size: 1.2rem">
                 恭喜你！现在你已经掌握了向量的基本知识！
             </p>
-        </div>
-    </div>
-    
+</div></div></div>
 </div>
-
 <!-- 页码指示器 -->
-
 <!-- 翻页按钮 -->
-
 <!-- 全局动画控制面板 -->
-
-    <div class="nav-container">
-        <button class="nav-btn" id="prev-btn" onclick="previousSlide()" title="上一页 (←)">上一页</button>
-        <span id="page-indicator">1 / 9</span>
-        <button class="nav-btn" id="next-btn" onclick="nextSlide()" title="下一页 (→)">下一页</button>
-    </div>
-    <div class="global-animation-controls" id="globalAnimationControls">
-    <button class="global-control-btn" id="globalPlayPauseBtn">暂停</button>
-    <button class="global-control-btn" id="globalSpeedBtn">1.0x</button>
+<div class="nav-container">
+<button class="nav-btn" id="prev-btn" onclick="previousSlide()" title="上一页 (←)">上一页</button>
+<span id="page-indicator">1 / 9</span>
+<button class="nav-btn" id="next-btn" onclick="nextSlide()" title="下一页 (→)">下一页</button>
 </div>
-
-<script><script>
+<div class="global-animation-controls" id="globalAnimationControls">
+<button class="global-control-btn" id="globalPlayPauseBtn">暂停</button>
+<button class="global-control-btn" id="globalSpeedBtn">1.0x</button>
+</div>
+<script>
     // 全局变量
     let currentSlide = 0;
     let slides = null;
@@ -1337,7 +898,7 @@
                 .attr('x', ex.x + ex.dx / 2)
                 .attr('y', ex.y + 20 + ex.dy / 2 - 10)
                 .attr('text-anchor', 'middle')
-                .attr('fill', 'white')
+                .attr('fill', themeColors.text)
                 .style('font-size', '14px')
                 .text(ex.label)
                 .style('opacity', 0)
@@ -1499,7 +1060,7 @@
                 .attr('x', centerX)
                 .attr('y', height - 50)
                 .attr('text-anchor', 'middle')
-                .attr('fill', 'white')
+                .attr('fill', themeColors.text)
                 .style('font-size', '16px')
                 .text('向量加法：首尾相接法则');
         }, 3000);
@@ -1555,7 +1116,7 @@
                 .attr('x', centerX)
                 .attr('y', height - 50)
                 .attr('text-anchor', 'middle')
-                .attr('fill', 'white')
+                .attr('fill', themeColors.text)
                 .style('font-size', '16px')
                 .text('向量减法：从v₂指向v₁');
         }, 2000);
@@ -1600,7 +1161,7 @@
                 .attr('x', centerX)
                 .attr('y', height - 50)
                 .attr('text-anchor', 'middle')
-                .attr('fill', 'white')
+                .attr('fill', themeColors.text)
                 .style('font-size', '16px')
                 .text('数乘：改变向量长度和方向');
         }, 4000);
@@ -1667,7 +1228,7 @@
                 .attr('x', centerX)
                 .attr('y', 50)
                 .attr('text-anchor', 'middle')
-                .attr('fill', 'white')
+                .attr('fill', themeColors.text)
                 .style('font-size', '18px')
                 .text(`a·b = ${dotProduct.toFixed(1)}`);
             
@@ -1675,7 +1236,7 @@
                 .attr('x', centerX)
                 .attr('y', height - 50)
                 .attr('text-anchor', 'middle')
-                .attr('fill', 'white')
+                .attr('fill', themeColors.text)
                 .style('font-size', '16px')
                 .text(`夹角 = ${(angle * 180 / Math.PI).toFixed(1)}°`);
         }, 1500);
@@ -2022,6 +1583,5 @@
         window.MathJax.startup.defaultReady();
     }
 </script>
-
 </body>
 </html>

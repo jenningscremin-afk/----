@@ -1,12 +1,13 @@
 ﻿<!DOCTYPE html>
+
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>第五章：不定积分 (交互式课件)</title>
-    <script src="../common-assets/js/d3-7.8.5.min.js"></script>
-    <script src="../common-assets/js/mathjax-config.js"></script>
-      <script>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>第五章：不定积分 (交互式课件)</title>
+<script src="../common-assets/js/d3-7.8.5.min.js"></script>
+<script src="../common-assets/js/mathjax-config.js"></script>
+<script>
         window.MathJax = {
             tex: {
                 inlineMath: [['$', '$'], ['\\(', '\\)']],
@@ -26,578 +27,160 @@
             }
         };
     </script>
-    <script type="text/javascript" id="MathJax-script" async
-            src="../common-assets/js/mathjax-3.2.2-tex-svg.min.js">
-    </script>
-
-    <style>
-        @import url('../common-assets/css/fonts.css');
-
+<script async="" id="MathJax-script" src="../common-assets/js/mathjax-3.2.2-tex-svg.min.js" type="text/javascript">
+</script>
+<style>
         :root {
-            --chalkboard-bg: transparent;
-            --chalk-text: #ecf0f1;
-            --visualization-bg: #fdfdfd00;
-            --primary-color: #3498db;
-            --accent-color: #e67e22;
-            --success-color: #2ecc71;
-            --danger-color: #e74c3c;
-            --warning-color: #f39c12;
-            --info-color: #9b59b6;
-            --text-color: #34495e;
-            --heading-font: 'Noto Serif SC', serif;
-            --handwriting-font: 'Noto Serif SC', serif;
+            --page-bg: #f0f4f8;
+            --card-bg: #ffffff;
+            --text-color: #1f2937;
+            --primary-color: #2563eb;
+            --accent-color: #f97316;
+            --muted-color: #64748b;
+            --axis-color: #475569;
+            --border-color: #e2e8f0;
+            --code-bg: #f8fafc;
         }
 
-        body {
-            font-family: var(--heading-font);
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            overflow: auto;
-            height: 100vh;
-            width: 100vw;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+        * {
             margin: 0;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 0;
+            box-sizing: border-box;
         }
 
-        #presentation-container {
-            width: 100vw;
-            height: 100vh;
-            max-width: 100vw;
-            aspect-ratio: 16 / 9;
-            position: relative;
-            background: rgba(255, 255, 255, 0);
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
-            border-radius: 8px;
-            overflow: auto;
-        }
-
-        .slide {
-            position: absolute;
-            width: 100%;
+        html, body {
             height: 100%;
-            opacity: 0;
-            visibility: hidden;
-            display: flex;
-            transition: opacity 0.6s ease-in-out;
-        }
-
-        .slide.active {
-            opacity: 1;
-            visibility: visible;
-            z-index: 10;
-        }
-
-        .chalkboard {
-            flex: 0 0 35%;
-            background-color: #2c3e50 !important;
-            background-image: url('../common-assets/images/black-felt.png');
-            border: 10px solid #8B4513;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.5), inset 0 0 15px rgba(0,0,0,0.7);
-            color: var(--chalk-text);
-            padding: 30px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            overflow-y: auto;
-            box-sizing: border-box;
-        }
-
-        .chalkboard h2 {
-            font-family: var(--handwriting-font);
-            font-size: 2.8rem;
-            color: #f1c40f;
-            border-bottom: 2px solid rgba(241, 196, 15, 0.5);
-            padding-bottom: 10px;
-            margin-bottom: 20px;
-        }
-
-        .chalkboard h3 {
-            font-family: var(--handwriting-font);
-            font-size: 1.8rem;
-            color: var(--primary-color);
-            margin-top: 20px;
-            margin-bottom: 10px;
-        }
-
-        .chalkboard p, .chalkboard li {
-            font-size: 1.2rem;
-            line-height: 1.8;
-            margin-bottom: 15px;
-        }
-
-        .chalkboard ul {
-            list-style-type: '→ ';
-            padding-left: 20px;
-        }
-
-        .math-formula {
-            font-size: 1.4rem;
-            color: #1abc9c;
-            background: rgba(0,0,0,0.3);
-            padding: 20px;
-            border-radius: 10px;
-            text-align: center;
-            margin: 20px 0;
-            line-height: 1.8;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-        }
-
-        .highlight {
-            color: var(--warning-color);
-            font-weight: bold;
-            text-shadow: 0 0 10px rgba(243, 156, 18, 0.5);
-        }
-
-        .visualization {
-            flex: 1;
-            padding: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: auto;
-            position: relative;
-            box-sizing: border-box;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-        }
-
-        .visualization.full-width {
-            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
-        }
-
-        .formula-rule {
-            font-size: 1.3rem;
-            color: #16a085;
-            background: rgba(0,0,0,0.2);
-            padding: 15px;
-            border-radius: 8px;
-            margin: 15px 0;
-            border-left: 4px solid #16a085;
-        }
-
-        .page-indicator {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: rgba(0,0,0,0.8);
-            color: white;
-            padding: 8px 15px;
-            border-radius: 20px;
-            font-size: 14px;
-            z-index: 100;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .nav-buttons {
-            position: absolute;
-            top: 60px;
-            right: 20px;
-            display: flex;
-            gap: 5px;
-            z-index: 100;
-        }
-
-        .nav-btn {
-            background: rgba(0, 0, 0, 0.6);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            color: white;
-            padding: 4px 8px;
-            border-radius: 15px;
-            font-size: 10px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            backdrop-filter: blur(10px);
-            user-select: none;
-            min-width: 30px;
-            text-align: center;
-        }
-
-        .nav-btn:hover {
-            background: rgba(0, 0, 0, 0.8);
-            border-color: rgba(255, 255, 255, 0.6);
-            transform: translateY(-1px);
-        }
-
-        .nav-btn:disabled {
-            opacity: 0.4;
-            cursor: not-allowed;
-        }
-
-        /* 动画样式 */
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-        }
-
-        @keyframes glow {
-            from { box-shadow: 0 0 5px rgba(52, 152, 219, 0.5); }
-            to { box-shadow: 0 0 20px rgba(52, 152, 219, 0.8); }
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes twinkle {
-            0%, 100% { opacity: 0.3; }
-            50% { opacity: 1; }
-        }
-
-        .machine-box {
-            fill: white;
-            stroke: #3498db;
-            stroke-width: 3;
-            rx: 10;
-            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1));
-        }
-
-        .arrow-path {
-            stroke: #2c3e50;
-            stroke-width: 2;
-            fill: none;
-            marker-end: url(#arrowhead);
-        }
-
-        .formula-table {
-            margin: 20px 0;
-            border-collapse: collapse;
-            width: 100%;
-        }
-
-        .formula-table td {
-            padding: 12px;
-            border: 1px solid rgba(255,255,255,0.3);
-            text-align: center;
-            background: rgba(255,255,255,0.05);
-        }
-
-        .formula-table tr:nth-child(even) {
-            background: rgba(255,255,255,0.1);
-        }
-
-        /* 全局动画控制面板 */
-        .global-animation-controls {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            display: flex;
-            gap: 8px;
-            z-index: 1000;
-        }
-
-        .global-control-btn {
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: rgba(255, 255, 255, 0.8);
-            padding: 6px 12px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 12px;
-            font-weight: normal;
-            transition: all 0.2s ease;
-            backdrop-filter: blur(5px);
-            min-width: 50px;
-            text-align: center;
-        }
-
-        .global-control-btn:hover {
-            background: rgba(0, 0, 0, 0.5);
-            color: rgba(255, 255, 255, 1);
-            border-color: rgba(255, 255, 255, 0.4);
-        }
-
-        /* 积分机器样式 */
-        .integral-machine {
-            width: 300px;
-            height: 150px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border-radius: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            animation: pulse 2s infinite;
-        }
-
-        .star {
-            position: absolute;
-            width: 2px;
-            height: 2px;
-            background: white;
-            border-radius: 50%;
-            animation: twinkle 2s infinite;
-        }
-
-        /* 浮动菜单样式 */
-        #floating-menu {
-            position: fixed;
-            bottom: 20px;
-            right: 200px;
-            z-index: 9999;
-            font-family: var(--heading-font);
-        }
-
-        .menu-toggle {
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: rgba(255, 255, 255, 0.8);
-            padding: 6px 12px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 12px;
-            font-weight: normal;
-            transition: all 0.2s ease;
-            backdrop-filter: blur(5px);
-            min-width: 50px;
-            text-align: center;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .menu-toggle:hover {
-            background: rgba(0, 0, 0, 0.5);
-            color: rgba(255, 255, 255, 1);
-            border-color: rgba(255, 255, 255, 0.4);
-        }
-
-        .menu-content {
-            position: absolute;
-            bottom: 50px;
-            right: 0;
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 15px;
-            padding: 10px 0;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            opacity: 0;
-            visibility: hidden;
-            transform: translateY(20px);
-            transition: all 0.3s ease;
-            min-width: 220px;
-            max-height: 400px;
-            overflow-y: auto;
-        }
-
-        .menu-content.active {
-            opacity: 1;
-            visibility: visible;
-            transform: translateY(0);
-        }
-
-        .menu-item {
-            display: flex;
-            align-items: center;
-            padding: 10px 15px;
-            text-decoration: none;
-            color: #333;
-            transition: all 0.3s ease;
-            border-radius: 10px;
-            margin: 0 8px;
-        }
-
-        .menu-item:hover {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            transform: translateX(5px);
-        }
-    
-        /* === 统一章节样式为第二章风格 === */
-        :root {
-            --heading-font: 'Microsoft YaHei', 'Segoe UI', sans-serif;
-            --handwriting-font: 'Microsoft YaHei', 'Segoe UI', sans-serif;
-            --text-color: #34495e;
         }
 
         body {
-            font-family: var(--heading-font);
-            background: #f0f2f5;
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            overflow: hidden;
-            margin: 0;
+            font-family: 'Microsoft YaHei', 'Segoe UI', sans-serif;
+            background: var(--page-bg);
             color: var(--text-color);
-            min-height: 100vh;
-            height: auto;
-            width: auto;
-            display: block;
-        }
-
-        body::before {
-            display: none;
-        }
-
-        #presentation-container {
-            width: 100%;
-            height: 100vh;
-            max-width: 100vw;
-            position: relative;
-            background: #ffffff;
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
-            border-radius: 0;
             overflow: hidden;
         }
 
         .slide {
-            width: 100%;
-            height: 100%;
             display: none;
-            opacity: 0;
-            visibility: hidden;
-            align-items: stretch;
-            transition: opacity 0.6s ease-in-out;
-        }
-
-        .slide.active {
-            display: flex;
-            opacity: 1;
-            visibility: visible;
             animation: fadeIn 0.6s ease-in-out;
         }
 
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(15px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        .slide.active {
+            display: block;
         }
 
-        .chalkboard {
-            width: 50%;
-            height: 100%;
-            background: #ffffff;
-            color: #333333;
-            padding: 40px 50px;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-start;
-            overflow-y: auto;
-            box-sizing: border-box;
-            line-height: 1.9;
-            font-size: 17px;
-            border-right: 1px solid #e0e0e0;
-            box-shadow: none;
-        }
-
-        .slide > .chalkboard:only-child {
+        .slide-container {
             width: 100%;
+            height: 100vh;
+            display: flex;
+            position: relative;
+        }
+
+        .slide-container.single-column {
+            justify-content: center;
+        }
+
+        .left-content {
+            width: 50%;
+            height: 100vh;
+            padding: 48px 56px;
+            background: var(--card-bg);
+            overflow-y: auto;
+            font-size: 17px;
+            line-height: 1.9;
+            color: var(--text-color);
+            border-right: 1px solid var(--border-color);
+        }
+
+        .slide-container.single-column .left-content {
+            width: 100%;
+            max-width: 960px;
             border-right: none;
         }
 
-        .chalkboard h2 {
-            font-size: 28px;
-            color: #1a1a2e;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 4px solid #4a90e2;
-            font-family: var(--heading-font);
-            text-shadow: none;
+        .left-content h2 {
+            font-size: 2.4rem;
+            margin-bottom: 1.2rem;
+            color: var(--primary-color);
         }
 
-        .chalkboard h3 {
-            font-size: 24px;
-            color: #34495e;
-            margin: 25px 0 10px;
-            font-family: var(--heading-font);
-            text-shadow: none;
+        .left-content h3 {
+            font-size: 1.6rem;
+            margin: 1.2rem 0 0.6rem;
+            color: var(--axis-color);
         }
 
-        .chalkboard h4 {
-            font-size: 20px;
-            color: #555555;
-            margin: 20px 0 10px;
+        .left-content p {
+            margin-bottom: 1rem;
         }
 
-        .chalkboard p, .chalkboard li {
-            font-size: 17px;
-            line-height: 1.9;
-            margin-bottom: 12px;
-            text-shadow: none;
+        .left-content ul,
+        .left-content ol {
+            margin: 1rem 0 1rem 1.25rem;
         }
 
-        .chalkboard ul {
-            padding-left: 24px;
-            list-style-type: disc;
-        }
-
-        .chalkboard ol {
-            padding-left: 24px;
+        .left-content li {
+            margin-bottom: 0.6rem;
         }
 
         .math-formula {
-            background: #f8f9fa;
-            padding: 20px;
-            margin: 20px 0;
-            text-align: center;
-            border-radius: 8px;
-            border: 1px solid #e0e0e0;
-            font-size: 1.2rem;
-            line-height: 1.6;
-            color: #2c3e50;
-            box-shadow: none;
+            background: var(--code-bg);
+            border-left: 4px solid var(--primary-color);
+            padding: 14px 18px;
+            margin: 1.2rem 0;
+            border-radius: 10px;
+            font-size: 1.05rem;
         }
 
         .highlight {
-            color: #d35400;
-            font-weight: bold;
-            text-shadow: none;
+            color: var(--primary-color);
+            font-weight: 600;
         }
 
-        .visualization {
+        .right-visual {
             width: 50%;
-            height: 100%;
-            background: #fdfdfd;
+            height: 100vh;
+            background: var(--code-bg);
             display: flex;
             align-items: center;
             justify-content: center;
-            border-left: 1px solid #e0e0e0;
-            position: relative;
-            padding: 30px;
-            box-sizing: border-box;
-            overflow: hidden;
-            box-shadow: none;
+            border-left: 1px solid var(--border-color);
+            padding: 32px;
         }
 
-        .slide > .visualization:only-child {
-            width: 100%;
-            border-left: none;
+        .slide-container.single-column .right-visual {
+            display: none;
         }
 
-        .visualization.full-width,
-        .visualization.white-bg,
-        .visualization.full-width.white-bg,
-        .visualization.fullscreen {
+        .right-visual > div {
             width: 100%;
             height: 100%;
-            border-left: none;
-            background: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--card-bg);
+            border-radius: 24px;
+            box-shadow: 0 24px 60px rgba(15, 23, 42, 0.12);
+            padding: 24px;
         }
 
-        .visualization canvas {
-            max-width: 90%;
-            max-height: 90%;
+        .right-visual > div > * {
+            width: 100%;
+            height: 100%;
         }
 
-        .visualization svg {
-            max-width: 95%;
-            max-height: 95%;
+        .right-visual canvas,
+        .right-visual svg {
+            max-width: 100%;
+            max-height: 100%;
         }
 
-        .visualization .math-formula {
-            background: transparent;
-            border: none;
+        .right-visual svg text {
+            fill: var(--text-color);
+        }
+
+        .right-visual svg .domain,
+        .right-visual svg .tick line {
+            stroke: var(--axis-color);
         }
 
         .nav-container {
@@ -607,46 +190,101 @@
             display: flex;
             align-items: center;
             gap: 12px;
-            padding: 10px 18px;
-            background: rgba(255, 255, 255, 0.9);
-            border: 1px solid #dbe4ff;
+            padding: 12px 20px;
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid var(--border-color);
             border-radius: 999px;
-            box-shadow: 0 18px 45px rgba(15, 23, 42, 0.15);
-            backdrop-filter: blur(10px);
+            box-shadow: 0 12px 30px rgba(15, 23, 42, 0.12);
+            backdrop-filter: blur(12px);
             z-index: 1100;
         }
 
-        .nav-container .nav-btn {
+        .nav-btn {
             border: none;
-            background: #4a90e2;
+            background: var(--primary-color);
             color: #ffffff;
             padding: 8px 16px;
             border-radius: 999px;
-            font-size: 0.9rem;
+            font-size: 0.95rem;
             font-weight: 600;
             cursor: pointer;
             transition: transform 0.2s ease, box-shadow 0.2s ease;
-            box-shadow: 0 8px 16px rgba(74, 144, 226, 0.25);
         }
 
-        .nav-container .nav-btn:hover:not(:disabled) {
+        .nav-btn:hover:not(:disabled) {
             transform: translateY(-2px);
-            box-shadow: 0 12px 24px rgba(74, 144, 226, 0.35);
+            box-shadow: 0 12px 24px rgba(37, 99, 235, 0.25);
         }
 
-        .nav-container .nav-btn:disabled {
-            background: #e5edf8;
-            color: #94a3b8;
-            box-shadow: none;
+        .nav-btn:disabled {
+            background: #e2e8f0;
+            color: var(--muted-color);
             cursor: not-allowed;
+            box-shadow: none;
         }
 
         #page-indicator {
-            font-size: 0.9rem;
-            color: #1f2937;
+            font-size: 0.95rem;
+            color: var(--axis-color);
             min-width: 80px;
             text-align: center;
             font-weight: 600;
+        }
+
+        .directory-toggle {
+            border: none;
+            background: var(--card-bg);
+            color: var(--axis-color);
+            padding: 8px 12px;
+            border-radius: 10px;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(15, 23, 42, 0.08);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .directory-toggle:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 24px rgba(15, 23, 42, 0.12);
+        }
+
+        .directory-menu {
+            position: fixed;
+            bottom: 90px;
+            right: 24px;
+            width: 320px;
+            max-height: 60vh;
+            overflow-y: auto;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 18px 45px rgba(15, 23, 42, 0.18);
+            display: none;
+            z-index: 1200;
+        }
+
+        .directory-menu.active {
+            display: block;
+        }
+
+        .directory-menu h3 {
+            margin-bottom: 16px;
+            font-size: 1.1rem;
+            color: var(--axis-color);
+        }
+
+        .directory-item {
+            margin-bottom: 12px;
+            color: var(--text-color);
+            text-decoration: none;
+            display: block;
+            padding: 10px 12px;
+            border-radius: 12px;
+            transition: background 0.2s ease;
+        }
+
+        .directory-item:hover {
+            background: rgba(37, 99, 235, 0.08);
         }
 
         .global-animation-controls {
@@ -655,49 +293,82 @@
             left: 24px;
             display: flex;
             gap: 12px;
-            padding: 10px 16px;
-            background: rgba(255, 255, 255, 0.9);
-            border: 1px solid #dbe4ff;
+            padding: 12px 18px;
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid var(--border-color);
             border-radius: 999px;
-            box-shadow: 0 18px 45px rgba(15, 23, 42, 0.1);
-            backdrop-filter: blur(10px);
+            box-shadow: 0 12px 30px rgba(15, 23, 42, 0.12);
+            backdrop-filter: blur(12px);
             z-index: 1100;
         }
 
         .global-control-btn {
             background: transparent;
             border: none;
-            color: #1f2937;
+            color: var(--axis-color);
             padding: 6px 12px;
             border-radius: 999px;
             cursor: pointer;
-            font-size: 0.9rem;
+            font-size: 0.95rem;
             font-weight: 600;
-            transition: transform 0.2s ease, color 0.2s ease;
+            transition: color 0.2s ease;
         }
 
         .global-control-btn:hover {
-            color: #2563eb;
-            transform: translateY(-1px);
+            color: var(--primary-color);
         }
 
         .global-control-btn.pause {
-            color: #e74c3c;
+            color: #dc2626;
         }
 
-        .return-home-panel,
-        .home-nav-buttons,
-        #floating-menu,
-        .menu-toggle,
-        .menu-content {
-            display: none !important;
+        .slide-note {
+            font-size: 0.95rem;
+            color: var(--muted-color);
+            margin-top: 12px;
         }
 
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 1200px) {
+            .slide-container {
+                flex-direction: column;
+            }
+
+            .left-content,
+            .right-visual {
+                width: 100%;
+                height: auto;
+                min-height: 50vh;
+            }
+
+            .right-visual {
+                border-left: none;
+                border-top: 1px solid var(--border-color);
+            }
+        }
+
+        @media print {
+            body {
+                overflow: visible;
+            }
+            .slide {
+                display: block !important;
+                page-break-after: always;
+            }
+            .nav-container,
+            .global-animation-controls,
+            .directory-menu,
+            .directory-toggle {
+                display: none !important;
+            }
+        }
     </style>
-    <link rel="stylesheet" href="../common-assets/css/chapter-light-overrides.css">
-
-
-    <style>
+<link href="../common-assets/css/chapter-light-overrides.css" rel="stylesheet"/>
+<style>
         .return-home-panel {
             position: fixed;
             top: 16px;
@@ -741,341 +412,275 @@
     </style>
 </head>
 <body>
-<div id="presentation-container">
-    <!-- 第1页：标题页 -->
-    <div class="slide active">
-        <div class="chalkboard" style="flex: 1; text-align: center; border: none;">
-            <h2 style="font-size: 4rem; border: none;">第五章</h2>
-            <p style="font-size: 2.5rem; color: white;">不定积分</p>
-            <p style="font-size: 1.8rem; color: #bdc3c7; margin-top: 40px;">导数的逆运算</p>
-            <div style="margin-top: 60px;">
-                <p style="font-size: 1.2rem; color: #ecf0f1;">高职数学 · 互动教学课件</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- 第2页：引入 - 逆运算的概念 -->
-    <div class="slide">
-        <div class="chalkboard">
-            <h2>从逆运算说起</h2>
-            <p>在数学中，很多运算都有它的<span class="highlight">逆运算</span>：</p>
-            <ul>
-                <li>加法 ↔ 减法</li>
-                <li>乘法 ↔ 除法</li>
-                <li>乘方 ↔ 开方</li>
-                <li>指数 ↔ 对数</li>
-            </ul>
-            <p>那么，<span class="highlight">导数有逆运算吗？</span></p>
-            <p>答案是：<strong style="color: #2ecc71; font-size: 1.4rem;">有！那就是积分。</strong></p>
-            <p style="margin-top: 20px; font-size: 1.1rem; color: #95a5a6;">积分让我们从"变化率"找回"原函数"</p>
-        </div>
-        <div class="visualization" id="vis-reverse-operations"></div>
-    </div>
-
-    <!-- 第3页：原函数的概念 -->
-    <div class="slide">
-        <div class="chalkboard">
-            <h2>原函数</h2>
-            <h3>问题引入</h3>
-            <p>已知某函数的导数是 $f'(x) = 2x$</p>
-            <p>问：<span class="highlight">原来的函数是什么？</span></p>
-            
-            <h3>思考过程</h3>
-            <p>什么函数求导后得到 $2x$？</p>
-            <p>答案：$F(x) = x^2$</p>
-            <p>因为 $(x^2)' = 2x$ ✓</p>
-            
-            <div style="background: rgba(231, 76, 60, 0.1); padding: 15px; border-radius: 8px; margin-top: 20px;">
-                <p style="color: #e74c3c;">但是，$x^2 + 1$、$x^2 + 5$、$x^2 - 10$ 求导后也都是 $2x$！</p>
-                <p style="color: #ecf0f1;">所以原函数<span class="highlight">不唯一</span></p>
-            </div>
-        </div>
-        <div class="visualization" id="vis-antiderivative"></div>
-    </div>
-
-    <!-- 第4页：不定积分的定义 -->
-    <div class="slide">
-        <div class="chalkboard">
-            <h2>不定积分</h2>
-            <h3>定义</h3>
-            <p>函数 $f(x)$ 的所有原函数的集合，叫做 $f(x)$ 的<span class="highlight">不定积分</span>。</p>
-            <div class="math-formula">
+<div id="slidesContainer">
+<!-- 第1页：标题页 -->
+<div class="slide active"><div class="slide-container single-column"><div class="left-content tex2jax_process">
+<h2 style="font-size: 4rem">第五章</h2>
+<p style="font-size: 2.5rem; color: var(--text-color)">不定积分</p>
+<p style="font-size: 1.8rem; margin-top: 40px">导数的逆运算</p>
+<div style="margin-top: 60px">
+<p style="font-size: 1.2rem; color: var(--text-color)">高职数学 · 互动教学课件</p>
+</div>
+</div></div></div>
+<!-- 第2页：引入 - 逆运算的概念 -->
+<div class="slide"><div class="slide-container"><div class="left-content tex2jax_process">
+<h2>从逆运算说起</h2>
+<p>在数学中，很多运算都有它的<span class="highlight">逆运算</span>：</p>
+<ul>
+<li>加法 ↔ 减法</li>
+<li>乘法 ↔ 除法</li>
+<li>乘方 ↔ 开方</li>
+<li>指数 ↔ 对数</li>
+</ul>
+<p>那么，<span class="highlight">导数有逆运算吗？</span></p>
+<p>答案是：<strong style="font-size: 1.4rem">有！那就是积分。</strong></p>
+<p style="margin-top: 20px; font-size: 1.1rem; color: var(--muted-color)">积分让我们从"变化率"找回"原函数"</p>
+</div><div class="right-visual"><div id="vis-reverse-operations"></div></div></div></div>
+<!-- 第3页：原函数的概念 -->
+<div class="slide"><div class="slide-container"><div class="left-content tex2jax_process">
+<h2>原函数</h2>
+<h3>问题引入</h3>
+<p>已知某函数的导数是 $f'(x) = 2x$</p>
+<p>问：<span class="highlight">原来的函数是什么？</span></p>
+<h3>思考过程</h3>
+<p>什么函数求导后得到 $2x$？</p>
+<p>答案：$F(x) = x^2$</p>
+<p>因为 $(x^2)' = 2x$ ✓</p>
+<div style="padding: 15px; margin-top: 20px">
+<p>但是，$x^2 + 1$、$x^2 + 5$、$x^2 - 10$ 求导后也都是 $2x$！</p>
+<p style="color: var(--text-color)">所以原函数<span class="highlight">不唯一</span></p>
+</div>
+</div><div class="right-visual"><div id="vis-antiderivative"></div></div></div></div>
+<!-- 第4页：不定积分的定义 -->
+<div class="slide"><div class="slide-container"><div class="left-content tex2jax_process">
+<h2>不定积分</h2>
+<h3>定义</h3>
+<p>函数 $f(x)$ 的所有原函数的集合，叫做 $f(x)$ 的<span class="highlight">不定积分</span>。</p>
+<div class="math-formula">
                 $\int f(x)dx = F(x) + C$
             </div>
-            <ul>
-                <li>$\int$ - 积分号（像拉长的S）</li>
-                <li>$f(x)$ - 被积函数</li>
-                <li>$dx$ - 积分变量</li>
-                <li>$F(x)$ - 一个原函数</li>
-                <li>$C$ - 任意常数</li>
-            </ul>
-            <p style="margin-top: 20px; background: rgba(46, 204, 113, 0.1); padding: 10px; border-radius: 5px;">
+<ul>
+<li>$\int$ - 积分号（像拉长的S）</li>
+<li>$f(x)$ - 被积函数</li>
+<li>$dx$ - 积分变量</li>
+<li>$F(x)$ - 一个原函数</li>
+<li>$C$ - 任意常数</li>
+</ul>
+<p style="margin-top: 20px; padding: 10px">
                 💡 记忆技巧：积分号 ∫ 来源于拉丁文 summa（求和）的首字母 S
             </p>
-        </div>
-        <div class="visualization" id="vis-integral-notation"></div>
-    </div>
-
-    <!-- 第5页：导数与积分的关系 -->
-    <div class="slide">
-        <div class="chalkboard">
-            <h2>导数与积分的关系</h2>
-            <p>导数和积分是<span class="highlight">互逆运算</span>：</p>
-            <div class="formula-rule">
-                求导：$F(x) \xrightarrow{求导} f(x)$<br>
+</div><div class="right-visual"><div id="vis-integral-notation"></div></div></div></div>
+<!-- 第5页：导数与积分的关系 -->
+<div class="slide"><div class="slide-container"><div class="left-content tex2jax_process">
+<h2>导数与积分的关系</h2>
+<p>导数和积分是<span class="highlight">互逆运算</span>：</p>
+<div class="formula-rule">
+                求导：$F(x) \xrightarrow{求导} f(x)$<br/>
                 积分：$f(x) \xrightarrow{积分} F(x) + C$
             </div>
-            <h3>重要性质</h3>
-            <p>1. $\frac{d}{dx}\int f(x)dx = f(x)$ （积分后求导，回到原函数）</p>
-            <p>2. $\int f'(x)dx = f(x) + C$ （导数的积分，得原函数）</p>
-            <div style="background: rgba(52, 152, 219, 0.1); padding: 15px; border-radius: 8px; margin-top: 20px;">
-                <p style="text-align: center; font-size: 1.3rem;">记住：<span class="highlight">积分是"反求导"</span></p>
-            </div>
-        </div>
-        <div class="visualization" id="vis-derivative-integral"></div>
-    </div>
-
-    <!-- 第6页：基本积分公式1 - 幂函数 -->
-    <div class="slide">
-        <div class="chalkboard">
-            <h2>基本积分公式（一）</h2>
-            <h3>幂函数积分</h3>
-            <div class="formula-rule">
+<h3>重要性质</h3>
+<p>1. $\frac{d}{dx}\int f(x)dx = f(x)$ （积分后求导，回到原函数）</p>
+<p>2. $\int f'(x)dx = f(x) + C$ （导数的积分，得原函数）</p>
+<div style="padding: 15px; margin-top: 20px">
+<p style="text-align: center; font-size: 1.3rem">记住：<span class="highlight">积分是"反求导"</span></p>
+</div>
+</div><div class="right-visual"><div id="vis-derivative-integral"></div></div></div></div>
+<!-- 第6页：基本积分公式1 - 幂函数 -->
+<div class="slide"><div class="slide-container"><div class="left-content tex2jax_process">
+<h2>基本积分公式（一）</h2>
+<h3>幂函数积分</h3>
+<div class="formula-rule">
                 $\int x^n dx = \frac{x^{n+1}}{n+1} + C$ （$n \neq -1$）
             </div>
-            <h3>例子</h3>
-            <table class="formula-table">
-                <tr>
-                    <td>$\int x^2 dx = \frac{x^3}{3} + C$</td>
-                </tr>
-                <tr>
-                    <td>$\int x^3 dx = \frac{x^4}{4} + C$</td>
-                </tr>
-                <tr>
-                    <td>$\int \sqrt{x} dx = \int x^{1/2} dx = \frac{2x^{3/2}}{3} + C$</td>
-                </tr>
-            </table>
-            <div style="background: rgba(243, 156, 18, 0.1); padding: 15px; border-radius: 8px; margin-top: 20px;">
-                <p style="text-align: center;">口诀：<span class="highlight">指数加1，除以新指数</span></p>
-            </div>
-        </div>
-        <div class="visualization" id="vis-power-integral"></div>
-    </div>
-
-    <!-- 第7页：基本积分公式2 - 三角函数 -->
-    <div class="slide">
-        <div class="chalkboard">
-            <h2>基本积分公式（二）</h2>
-            <h3>三角函数积分</h3>
-            <table class="formula-table">
-                <tr>
-                    <td>$\int \sin x dx = -\cos x + C$</td>
-                </tr>
-                <tr>
-                    <td>$\int \cos x dx = \sin x + C$</td>
-                </tr>
-                <tr>
-                    <td>$\int \sec^2 x dx = \tan x + C$</td>
-                </tr>
-                <tr>
-                    <td>$\int \csc^2 x dx = -\cot x + C$</td>
-                </tr>
-            </table>
-            <div style="background: rgba(52, 152, 219, 0.1); padding: 15px; border-radius: 8px; margin-top: 20px;">
-                <p>记忆技巧：<span class="highlight">sin积分变负cos，cos积分变sin</span></p>
-                <p style="font-size: 1rem; color: #95a5a6;">想象正弦波和余弦波的相互转换</p>
-            </div>
-        </div>
-        <div class="visualization" id="vis-trig-integral"></div>
-    </div>
-
-    <!-- 第8页：基本积分公式3 - 指数对数 -->
-    <div class="slide">
-        <div class="chalkboard">
-            <h2>基本积分公式（三）</h2>
-            <h3>指数与对数函数</h3>
-            <table class="formula-table">
-                <tr>
-                    <td>$\int e^x dx = e^x + C$</td>
-                </tr>
-                <tr>
-                    <td>$\int a^x dx = \frac{a^x}{\ln a} + C$</td>
-                </tr>
-                <tr>
-                    <td>$\int \frac{1}{x} dx = \ln|x| + C$</td>
-                </tr>
-            </table>
-            <div style="background: rgba(155, 89, 182, 0.1); padding: 15px; border-radius: 8px; margin-top: 20px;">
-                <p>特殊：<span class="highlight">$e^x$ 积分后还是自己！</span></p>
-                <p>注意：<span class="highlight">$\frac{1}{x}$ 的积分是 $\ln|x|$（要加绝对值）</span></p>
-            </div>
-        </div>
-        <div class="visualization" id="vis-exp-integral"></div>
-    </div>
-
-    <!-- 第9页：直接积分法 -->
-    <div class="slide">
-        <div class="chalkboard">
-            <h2>直接积分法</h2>
-            <h3>方法</h3>
-            <p>利用积分的<span class="highlight">线性性质</span>和基本公式直接求解。</p>
-            <div class="formula-rule">
+<h3>例子</h3>
+<table class="formula-table">
+<tr>
+<td>$\int x^2 dx = \frac{x^3}{3} + C$</td>
+</tr>
+<tr>
+<td>$\int x^3 dx = \frac{x^4}{4} + C$</td>
+</tr>
+<tr>
+<td>$\int \sqrt{x} dx = \int x^{1/2} dx = \frac{2x^{3/2}}{3} + C$</td>
+</tr>
+</table>
+<div style="padding: 15px; margin-top: 20px">
+<p style="text-align: center">口诀：<span class="highlight">指数加1，除以新指数</span></p>
+</div>
+</div><div class="right-visual"><div id="vis-power-integral"></div></div></div></div>
+<!-- 第7页：基本积分公式2 - 三角函数 -->
+<div class="slide"><div class="slide-container"><div class="left-content tex2jax_process">
+<h2>基本积分公式（二）</h2>
+<h3>三角函数积分</h3>
+<table class="formula-table">
+<tr>
+<td>$\int \sin x dx = -\cos x + C$</td>
+</tr>
+<tr>
+<td>$\int \cos x dx = \sin x + C$</td>
+</tr>
+<tr>
+<td>$\int \sec^2 x dx = \tan x + C$</td>
+</tr>
+<tr>
+<td>$\int \csc^2 x dx = -\cot x + C$</td>
+</tr>
+</table>
+<div style="padding: 15px; margin-top: 20px">
+<p>记忆技巧：<span class="highlight">sin积分变负cos，cos积分变sin</span></p>
+<p style="font-size: 1rem; color: var(--muted-color)">想象正弦波和余弦波的相互转换</p>
+</div>
+</div><div class="right-visual"><div id="vis-trig-integral"></div></div></div></div>
+<!-- 第8页：基本积分公式3 - 指数对数 -->
+<div class="slide"><div class="slide-container"><div class="left-content tex2jax_process">
+<h2>基本积分公式（三）</h2>
+<h3>指数与对数函数</h3>
+<table class="formula-table">
+<tr>
+<td>$\int e^x dx = e^x + C$</td>
+</tr>
+<tr>
+<td>$\int a^x dx = \frac{a^x}{\ln a} + C$</td>
+</tr>
+<tr>
+<td>$\int \frac{1}{x} dx = \ln|x| + C$</td>
+</tr>
+</table>
+<div style="padding: 15px; margin-top: 20px">
+<p>特殊：<span class="highlight">$e^x$ 积分后还是自己！</span></p>
+<p>注意：<span class="highlight">$\frac{1}{x}$ 的积分是 $\ln|x|$（要加绝对值）</span></p>
+</div>
+</div><div class="right-visual"><div id="vis-exp-integral"></div></div></div></div>
+<!-- 第9页：直接积分法 -->
+<div class="slide"><div class="slide-container"><div class="left-content tex2jax_process">
+<h2>直接积分法</h2>
+<h3>方法</h3>
+<p>利用积分的<span class="highlight">线性性质</span>和基本公式直接求解。</p>
+<div class="formula-rule">
                 $\int [af(x) + bg(x)]dx = a\int f(x)dx + b\int g(x)dx$
             </div>
-            <h3>例题</h3>
-            <p>求 $\int (3x^2 + 2x - 5)dx$</p>
-            <p>解：拆开来算</p>
-            <p>$= 3\int x^2 dx + 2\int x dx - 5\int 1 dx$</p>
-            <p>$= 3 \cdot \frac{x^3}{3} + 2 \cdot \frac{x^2}{2} - 5x + C$</p>
-            <p>$= x^3 + x^2 - 5x + C$</p>
-        </div>
-        <div class="visualization" id="vis-direct-integral"></div>
-    </div>
-
-    <!-- 第10页：换元积分法 - 凑微分 -->
-    <div class="slide">
-        <div class="chalkboard">
-            <h2>换元积分法（凑微分）</h2>
-            <h3>基本思想</h3>
-            <p>把复杂的积分<span class="highlight">凑成</span>基本积分公式的形式。</p>
-            <h3>例：求 $\int 2x e^{x^2} dx$</h3>
-            <p>观察：$2x dx$ 正好是 $x^2$ 的微分！</p>
-            <p>令 $u = x^2$，则 $du = 2x dx$</p>
-            <p>原式 $= \int e^u du = e^u + C = e^{x^2} + C$</p>
-            <div style="background: rgba(46, 204, 113, 0.1); padding: 15px; border-radius: 8px; margin-top: 20px;">
-                <p>技巧：<span class="highlight">找到内函数和它的导数</span></p>
-            </div>
-        </div>
-        <div class="visualization" id="vis-substitution"></div>
-    </div>
-
-    <!-- 第11页：分部积分法 -->
-    <div class="slide">
-        <div class="chalkboard">
-            <h2>分部积分法</h2>
-            <h3>公式</h3>
-            <div class="formula-rule">
+<h3>例题</h3>
+<p>求 $\int (3x^2 + 2x - 5)dx$</p>
+<p>解：拆开来算</p>
+<p>$= 3\int x^2 dx + 2\int x dx - 5\int 1 dx$</p>
+<p>$= 3 \cdot \frac{x^3}{3} + 2 \cdot \frac{x^2}{2} - 5x + C$</p>
+<p>$= x^3 + x^2 - 5x + C$</p>
+</div><div class="right-visual"><div id="vis-direct-integral"></div></div></div></div>
+<!-- 第10页：换元积分法 - 凑微分 -->
+<div class="slide"><div class="slide-container"><div class="left-content tex2jax_process">
+<h2>换元积分法（凑微分）</h2>
+<h3>基本思想</h3>
+<p>把复杂的积分<span class="highlight">凑成</span>基本积分公式的形式。</p>
+<h3>例：求 $\int 2x e^{x^2} dx$</h3>
+<p>观察：$2x dx$ 正好是 $x^2$ 的微分！</p>
+<p>令 $u = x^2$，则 $du = 2x dx$</p>
+<p>原式 $= \int e^u du = e^u + C = e^{x^2} + C$</p>
+<div style="padding: 15px; margin-top: 20px">
+<p>技巧：<span class="highlight">找到内函数和它的导数</span></p>
+</div>
+</div><div class="right-visual"><div id="vis-substitution"></div></div></div></div>
+<!-- 第11页：分部积分法 -->
+<div class="slide"><div class="slide-container"><div class="left-content tex2jax_process">
+<h2>分部积分法</h2>
+<h3>公式</h3>
+<div class="formula-rule">
                 $\int u \cdot dv = u \cdot v - \int v \cdot du$
             </div>
-            <h3>例：求 $\int x e^x dx$</h3>
-            <p>令 $u = x$，$dv = e^x dx$</p>
-            <p>则 $du = dx$，$v = e^x$</p>
-            <p>原式 $= x e^x - \int e^x dx = x e^x - e^x + C$</p>
-            <p>$= e^x(x - 1) + C$</p>
-            <div style="background: rgba(231, 76, 60, 0.1); padding: 15px; border-radius: 8px; margin-top: 20px;">
-                <p>口诀：<span class="highlight">反对幂指三</span>（选u的顺序）</p>
-                <p style="font-size: 0.9rem;">反三角 > 对数 > 幂函数 > 指数 > 三角</p>
-            </div>
-        </div>
-        <div class="visualization" id="vis-parts"></div>
-    </div>
-
-    <!-- 第12页：积分机器 -->
-    <div class="slide">
-        <div class="chalkboard">
-            <h2>积分机器</h2>
-            <p>想象积分是一台<span class="highlight">逆向机器</span>：</p>
-            <ul>
-                <li>输入：导数 $f(x)$</li>
-                <li>处理：找原函数</li>
-                <li>输出：$F(x) + C$</li>
-            </ul>
-            <div style="margin: 30px 0; text-align: center;">
-                <p style="background: rgba(52, 152, 219, 0.1); padding: 15px; border-radius: 8px; display: inline-block;">
+<h3>例：求 $\int x e^x dx$</h3>
+<p>令 $u = x$，$dv = e^x dx$</p>
+<p>则 $du = dx$，$v = e^x$</p>
+<p>原式 $= x e^x - \int e^x dx = x e^x - e^x + C$</p>
+<p>$= e^x(x - 1) + C$</p>
+<div style="padding: 15px; margin-top: 20px">
+<p>口诀：<span class="highlight">反对幂指三</span>（选u的顺序）</p>
+<p style="font-size: 0.9rem">反三角 &gt; 对数 &gt; 幂函数 &gt; 指数 &gt; 三角</p>
+</div>
+</div><div class="right-visual"><div id="vis-parts"></div></div></div></div>
+<!-- 第12页：积分机器 -->
+<div class="slide"><div class="slide-container"><div class="left-content tex2jax_process">
+<h2>积分机器</h2>
+<p>想象积分是一台<span class="highlight">逆向机器</span>：</p>
+<ul>
+<li>输入：导数 $f(x)$</li>
+<li>处理：找原函数</li>
+<li>输出：$F(x) + C$</li>
+</ul>
+<div style="margin: 30px 0; text-align: center">
+<p style="padding: 15px; display: inline-block">
                     输入 $2x$ → 积分机器 → 输出 $x^2 + C$
                 </p>
-                <p style="background: rgba(46, 204, 113, 0.1); padding: 15px; border-radius: 8px; display: inline-block; margin-top: 10px;">
+<p style="padding: 15px; display: inline-block; margin-top: 10px">
                     输入 $\cos x$ → 积分机器 → 输出 $\sin x + C$
                 </p>
-            </div>
-            <p style="color: #95a5a6; font-size: 1rem;">💡 积分机器总是要加上常数C，因为原函数有无穷多个</p>
-        </div>
-        <div class="visualization" id="vis-integral-machine"></div>
-    </div>
-
-    <!-- 第13页：实际应用1 - 速度与位移 -->
-    <div class="slide">
-        <div class="chalkboard">
-            <h2>应用：速度与位移</h2>
-            <h3>物理背景</h3>
-            <p>已知速度函数 $v(t)$，求位移函数 $s(t)$</p>
-            <p>因为 $v(t) = s'(t)$ （速度是位移的导数）</p>
-            <p>所以 $s(t) = \int v(t) dt$ （位移是速度的积分）</p>
-            <h3>例题</h3>
-            <p>速度 $v(t) = 3t^2 + 2t$ （米/秒）</p>
-            <p>位移 $s(t) = \int (3t^2 + 2t) dt = t^3 + t^2 + C$</p>
-            <p>若 $s(0) = 0$（初始位置），则 $C = 0$</p>
-            <p>所以 $s(t) = t^3 + t^2$ 米</p>
-            <div style="background: rgba(52, 152, 219, 0.1); padding: 10px; border-radius: 5px; margin-top: 15px;">
-                <p style="font-size: 1rem;">物理意义：积分让我们从"瞬时速度"恢复"总位移"</p>
-            </div>
-        </div>
-        <div class="visualization" id="vis-physics-app"></div>
-    </div>
-
-    <!-- 第14页：常见错误 -->
-    <div class="slide">
-        <div class="chalkboard">
-            <h2>常见错误提醒</h2>
-            <div style="margin: 20px 0;">
-                <h3 style="color: #e74c3c;">❌ 错误1：忘记加C</h3>
-                <p>$\int 2x dx = x^2$ ❌</p>
-                <p>$\int 2x dx = x^2 + C$ ✓</p>
-            </div>
-            
-            <div style="margin: 20px 0;">
-                <h3 style="color: #e74c3c;">❌ 错误2：幂函数公式用错</h3>
-                <p>$\int x^2 dx = \frac{x^2}{2} + C$ ❌</p>
-                <p>$\int x^2 dx = \frac{x^3}{3} + C$ ✓</p>
-            </div>
-            
-            <div style="margin: 20px 0;">
-                <h3 style="color: #e74c3c;">❌ 错误3：$\frac{1}{x}$的积分</h3>
-                <p>$\int \frac{1}{x} dx = \ln x + C$ ❌（缺绝对值）</p>
-                <p>$\int \frac{1}{x} dx = \ln|x| + C$ ✓</p>
-            </div>
-            
-            <div style="background: rgba(243, 156, 18, 0.1); padding: 15px; border-radius: 8px;">
-                <p style="text-align: center;">记住：<span class="highlight">细节决定成败！</span></p>
-            </div>
-        </div>
-        <div class="visualization" id="vis-common-mistakes"></div>
-    </div>
-
-    <!-- 第15页：总结 -->
-    <div class="slide">
-        <div class="chalkboard" style="flex: 1; text-align: center; border: none;">
-            <h2 style="font-size: 3rem; border: none;">课程总结</h2>
-            <div style="text-align: left; max-width: 700px; margin: 0 auto;">
-                <p style="font-size: 1.4rem; margin: 15px 0;">✅ 不定积分是导数的逆运算</p>
-                <p style="font-size: 1.4rem; margin: 15px 0;">✅ 原函数不唯一，要加常数C</p>
-                <p style="font-size: 1.4rem; margin: 15px 0;">✅ 掌握基本积分公式</p>
-                <p style="font-size: 1.4rem; margin: 15px 0;">✅ 三种方法：直接法、换元法、分部法</p>
-                <p style="font-size: 1.4rem; margin: 15px 0;">✅ 多练习，熟能生巧</p>
-            </div>
-            <div style="margin-top: 40px;">
-                <p style="font-size: 2rem; color: #f39c12;">继续加油！</p>
-                <p style="font-size: 1.2rem; color: #95a5a6; margin-top: 20px;">下一章：定积分与应用</p>
-            </div>
-        </div>
-    </div>
-    
-    <!-- 翻页按钮 -->
-
-    <!-- 全局动画控制面板 -->
-    
-    <div class="nav-container">
-        <button class="nav-btn" id="prev-btn" onclick="previousSlide()" title="上一页 (←)">上一页</button>
-        <span id="page-indicator">1 / 14</span>
-        <button class="nav-btn" id="next-btn" onclick="nextSlide()" title="下一页 (→)">下一页</button>
-    </div>
-    <div class="global-animation-controls" id="globalAnimationControls">
-        <button class="global-control-btn" id="globalPlayPauseBtn">暂停</button>
-        <button class="global-control-btn" id="globalSpeedBtn">1.0x</button>
-    </div>
 </div>
-
-<script><script>
+<p style="color: var(--muted-color); font-size: 1rem">💡 积分机器总是要加上常数C，因为原函数有无穷多个</p>
+</div><div class="right-visual"><div id="vis-integral-machine"></div></div></div></div>
+<!-- 第13页：实际应用1 - 速度与位移 -->
+<div class="slide"><div class="slide-container"><div class="left-content tex2jax_process">
+<h2>应用：速度与位移</h2>
+<h3>物理背景</h3>
+<p>已知速度函数 $v(t)$，求位移函数 $s(t)$</p>
+<p>因为 $v(t) = s'(t)$ （速度是位移的导数）</p>
+<p>所以 $s(t) = \int v(t) dt$ （位移是速度的积分）</p>
+<h3>例题</h3>
+<p>速度 $v(t) = 3t^2 + 2t$ （米/秒）</p>
+<p>位移 $s(t) = \int (3t^2 + 2t) dt = t^3 + t^2 + C$</p>
+<p>若 $s(0) = 0$（初始位置），则 $C = 0$</p>
+<p>所以 $s(t) = t^3 + t^2$ 米</p>
+<div style="padding: 10px; margin-top: 15px">
+<p style="font-size: 1rem">物理意义：积分让我们从"瞬时速度"恢复"总位移"</p>
+</div>
+</div><div class="right-visual"><div id="vis-physics-app"></div></div></div></div>
+<!-- 第14页：常见错误 -->
+<div class="slide"><div class="slide-container"><div class="left-content tex2jax_process">
+<h2>常见错误提醒</h2>
+<div style="margin: 20px 0">
+<h3>❌ 错误1：忘记加C</h3>
+<p>$\int 2x dx = x^2$ ❌</p>
+<p>$\int 2x dx = x^2 + C$ ✓</p>
+</div>
+<div style="margin: 20px 0">
+<h3>❌ 错误2：幂函数公式用错</h3>
+<p>$\int x^2 dx = \frac{x^2}{2} + C$ ❌</p>
+<p>$\int x^2 dx = \frac{x^3}{3} + C$ ✓</p>
+</div>
+<div style="margin: 20px 0">
+<h3>❌ 错误3：$\frac{1}{x}$的积分</h3>
+<p>$\int \frac{1}{x} dx = \ln x + C$ ❌（缺绝对值）</p>
+<p>$\int \frac{1}{x} dx = \ln|x| + C$ ✓</p>
+</div>
+<div style="padding: 15px">
+<p style="text-align: center">记住：<span class="highlight">细节决定成败！</span></p>
+</div>
+</div><div class="right-visual"><div id="vis-common-mistakes"></div></div></div></div>
+<!-- 第15页：总结 -->
+<div class="slide"><div class="slide-container single-column"><div class="left-content tex2jax_process">
+<h2 style="font-size: 3rem">课程总结</h2>
+<div style="text-align: left; max-width: 700px; margin: 0 auto">
+<p style="font-size: 1.4rem; margin: 15px 0">✅ 不定积分是导数的逆运算</p>
+<p style="font-size: 1.4rem; margin: 15px 0">✅ 原函数不唯一，要加常数C</p>
+<p style="font-size: 1.4rem; margin: 15px 0">✅ 掌握基本积分公式</p>
+<p style="font-size: 1.4rem; margin: 15px 0">✅ 三种方法：直接法、换元法、分部法</p>
+<p style="font-size: 1.4rem; margin: 15px 0">✅ 多练习，熟能生巧</p>
+</div>
+<div style="margin-top: 40px">
+<p style="font-size: 2rem">继续加油！</p>
+<p style="font-size: 1.2rem; color: var(--muted-color); margin-top: 20px">下一章：定积分与应用</p>
+</div>
+</div></div></div>
+<!-- 翻页按钮 -->
+<!-- 全局动画控制面板 -->
+<div class="nav-container">
+<button class="nav-btn" id="prev-btn" onclick="previousSlide()" title="上一页 (←)">上一页</button>
+<span id="page-indicator">1 / 14</span>
+<button class="nav-btn" id="next-btn" onclick="nextSlide()" title="下一页 (→)">下一页</button>
+</div>
+<div class="global-animation-controls" id="globalAnimationControls">
+<button class="global-control-btn" id="globalPlayPauseBtn">暂停</button>
+<button class="global-control-btn" id="globalSpeedBtn">1.0x</button>
+</div>
+</div>
+<script>
     let slides, totalSlides, currentSlide = 0;
     let globalAnimationPlaying = true;
     let globalAnimationSpeed = 1.0;
@@ -1212,7 +817,16 @@
     }
 
     // D3.js 辅助函数
-    function setupD3(containerId, margins = {top: 40, right: 40, bottom: 40, left: 40}) {
+    
+    const rootStyles = getComputedStyle(document.documentElement);
+    const themeColors = {
+        text: rootStyles.getPropertyValue('--text-color').trim() || '#34495e',
+        axis: rootStyles.getPropertyValue('--axis-color').trim() || '#475569',
+        muted: rootStyles.getPropertyValue('--muted-color').trim() || '#94a3b8',
+        surface: rootStyles.getPropertyValue('--card-bg').trim() || '#ffffff'
+    };
+
+function setupD3(containerId, margins = {top: 40, right: 40, bottom: 40, left: 40}) {
         const container = d3.select(`#${containerId}`);
         if (container.empty()) return null;
         
@@ -1288,12 +902,12 @@
                 .attr('rx', 10)
                 .attr('fill', op.color1)
                 .attr('fill-opacity', 0.8)
-                .style('filter', 'drop-shadow(0 4px 8px rgba(0,0,0,0.2))');
+                .style('filter', 'drop-shadow(0 4px 8px rgba(15, 23, 42, 0.18))');
             
             leftBox.append('text')
                 .attr('text-anchor', 'middle')
                 .attr('dy', '0.3em')
-                .attr('fill', 'white')
+                .attr('fill', themeColors.text)
                 .attr('font-size', '24px')
                 .attr('font-weight', 'bold')
                 .text(op.symbol1);
@@ -1322,12 +936,12 @@
                 .attr('rx', 10)
                 .attr('fill', op.color2)
                 .attr('fill-opacity', 0.8)
-                .style('filter', 'drop-shadow(0 4px 8px rgba(0,0,0,0.2))');
+                .style('filter', 'drop-shadow(0 4px 8px rgba(15, 23, 42, 0.18))');
             
             rightBox.append('text')
                 .attr('text-anchor', 'middle')
                 .attr('dy', '0.3em')
-                .attr('fill', 'white')
+                .attr('fill', themeColors.text)
                 .attr('font-size', '24px')
                 .attr('font-weight', 'bold')
                 .text(op.symbol2);
@@ -1384,7 +998,7 @@
         center.append('text')
             .attr('text-anchor', 'middle')
             .attr('dy', '0.3em')
-            .attr('fill', 'white')
+            .attr('fill', themeColors.text)
             .attr('font-size', '28px')
             .attr('font-weight', 'bold')
             .text("f'(x) = 2x");
@@ -1434,7 +1048,7 @@
             group.append('text')
                 .attr('text-anchor', 'middle')
                 .attr('dy', '0.3em')
-                .attr('fill', 'white')
+                .attr('fill', themeColors.text)
                 .attr('font-size', '20px')
                 .attr('font-weight', 'bold')
                 .text(func.f);
@@ -1474,7 +1088,7 @@
             { symbol: '∫', label: '积分号', x: 120, color: '#e74c3c', size: 48 },
             { symbol: 'f(x)', label: '被积函数', x: 220, color: '#3498db', size: 28 },
             { symbol: 'dx', label: '积分变量', x: 320, color: '#2ecc71', size: 28 },
-            { symbol: '=', label: '等于', x: 400, color: '#95a5a6', size: 36 },
+            { symbol: '=', label: '等于', x: 400, color: themeColors.muted, size: 36 },
             { symbol: 'F(x)', label: '原函数', x: 480, color: '#9b59b6', size: 28 },
             { symbol: '+ C', label: '常数', x: 580, color: '#f39c12', size: 28 }
         ];
@@ -1525,7 +1139,7 @@
         setTimeout(() => {
             g.append('path')
                 .attr('d', `M 140 ${centerY} Q ${width/2} ${centerY - 50} 560 ${centerY}`)
-                .attr('stroke', '#95a5a6')
+                .attr('stroke', themeColors.muted)
                 .attr('stroke-width', 1)
                 .attr('fill', 'none')
                 .attr('stroke-dasharray', '3,3')
@@ -1567,7 +1181,7 @@
             .attr('width', boxWidth)
             .attr('height', boxHeight)
             .attr('class', 'machine-box')
-            .attr('fill', 'white')
+            .attr('fill', themeColors.text)
             .attr('stroke', '#9b59b6')
             .attr('stroke-width', 3)
             .attr('rx', 10);
@@ -1594,7 +1208,7 @@
             .attr('width', boxWidth)
             .attr('height', boxHeight)
             .attr('class', 'machine-box')
-            .attr('fill', 'white')
+            .attr('fill', themeColors.text)
             .attr('stroke', '#3498db')
             .attr('stroke-width', 3)
             .attr('rx', 10);
@@ -1780,7 +1394,7 @@
         xAxis.append('line')
             .attr('x1', xScale(0))
             .attr('x2', xScale(2 * Math.PI))
-            .attr('stroke', '#95a5a6')
+            .attr('stroke', themeColors.muted)
             .attr('stroke-width', 2);
         
         xAxis.transition()
@@ -2060,7 +1674,7 @@
             if (i < steps.length - 1) {
                 g.append('path')
                     .attr('d', `M ${width/2} ${step.y + 30} L ${width/2} ${step.y + 50}`)
-                    .attr('stroke', '#95a5a6')
+                    .attr('stroke', themeColors.muted)
                     .attr('stroke-width', 2)
                     .attr('marker-end', 'url(#arrowhead)')
                     .style('opacity', 0)
@@ -2304,14 +1918,14 @@
             .attr('fill', 'url(#machineGradient)')
             .attr('stroke', '#7f8c8d')
             .attr('stroke-width', 3)
-            .style('filter', 'drop-shadow(0 10px 20px rgba(0,0,0,0.3))');
+            .style('filter', 'drop-shadow(0 10px 20px rgba(15, 23, 42, 0.2))');
         
         // 积分符号
         machine.append('text')
             .attr('x', -100)
             .attr('y', 10)
             .attr('font-size', '60px')
-            .attr('fill', 'white')
+            .attr('fill', themeColors.text)
             .attr('opacity', 0.3)
             .text('∫');
         
@@ -2319,7 +1933,7 @@
             .attr('x', 70)
             .attr('y', 10)
             .attr('font-size', '30px')
-            .attr('fill', 'white')
+            .attr('fill', themeColors.text)
             .attr('opacity', 0.3)
             .text('dx');
         
@@ -2328,7 +1942,7 @@
             .attr('text-anchor', 'middle')
             .attr('y', 0)
             .attr('font-size', '20px')
-            .attr('fill', 'white')
+            .attr('fill', themeColors.text)
             .attr('font-weight', 'bold')
             .text('积分机器');
         
@@ -2530,7 +2144,7 @@
         const movingDot = chart.append('circle')
             .attr('r', 6)
             .attr('fill', '#e74c3c')
-            .attr('stroke', 'white')
+            .attr('stroke', themeColors.axis)
             .attr('stroke-width', 2)
             .style('opacity', 0);
         
@@ -2672,7 +2286,6 @@
         });
     }
 </script>
-
 <!-- 渲染数学公式 -->
 <script>
     if (window.MathJax && window.MathJax.startup) {
@@ -2680,6 +2293,5 @@
         window.MathJax.startup.document.updateDocument();
     }
 </script>
-
 </body>
 </html>

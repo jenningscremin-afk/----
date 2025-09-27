@@ -1,13 +1,14 @@
 ﻿<!DOCTYPE html>
+
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>第十章：线性代数基础 (交互式课件)</title>
-    <script src="../common-assets/js/d3-7.8.5.min.js"></script>
-    <!-- 使用统一的MathJax配置文件 -->
-    <script src="../common-assets/js/mathjax-config.js"></script>
-      <script>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>第十章：线性代数基础 (交互式课件)</title>
+<script src="../common-assets/js/d3-7.8.5.min.js"></script>
+<!-- 使用统一的MathJax配置文件 -->
+<script src="../common-assets/js/mathjax-config.js"></script>
+<script>
         window.MathJax = {
             tex: {
                 inlineMath: [['$', '$'], ['\\(', '\\)']],
@@ -27,659 +28,160 @@
             }
         };
     </script>
-    <script type="text/javascript" id="MathJax-script" async
-            src="../common-assets/js/mathjax-3.2.2-tex-svg.min.js">
-    </script>
-
-
-    <style>
-        @import url('../common-assets/css/fonts.css');
-
+<script async="" id="MathJax-script" src="../common-assets/js/mathjax-3.2.2-tex-svg.min.js" type="text/javascript">
+</script>
+<style>
         :root {
-            --chalkboard-bg: transparent;
-            --chalk-text: #ecf0f1;
-            --visualization-bg: #fdfdfd00;
-            --primary-color: #3498db;
-            --accent-color: #e67e22;
-            --success-color: #2ecc71;
-            --danger-color: #e74c3c;
-            --warning-color: #f39c12;
-            --info-color: #9b59b6;
-            --text-color: #34495e;
-            --heading-font: 'Noto Serif SC', serif;
-            --handwriting-font: 'Noto Serif SC', serif;
+            --page-bg: #f0f4f8;
+            --card-bg: #ffffff;
+            --text-color: #1f2937;
+            --primary-color: #2563eb;
+            --accent-color: #f97316;
+            --muted-color: #64748b;
+            --axis-color: #475569;
+            --border-color: #e2e8f0;
+            --code-bg: #f8fafc;
         }
 
-        body {
-            font-family: var(--heading-font);
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            overflow: auto;
-            height: 100vh;
-            width: 100vw;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+        * {
             margin: 0;
-        }
-
-        #presentation-container {
-            width: 100vw;
-            height: 100vh;
-            max-width: 100vw;
-            aspect-ratio: 16 / 9;
-            position: relative;
-            background: rgba(255, 255, 255, 0);
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
-            border-radius: 8px;
-            overflow: auto;
-        }
-
-        .slide {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            opacity: 0;
-            visibility: hidden;
-            display: flex;
-            transition: opacity 0.6s ease-in-out;
-        }
-
-        .slide.active {
-            opacity: 1;
-            visibility: visible;
-            z-index: 10;
-        }
-
-        .chalkboard {
-            flex: 0 0 35%;
-            background-color: #2c3e50 !important;
-            background-image: url('../common-assets/images/black-felt.png');
-            border: 10px solid #8B4513;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.5), inset 0 0 15px rgba(0,0,0,0.7);
-            color: var(--chalk-text, #f0f0f0);
-            padding: 25px;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-start;
-            overflow-y: auto;
+            padding: 0;
             box-sizing: border-box;
         }
 
-        .chalkboard h2 {
-            font-family: var(--handwriting-font);
-            font-size: 2.2rem;
-            color: #f1c40f;
-            border-bottom: 2px solid rgba(241, 196, 15, 0.5);
-            padding-bottom: 10px;
-            margin-bottom: 20px;
-        }
-
-        .chalkboard h3 {
-            font-family: var(--handwriting-font);
-            font-size: 1.5rem;
-            color: var(--primary-color);
-            margin-top: 20px;
-            margin-bottom: 15px;
-        }
-
-        .chalkboard p, .chalkboard li {
-            font-size: 1.1rem;
-            line-height: 1.7;
-            margin-bottom: 15px;
-        }
-
-        .chalkboard ul {
-            list-style-type: '→ ';
-            padding-left: 20px;
-        }
-
-        .math-formula {
-            font-size: 1.3rem;
-            color: #1abc9c;
-            background: rgba(0,0,0,0.2);
-            padding: 15px;
-            border-radius: 5px;
-            text-align: center;
-            margin: 15px 0;
-            line-height: 1.5;
-        }
-
-        .highlight {
-            color: var(--warning-color);
-            font-weight: bold;
-        }
-
-        .visualization {
-            flex: 1;
-            padding: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: auto;
-            position: relative;
-            box-sizing: border-box;
-            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
-        }
-
-        .visualization.white-bg {
-            background: white;
-        }
-
-        .value-display {
-            position: absolute;
-            top: 150px;
-            left: 10px;
-            background: rgba(0, 0, 0, 0.8);
-            color: white;
-            padding: 15px;
-            border-radius: 8px;
-            font-family: 'Courier New', monospace;
-            min-width: 150px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-        }
-
-        .vis-container {
-            width: 100%;
+        html, body {
             height: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .vis-title {
-            font-size: 1.2rem;
-            font-weight: bold;
-            color: var(--text-color);
-            margin-bottom: 10px;
-        }
-
-        .formula-rule {
-            font-size: 1.2rem;
-            color: #16a085;
-            background: rgba(0,0,0,0.15);
-            padding: 12px;
-            border-radius: 5px;
-            margin: 10px 0;
-        }
-
-        /* 导航按钮 */
-        .nav-buttons {
-            position: absolute;
-            top: 60px;
-            right: 20px;
-            display: flex;
-            gap: 5px;
-            z-index: 100;
-        }
-
-        .nav-btn {
-            background: rgba(0, 0, 0, 0.6);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            color: white;
-            padding: 4px 8px;
-            border-radius: 15px;
-            font-size: 10px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            backdrop-filter: blur(10px);
-            user-select: none;
-            min-width: 30px;
-            text-align: center;
-        }
-
-        .nav-btn:hover {
-            background: rgba(0, 0, 0, 0.8);
-            border-color: rgba(255, 255, 255, 0.6);
-            transform: translateY(-1px);
-        }
-
-        .nav-btn:disabled {
-            opacity: 0.4;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .page-indicator {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: rgba(0,0,0,0.8);
-            color: white;
-            padding: 8px 15px;
-            border-radius: 20px;
-            font-size: 14px;
-            z-index: 100;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .nav-hint {
-            position: absolute;
-            top: 60px;
-            right: 20px;
-            background: rgba(0, 0, 0, 0.7);
-            color: white;
-            padding: 8px 12px;
-            border-radius: 15px;
-            font-size: 12px;
-            z-index: 100;
-            opacity: 0.8;
-            backdrop-filter: blur(10px);
-        }
-
-        /* 矩阵样式 */
-        .matrix-container {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 30px;
-            flex-wrap: wrap;
-        }
-
-        .matrix-wrapper {
-            position: relative;
-            padding: 15px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-        }
-
-        .matrix-grid {
-            display: grid;
-            gap: 5px;
-            padding: 10px;
-        }
-
-        .matrix-cell {
-            width: 50px;
-            height: 50px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: rgba(52, 152, 219, 0.1);
-            border: 2px solid var(--primary-color);
-            border-radius: 5px;
-            font-size: 1.2rem;
-            font-weight: bold;
-            color: white;
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-
-        .matrix-cell:hover {
-            background: rgba(52, 152, 219, 0.3);
-            transform: scale(1.1);
-            box-shadow: 0 0 20px rgba(52, 152, 219, 0.5);
-        }
-
-        .matrix-cell.highlight {
-            background: var(--warning-color);
-            animation: pulse 1s infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.1); opacity: 0.8; }
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* 全局动画控制面板 */
-        .global-animation-controls {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            display: flex;
-            gap: 8px;
-            z-index: 1000;
-        }
-
-        .global-control-btn {
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: rgba(255, 255, 255, 0.8);
-            padding: 6px 12px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 12px;
-            font-weight: normal;
-            transition: all 0.2s ease;
-            backdrop-filter: blur(5px);
-            min-width: 50px;
-            text-align: center;
-        }
-
-        .global-control-btn:hover {
-            background: rgba(0, 0, 0, 0.5);
-            color: rgba(255, 255, 255, 1);
-            border-color: rgba(255, 255, 255, 0.4);
-        }
-
-        /* 浮动菜单 */
-        #floating-menu {
-            position: fixed;
-            bottom: 20px;
-            right: 200px;
-            z-index: 9999;
-            font-family: var(--heading-font);
-        }
-
-        .menu-toggle {
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: rgba(255, 255, 255, 0.8);
-            padding: 6px 12px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 12px;
-            font-weight: normal;
-            transition: all 0.2s ease;
-            backdrop-filter: blur(5px);
-            min-width: 50px;
-            text-align: center;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .menu-toggle:hover {
-            background: rgba(0, 0, 0, 0.5);
-            color: rgba(255, 255, 255, 1);
-            border-color: rgba(255, 255, 255, 0.4);
-        }
-
-        .menu-content {
-            position: absolute;
-            bottom: 50px;
-            right: 0;
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 15px;
-            padding: 10px 0;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            opacity: 0;
-            visibility: hidden;
-            transform: translateY(20px);
-            transition: all 0.3s ease;
-            min-width: 220px;
-            max-height: 400px;
-            overflow-y: auto;
-        }
-
-        .menu-content.active {
-            opacity: 1;
-            visibility: visible;
-            transform: translateY(0);
-        }
-
-        .menu-item {
-            display: flex;
-            align-items: center;
-            padding: 10px 15px;
-            text-decoration: none;
-            color: #333;
-            transition: all 0.3s ease;
-            border-radius: 10px;
-            margin: 0 8px;
-        }
-
-        .menu-item:hover {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            transform: translateX(5px);
-        }
-
-        /* 3D效果 */
-        .vector-3d {
-            perspective: 800px;
-            transform-style: preserve-3d;
-        }
-
-        .rotate-3d {
-            animation: rotate3D 20s linear infinite;
-        }
-
-        @keyframes rotate3D {
-            from { transform: rotateX(0deg) rotateY(0deg); }
-            to { transform: rotateX(360deg) rotateY(360deg); }
-        }
-
-        /* 动画控制样式 */
-        .animation-controls {
-            position: absolute;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            background: rgba(255, 255, 255, 0.9);
-            padding: 10px 20px;
-            z-index: 101;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            border-radius: 25px;
-        }
-
-        .control-btn {
-            width: 35px;
-            height: 35px;
-            border: none;
-            border-radius: 50%;
-            background: #3498db;
-            color: white;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 14px;
-            transition: all 0.3s ease;
-            box-shadow: 0 2px 8px rgba(52, 152, 219, 0.3);
-        }
-
-        .control-btn:hover {
-            background: #2980b9;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.5);
-        }
-    
-        /* === 统一章节样式为第二章风格 === */
-        :root {
-            --heading-font: 'Microsoft YaHei', 'Segoe UI', sans-serif;
-            --handwriting-font: 'Microsoft YaHei', 'Segoe UI', sans-serif;
-            --text-color: #34495e;
         }
 
         body {
-            font-family: var(--heading-font);
-            background: #f0f2f5;
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            overflow: hidden;
-            margin: 0;
+            font-family: 'Microsoft YaHei', 'Segoe UI', sans-serif;
+            background: var(--page-bg);
             color: var(--text-color);
-            min-height: 100vh;
-            height: auto;
-            width: auto;
-            display: block;
-        }
-
-        body::before {
-            display: none;
-        }
-
-        #presentation-container {
-            width: 100%;
-            height: 100vh;
-            max-width: 100vw;
-            position: relative;
-            background: #ffffff;
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
-            border-radius: 0;
             overflow: hidden;
         }
 
         .slide {
-            width: 100%;
-            height: 100%;
             display: none;
-            opacity: 0;
-            visibility: hidden;
-            align-items: stretch;
-            transition: opacity 0.6s ease-in-out;
-        }
-
-        .slide.active {
-            display: flex;
-            opacity: 1;
-            visibility: visible;
             animation: fadeIn 0.6s ease-in-out;
         }
 
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(15px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        .slide.active {
+            display: block;
         }
 
-        .chalkboard {
-            width: 50%;
-            height: 100%;
-            background: #ffffff;
-            color: #333333;
-            padding: 40px 50px;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-start;
-            overflow-y: auto;
-            box-sizing: border-box;
-            line-height: 1.9;
-            font-size: 17px;
-            border-right: 1px solid #e0e0e0;
-            box-shadow: none;
-        }
-
-        .slide > .chalkboard:only-child {
+        .slide-container {
             width: 100%;
+            height: 100vh;
+            display: flex;
+            position: relative;
+        }
+
+        .slide-container.single-column {
+            justify-content: center;
+        }
+
+        .left-content {
+            width: 50%;
+            height: 100vh;
+            padding: 48px 56px;
+            background: var(--card-bg);
+            overflow-y: auto;
+            font-size: 17px;
+            line-height: 1.9;
+            color: var(--text-color);
+            border-right: 1px solid var(--border-color);
+        }
+
+        .slide-container.single-column .left-content {
+            width: 100%;
+            max-width: 960px;
             border-right: none;
         }
 
-        .chalkboard h2 {
-            font-size: 28px;
-            color: #1a1a2e;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 4px solid #4a90e2;
-            font-family: var(--heading-font);
-            text-shadow: none;
+        .left-content h2 {
+            font-size: 2.4rem;
+            margin-bottom: 1.2rem;
+            color: var(--primary-color);
         }
 
-        .chalkboard h3 {
-            font-size: 24px;
-            color: #34495e;
-            margin: 25px 0 10px;
-            font-family: var(--heading-font);
-            text-shadow: none;
+        .left-content h3 {
+            font-size: 1.6rem;
+            margin: 1.2rem 0 0.6rem;
+            color: var(--axis-color);
         }
 
-        .chalkboard h4 {
-            font-size: 20px;
-            color: #555555;
-            margin: 20px 0 10px;
+        .left-content p {
+            margin-bottom: 1rem;
         }
 
-        .chalkboard p, .chalkboard li {
-            font-size: 17px;
-            line-height: 1.9;
-            margin-bottom: 12px;
-            text-shadow: none;
+        .left-content ul,
+        .left-content ol {
+            margin: 1rem 0 1rem 1.25rem;
         }
 
-        .chalkboard ul {
-            padding-left: 24px;
-            list-style-type: disc;
-        }
-
-        .chalkboard ol {
-            padding-left: 24px;
+        .left-content li {
+            margin-bottom: 0.6rem;
         }
 
         .math-formula {
-            background: #f8f9fa;
-            padding: 20px;
-            margin: 20px 0;
-            text-align: center;
-            border-radius: 8px;
-            border: 1px solid #e0e0e0;
-            font-size: 1.2rem;
-            line-height: 1.6;
-            color: #2c3e50;
-            box-shadow: none;
+            background: var(--code-bg);
+            border-left: 4px solid var(--primary-color);
+            padding: 14px 18px;
+            margin: 1.2rem 0;
+            border-radius: 10px;
+            font-size: 1.05rem;
         }
 
         .highlight {
-            color: #d35400;
-            font-weight: bold;
-            text-shadow: none;
+            color: var(--primary-color);
+            font-weight: 600;
         }
 
-        .visualization {
+        .right-visual {
             width: 50%;
-            height: 100%;
-            background: #fdfdfd;
+            height: 100vh;
+            background: var(--code-bg);
             display: flex;
             align-items: center;
             justify-content: center;
-            border-left: 1px solid #e0e0e0;
-            position: relative;
-            padding: 30px;
-            box-sizing: border-box;
-            overflow: hidden;
-            box-shadow: none;
+            border-left: 1px solid var(--border-color);
+            padding: 32px;
         }
 
-        .slide > .visualization:only-child {
-            width: 100%;
-            border-left: none;
+        .slide-container.single-column .right-visual {
+            display: none;
         }
 
-        .visualization.full-width,
-        .visualization.white-bg,
-        .visualization.full-width.white-bg,
-        .visualization.fullscreen {
+        .right-visual > div {
             width: 100%;
             height: 100%;
-            border-left: none;
-            background: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--card-bg);
+            border-radius: 24px;
+            box-shadow: 0 24px 60px rgba(15, 23, 42, 0.12);
+            padding: 24px;
         }
 
-        .visualization canvas {
-            max-width: 90%;
-            max-height: 90%;
+        .right-visual > div > * {
+            width: 100%;
+            height: 100%;
         }
 
-        .visualization svg {
-            max-width: 95%;
-            max-height: 95%;
+        .right-visual canvas,
+        .right-visual svg {
+            max-width: 100%;
+            max-height: 100%;
         }
 
-        .visualization .math-formula {
-            background: transparent;
-            border: none;
+        .right-visual svg text {
+            fill: var(--text-color);
+        }
+
+        .right-visual svg .domain,
+        .right-visual svg .tick line {
+            stroke: var(--axis-color);
         }
 
         .nav-container {
@@ -689,46 +191,101 @@
             display: flex;
             align-items: center;
             gap: 12px;
-            padding: 10px 18px;
-            background: rgba(255, 255, 255, 0.9);
-            border: 1px solid #dbe4ff;
+            padding: 12px 20px;
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid var(--border-color);
             border-radius: 999px;
-            box-shadow: 0 18px 45px rgba(15, 23, 42, 0.15);
-            backdrop-filter: blur(10px);
+            box-shadow: 0 12px 30px rgba(15, 23, 42, 0.12);
+            backdrop-filter: blur(12px);
             z-index: 1100;
         }
 
-        .nav-container .nav-btn {
+        .nav-btn {
             border: none;
-            background: #4a90e2;
+            background: var(--primary-color);
             color: #ffffff;
             padding: 8px 16px;
             border-radius: 999px;
-            font-size: 0.9rem;
+            font-size: 0.95rem;
             font-weight: 600;
             cursor: pointer;
             transition: transform 0.2s ease, box-shadow 0.2s ease;
-            box-shadow: 0 8px 16px rgba(74, 144, 226, 0.25);
         }
 
-        .nav-container .nav-btn:hover:not(:disabled) {
+        .nav-btn:hover:not(:disabled) {
             transform: translateY(-2px);
-            box-shadow: 0 12px 24px rgba(74, 144, 226, 0.35);
+            box-shadow: 0 12px 24px rgba(37, 99, 235, 0.25);
         }
 
-        .nav-container .nav-btn:disabled {
-            background: #e5edf8;
-            color: #94a3b8;
-            box-shadow: none;
+        .nav-btn:disabled {
+            background: #e2e8f0;
+            color: var(--muted-color);
             cursor: not-allowed;
+            box-shadow: none;
         }
 
         #page-indicator {
-            font-size: 0.9rem;
-            color: #1f2937;
+            font-size: 0.95rem;
+            color: var(--axis-color);
             min-width: 80px;
             text-align: center;
             font-weight: 600;
+        }
+
+        .directory-toggle {
+            border: none;
+            background: var(--card-bg);
+            color: var(--axis-color);
+            padding: 8px 12px;
+            border-radius: 10px;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(15, 23, 42, 0.08);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .directory-toggle:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 24px rgba(15, 23, 42, 0.12);
+        }
+
+        .directory-menu {
+            position: fixed;
+            bottom: 90px;
+            right: 24px;
+            width: 320px;
+            max-height: 60vh;
+            overflow-y: auto;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 18px 45px rgba(15, 23, 42, 0.18);
+            display: none;
+            z-index: 1200;
+        }
+
+        .directory-menu.active {
+            display: block;
+        }
+
+        .directory-menu h3 {
+            margin-bottom: 16px;
+            font-size: 1.1rem;
+            color: var(--axis-color);
+        }
+
+        .directory-item {
+            margin-bottom: 12px;
+            color: var(--text-color);
+            text-decoration: none;
+            display: block;
+            padding: 10px 12px;
+            border-radius: 12px;
+            transition: background 0.2s ease;
+        }
+
+        .directory-item:hover {
+            background: rgba(37, 99, 235, 0.08);
         }
 
         .global-animation-controls {
@@ -737,49 +294,82 @@
             left: 24px;
             display: flex;
             gap: 12px;
-            padding: 10px 16px;
-            background: rgba(255, 255, 255, 0.9);
-            border: 1px solid #dbe4ff;
+            padding: 12px 18px;
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid var(--border-color);
             border-radius: 999px;
-            box-shadow: 0 18px 45px rgba(15, 23, 42, 0.1);
-            backdrop-filter: blur(10px);
+            box-shadow: 0 12px 30px rgba(15, 23, 42, 0.12);
+            backdrop-filter: blur(12px);
             z-index: 1100;
         }
 
         .global-control-btn {
             background: transparent;
             border: none;
-            color: #1f2937;
+            color: var(--axis-color);
             padding: 6px 12px;
             border-radius: 999px;
             cursor: pointer;
-            font-size: 0.9rem;
+            font-size: 0.95rem;
             font-weight: 600;
-            transition: transform 0.2s ease, color 0.2s ease;
+            transition: color 0.2s ease;
         }
 
         .global-control-btn:hover {
-            color: #2563eb;
-            transform: translateY(-1px);
+            color: var(--primary-color);
         }
 
         .global-control-btn.pause {
-            color: #e74c3c;
+            color: #dc2626;
         }
 
-        .return-home-panel,
-        .home-nav-buttons,
-        #floating-menu,
-        .menu-toggle,
-        .menu-content {
-            display: none !important;
+        .slide-note {
+            font-size: 0.95rem;
+            color: var(--muted-color);
+            margin-top: 12px;
         }
 
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 1200px) {
+            .slide-container {
+                flex-direction: column;
+            }
+
+            .left-content,
+            .right-visual {
+                width: 100%;
+                height: auto;
+                min-height: 50vh;
+            }
+
+            .right-visual {
+                border-left: none;
+                border-top: 1px solid var(--border-color);
+            }
+        }
+
+        @media print {
+            body {
+                overflow: visible;
+            }
+            .slide {
+                display: block !important;
+                page-break-after: always;
+            }
+            .nav-container,
+            .global-animation-controls,
+            .directory-menu,
+            .directory-toggle {
+                display: none !important;
+            }
+        }
     </style>
-    <link rel="stylesheet" href="../common-assets/css/chapter-light-overrides.css">
-
-
-    <style>
+<link href="../common-assets/css/chapter-light-overrides.css" rel="stylesheet"/>
+<style>
         .return-home-panel {
             position: fixed;
             top: 16px;
@@ -823,109 +413,88 @@
     </style>
 </head>
 <body>
-<div id="presentation-container">
-
-    <!-- 第1页：标题页 -->
-    <div class="slide active">
-        <div class="chalkboard" style="flex: 1; text-align: center; border: none;">
-            <h2 style="font-size: 4rem; border: none;">第十章</h2>
-            <p style="font-size: 2.5rem; color: white;">线性代数基础</p>
-            <div style="margin-top: 50px; font-size: 1.2rem;">
-                <p style="color: var(--warning-color);">适合高职学生的实用教程</p>
-                <ul style="text-align: left; margin: 30px auto; max-width: 400px;">
-                    <li>矩阵：数字的表格</li>
-                    <li>行列式：矩阵的特征值</li>
-                    <li>向量：有方向的量</li>
-                    <li>线性方程组：多元一次方程</li>
-                    <li>特征值：矩阵的"基因"</li>
-                </ul>
-                <p style="margin-top: 30px; font-size: 1rem; color: rgba(255,255,255,0.7);">
+<div id="slidesContainer">
+<!-- 第1页：标题页 -->
+<div class="slide active"><div class="slide-container single-column"><div class="left-content tex2jax_process">
+<h2 style="font-size: 4rem">第十章</h2>
+<p style="font-size: 2.5rem; color: var(--text-color)">线性代数基础</p>
+<div style="margin-top: 50px; font-size: 1.2rem">
+<p>适合高职学生的实用教程</p>
+<ul style="text-align: left; margin: 30px auto; max-width: 400px">
+<li>矩阵：数字的表格</li>
+<li>行列式：矩阵的特征值</li>
+<li>向量：有方向的量</li>
+<li>线性方程组：多元一次方程</li>
+<li>特征值：矩阵的"基因"</li>
+</ul>
+<p style="margin-top: 30px; font-size: 1rem">
                     💡 提示：本章内容循序渐进，从生活实例开始
                 </p>
-            </div>
-        </div>
-    </div>
-
-    <!-- 第2页：什么是矩阵 -->
-    <div class="slide">
-        <div class="chalkboard">
-            <h2>什么是矩阵？</h2>
-            <p>想象一个 <span class="highlight">班级成绩表</span>：</p>
-            <ul>
-                <li>横向：不同科目</li>
-                <li>纵向：不同学生</li>
-                <li>交叉点：具体成绩</li>
-            </ul>
-            <p>这就是矩阵！一个有序的数字表格。</p>
-            
-            <h3>生活中的矩阵</h3>
-            <p>• <strong>Excel表格</strong>：最常见的矩阵</p>
-            <p>• <strong>座位表</strong>：行×列的矩阵</p>
-            <p>• <strong>像素图片</strong>：RGB颜色矩阵</p>
-            
-            <div class="math-formula">
+</div>
+</div></div></div>
+<!-- 第2页：什么是矩阵 -->
+<div class="slide"><div class="slide-container"><div class="left-content tex2jax_process">
+<h2>什么是矩阵？</h2>
+<p>想象一个 <span class="highlight">班级成绩表</span>：</p>
+<ul>
+<li>横向：不同科目</li>
+<li>纵向：不同学生</li>
+<li>交叉点：具体成绩</li>
+</ul>
+<p>这就是矩阵！一个有序的数字表格。</p>
+<h3>生活中的矩阵</h3>
+<p>• <strong>Excel表格</strong>：最常见的矩阵</p>
+<p>• <strong>座位表</strong>：行×列的矩阵</p>
+<p>• <strong>像素图片</strong>：RGB颜色矩阵</p>
+<div class="math-formula">
                 学生成绩矩阵 = $\begin{pmatrix}
-                85 & 92 & 78 \\
-                90 & 88 & 95 \\
-                76 & 84 & 89
+                85 &amp; 92 &amp; 78 \\
+                90 &amp; 88 &amp; 95 \\
+                76 &amp; 84 &amp; 89
                 \end{pmatrix}$
             </div>
-            <p style="text-align: center;">3个学生 × 3门课程</p>
-        </div>
-        <div class="visualization" id="vis-matrix-intro"></div>
-    </div>
-
-    <!-- 第3页：矩阵加法 -->
-    <div class="slide">
-        <div class="chalkboard">
-            <h2>矩阵加法</h2>
-            <p>就像 <span class="highlight">两个班级成绩相加</span>！</p>
-            
-            <h3>加法规则</h3>
-            <p>• 矩阵大小必须相同</p>
-            <p>• 对应位置的数字相加</p>
-            <p>• 就像Excel中的单元格相加</p>
-            
-            <div class="math-formula">
+<p style="text-align: center">3个学生 × 3门课程</p>
+</div><div class="right-visual"><div id="vis-matrix-intro"></div></div></div></div>
+<!-- 第3页：矩阵加法 -->
+<div class="slide"><div class="slide-container"><div class="left-content tex2jax_process">
+<h2>矩阵加法</h2>
+<p>就像 <span class="highlight">两个班级成绩相加</span>！</p>
+<h3>加法规则</h3>
+<p>• 矩阵大小必须相同</p>
+<p>• 对应位置的数字相加</p>
+<p>• 就像Excel中的单元格相加</p>
+<div class="math-formula">
                 $\begin{pmatrix}
-                1 & 2 \\
-                3 & 4
+                1 &amp; 2 \\
+                3 &amp; 4
                 \end{pmatrix} + \begin{pmatrix}
-                5 & 6 \\
-                7 & 8
+                5 &amp; 6 \\
+                7 &amp; 8
                 \end{pmatrix} = \begin{pmatrix}
-                6 & 8 \\
-                10 & 12
+                6 &amp; 8 \\
+                10 &amp; 12
                 \end{pmatrix}$
             </div>
-            
-            <h3>实际应用</h3>
-            <p>两个月的销售额相加：</p>
-            <p>1月销售 + 2月销售 = 两月总销售</p>
-        </div>
-        <div class="visualization" id="vis-matrix-addition"></div>
-    </div>
-
-    <!-- 第4页：矩阵乘法 -->
-    <div class="slide">
-        <div class="chalkboard">
-            <h2>矩阵乘法</h2>
-            <p>像 <span class="highlight">价格×数量=总价</span></p>
-            
-            <h3>乘法步骤</h3>
-            <p>1. 第一个矩阵的<span class="highlight">行</span></p>
-            <p>2. 乘以第二个矩阵的<span class="highlight">列</span></p>
-            <p>3. 对应元素相乘后相加</p>
-            
-            <h3>记忆口诀</h3>
-            <p style="background: rgba(245, 158, 11, 0.2); padding: 10px; border-radius: 5px;">
+<h3>实际应用</h3>
+<p>两个月的销售额相加：</p>
+<p>1月销售 + 2月销售 = 两月总销售</p>
+</div><div class="right-visual"><div id="vis-matrix-addition"></div></div></div></div>
+<!-- 第4页：矩阵乘法 -->
+<div class="slide"><div class="slide-container"><div class="left-content tex2jax_process">
+<h2>矩阵乘法</h2>
+<p>像 <span class="highlight">价格×数量=总价</span></p>
+<h3>乘法步骤</h3>
+<p>1. 第一个矩阵的<span class="highlight">行</span></p>
+<p>2. 乘以第二个矩阵的<span class="highlight">列</span></p>
+<p>3. 对应元素相乘后相加</p>
+<h3>记忆口诀</h3>
+<p style="padding: 10px">
                 "横着走，竖着算"<br/>
                 左手指行，右手指列
             </p>
-            
-            <h3>实例：购物计算</h3>
-            <p>商品单价 × 购买数量 = 总价</p>
-            <div class="math-formula">
+<h3>实例：购物计算</h3>
+<p>商品单价 × 购买数量 = 总价</p>
+<div class="math-formula">
                 $\begin{pmatrix}
                 苹果: 5元 \\
                 香蕉: 3元
@@ -934,283 +503,218 @@
                 买3斤
                 \end{pmatrix} = 19元$
             </div>
-        </div>
-        <div class="visualization" id="vis-matrix-multiplication"></div>
-    </div>
-
-    <!-- 第5页：行列式入门 -->
-    <div class="slide">
-        <div class="chalkboard">
-            <h2>行列式</h2>
-            <p>矩阵的"指纹" - <span class="highlight">一个数值</span></p>
-            
-            <h3>2×2行列式</h3>
-            <div class="math-formula">
+</div><div class="right-visual"><div id="vis-matrix-multiplication"></div></div></div></div>
+<!-- 第5页：行列式入门 -->
+<div class="slide"><div class="slide-container"><div class="left-content tex2jax_process">
+<h2>行列式</h2>
+<p>矩阵的"指纹" - <span class="highlight">一个数值</span></p>
+<h3>2×2行列式</h3>
+<div class="math-formula">
                 $\begin{vmatrix}
-                a & b \\
-                c & d
+                a &amp; b \\
+                c &amp; d
                 \end{vmatrix} = ad - bc$
             </div>
-            
-            <h3>记忆方法</h3>
-            <p style="background: rgba(46, 204, 113, 0.2); padding: 10px; border-radius: 5px;">
+<h3>记忆方法</h3>
+<p style="padding: 10px">
                 主对角线（↘）相乘 <span class="highlight">减去</span><br/>
                 副对角线（↙）相乘
             </p>
-            
-            <h3>几何意义</h3>
-            <p>• 2×2行列式 = 平行四边形<span class="highlight">面积</span></p>
-            <p>• 行列式为0 = 图形被"压扁"了</p>
-            
-            <h3>用途</h3>
-            <p>判断方程组是否有唯一解：</p>
-            <p>行列式 ≠ 0 → 有唯一解 ✓</p>
-            <p>行列式 = 0 → 无解或无穷解 ✗</p>
-        </div>
-        <div class="visualization" id="vis-determinant"></div>
-    </div>
-
-    <!-- 第6页：向量基础 -->
-    <div class="slide">
-        <div class="chalkboard">
-            <h2>向量</h2>
-            <p>不只有大小，还有<span class="highlight">方向</span>的量</p>
-            
-            <h3>生活中的向量</h3>
-            <p>• <strong>导航</strong>：往东走3公里</p>
-            <p>• <strong>风速</strong>：西北风5级</p>
-            <p>• <strong>力</strong>：向上提10公斤</p>
-            
-            <h3>向量表示</h3>
-            <div class="math-formula">
+<h3>几何意义</h3>
+<p>• 2×2行列式 = 平行四边形<span class="highlight">面积</span></p>
+<p>• 行列式为0 = 图形被"压扁"了</p>
+<h3>用途</h3>
+<p>判断方程组是否有唯一解：</p>
+<p>行列式 ≠ 0 → 有唯一解 ✓</p>
+<p>行列式 = 0 → 无解或无穷解 ✗</p>
+</div><div class="right-visual"><div id="vis-determinant"></div></div></div></div>
+<!-- 第6页：向量基础 -->
+<div class="slide"><div class="slide-container"><div class="left-content tex2jax_process">
+<h2>向量</h2>
+<p>不只有大小，还有<span class="highlight">方向</span>的量</p>
+<h3>生活中的向量</h3>
+<p>• <strong>导航</strong>：往东走3公里</p>
+<p>• <strong>风速</strong>：西北风5级</p>
+<p>• <strong>力</strong>：向上提10公斤</p>
+<h3>向量表示</h3>
+<div class="math-formula">
                 $\vec{v} = (x, y) = (3, 4)$<br/>
                 表示：向右3，向上4
             </div>
-            
-            <h3>向量长度</h3>
-            <p>用勾股定理计算：</p>
-            <div class="math-formula">
+<h3>向量长度</h3>
+<p>用勾股定理计算：</p>
+<div class="math-formula">
                 $|\vec{v}| = \sqrt{3^2 + 4^2} = 5$
             </div>
-            
-            <h3>向量运算</h3>
-            <p>• <strong>加法</strong>：首尾相接</p>
-            <p>• <strong>数乘</strong>：改变长度</p>
-        </div>
-        <div class="visualization" id="vis-vector"></div>
-    </div>
-
-    <!-- 第7页：线性方程组 -->
-    <div class="slide">
-        <div class="chalkboard">
-            <h2>线性方程组</h2>
-            <p>多个未知数的<span class="highlight">联立方程</span></p>
-            
-            <h3>实例：购物问题</h3>
-            <p>买了苹果和香蕉：</p>
-            <div class="math-formula">
+<h3>向量运算</h3>
+<p>• <strong>加法</strong>：首尾相接</p>
+<p>• <strong>数乘</strong>：改变长度</p>
+</div><div class="right-visual"><div id="vis-vector"></div></div></div></div>
+<!-- 第7页：线性方程组 -->
+<div class="slide"><div class="slide-container"><div class="left-content tex2jax_process">
+<h2>线性方程组</h2>
+<p>多个未知数的<span class="highlight">联立方程</span></p>
+<h3>实例：购物问题</h3>
+<p>买了苹果和香蕉：</p>
+<div class="math-formula">
                 $\begin{cases}
                 2x + 3y = 16 \text{ (总价)} \\
                 x + y = 6 \text{ (总数量)}
                 \end{cases}$
             </div>
-            <p>x = 苹果数量，y = 香蕉数量</p>
-            
-            <h3>求解方法</h3>
-            <p>1. <strong>消元法</strong>：逐个消除未知数</p>
-            <p>2. <strong>代入法</strong>：用一个表示另一个</p>
-            <p>3. <strong>矩阵法</strong>：转化为矩阵运算</p>
-            
-            <h3>几何理解</h3>
-            <p>• 每个方程是一条直线</p>
-            <p>• 解是直线的<span class="highlight">交点</span></p>
-            <p>• 无交点 = 无解</p>
-            <p>• 重合 = 无穷多解</p>
-        </div>
-        <div class="visualization" id="vis-linear-system"></div>
-    </div>
-
-    <!-- 第8页：克拉默法则 -->
-    <div class="slide">
-        <div class="chalkboard">
-            <h2>克拉默法则</h2>
-            <p>用<span class="highlight">行列式</span>解方程组</p>
-            
-            <h3>公式</h3>
-            <div class="math-formula">
+<p>x = 苹果数量，y = 香蕉数量</p>
+<h3>求解方法</h3>
+<p>1. <strong>消元法</strong>：逐个消除未知数</p>
+<p>2. <strong>代入法</strong>：用一个表示另一个</p>
+<p>3. <strong>矩阵法</strong>：转化为矩阵运算</p>
+<h3>几何理解</h3>
+<p>• 每个方程是一条直线</p>
+<p>• 解是直线的<span class="highlight">交点</span></p>
+<p>• 无交点 = 无解</p>
+<p>• 重合 = 无穷多解</p>
+</div><div class="right-visual"><div id="vis-linear-system"></div></div></div></div>
+<!-- 第8页：克拉默法则 -->
+<div class="slide"><div class="slide-container"><div class="left-content tex2jax_process">
+<h2>克拉默法则</h2>
+<p>用<span class="highlight">行列式</span>解方程组</p>
+<h3>公式</h3>
+<div class="math-formula">
                 $x = \frac{D_x}{D}, \quad y = \frac{D_y}{D}$
             </div>
-            
-            <h3>步骤</h3>
-            <p>1. 算系数行列式 D</p>
-            <p>2. 用常数项替换第1列，算 D_x</p>
-            <p>3. 用常数项替换第2列，算 D_y</p>
-            <p>4. 相除得答案</p>
-            
-            <h3>实例计算</h3>
-            <div style="background: rgba(52, 152, 219, 0.1); padding: 10px; border-radius: 5px;">
+<h3>步骤</h3>
+<p>1. 算系数行列式 D</p>
+<p>2. 用常数项替换第1列，算 D_x</p>
+<p>3. 用常数项替换第2列，算 D_y</p>
+<p>4. 相除得答案</p>
+<h3>实例计算</h3>
+<div style="padding: 10px">
                 方程组：2x + y = 5<br/>
                 　　　　x - y = 1<br/>
-                <br/>
+<br/>
                 D = 2×(-1) - 1×1 = -3<br/>
                 D_x = 5×(-1) - 1×1 = -6<br/>
                 x = -6/(-3) = 2 ✓
             </div>
-            
-            <p style="margin-top: 15px;">
+<p style="margin-top: 15px">
                 💡 适用条件：D ≠ 0
             </p>
-        </div>
-        <div class="visualization" id="vis-cramers"></div>
-    </div>
-
-    <!-- 第9页：特征值特征向量 -->
-    <div class="slide">
-        <div class="chalkboard">
-            <h2>特征值与特征向量</h2>
-            <p>矩阵的<span class="highlight">"个性特征"</span></p>
-            
-            <h3>直观理解</h3>
-            <p>矩阵变换某些特殊向量时：</p>
-            <p>• 只改变<span class="highlight">长度</span></p>
-            <p>• 不改变<span class="highlight">方向</span></p>
-            
-            <div class="math-formula">
+</div><div class="right-visual"><div id="vis-cramers"></div></div></div></div>
+<!-- 第9页：特征值特征向量 -->
+<div class="slide"><div class="slide-container"><div class="left-content tex2jax_process">
+<h2>特征值与特征向量</h2>
+<p>矩阵的<span class="highlight">"个性特征"</span></p>
+<h3>直观理解</h3>
+<p>矩阵变换某些特殊向量时：</p>
+<p>• 只改变<span class="highlight">长度</span></p>
+<p>• 不改变<span class="highlight">方向</span></p>
+<div class="math-formula">
                 $A\vec{v} = \lambda\vec{v}$<br/>
                 矩阵×特征向量 = 数值×特征向量
             </div>
-            
-            <h3>实际意义</h3>
-            <p>• <strong>振动分析</strong>：找到共振频率</p>
-            <p>• <strong>人脸识别</strong>：提取面部特征</p>
-            <p>• <strong>数据压缩</strong>：保留主要信息</p>
-            
-            <h3>计算步骤</h3>
-            <p>1. 解特征方程：|A - λI| = 0</p>
-            <p>2. 得到特征值 λ</p>
-            <p>3. 代入求特征向量</p>
-            
-            <p style="background: rgba(155, 89, 182, 0.2); padding: 10px; border-radius: 5px;">
+<h3>实际意义</h3>
+<p>• <strong>振动分析</strong>：找到共振频率</p>
+<p>• <strong>人脸识别</strong>：提取面部特征</p>
+<p>• <strong>数据压缩</strong>：保留主要信息</p>
+<h3>计算步骤</h3>
+<p>1. 解特征方程：|A - λI| = 0</p>
+<p>2. 得到特征值 λ</p>
+<p>3. 代入求特征向量</p>
+<p style="padding: 10px">
                 类比：DNA是人的特征<br/>
                 特征值是矩阵的"DNA"
             </p>
-        </div>
-        <div class="visualization" id="vis-eigenvalue"></div>
-    </div>
-
-    <!-- 第10页：应用实例 -->
-    <div class="slide">
-        <div class="chalkboard">
-            <h2>实际应用案例</h2>
-            
-            <h3>1. 图像处理</h3>
-            <p>• 图片 = RGB三个矩阵</p>
-            <p>• 滤镜 = 矩阵运算</p>
-            <p>• 旋转 = 旋转矩阵</p>
-            
-            <h3>2. 经济分析</h3>
-            <p>• 投入产出表 = 矩阵</p>
-            <p>• 供需平衡 = 线性方程组</p>
-            
-            <h3>3. 工程计算</h3>
-            <p>• 电路分析：节点电压法</p>
-            <p>• 结构分析：受力平衡</p>
-            
-            <h3>4. 数据科学</h3>
-            <p>• 推荐系统：用户-物品矩阵</p>
-            <p>• 机器学习：特征提取</p>
-            
-            <div style="background: rgba(241, 196, 15, 0.2); padding: 15px; border-radius: 5px; margin-top: 20px;">
-                <strong>记住：</strong><br/>
+</div><div class="right-visual"><div id="vis-eigenvalue"></div></div></div></div>
+<!-- 第10页：应用实例 -->
+<div class="slide"><div class="slide-container"><div class="left-content tex2jax_process">
+<h2>实际应用案例</h2>
+<h3>1. 图像处理</h3>
+<p>• 图片 = RGB三个矩阵</p>
+<p>• 滤镜 = 矩阵运算</p>
+<p>• 旋转 = 旋转矩阵</p>
+<h3>2. 经济分析</h3>
+<p>• 投入产出表 = 矩阵</p>
+<p>• 供需平衡 = 线性方程组</p>
+<h3>3. 工程计算</h3>
+<p>• 电路分析：节点电压法</p>
+<p>• 结构分析：受力平衡</p>
+<h3>4. 数据科学</h3>
+<p>• 推荐系统：用户-物品矩阵</p>
+<p>• 机器学习：特征提取</p>
+<div style="padding: 15px; margin-top: 20px">
+<strong>记住：</strong><br/>
                 线性代数 = 处理多维数据的工具<br/>
                 掌握它，就掌握了数据分析的钥匙！
             </div>
-        </div>
-        <div class="visualization" id="vis-applications"></div>
-    </div>
-
-    <!-- 第11页：总结 -->
-    <div class="slide">
-        <div class="chalkboard" style="flex: 1; text-align: center;">
-            <h2>课程总结</h2>
-            
-            <div style="text-align: left; max-width: 600px; margin: 0 auto;">
-                <h3 style="color: var(--success-color);">✓ 已掌握</h3>
-                <ul>
-                    <li>矩阵：数字表格的运算</li>
-                    <li>行列式：判断解的存在性</li>
-                    <li>向量：有方向的量</li>
-                    <li>线性方程组：多元方程求解</li>
-                    <li>特征值：矩阵的本质特征</li>
-                </ul>
-                
-                <h3 style="color: var(--warning-color); margin-top: 30px;">🎯 应用场景</h3>
-                <ul>
-                    <li>Excel数据处理</li>
-                    <li>图像编辑软件</li>
-                    <li>经济数据分析</li>
-                    <li>工程计算</li>
-                </ul>
-                
-                <h3 style="color: var(--info-color); margin-top: 30px;">💡 学习建议</h3>
-                <p>1. 多做实际应用题</p>
-                <p>2. 用Excel练习矩阵运算</p>
-                <p>3. 结合专业课程使用</p>
-            </div>
-            
-            <div style="margin-top: 40px; font-size: 2rem; color: var(--accent-color);">
+</div><div class="right-visual"><div id="vis-applications"></div></div></div></div>
+<!-- 第11页：总结 -->
+<div class="slide"><div class="slide-container single-column"><div class="left-content tex2jax_process">
+<h2>课程总结</h2>
+<div style="text-align: left; max-width: 600px; margin: 0 auto">
+<h3>✓ 已掌握</h3>
+<ul>
+<li>矩阵：数字表格的运算</li>
+<li>行列式：判断解的存在性</li>
+<li>向量：有方向的量</li>
+<li>线性方程组：多元方程求解</li>
+<li>特征值：矩阵的本质特征</li>
+</ul>
+<h3 style="margin-top: 30px">🎯 应用场景</h3>
+<ul>
+<li>Excel数据处理</li>
+<li>图像编辑软件</li>
+<li>经济数据分析</li>
+<li>工程计算</li>
+</ul>
+<h3 style="margin-top: 30px">💡 学习建议</h3>
+<p>1. 多做实际应用题</p>
+<p>2. 用Excel练习矩阵运算</p>
+<p>3. 结合专业课程使用</p>
+</div>
+<div style="margin-top: 40px; font-size: 2rem">
                 继续加油！💪
             </div>
-        </div>
-    </div>
-
-    <!-- 导航按钮 -->
-
-    <!-- 页面指示器 -->
-
-    <!-- 全局动画控制面板 -->
-    
-    <div class="nav-container">
-        <button class="nav-btn" id="prev-btn" onclick="previousSlide()" title="上一页 (←)">上一页</button>
-        <span id="page-indicator">1 / 10</span>
-        <button class="nav-btn" id="next-btn" onclick="nextSlide()" title="下一页 (→)">下一页</button>
-    </div>
-    <div class="global-animation-controls" id="globalAnimationControls">
-        <button class="global-control-btn" id="globalPlayPauseBtn">暂停</button>
-        <button class="global-control-btn" id="globalSpeedBtn">1.0x</button>
-    </div>
-
+</div></div></div>
+<!-- 导航按钮 -->
+<!-- 页面指示器 -->
+<!-- 全局动画控制面板 -->
+<div class="nav-container">
+<button class="nav-btn" id="prev-btn" onclick="previousSlide()" title="上一页 (←)">上一页</button>
+<span id="page-indicator">1 / 10</span>
+<button class="nav-btn" id="next-btn" onclick="nextSlide()" title="下一页 (→)">下一页</button>
 </div>
-
+<div class="global-animation-controls" id="globalAnimationControls">
+<button class="global-control-btn" id="globalPlayPauseBtn">暂停</button>
+<button class="global-control-btn" id="globalSpeedBtn">1.0x</button>
+</div>
+</div>
 <!-- 浮动菜单按钮 -->
 <div id="floating-menu">
-    <div class="menu-toggle" id="menu-toggle">
-        <span class="menu-icon">☰</span>
-    </div>
-    <div class="menu-content" id="menu-content">
-        <a href="#" class="menu-item" onclick="showExample('matrix')">
-            <span class="menu-icon">📊</span>
-            <span class="menu-text">矩阵计算器</span>
-        </a>
-        <a href="#" class="menu-item" onclick="showExample('determinant')">
-            <span class="menu-icon">🔢</span>
-            <span class="menu-text">行列式求解器</span>
-        </a>
-        <a href="#" class="menu-item" onclick="showExample('vector')">
-            <span class="menu-icon">➡️</span>
-            <span class="menu-text">向量可视化</span>
-        </a>
-        <a href="#" class="menu-item" onclick="showExample('equation')">
-            <span class="menu-icon">📐</span>
-            <span class="menu-text">方程组求解</span>
-        </a>
-        <a href="#" class="menu-item" onclick="downloadNotes()">
-            <span class="menu-icon">📝</span>
-            <span class="menu-text">下载笔记</span>
-        </a>
-    </div>
+<div class="menu-toggle" id="menu-toggle">
+<span class="menu-icon">☰</span>
 </div>
-
+<div class="menu-content" id="menu-content">
+<a class="menu-item" href="#" onclick="showExample('matrix')">
+<span class="menu-icon">📊</span>
+<span class="menu-text">矩阵计算器</span>
+</a>
+<a class="menu-item" href="#" onclick="showExample('determinant')">
+<span class="menu-icon">🔢</span>
+<span class="menu-text">行列式求解器</span>
+</a>
+<a class="menu-item" href="#" onclick="showExample('vector')">
+<span class="menu-icon">➡️</span>
+<span class="menu-text">向量可视化</span>
+</a>
+<a class="menu-item" href="#" onclick="showExample('equation')">
+<span class="menu-icon">📐</span>
+<span class="menu-text">方程组求解</span>
+</a>
+<a class="menu-item" href="#" onclick="downloadNotes()">
+<span class="menu-icon">📝</span>
+<span class="menu-text">下载笔记</span>
+</a>
+</div>
+</div>
 <script>
     let slides, totalSlides, counter, currentSlide = 0;
     let globalAnimationPlaying = true;
@@ -1330,7 +834,16 @@
     }
 
     // D3.js工具函数
-    function setupD3(containerId, margins = {top: 40, right: 40, bottom: 40, left: 40}) {
+    
+    const rootStyles = getComputedStyle(document.documentElement);
+    const themeColors = {
+        text: rootStyles.getPropertyValue('--text-color').trim() || '#34495e',
+        axis: rootStyles.getPropertyValue('--axis-color').trim() || '#475569',
+        muted: rootStyles.getPropertyValue('--muted-color').trim() || '#94a3b8',
+        surface: rootStyles.getPropertyValue('--card-bg').trim() || '#ffffff'
+    };
+
+function setupD3(containerId, margins = {top: 40, right: 40, bottom: 40, left: 40}) {
         const container = d3.select(`#${containerId}`);
         if (container.empty()) return null;
         
@@ -1381,7 +894,7 @@
         
         container.innerHTML = `
             <div class="vis-container">
-                <h3 style="color: white; margin-bottom: 30px;">班级成绩矩阵 - 动态演示</h3>
+                <h3 style="color: ${themeColors.text}; margin-bottom: 30px;">班级成绩矩阵 - 动态演示</h3>
                 <div class="matrix-container">
                     <div class="matrix-wrapper">
                         <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px;">
@@ -1404,7 +917,7 @@
                         </div>
                     </div>
                 </div>
-                <div style="margin-top: 30px; color: white;">
+                <div style="margin-top: 30px; color: ${themeColors.text};">
                     <p id="matrix-info" style="font-size: 1.2rem; text-align: center;">
                         点击任意成绩查看详情
                     </p>
@@ -1453,7 +966,7 @@
         
         container.innerHTML = `
             <div class="vis-container">
-                <h3 style="color: white; margin-bottom: 30px;">矩阵加法动画演示</h3>
+                <h3 style="color: ${themeColors.text}; margin-bottom: 30px;">矩阵加法动画演示</h3>
                 <div class="matrix-container">
                     <div class="matrix-wrapper">
                         <div class="matrix-grid" style="grid-template-columns: repeat(2, 1fr);">
@@ -1463,7 +976,7 @@
                             <div class="matrix-cell">4</div>
                         </div>
                     </div>
-                    <div style="font-size: 2rem; color: white;">+</div>
+                    <div style="font-size: 2rem; color: ${themeColors.text};">+</div>
                     <div class="matrix-wrapper">
                         <div class="matrix-grid" style="grid-template-columns: repeat(2, 1fr);">
                             <div class="matrix-cell">5</div>
@@ -1472,7 +985,7 @@
                             <div class="matrix-cell">3</div>
                         </div>
                     </div>
-                    <div style="font-size: 2rem; color: white;">=</div>
+                    <div style="font-size: 2rem; color: ${themeColors.text};">=</div>
                     <div class="matrix-wrapper">
                         <div class="matrix-grid" style="grid-template-columns: repeat(2, 1fr);" id="result-add">
                             <div class="matrix-cell" style="opacity: 0;">7</div>
@@ -1483,7 +996,7 @@
                     </div>
                 </div>
                 <div style="margin-top: 30px;">
-                    <button onclick="animateAddition()" style="background: var(--primary-color); color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer;">
+                    <button onclick="animateAddition()" style="background: var(--primary-color); color: ${themeColors.text}; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer;">
                         重新演示
                     </button>
                 </div>
@@ -1528,7 +1041,7 @@
             .attr('x', cellSize)
             .attr('y', -20)
             .text('A')
-            .attr('fill', 'white')
+            .attr('fill', themeColors.text)
             .attr('font-size', '20px')
             .attr('text-anchor', 'middle');
 
@@ -1548,7 +1061,7 @@
                     .attr('x', j * cellSize + cellSize/2 - 2.5)
                     .attr('y', i * cellSize + cellSize/2 + 5)
                     .text(val)
-                    .attr('fill', 'white')
+                    .attr('fill', themeColors.text)
                     .attr('font-size', '18px')
                     .attr('text-anchor', 'middle');
             });
@@ -1560,7 +1073,7 @@
             .attr('x', cellSize)
             .attr('y', -20)
             .text('B')
-            .attr('fill', 'white')
+            .attr('fill', themeColors.text)
             .attr('font-size', '20px')
             .attr('text-anchor', 'middle');
 
@@ -1580,7 +1093,7 @@
                     .attr('x', j * cellSize + cellSize/2 - 2.5)
                     .attr('y', i * cellSize + cellSize/2 + 5)
                     .text(val)
-                    .attr('fill', 'white')
+                    .attr('fill', themeColors.text)
                     .attr('font-size', '18px')
                     .attr('text-anchor', 'middle');
             });
@@ -1592,7 +1105,7 @@
             .attr('x', cellSize)
             .attr('y', -20)
             .text('A × B')
-            .attr('fill', 'white')
+            .attr('fill', themeColors.text)
             .attr('font-size', '20px')
             .attr('text-anchor', 'middle');
 
@@ -1613,7 +1126,7 @@
                     .attr('x', j * cellSize + cellSize/2 - 2.5)
                     .attr('y', i * cellSize + cellSize/2 + 5)
                     .text(val)
-                    .attr('fill', 'white')
+                    .attr('fill', themeColors.text)
                     .attr('font-size', '18px')
                     .attr('text-anchor', 'middle')
                     .style('opacity', 0);
@@ -1635,7 +1148,7 @@
             .attr('x', cellSize * 2 + gap/2)
             .attr('y', height/2)
             .text('×')
-            .attr('fill', 'white')
+            .attr('fill', themeColors.text)
             .attr('font-size', '30px')
             .attr('text-anchor', 'middle');
 
@@ -1643,7 +1156,7 @@
             .attr('x', cellSize * 4 + gap * 1.5 + 25)
             .attr('y', height/2)
             .text('=')
-            .attr('fill', 'white')
+            .attr('fill', themeColors.text)
             .attr('font-size', '30px')
             .attr('text-anchor', 'middle');
     }
@@ -1683,7 +1196,7 @@
                     .attr('x', j * cellSize + cellSize/2 - 2.5)
                     .attr('y', i * cellSize + cellSize/2 + 8)
                     .text(val)
-                    .attr('fill', 'white')
+                    .attr('fill', themeColors.text)
                     .attr('font-size', '24px')
                     .attr('text-anchor', 'middle')
                     .attr('id', `det-${i}-${j}`);
@@ -1739,7 +1252,7 @@
                 .attr('x', cx)
                 .attr('y', cy + 120)
                 .text(`det = 3×4 - 2×1 = ${det}`)
-                .attr('fill', 'white')
+                .attr('fill', themeColors.text)
                 .attr('font-size', '24px')
                 .attr('text-anchor', 'middle')
                 .style('opacity', 0)
@@ -1775,11 +1288,11 @@
         // 添加坐标轴标签
         g.append('text')
             .attr('x', width - 20).attr('y', cy - 10)
-            .text('x').attr('fill', 'white').attr('font-size', '16px');
+            .text('x').attr('fill', themeColors.text).attr('font-size', '16px');
 
         g.append('text')
             .attr('x', cx + 10).attr('y', 20)
-            .text('y').attr('fill', 'white').attr('font-size', '16px');
+            .text('y').attr('fill', themeColors.text).attr('font-size', '16px');
 
         // 向量数据
         const vectors = [
@@ -1998,7 +1511,7 @@
                 .attr('cy', intersectY)
                 .attr('r', 0)
                 .attr('fill', 'var(--warning-color)')
-                .attr('stroke', 'white')
+                .attr('stroke', themeColors.axis)
                 .attr('stroke-width', 2)
                 .transition()
                 .duration(500)
@@ -2049,8 +1562,8 @@
         
         container.innerHTML = `
             <div class="vis-container">
-                <h3 style="color: white; margin-bottom: 20px;">克拉默法则计算演示</h3>
-                <div style="color: white; text-align: center;">
+                <h3 style="color: ${themeColors.text}; margin-bottom: 20px;">克拉默法则计算演示</h3>
+                <div style="color: ${themeColors.text}; text-align: center;">
                     <p style="font-size: 1.2rem;">方程组：2x + y = 5, x - y = 1</p>
                     
                     <div style="display: flex; justify-content: center; gap: 30px; margin: 30px 0;">
@@ -2198,7 +1711,7 @@
         g.append('text')
             .attr('x', 20).attr('y', 40)
             .text('矩阵 A = [[2, 0], [0, 3]]')
-            .attr('fill', 'white')
+            .attr('fill', themeColors.text)
             .attr('font-size', '16px');
 
         g.append('text')
@@ -2221,14 +1734,14 @@
         
         container.innerHTML = `
             <div class="vis-container">
-                <h3 style="color: white; margin-bottom: 30px;">线性代数实际应用</h3>
+                <h3 style="color: ${themeColors.text}; margin-bottom: 30px;">线性代数实际应用</h3>
                 <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 30px; max-width: 800px;">
                     
                     <div class="matrix-wrapper" style="text-align: center;">
                         <h4 style="color: var(--primary-color); margin-bottom: 15px;">图像处理</h4>
                         <div style="display: flex; align-items: center; justify-content: center; gap: 20px;">
                             <div style="width: 60px; height: 60px; background: linear-gradient(45deg, #333, #666); border-radius: 5px;"></div>
-                            <span style="color: white;">→</span>
+                            <span style="color: ${themeColors.text};">→</span>
                             <div style="width: 60px; height: 60px; background: linear-gradient(45deg, #666, #999); border-radius: 5px; filter: blur(2px);"></div>
                         </div>
                         <p style="color: rgba(255,255,255,0.8); margin-top: 10px; font-size: 0.9rem;">
@@ -2286,6 +1799,5 @@
         alert('笔记下载功能 - 开发中...');
     }
 </script>
-
 </body>
 </html>
