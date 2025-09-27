@@ -408,6 +408,291 @@
             color: white;
             transform: translateX(5px);
         }
+    
+        /* === 统一章节样式为第二章风格 === */
+        :root {
+            --heading-font: 'Microsoft YaHei', 'Segoe UI', sans-serif;
+            --handwriting-font: 'Microsoft YaHei', 'Segoe UI', sans-serif;
+            --text-color: #34495e;
+        }
+
+        body {
+            font-family: var(--heading-font);
+            background: #f0f2f5;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            overflow: hidden;
+            margin: 0;
+            color: var(--text-color);
+            min-height: 100vh;
+            height: auto;
+            width: auto;
+            display: block;
+        }
+
+        body::before {
+            display: none;
+        }
+
+        #presentation-container {
+            width: 100%;
+            height: 100vh;
+            max-width: 100vw;
+            position: relative;
+            background: #ffffff;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+            border-radius: 0;
+            overflow: hidden;
+        }
+
+        .slide {
+            width: 100%;
+            height: 100%;
+            display: none;
+            opacity: 0;
+            visibility: hidden;
+            align-items: stretch;
+            transition: opacity 0.6s ease-in-out;
+        }
+
+        .slide.active {
+            display: flex;
+            opacity: 1;
+            visibility: visible;
+            animation: fadeIn 0.6s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(15px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .chalkboard {
+            width: 50%;
+            height: 100%;
+            background: #ffffff;
+            color: #333333;
+            padding: 40px 50px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            overflow-y: auto;
+            box-sizing: border-box;
+            line-height: 1.9;
+            font-size: 17px;
+            border-right: 1px solid #e0e0e0;
+            box-shadow: none;
+        }
+
+        .slide > .chalkboard:only-child {
+            width: 100%;
+            border-right: none;
+        }
+
+        .chalkboard h2 {
+            font-size: 28px;
+            color: #1a1a2e;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 4px solid #4a90e2;
+            font-family: var(--heading-font);
+            text-shadow: none;
+        }
+
+        .chalkboard h3 {
+            font-size: 24px;
+            color: #34495e;
+            margin: 25px 0 10px;
+            font-family: var(--heading-font);
+            text-shadow: none;
+        }
+
+        .chalkboard h4 {
+            font-size: 20px;
+            color: #555555;
+            margin: 20px 0 10px;
+        }
+
+        .chalkboard p, .chalkboard li {
+            font-size: 17px;
+            line-height: 1.9;
+            margin-bottom: 12px;
+            text-shadow: none;
+        }
+
+        .chalkboard ul {
+            padding-left: 24px;
+            list-style-type: disc;
+        }
+
+        .chalkboard ol {
+            padding-left: 24px;
+        }
+
+        .math-formula {
+            background: #f8f9fa;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+            font-size: 1.2rem;
+            line-height: 1.6;
+            color: #2c3e50;
+            box-shadow: none;
+        }
+
+        .highlight {
+            color: #d35400;
+            font-weight: bold;
+            text-shadow: none;
+        }
+
+        .visualization {
+            width: 50%;
+            height: 100%;
+            background: #fdfdfd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-left: 1px solid #e0e0e0;
+            position: relative;
+            padding: 30px;
+            box-sizing: border-box;
+            overflow: hidden;
+            box-shadow: none;
+        }
+
+        .slide > .visualization:only-child {
+            width: 100%;
+            border-left: none;
+        }
+
+        .visualization.full-width,
+        .visualization.white-bg,
+        .visualization.full-width.white-bg,
+        .visualization.fullscreen {
+            width: 100%;
+            height: 100%;
+            border-left: none;
+            background: #ffffff;
+        }
+
+        .visualization canvas {
+            max-width: 90%;
+            max-height: 90%;
+        }
+
+        .visualization svg {
+            max-width: 95%;
+            max-height: 95%;
+        }
+
+        .visualization .math-formula {
+            background: transparent;
+            border: none;
+        }
+
+        .nav-container {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 18px;
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid #dbe4ff;
+            border-radius: 999px;
+            box-shadow: 0 18px 45px rgba(15, 23, 42, 0.15);
+            backdrop-filter: blur(10px);
+            z-index: 1100;
+        }
+
+        .nav-container .nav-btn {
+            border: none;
+            background: #4a90e2;
+            color: #ffffff;
+            padding: 8px 16px;
+            border-radius: 999px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: 0 8px 16px rgba(74, 144, 226, 0.25);
+        }
+
+        .nav-container .nav-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 24px rgba(74, 144, 226, 0.35);
+        }
+
+        .nav-container .nav-btn:disabled {
+            background: #e5edf8;
+            color: #94a3b8;
+            box-shadow: none;
+            cursor: not-allowed;
+        }
+
+        #page-indicator {
+            font-size: 0.9rem;
+            color: #1f2937;
+            min-width: 80px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .global-animation-controls {
+            position: fixed;
+            bottom: 24px;
+            left: 24px;
+            display: flex;
+            gap: 12px;
+            padding: 10px 16px;
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid #dbe4ff;
+            border-radius: 999px;
+            box-shadow: 0 18px 45px rgba(15, 23, 42, 0.1);
+            backdrop-filter: blur(10px);
+            z-index: 1100;
+        }
+
+        .global-control-btn {
+            background: transparent;
+            border: none;
+            color: #1f2937;
+            padding: 6px 12px;
+            border-radius: 999px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: transform 0.2s ease, color 0.2s ease;
+        }
+
+        .global-control-btn:hover {
+            color: #2563eb;
+            transform: translateY(-1px);
+        }
+
+        .global-control-btn.pause {
+            color: #e74c3c;
+        }
+
+        .return-home-panel,
+        .home-nav-buttons,
+        #floating-menu,
+        .menu-toggle,
+        .menu-content {
+            display: none !important;
+        }
+
     </style>
 
     <style>
@@ -454,11 +739,6 @@
     </style>
 </head>
 <body>
-    <div class="return-home-panel">
-        <a class="return-link return-sub" href="index.html">← 返回目录</a>
-        <a class="return-link return-main" href="../index.html">⌂ 返回主站</a>
-    </div>
-
 <div id="presentation-container">
     <!-- 第1页：标题页 -->
     <div class="slide active">
@@ -777,48 +1057,23 @@
             </div>
         </div>
     </div>
-
-    <div class="page-indicator" id="page-indicator">1 / 15</div>
     
     <!-- 翻页按钮 -->
-    <div class="nav-buttons">
-        <button class="nav-btn" id="prev-btn" onclick="previousSlide()" title="上一页 (←)">‹</button>
-        <button class="nav-btn" id="next-btn" onclick="nextSlide()" title="下一页 (→)">›</button>
-    </div>
 
     <!-- 全局动画控制面板 -->
+    
+    <div class="nav-container">
+        <button class="nav-btn" id="prev-btn" onclick="previousSlide()" title="上一页 (←)">上一页</button>
+        <span id="page-indicator">1 / 14</span>
+        <button class="nav-btn" id="next-btn" onclick="nextSlide()" title="下一页 (→)">下一页</button>
+    </div>
     <div class="global-animation-controls" id="globalAnimationControls">
         <button class="global-control-btn" id="globalPlayPauseBtn">暂停</button>
         <button class="global-control-btn" id="globalSpeedBtn">1.0x</button>
     </div>
 </div>
 
-<!-- 浮动菜单 -->
-<div id="floating-menu">
-    <div id="menu-toggle" class="menu-toggle">
-        <span class="menu-icon">☰</span>
-    </div>
-    <div id="menu-content" class="menu-content">
-        <a href="#" class="menu-item">
-            <span class="menu-icon">LAB</span>
-            <span class="menu-text">积分计算实验室</span>
-        </a>
-        <a href="#" class="menu-item">
-            <span class="menu-icon">LAB</span>
-            <span class="menu-text">图形面积计算</span>
-        </a>
-        <a href="#" class="menu-item">
-            <span class="menu-icon">GAME</span>
-            <span class="menu-text">积分闯关游戏</span>
-        </a>
-        <a href="#" class="menu-item">
-            <span class="menu-icon">EXER</span>
-            <span class="menu-text">习题练习</span>
-        </a>
-    </div>
-</div>
-
-<script>
+<script><script>
     let slides, totalSlides, currentSlide = 0;
     let globalAnimationPlaying = true;
     let globalAnimationSpeed = 1.0;
