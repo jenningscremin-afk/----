@@ -1,0 +1,299 @@
+/* Light theme overrides to align older chapter decks with Chapter 2's visuals */
+:root {
+    --chapter-accent: #4a90e2;
+    --chapter-bg: #f0f2f5;
+    --chapter-surface: #ffffff;
+    --chapter-text: #34495e;
+    --chapter-muted: #5d6d7e;
+    --chapter-border: #e0e6ed;
+}
+
+body {
+    font-family: 'Microsoft YaHei', 'Segoe UI', sans-serif;
+    background: var(--chapter-bg);
+    color: var(--chapter-text);
+    margin: 0;
+    min-height: 100vh;
+}
+
+body::before {
+    content: none !important;
+}
+
+#presentation-container {
+    background: var(--chapter-surface) !important;
+    box-shadow: 0 24px 60px rgba(15, 23, 42, 0.12);
+    border-radius: 18px;
+    overflow: hidden;
+}
+
+.slide {
+    background: linear-gradient(90deg, rgba(250, 251, 252, 0.92), rgba(255, 255, 255, 0.92));
+    backdrop-filter: blur(0);
+}
+
+.slide .chalkboard,
+.slide .visualization {
+    backdrop-filter: none !important;
+}
+
+.chalkboard {
+    flex: 1 1 50% !important;
+    max-width: 50% !important;
+    padding: 40px 50px !important;
+    background: var(--chapter-surface) !important;
+    border: none !important;
+    border-right: 1px solid var(--chapter-border) !important;
+    box-shadow: none !important;
+    color: var(--chapter-text) !important;
+    line-height: 1.9 !important;
+    overflow-y: auto !important;
+}
+
+.slide > .chalkboard:only-child {
+    max-width: 100% !important;
+    border-right: none !important;
+}
+
+.chalkboard h1 {
+    color: #1a1a2e !important;
+    font-size: 36px !important;
+    margin-bottom: 25px !important;
+    padding-bottom: 15px !important;
+    border-bottom: 4px solid var(--chapter-accent) !important;
+}
+
+.chalkboard h2 {
+    color: #1a1a2e !important;
+    font-size: 28px !important;
+    margin: 30px 0 15px !important;
+    padding-bottom: 12px !important;
+    border-bottom: 4px solid var(--chapter-accent) !important;
+}
+
+.chalkboard h3 {
+    color: var(--chapter-muted) !important;
+    font-size: 24px !important;
+    margin: 25px 0 10px !important;
+}
+
+.chalkboard h4 {
+    color: var(--chapter-muted) !important;
+    font-size: 20px !important;
+    margin: 20px 0 10px !important;
+}
+
+.chalkboard p,
+.chalkboard li {
+    font-size: 17px !important;
+    line-height: 1.9 !important;
+    margin-bottom: 12px !important;
+}
+
+.chalkboard ul,
+.chalkboard ol {
+    padding-left: 24px !important;
+}
+
+.chalkboard ul {
+    list-style: disc;
+}
+
+.chalkboard ol {
+    list-style: decimal;
+}
+
+.math-formula,
+.key-equation,
+.highlight-box,
+.definition,
+.example,
+.note,
+.theorem {
+    background: #f8faff !important;
+    border-left: 5px solid var(--chapter-accent) !important;
+    border-radius: 10px !important;
+    padding: 18px 24px !important;
+    margin: 20px 0 !important;
+    box-shadow: none !important;
+}
+
+.math-formula {
+    text-align: center !important;
+    font-size: 1.2em !important;
+}
+
+.visualization {
+    flex: 1 1 50% !important;
+    max-width: 50% !important;
+    padding: 30px !important;
+    background: #fbfcfe !important;
+    border-left: 1px solid var(--chapter-border) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    box-shadow: none !important;
+}
+
+.slide > .visualization:only-child,
+.visualization.full-width,
+.visualization.white-bg,
+.visualization.fullscreen {
+    flex: 1 1 100% !important;
+    max-width: 100% !important;
+    border-left: none !important;
+    background: var(--chapter-surface) !important;
+}
+
+.visualization canvas,
+.visualization img,
+.visualization svg {
+    max-width: 90%;
+    max-height: 90%;
+    border-radius: 16px;
+    box-shadow: 0 12px 28px rgba(15, 23, 42, 0.14);
+    background: #fff;
+    padding: 12px;
+}
+
+.nav-buttons,
+.home-nav-buttons,
+#navigation-controls {
+    position: absolute !important;
+    bottom: 40px !important;
+    right: 40px !important;
+    top: auto !important;
+    left: auto !important;
+    display: flex !important;
+    align-items: center;
+    gap: 12px;
+    background: rgba(255, 255, 255, 0.92);
+    padding: 10px 18px;
+    border-radius: 999px;
+    box-shadow: 0 16px 32px rgba(15, 23, 42, 0.15);
+}
+
+.nav-btn,
+.home-nav-buttons button,
+#navigation-controls button {
+    border: none;
+    background: var(--chapter-accent);
+    color: #fff;
+    padding: 10px 18px;
+    border-radius: 999px;
+    font-size: 15px;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.nav-btn:hover,
+.home-nav-buttons button:hover,
+#navigation-controls button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 18px rgba(74, 144, 226, 0.3);
+}
+
+.slide-indicator,
+#page-info {
+    position: absolute !important;
+    bottom: 40px !important;
+    left: 40px !important;
+    top: auto !important;
+    right: auto !important;
+    background: rgba(26, 26, 46, 0.85);
+    color: #ffffff;
+    padding: 8px 18px;
+    border-radius: 999px;
+    font-size: 15px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    box-shadow: 0 16px 32px rgba(15, 23, 42, 0.2);
+}
+
+.home-nav-buttons a,
+.nav-buttons a {
+    color: inherit !important;
+    text-decoration: none;
+}
+
+.return-home-panel {
+    position: absolute !important;
+    top: 32px !important;
+    left: 32px !important;
+    display: flex !important;
+    gap: 12px;
+    z-index: 1000;
+}
+
+.return-home-panel .return-link {
+    padding: 8px 18px;
+    border-radius: 999px;
+    background: rgba(15, 23, 42, 0.82);
+    color: #f8fafc !important;
+    font-size: 14px;
+    text-decoration: none !important;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    box-shadow: 0 12px 24px rgba(15, 23, 42, 0.25);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.return-home-panel .return-link:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 16px 32px rgba(15, 23, 42, 0.32);
+}
+
+@media (max-width: 1280px) {
+    .chalkboard,
+    .visualization {
+        flex: 1 1 100% !important;
+        max-width: 100% !important;
+        border-right: none !important;
+        border-left: none !important;
+    }
+
+    .nav-buttons,
+    .home-nav-buttons,
+    #navigation-controls {
+        bottom: 20px !important;
+        right: 20px !important;
+    }
+
+    .slide-indicator,
+    #page-info {
+        bottom: 20px !important;
+        left: 20px !important;
+    }
+
+    .return-home-panel {
+        top: 20px !important;
+        left: 20px !important;
+    }
+}
+
+@media (max-width: 768px) {
+    #presentation-container {
+        border-radius: 0;
+    }
+
+    .chalkboard,
+    .visualization {
+        padding: 28px !important;
+    }
+
+    .nav-buttons,
+    .home-nav-buttons,
+    #navigation-controls {
+        flex-wrap: wrap;
+        justify-content: center;
+        padding: 12px 16px;
+    }
+
+    .return-home-panel {
+        position: static !important;
+        justify-content: center;
+        width: 100%;
+        margin-bottom: 16px;
+        gap: 10px;
+    }
+}
