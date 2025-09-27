@@ -1,14 +1,15 @@
 ﻿<!DOCTYPE html>
+
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>第八章：多元函数微分学 (交互式课件)</title>
-    <script src="../common-assets/js/d3-7.8.5.min.js"></script>
-    <script src="../common-assets/js/three-r128.min.js"></script>
-    <!-- 使用统一的MathJax配置文件 -->
-    <script src="../common-assets/js/mathjax-config.js"></script>
-      <script>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>第八章：多元函数微分学 (交互式课件)</title>
+<script src="../common-assets/js/d3-7.8.5.min.js"></script>
+<script src="../common-assets/js/three-r128.min.js"></script>
+<!-- 使用统一的MathJax配置文件 -->
+<script src="../common-assets/js/mathjax-config.js"></script>
+<script>
         window.MathJax = {
             tex: {
                 inlineMath: [['$', '$'], ['\\(', '\\)']],
@@ -28,574 +29,160 @@
             }
         };
     </script>
-    <script type="text/javascript" id="MathJax-script" async
-            src="../common-assets/js/mathjax-3.2.2-tex-svg.min.js">
-    </script>
-
-
-    <style>
-        @import url('../common-assets/css/fonts.css');
-
+<script async="" id="MathJax-script" src="../common-assets/js/mathjax-3.2.2-tex-svg.min.js" type="text/javascript">
+</script>
+<style>
         :root {
-            --chalkboard-bg: transparent;
-            --chalk-text: #ecf0f1;
-            --visualization-bg: #fdfdfd00;
-            --primary-color: #3498db;
-            --accent-color: #e67e22;
-            --success-color: #2ecc71;
-            --danger-color: #e74c3c;
-            --warning-color: #f39c12;
-            --info-color: #9b59b6;
-            --text-color: #34495e;
-            --heading-font: 'Noto Serif SC', serif;
-            --handwriting-font: 'Noto Serif SC', serif;
+            --page-bg: #f0f4f8;
+            --card-bg: #ffffff;
+            --text-color: #1f2937;
+            --primary-color: #2563eb;
+            --accent-color: #f97316;
+            --muted-color: #64748b;
+            --axis-color: #475569;
+            --border-color: #e2e8f0;
+            --code-bg: #f8fafc;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            height: 100%;
         }
 
         body {
-            font-family: var(--heading-font);
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            overflow: auto;
-            height: 100vh;
-            width: 100vw;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin: 0;
-            background-image: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        }
-
-        #presentation-container {
-            width: 100vw;
-            height: 100vh;
-            max-width: 100vw;
-            aspect-ratio: 16 / 9;
-            position: relative;
-            background: rgba(255, 255, 255, 0);
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
-            border-radius: 8px;
+            font-family: 'Microsoft YaHei', 'Segoe UI', sans-serif;
+            background: var(--page-bg);
+            color: var(--text-color);
             overflow: hidden;
         }
 
         .slide {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            opacity: 0;
-            visibility: hidden;
-            display: flex;
-            transition: opacity 0.6s ease-in-out;
-        }
-
-        .slide.active {
-            opacity: 1;
-            visibility: visible;
-            z-index: 10;
-        }
-
-        .chalkboard {
-            flex: 0 0 35%;
-            background-color: #2c3e50 !important;
-            background-image: url('../common-assets/images/black-felt.png');
-            border: 10px solid #8B4513;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.5), inset 0 0 15px rgba(0,0,0,0.7);
-            color: var(--chalk-text, #f0f0f0);
-            padding: 30px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            overflow-y: auto;
-            box-sizing: border-box;
-        }
-
-        .chalkboard h2 {
-            font-family: var(--handwriting-font);
-            font-size: 2.2rem;
-            color: #f1c40f;
-            border-bottom: 2px solid rgba(241, 196, 15, 0.5);
-            padding-bottom: 10px;
-            margin-bottom: 20px;
-        }
-
-        .chalkboard h3 {
-            font-family: var(--handwriting-font);
-            font-size: 1.5rem;
-            color: var(--primary-color);
-            margin-top: 15px;
-            margin-bottom: 10px;
-        }
-
-        .chalkboard p, .chalkboard li {
-            font-size: 1.1rem;
-            line-height: 1.7;
-            margin-bottom: 15px;
-        }
-
-        .chalkboard ol {
-            padding-left: 25px;
-        }
-
-        .chalkboard ul {
-            list-style-type: '→ ';
-            padding-left: 20px;
-        }
-
-        .math-formula {
-            font-size: 1.3rem;
-            color: #1abc9c;
-            background: rgba(0,0,0,0.2);
-            padding: 15px;
-            border-radius: 5px;
-            text-align: center;
-            margin: 15px 0;
-            line-height: 1.5;
-        }
-
-        .highlight {
-            color: var(--warning-color);
-            font-weight: bold;
-        }
-
-        .visualization {
-            flex: 1;
-            padding: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
-            position: relative;
-            box-sizing: border-box;
-            background: linear-gradient(135deg, #f5f7fa 10%, #c3cfe2 100%);
-        }
-
-        .visualization.full-width {
-            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
-        }
-        
-        .visualization.white-bg {
-            background: white;
-        }
-
-        /* 3D画布样式 */
-        #canvas3d {
-            width: 100%;
-            height: 100%;
-            display: block;
-            cursor: grab;
-        }
-
-        #canvas3d:active {
-            cursor: grabbing;
-        }
-
-        /* 信息面板 */
-        .info-panel {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            background: rgba(0, 0, 0, 0.8);
-            color: white;
-            padding: 15px;
-            border-radius: 10px;
-            font-size: 14px;
-            max-width: 300px;
-            backdrop-filter: blur(10px);
-            z-index: 100;
-        }
-
-        .info-panel h4 {
-            margin: 0 0 10px 0;
-            color: #f1c40f;
-        }
-
-        .formula-display {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 10px;
-            border-radius: 5px;
-            margin-top: 10px;
-            text-align: center;
-        }
-
-        /* 控制面板 */
-        .control-panel {
-            position: absolute;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(255, 255, 255, 0.95);
-            padding: 15px 25px;
-            border-radius: 25px;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            z-index: 1000;
-            backdrop-filter: blur(10px);
-        }
-
-        .slider-container {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .slider-container label {
-            font-size: 14px;
-            color: var(--text-color);
-            min-width: 30px;
-        }
-
-        .slider {
-            width: 150px;
-            height: 5px;
-            -webkit-appearance: none;
-            appearance: none;
-            background: #ddd;
-            outline: none;
-            border-radius: 5px;
-            transition: all 0.3s;
-        }
-
-        .slider::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 20px;
-            height: 20px;
-            background: var(--primary-color);
-            cursor: pointer;
-            border-radius: 50%;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-        }
-
-        .slider-value {
-            min-width: 40px;
-            text-align: center;
-            font-weight: bold;
-            color: var(--text-color);
-        }
-
-        .btn {
-            background: var(--primary-color);
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 14px;
-            transition: all 0.3s ease;
-        }
-
-        .btn:hover {
-            background: #2980b9;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-        }
-
-        /* 导航按钮 */
-        .nav-buttons {
-            position: absolute;
-            top: 60px;
-            right: 20px;
-            display: flex;
-            gap: 5px;
-            z-index: 100;
-        }
-
-        .nav-btn {
-            background: rgba(0, 0, 0, 0.6);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            color: white;
-            padding: 4px 8px;
-            border-radius: 15px;
-            font-size: 10px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            backdrop-filter: blur(10px);
-            user-select: none;
-            min-width: 30px;
-            text-align: center;
-        }
-
-        .nav-btn:hover {
-            background: rgba(0, 0, 0, 0.8);
-            border-color: rgba(255, 255, 255, 0.6);
-            transform: translateY(-1px);
-        }
-
-        .nav-btn:active {
-            transform: translateY(0);
-            background: rgba(0, 0, 0, 0.9);
-        }
-
-        .nav-btn:disabled {
-            opacity: 0.4;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .nav-btn:disabled:hover {
-            background: rgba(0, 0, 0, 0.6);
-            border-color: rgba(255, 255, 255, 0.3);
-            transform: none;
-        }
-
-        /* 页码指示器 */
-        .page-indicator {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: rgba(0,0,0,0.8);
-            color: white;
-            padding: 8px 15px;
-            border-radius: 20px;
-            font-size: 14px;
-            z-index: 100;
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        /* 动画效果 */
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); opacity: 0.8; }
-            50% { transform: scale(1.1); opacity: 1; }
-        }
-
-        .pulse {
-            animation: pulse 2s ease-in-out infinite;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .fade-in {
-            animation: fadeIn 0.8s ease-out;
-        }
-
-        @keyframes rotate {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-
-        .rotating {
-            animation: rotate 20s linear infinite;
-        }
-
-        /* 提示文本样式 */
-        .tip-text {
-            background: rgba(255, 193, 7, 0.1);
-            border-left: 4px solid #ffc107;
-            padding: 10px 15px;
-            margin: 10px 0;
-            font-size: 0.95rem;
-            color: #ffc107;
-        }
-
-        /* 例子框样式 */
-        .example-box {
-            background: rgba(76, 175, 80, 0.1);
-            border: 1px solid #4caf50;
-            border-radius: 8px;
-            padding: 15px;
-            margin: 15px 0;
-        }
-
-        .example-box h4 {
-            color: #4caf50;
-            margin: 0 0 10px 0;
-        }
-    
-        /* === 统一章节样式为第二章风格 === */
-        :root {
-            --heading-font: 'Microsoft YaHei', 'Segoe UI', sans-serif;
-            --handwriting-font: 'Microsoft YaHei', 'Segoe UI', sans-serif;
-            --text-color: #34495e;
-        }
-
-        body {
-            font-family: var(--heading-font);
-            background: #f0f2f5;
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            overflow: hidden;
-            margin: 0;
-            color: var(--text-color);
-            min-height: 100vh;
-            height: auto;
-            width: auto;
-            display: block;
-        }
-
-        body::before {
             display: none;
-        }
-
-        #presentation-container {
-            width: 100%;
-            height: 100vh;
-            max-width: 100vw;
-            position: relative;
-            background: #ffffff;
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
-            border-radius: 0;
-            overflow: hidden;
-        }
-
-        .slide {
-            width: 100%;
-            height: 100%;
-            display: none;
-            opacity: 0;
-            visibility: hidden;
-            align-items: stretch;
-            transition: opacity 0.6s ease-in-out;
-        }
-
-        .slide.active {
-            display: flex;
-            opacity: 1;
-            visibility: visible;
             animation: fadeIn 0.6s ease-in-out;
         }
 
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(15px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        .slide.active {
+            display: block;
         }
 
-        .chalkboard {
-            width: 50%;
-            height: 100%;
-            background: #ffffff;
-            color: #333333;
-            padding: 40px 50px;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-start;
-            overflow-y: auto;
-            box-sizing: border-box;
-            line-height: 1.9;
-            font-size: 17px;
-            border-right: 1px solid #e0e0e0;
-            box-shadow: none;
-        }
-
-        .slide > .chalkboard:only-child {
+        .slide-container {
             width: 100%;
+            height: 100vh;
+            display: flex;
+            position: relative;
+        }
+
+        .slide-container.single-column {
+            justify-content: center;
+        }
+
+        .left-content {
+            width: 50%;
+            height: 100vh;
+            padding: 48px 56px;
+            background: var(--card-bg);
+            overflow-y: auto;
+            font-size: 17px;
+            line-height: 1.9;
+            color: var(--text-color);
+            border-right: 1px solid var(--border-color);
+        }
+
+        .slide-container.single-column .left-content {
+            width: 100%;
+            max-width: 960px;
             border-right: none;
         }
 
-        .chalkboard h2 {
-            font-size: 28px;
-            color: #1a1a2e;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 4px solid #4a90e2;
-            font-family: var(--heading-font);
-            text-shadow: none;
+        .left-content h2 {
+            font-size: 2.4rem;
+            margin-bottom: 1.2rem;
+            color: var(--primary-color);
         }
 
-        .chalkboard h3 {
-            font-size: 24px;
-            color: #34495e;
-            margin: 25px 0 10px;
-            font-family: var(--heading-font);
-            text-shadow: none;
+        .left-content h3 {
+            font-size: 1.6rem;
+            margin: 1.2rem 0 0.6rem;
+            color: var(--axis-color);
         }
 
-        .chalkboard h4 {
-            font-size: 20px;
-            color: #555555;
-            margin: 20px 0 10px;
+        .left-content p {
+            margin-bottom: 1rem;
         }
 
-        .chalkboard p, .chalkboard li {
-            font-size: 17px;
-            line-height: 1.9;
-            margin-bottom: 12px;
-            text-shadow: none;
+        .left-content ul,
+        .left-content ol {
+            margin: 1rem 0 1rem 1.25rem;
         }
 
-        .chalkboard ul {
-            padding-left: 24px;
-            list-style-type: disc;
-        }
-
-        .chalkboard ol {
-            padding-left: 24px;
+        .left-content li {
+            margin-bottom: 0.6rem;
         }
 
         .math-formula {
-            background: #f8f9fa;
-            padding: 20px;
-            margin: 20px 0;
-            text-align: center;
-            border-radius: 8px;
-            border: 1px solid #e0e0e0;
-            font-size: 1.2rem;
-            line-height: 1.6;
-            color: #2c3e50;
-            box-shadow: none;
+            background: var(--code-bg);
+            border-left: 4px solid var(--primary-color);
+            padding: 14px 18px;
+            margin: 1.2rem 0;
+            border-radius: 10px;
+            font-size: 1.05rem;
         }
 
         .highlight {
-            color: #d35400;
-            font-weight: bold;
-            text-shadow: none;
+            color: var(--primary-color);
+            font-weight: 600;
         }
 
-        .visualization {
+        .right-visual {
             width: 50%;
-            height: 100%;
-            background: #fdfdfd;
+            height: 100vh;
+            background: var(--code-bg);
             display: flex;
             align-items: center;
             justify-content: center;
-            border-left: 1px solid #e0e0e0;
-            position: relative;
-            padding: 30px;
-            box-sizing: border-box;
-            overflow: hidden;
-            box-shadow: none;
+            border-left: 1px solid var(--border-color);
+            padding: 32px;
         }
 
-        .slide > .visualization:only-child {
-            width: 100%;
-            border-left: none;
+        .slide-container.single-column .right-visual {
+            display: none;
         }
 
-        .visualization.full-width,
-        .visualization.white-bg,
-        .visualization.full-width.white-bg,
-        .visualization.fullscreen {
+        .right-visual > div {
             width: 100%;
             height: 100%;
-            border-left: none;
-            background: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--card-bg);
+            border-radius: 24px;
+            box-shadow: 0 24px 60px rgba(15, 23, 42, 0.12);
+            padding: 24px;
         }
 
-        .visualization canvas {
-            max-width: 90%;
-            max-height: 90%;
+        .right-visual > div > * {
+            width: 100%;
+            height: 100%;
         }
 
-        .visualization svg {
-            max-width: 95%;
-            max-height: 95%;
+        .right-visual canvas,
+        .right-visual svg {
+            max-width: 100%;
+            max-height: 100%;
         }
 
-        .visualization .math-formula {
-            background: transparent;
-            border: none;
+        .right-visual svg text {
+            fill: var(--text-color);
+        }
+
+        .right-visual svg .domain,
+        .right-visual svg .tick line {
+            stroke: var(--axis-color);
         }
 
         .nav-container {
@@ -605,46 +192,101 @@
             display: flex;
             align-items: center;
             gap: 12px;
-            padding: 10px 18px;
-            background: rgba(255, 255, 255, 0.9);
-            border: 1px solid #dbe4ff;
+            padding: 12px 20px;
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid var(--border-color);
             border-radius: 999px;
-            box-shadow: 0 18px 45px rgba(15, 23, 42, 0.15);
-            backdrop-filter: blur(10px);
+            box-shadow: 0 12px 30px rgba(15, 23, 42, 0.12);
+            backdrop-filter: blur(12px);
             z-index: 1100;
         }
 
-        .nav-container .nav-btn {
+        .nav-btn {
             border: none;
-            background: #4a90e2;
+            background: var(--primary-color);
             color: #ffffff;
             padding: 8px 16px;
             border-radius: 999px;
-            font-size: 0.9rem;
+            font-size: 0.95rem;
             font-weight: 600;
             cursor: pointer;
             transition: transform 0.2s ease, box-shadow 0.2s ease;
-            box-shadow: 0 8px 16px rgba(74, 144, 226, 0.25);
         }
 
-        .nav-container .nav-btn:hover:not(:disabled) {
+        .nav-btn:hover:not(:disabled) {
             transform: translateY(-2px);
-            box-shadow: 0 12px 24px rgba(74, 144, 226, 0.35);
+            box-shadow: 0 12px 24px rgba(37, 99, 235, 0.25);
         }
 
-        .nav-container .nav-btn:disabled {
-            background: #e5edf8;
-            color: #94a3b8;
-            box-shadow: none;
+        .nav-btn:disabled {
+            background: #e2e8f0;
+            color: var(--muted-color);
             cursor: not-allowed;
+            box-shadow: none;
         }
 
         #page-indicator {
-            font-size: 0.9rem;
-            color: #1f2937;
+            font-size: 0.95rem;
+            color: var(--axis-color);
             min-width: 80px;
             text-align: center;
             font-weight: 600;
+        }
+
+        .directory-toggle {
+            border: none;
+            background: var(--card-bg);
+            color: var(--axis-color);
+            padding: 8px 12px;
+            border-radius: 10px;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(15, 23, 42, 0.08);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .directory-toggle:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 24px rgba(15, 23, 42, 0.12);
+        }
+
+        .directory-menu {
+            position: fixed;
+            bottom: 90px;
+            right: 24px;
+            width: 320px;
+            max-height: 60vh;
+            overflow-y: auto;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 18px 45px rgba(15, 23, 42, 0.18);
+            display: none;
+            z-index: 1200;
+        }
+
+        .directory-menu.active {
+            display: block;
+        }
+
+        .directory-menu h3 {
+            margin-bottom: 16px;
+            font-size: 1.1rem;
+            color: var(--axis-color);
+        }
+
+        .directory-item {
+            margin-bottom: 12px;
+            color: var(--text-color);
+            text-decoration: none;
+            display: block;
+            padding: 10px 12px;
+            border-radius: 12px;
+            transition: background 0.2s ease;
+        }
+
+        .directory-item:hover {
+            background: rgba(37, 99, 235, 0.08);
         }
 
         .global-animation-controls {
@@ -653,49 +295,82 @@
             left: 24px;
             display: flex;
             gap: 12px;
-            padding: 10px 16px;
-            background: rgba(255, 255, 255, 0.9);
-            border: 1px solid #dbe4ff;
+            padding: 12px 18px;
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid var(--border-color);
             border-radius: 999px;
-            box-shadow: 0 18px 45px rgba(15, 23, 42, 0.1);
-            backdrop-filter: blur(10px);
+            box-shadow: 0 12px 30px rgba(15, 23, 42, 0.12);
+            backdrop-filter: blur(12px);
             z-index: 1100;
         }
 
         .global-control-btn {
             background: transparent;
             border: none;
-            color: #1f2937;
+            color: var(--axis-color);
             padding: 6px 12px;
             border-radius: 999px;
             cursor: pointer;
-            font-size: 0.9rem;
+            font-size: 0.95rem;
             font-weight: 600;
-            transition: transform 0.2s ease, color 0.2s ease;
+            transition: color 0.2s ease;
         }
 
         .global-control-btn:hover {
-            color: #2563eb;
-            transform: translateY(-1px);
+            color: var(--primary-color);
         }
 
         .global-control-btn.pause {
-            color: #e74c3c;
+            color: #dc2626;
         }
 
-        .return-home-panel,
-        .home-nav-buttons,
-        #floating-menu,
-        .menu-toggle,
-        .menu-content {
-            display: none !important;
+        .slide-note {
+            font-size: 0.95rem;
+            color: var(--muted-color);
+            margin-top: 12px;
         }
 
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 1200px) {
+            .slide-container {
+                flex-direction: column;
+            }
+
+            .left-content,
+            .right-visual {
+                width: 100%;
+                height: auto;
+                min-height: 50vh;
+            }
+
+            .right-visual {
+                border-left: none;
+                border-top: 1px solid var(--border-color);
+            }
+        }
+
+        @media print {
+            body {
+                overflow: visible;
+            }
+            .slide {
+                display: block !important;
+                page-break-after: always;
+            }
+            .nav-container,
+            .global-animation-controls,
+            .directory-menu,
+            .directory-toggle {
+                display: none !important;
+            }
+        }
     </style>
-    <link rel="stylesheet" href="../common-assets/css/chapter-light-overrides.css">
-
-
-    <style>
+<link href="../common-assets/css/chapter-light-overrides.css" rel="stylesheet"/>
+<style>
         .return-home-panel {
             position: fixed;
             top: 16px;
@@ -739,252 +414,181 @@
     </style>
 </head>
 <body>
-<div id="presentation-container">
-    
-    <!-- 第1页：封面 -->
-    <div class="slide active">
-        <div class="chalkboard" style="flex: 1; text-align: center; border: none;">
-            <h2 style="font-size: 4rem; border: none;">第八章</h2>
-            <p style="font-size: 2.5rem; color: white;">多元函数微分学</p>
-            <p style="font-size: 1.5rem; color: #95a5a6; margin-top: 40px;">
+<div id="slidesContainer">
+<!-- 第1页：封面 -->
+<div class="slide active"><div class="slide-container single-column"><div class="left-content tex2jax_process">
+<h2 style="font-size: 4rem">第八章</h2>
+<p style="font-size: 2.5rem; color: var(--text-color)">多元函数微分学</p>
+<p style="font-size: 1.5rem; color: var(--muted-color); margin-top: 40px">
                 从平面走向空间的数学之旅
             </p>
-            <div style="margin-top: 60px;">
-                <p style="font-size: 1.2rem; color: #ecf0f1;">
+<div style="margin-top: 60px">
+<p style="font-size: 1.2rem; color: var(--text-color)">
                     🎯 学习目标：理解二元函数、掌握偏导数、学会求极值
                 </p>
-            </div>
-        </div>
-    </div>
-
-    <!-- 第2页：为什么需要多元函数 -->
-    <div class="slide">
-        <div class="chalkboard">
-            <h2>生活中的多元函数</h2>
-            <p>现实中很多事情<span class="highlight">不只由一个因素决定</span></p>
-            
-            <div class="example-box">
-                <h4>📱 手机信号强度</h4>
-                <p>信号 = f(距离, 障碍物, 天气)</p>
-            </div>
-            
-            <div class="example-box">
-                <h4>🍕 披萨价格</h4>
-                <p>价格 = f(尺寸, 配料数量, 送餐距离)</p>
-            </div>
-            
-            <div class="example-box">
-                <h4>📊 考试成绩</h4>
-                <p>成绩 = f(学习时间, 理解程度, 考试技巧)</p>
-            </div>
-            
-            <div class="tip-text">
+</div>
+</div></div></div>
+<!-- 第2页：为什么需要多元函数 -->
+<div class="slide"><div class="slide-container"><div class="left-content tex2jax_process">
+<h2>生活中的多元函数</h2>
+<p>现实中很多事情<span class="highlight">不只由一个因素决定</span></p>
+<div class="example-box">
+<h4>📱 手机信号强度</h4>
+<p>信号 = f(距离, 障碍物, 天气)</p>
+</div>
+<div class="example-box">
+<h4>🍕 披萨价格</h4>
+<p>价格 = f(尺寸, 配料数量, 送餐距离)</p>
+</div>
+<div class="example-box">
+<h4>📊 考试成绩</h4>
+<p>成绩 = f(学习时间, 理解程度, 考试技巧)</p>
+</div>
+<div class="tip-text">
                 💡 这就是为什么我们需要学习多元函数！
             </div>
-        </div>
-        <div class="visualization" id="vis-intro"></div>
-    </div>
-
-    <!-- 第3页：二元函数基本概念 -->
-    <div class="slide">
-        <div class="chalkboard">
-            <h2>什么是二元函数？</h2>
-            <p>最简单的多元函数：<span class="highlight">两个输入，一个输出</span></p>
-            
-            <div class="math-formula">
+</div><div class="right-visual"><div id="vis-intro"></div></div></div></div>
+<!-- 第3页：二元函数基本概念 -->
+<div class="slide"><div class="slide-container"><div class="left-content tex2jax_process">
+<h2>什么是二元函数？</h2>
+<p>最简单的多元函数：<span class="highlight">两个输入，一个输出</span></p>
+<div class="math-formula">
                 $z = f(x, y)$
             </div>
-            
-            <h3>通俗理解</h3>
-            <p>想象一个<span class="highlight">函数机器</span>：</p>
-            <ul>
-                <li>投入两个数字 x 和 y</li>
-                <li>机器按照规则 f 处理</li>
-                <li>输出一个结果 z</li>
-            </ul>
-            
-            <div class="example-box">
-                <h4>例子：计算长方形面积</h4>
-                <p>面积 = 长 × 宽</p>
-                <p>$S = f(x, y) = x \cdot y$</p>
-            </div>
-        </div>
-        <div class="visualization" id="vis-binary-function"></div>
-    </div>
-
-    <!-- 第4页：定义域 -->
-    <div class="slide">
-        <div class="chalkboard">
-            <h2>定义域</h2>
-            <p>让函数<span class="highlight">有意义</span>的所有(x,y)点的集合</p>
-            
-            <h3>三个常见限制</h3>
-            <ol>
-                <li><span class="highlight">分母不能为零</span>
-                    <p>例：$z = \frac{1}{x-y}$，要求 $x \neq y$</p>
-                </li>
-                <li><span class="highlight">根号下不能为负</span>
-                    <p>例：$z = \sqrt{x+y}$，要求 $x+y \geq 0$</p>
-                </li>
-                <li><span class="highlight">对数真数必须为正</span>
-                    <p>例：$z = \ln(xy)$，要求 $xy > 0$</p>
-                </li>
-            </ol>
-            
-            <div class="tip-text">
+<h3>通俗理解</h3>
+<p>想象一个<span class="highlight">函数机器</span>：</p>
+<ul>
+<li>投入两个数字 x 和 y</li>
+<li>机器按照规则 f 处理</li>
+<li>输出一个结果 z</li>
+</ul>
+<div class="example-box">
+<h4>例子：计算长方形面积</h4>
+<p>面积 = 长 × 宽</p>
+<p>$S = f(x, y) = x \cdot y$</p>
+</div>
+</div><div class="right-visual"><div id="vis-binary-function"></div></div></div></div>
+<!-- 第4页：定义域 -->
+<div class="slide"><div class="slide-container"><div class="left-content tex2jax_process">
+<h2>定义域</h2>
+<p>让函数<span class="highlight">有意义</span>的所有(x,y)点的集合</p>
+<h3>三个常见限制</h3>
+<ol>
+<li><span class="highlight">分母不能为零</span>
+<p>例：$z = \frac{1}{x-y}$，要求 $x \neq y$</p>
+</li>
+<li><span class="highlight">根号下不能为负</span>
+<p>例：$z = \sqrt{x+y}$，要求 $x+y \geq 0$</p>
+</li>
+<li><span class="highlight">对数真数必须为正</span>
+<p>例：$z = \ln(xy)$，要求 $xy &gt; 0$</p>
+</li>
+</ol>
+<div class="tip-text">
                 💡 定义域就像是函数的"活动范围"
             </div>
-        </div>
-        <div class="visualization" id="vis-domain"></div>
-    </div>
-
-    <!-- 第5页：二元函数的图像 -->
-    <div class="slide">
-        <div class="chalkboard">
-            <h2>二元函数的图像</h2>
-            <p>二元函数的图像是<span class="highlight">三维空间中的曲面</span></p>
-            
-            <h3>生活中的例子</h3>
-            <ul>
-                <li>🏔️ 山地地形图</li>
-                <li>🌊 水波纹</li>
-                <li>🎪 帐篷顶部</li>
-                <li>🥣 碗的形状</li>
-            </ul>
-            
-            <div class="example-box">
-                <h4>右边展示：抛物面</h4>
-                <p>$z = x^2 + y^2$</p>
-                <p>像一个倒扣的碗</p>
-            </div>
-            
-            <p>🖱️ <span class="highlight">拖动鼠标旋转查看</span></p>
-        </div>
-        <div class="visualization" id="vis-3d-surface"></div>
-    </div>
-
-    <!-- 第6页：等高线 -->
-    <div class="slide">
-        <div class="chalkboard">
-            <h2>等高线</h2>
-            <p>把3D曲面<span class="highlight">投影到平面</span>的方法</p>
-            
-            <h3>什么是等高线？</h3>
-            <p>高度相同的点连成的线</p>
-            
-            <h3>生活中的等高线</h3>
-            <ul>
-                <li>🗺️ 地形图的等高线</li>
-                <li>🌡️ 天气图的等温线</li>
-                <li>🌪️ 气压图的等压线</li>
-            </ul>
-            
-            <div class="tip-text">
+</div><div class="right-visual"><div id="vis-domain"></div></div></div></div>
+<!-- 第5页：二元函数的图像 -->
+<div class="slide"><div class="slide-container"><div class="left-content tex2jax_process">
+<h2>二元函数的图像</h2>
+<p>二元函数的图像是<span class="highlight">三维空间中的曲面</span></p>
+<h3>生活中的例子</h3>
+<ul>
+<li>🏔️ 山地地形图</li>
+<li>🌊 水波纹</li>
+<li>🎪 帐篷顶部</li>
+<li>🥣 碗的形状</li>
+</ul>
+<div class="example-box">
+<h4>右边展示：抛物面</h4>
+<p>$z = x^2 + y^2$</p>
+<p>像一个倒扣的碗</p>
+</div>
+<p>🖱️ <span class="highlight">拖动鼠标旋转查看</span></p>
+</div><div class="right-visual"><div id="vis-3d-surface"></div></div></div></div>
+<!-- 第6页：等高线 -->
+<div class="slide"><div class="slide-container"><div class="left-content tex2jax_process">
+<h2>等高线</h2>
+<p>把3D曲面<span class="highlight">投影到平面</span>的方法</p>
+<h3>什么是等高线？</h3>
+<p>高度相同的点连成的线</p>
+<h3>生活中的等高线</h3>
+<ul>
+<li>🗺️ 地形图的等高线</li>
+<li>🌡️ 天气图的等温线</li>
+<li>🌪️ 气压图的等压线</li>
+</ul>
+<div class="tip-text">
                 💡 等高线密集 = 坡度陡
-                <br>等高线稀疏 = 坡度缓
+                <br/>等高线稀疏 = 坡度缓
             </div>
-        </div>
-        <div class="visualization" id="vis-contour"></div>
-    </div>
-
-    <!-- 第7页：极限概念（简化版） -->
-    <div class="slide">
-        <div class="chalkboard">
-            <h2>二元函数的极限</h2>
-            <p>从<span class="highlight">各个方向</span>接近一个点时的趋势</p>
-            
-            <div class="math-formula">
+</div><div class="right-visual"><div id="vis-contour"></div></div></div></div>
+<!-- 第7页：极限概念（简化版） -->
+<div class="slide"><div class="slide-container"><div class="left-content tex2jax_process">
+<h2>二元函数的极限</h2>
+<p>从<span class="highlight">各个方向</span>接近一个点时的趋势</p>
+<div class="math-formula">
                 $\lim\limits_{(x,y) \to (x_0,y_0)} f(x,y) = L$
             </div>
-            
-            <h3>通俗理解</h3>
-            <p>不管从哪条路走向目标点，函数值都趋向同一个数</p>
-            
-            <div class="example-box">
-                <h4>⚠️ 注意</h4>
-                <p>必须从<span class="highlight">所有方向</span>接近都得到相同结果</p>
-                <p>否则极限不存在！</p>
-            </div>
-        </div>
-        <div class="visualization" id="vis-limit"></div>
-    </div>
-
-    <!-- 第8页：偏导数引入 -->
-    <div class="slide">
-        <div class="chalkboard">
-            <h2>偏导数的引入</h2>
-            <p>问题：曲面怎么描述<span class="highlight">变化率</span>？</p>
-            
-            <h3>思路</h3>
-            <p>一次只让一个变量变化，其他保持不变</p>
-            
-            <div class="example-box">
-                <h4>🚗 开车爬山</h4>
-                <ul>
-                    <li>向东的坡度？（x方向）</li>
-                    <li>向北的坡度？（y方向）</li>
-                </ul>
-            </div>
-            
-            <p>偏导数 = <span class="highlight">沿坐标轴方向的变化率</span></p>
-        </div>
-        <div class="visualization" id="vis-partial-intro"></div>
-    </div>
-
-    <!-- 第9页：偏导数定义 -->
-    <div class="slide">
-        <div class="chalkboard">
-            <h2>偏导数</h2>
-            
-            <h3>对x的偏导数</h3>
-            <div class="math-formula">
+<h3>通俗理解</h3>
+<p>不管从哪条路走向目标点，函数值都趋向同一个数</p>
+<div class="example-box">
+<h4>⚠️ 注意</h4>
+<p>必须从<span class="highlight">所有方向</span>接近都得到相同结果</p>
+<p>否则极限不存在！</p>
+</div>
+</div><div class="right-visual"><div id="vis-limit"></div></div></div></div>
+<!-- 第8页：偏导数引入 -->
+<div class="slide"><div class="slide-container"><div class="left-content tex2jax_process">
+<h2>偏导数的引入</h2>
+<p>问题：曲面怎么描述<span class="highlight">变化率</span>？</p>
+<h3>思路</h3>
+<p>一次只让一个变量变化，其他保持不变</p>
+<div class="example-box">
+<h4>🚗 开车爬山</h4>
+<ul>
+<li>向东的坡度？（x方向）</li>
+<li>向北的坡度？（y方向）</li>
+</ul>
+</div>
+<p>偏导数 = <span class="highlight">沿坐标轴方向的变化率</span></p>
+</div><div class="right-visual"><div id="vis-partial-intro"></div></div></div></div>
+<!-- 第9页：偏导数定义 -->
+<div class="slide"><div class="slide-container"><div class="left-content tex2jax_process">
+<h2>偏导数</h2>
+<h3>对x的偏导数</h3>
+<div class="math-formula">
                 $\frac{\partial f}{\partial x}$
             </div>
-            <p>把y当<span class="highlight">常数</span>，对x求导</p>
-            
-            <h3>对y的偏导数</h3>
-            <div class="math-formula">
+<p>把y当<span class="highlight">常数</span>，对x求导</p>
+<h3>对y的偏导数</h3>
+<div class="math-formula">
                 $\frac{\partial f}{\partial y}$
             </div>
-            <p>把x当<span class="highlight">常数</span>，对y求导</p>
-            
-            <div class="tip-text">
+<p>把x当<span class="highlight">常数</span>，对y求导</p>
+<div class="tip-text">
                 💡 记忆技巧：偏导数就是"偏心"，只关注一个变量
             </div>
-        </div>
-        <div class="visualization" id="vis-partial-def"></div>
-    </div>
-
-    <!-- 第10页：偏导数计算实例 -->
-    <div class="slide">
-        <div class="chalkboard">
-            <h2>偏导数计算</h2>
-            
-            <div class="example-box">
-                <h4>例题：$z = x^2y + 3xy^2$</h4>
-            </div>
-            
-            <h3>求 $\frac{\partial z}{\partial x}$</h3>
-            <p>把y当常数：</p>
-            <p>$\frac{\partial z}{\partial x} = 2xy + 3y^2$</p>
-            
-            <h3>求 $\frac{\partial z}{\partial y}$</h3>
-            <p>把x当常数：</p>
-            <p>$\frac{\partial z}{\partial y} = x^2 + 6xy$</p>
-            
-            <div class="tip-text">
+</div><div class="right-visual"><div id="vis-partial-def"></div></div></div></div>
+<!-- 第10页：偏导数计算实例 -->
+<div class="slide"><div class="slide-container"><div class="left-content tex2jax_process">
+<h2>偏导数计算</h2>
+<div class="example-box">
+<h4>例题：$z = x^2y + 3xy^2$</h4>
+</div>
+<h3>求 $\frac{\partial z}{\partial x}$</h3>
+<p>把y当常数：</p>
+<p>$\frac{\partial z}{\partial x} = 2xy + 3y^2$</p>
+<h3>求 $\frac{\partial z}{\partial y}$</h3>
+<p>把x当常数：</p>
+<p>$\frac{\partial z}{\partial y} = x^2 + 6xy$</p>
+<div class="tip-text">
                 💡 就像一元函数求导，只是把另一个变量当常数
             </div>
-        </div>
-        <div class="visualization" id="vis-partial-calc"></div>
-    </div>
-
-    <!-- 继续后续页面... -->
-    
-    <!-- 导航按钮 -->
-
+</div><div class="right-visual"><div id="vis-partial-calc"></div></div></div></div>
+<!-- 继续后续页面... -->
+<!-- 导航按钮 -->
 </div>
-
 <script>
     let slides, totalSlides, currentSlide = 0;
     let scene, camera, renderer, mesh, controls;
@@ -1081,7 +685,16 @@
     }
 
     // D3.js辅助函数
-    function setupD3(containerId, margins = {top: 40, right: 40, bottom: 40, left: 40}) {
+    
+    const rootStyles = getComputedStyle(document.documentElement);
+    const themeColors = {
+        text: rootStyles.getPropertyValue('--text-color').trim() || '#34495e',
+        axis: rootStyles.getPropertyValue('--axis-color').trim() || '#475569',
+        muted: rootStyles.getPropertyValue('--muted-color').trim() || '#94a3b8',
+        surface: rootStyles.getPropertyValue('--card-bg').trim() || '#ffffff'
+    };
+
+function setupD3(containerId, margins = {top: 40, right: 40, bottom: 40, left: 40}) {
         const container = d3.select(`#${containerId}`);
         if (container.empty()) return null;
         
@@ -1141,7 +754,7 @@
             .attr('y', centerY)
             .attr('text-anchor', 'middle')
             .attr('dy', '0.3em')
-            .attr('fill', 'white')
+            .attr('fill', themeColors.text)
             .style('font-size', '20px')
             .style('font-weight', 'bold')
             .text('结果');
@@ -1181,7 +794,7 @@
                 .attr('y', y)
                 .attr('text-anchor', 'middle')
                 .attr('dy', '0.3em')
-                .attr('fill', 'white')
+                .attr('fill', themeColors.text)
                 .style('font-size', '14px')
                 .style('opacity', 0)
                 .text(factor.name)
@@ -1245,13 +858,13 @@
             .attr('height', 100)
             .attr('fill', '#34495e')
             .attr('rx', 10)
-            .style('filter', 'drop-shadow(0 5px 10px rgba(0,0,0,0.3))');
+            .style('filter', 'drop-shadow(0 5px 10px rgba(15, 23, 42, 0.2))');
 
         g.append('text')
             .attr('x', machineX)
             .attr('y', machineY)
             .attr('text-anchor', 'middle')
-            .attr('fill', 'white')
+            .attr('fill', themeColors.text)
             .style('font-size', '24px')
             .style('font-weight', 'bold')
             .text('f(x,y)');
@@ -1262,7 +875,7 @@
                        L ${machineX-40} ${machineY-50} 
                        L ${machineX+40} ${machineY-50} 
                        L ${machineX+60} ${machineY-100} Z`)
-            .attr('fill', '#95a5a6')
+            .attr('fill', themeColors.muted)
             .attr('stroke', '#7f8c8d')
             .attr('stroke-width', 2);
 
@@ -1272,7 +885,7 @@
             .attr('y', machineY + 50)
             .attr('width', 40)
             .attr('height', 60)
-            .attr('fill', '#95a5a6')
+            .attr('fill', themeColors.muted)
             .attr('stroke', '#7f8c8d')
             .attr('stroke-width', 2);
 
@@ -1290,7 +903,7 @@
                 .attr('y', machineY - 150)
                 .attr('text-anchor', 'middle')
                 .attr('dy', '0.3em')
-                .attr('fill', 'white')
+                .attr('fill', themeColors.text)
                 .style('font-size', '12px')
                 .text('x');
 
@@ -1315,7 +928,7 @@
                     .attr('y', machineY - 150)
                     .attr('text-anchor', 'middle')
                     .attr('dy', '0.3em')
-                    .attr('fill', 'white')
+                    .attr('fill', themeColors.text)
                     .style('font-size', '12px')
                     .text('y');
 
@@ -2022,6 +1635,5 @@
         }, 5500);
     }
 </script>
-
 </body>
 </html>
