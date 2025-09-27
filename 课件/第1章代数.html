@@ -14,31 +14,17 @@
     <style>
         @import url('../common-assets/css/fonts.css');
 
-        :root {
-            --chalkboard-bg: transparent;
-            --chalk-text: #ecf0f1;
-            --visualization-bg: #fdfdfd00;
-            --primary-color: #3498db;
-            --accent-color: #e67e22;
-            --success-color: #2ecc71;
-            --danger-color: #e74c3c;
-            --warning-color: #f39c12;
-            --info-color: #9b59b6;
-            --text-color: #34495e;
-            --heading-font: 'Microsoft YaHei', 'Segoe UI', sans-serif;
-            --handwriting-font: 'Microsoft YaHei', 'Segoe UI', sans-serif;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
         body {
-            font-family: var(--heading-font);
+            font-family: 'Microsoft YaHei', 'Segoe UI', sans-serif;
             background: #f0f2f5;
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
+            color: #333;
             overflow: hidden;
-            margin: 0;
-            color: var(--text-color);
-            min-height: 100vh;
         }
 
         #presentation-container {
@@ -47,7 +33,7 @@
             max-width: 100vw;
             position: relative;
             background: #ffffff;
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08);
             border-radius: 0;
             overflow: hidden;
         }
@@ -56,23 +42,18 @@
             width: 100%;
             height: 100%;
             display: none;
-            opacity: 0;
-            visibility: hidden;
             align-items: stretch;
-            transition: opacity 0.6s ease-in-out;
+            animation: fadeIn 0.6s ease-in-out;
         }
 
         .slide.active {
             display: flex;
-            opacity: 1;
-            visibility: visible;
-            animation: fadeIn 0.6s ease-in-out;
         }
 
         @keyframes fadeIn {
             from {
                 opacity: 0;
-                transform: translateY(15px);
+                transform: translateY(10px);
             }
             to {
                 opacity: 1;
@@ -80,22 +61,148 @@
             }
         }
 
-        /* 清理旧版本的浮层样式，使用第二章统一的简洁布局 */
+        .chalkboard {
+            width: 50%;
+            height: 100%;
+            background: #ffffff;
+            padding: 40px 50px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            overflow-y: auto;
+            line-height: 1.9;
+            font-size: 17px;
+            border-right: 1px solid #e0e0e0;
+            color: #333;
+        }
+
+        .slide > .chalkboard:only-child {
+            width: 100%;
+            border-right: none;
+        }
+
+        .chalkboard h1 {
+            color: #1a1a2e;
+            font-size: 36px;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 4px solid #4a90e2;
+        }
+
+        .chalkboard h2 {
+            color: #1a1a2e;
+            font-size: 28px;
+            margin: 30px 0 15px;
+            padding-bottom: 12px;
+            border-bottom: 4px solid #4a90e2;
+        }
+
+        .chalkboard h3 {
+            color: #34495e;
+            font-size: 24px;
+            margin: 25px 0 10px;
+        }
+
+        .chalkboard h4 {
+            color: #555;
+            font-size: 20px;
+            margin: 20px 0 10px;
+        }
+
+        .chalkboard p,
+        .chalkboard li {
+            font-size: 17px;
+            line-height: 1.9;
+            margin-bottom: 12px;
+        }
+
+        .chalkboard ul,
+        .chalkboard ol {
+            padding-left: 24px;
+        }
+
+        .chalkboard ul { list-style-type: disc; }
+        .chalkboard ol { list-style-type: decimal; }
+
+        .visualization {
+            width: 50%;
+            height: 100%;
+            background: #fdfdfd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            border-left: 1px solid #e0e0e0;
+            padding: 30px;
+            overflow: hidden;
+        }
+
+        .slide > .visualization:only-child,
+        .visualization.full-width,
+        .visualization.full-width.white-bg,
+        .visualization.fullscreen {
+            width: 100%;
+            border-left: none;
+            background: #ffffff;
+        }
+
+        .visualization.white-bg {
+            background: #ffffff;
+        }
+
+        .visualization canvas,
+        .visualization svg {
+            max-width: 95%;
+            max-height: 95%;
+        }
+
+        .math-formula,
+        .formula-highlight {
+            background: #f8f9fa;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+            font-size: 1.2rem;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+            line-height: 1.6;
+        }
+
+        .highlight {
+            color: #d35400;
+            font-weight: bold;
+        }
+
+        .definition,
+        .theorem,
+        .example,
+        .note {
+            padding: 18px 25px;
+            margin: 20px 0;
+            border-radius: 8px;
+            border-left-width: 5px;
+            border-left-style: solid;
+        }
+
+        .definition { background: #eaf2f8; border-color: #3498db; }
+        .theorem { background: #fef5e7; border-color: #f39c12; }
+        .example { background: #e8f8f5; border-color: #2ecc71; }
+        .note { background: #fdedec; border-color: #e74c3c; font-style: italic; }
 
         .info-box-style {
             background: #f8fbff;
             border: 1px solid #dbe4ff;
             border-radius: 8px;
             padding: 16px;
-            box-shadow: 0 10px 30px rgba(74, 144, 226, 0.12);
             color: #34495e;
             font-size: 0.95rem;
             line-height: 1.6;
+            box-shadow: 0 8px 24px rgba(74, 144, 226, 0.12);
         }
 
-        .info-box-style .color-sine { color: var(--danger-color); }
-        .info-box-style .color-cosine { color: var(--primary-color); }
-        .info-box-style .color-tangent { color: var(--success-color); }
+        .info-box-style .color-sine { color: #e74c3c; }
+        .info-box-style .color-cosine { color: #3498db; }
+        .info-box-style .color-tangent { color: #2ecc71; }
 
         .toc-local {
             margin-top: 20px;
@@ -124,255 +231,142 @@
             color: #2563eb;
         }
 
-        .chalkboard {
-            width: 50%;
-            height: 100%;
-            background: #ffffff;
-            color: #333333;
-            padding: 40px 50px;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-start;
-            overflow-y: auto;
-            box-sizing: border-box;
-            line-height: 1.9;
-            font-size: 17px;
-            border-right: 1px solid #e0e0e0;
+        .step-stack { display: flex; flex-direction: column; gap: 10px; }
+        .step-item {
+            border: 1px dashed rgba(79,70,229,0.3);
+            border-radius: 12px;
+            padding: 10px 12px;
+            background: rgba(79,70,229,0.04);
+            display: none;
         }
 
-        .slide > .chalkboard:only-child {
-            width: 100%;
-            border-right: none;
-        }
-
-        .chalkboard h2 {
-            font-size: 28px;
-            color: #1a1a2e;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 4px solid #4a90e2;
-        }
-
-        .chalkboard h3 {
-            font-size: 24px;
-            color: #34495e;
-            margin: 25px 0 10px;
-        }
-
-        .chalkboard h4 {
-            font-size: 20px;
-            color: #555555;
-            margin: 20px 0 10px;
-        }
-
-        .chalkboard p {
-            margin: 10px 0;
-        }
-
-        .chalkboard ul {
-            padding-left: 20px;
-            margin: 10px 0;
-        }
-
-        .chalkboard li {
-            margin-bottom: 8px;
-        }
-
-        .highlight {
-            color: #d35400;
-            font-weight: bold;
-        }
-
-        .math-formula {
-            background: #f8f9fa;
-            padding: 20px;
-            margin: 20px 0;
-            text-align: center;
-            border-radius: 8px;
-            border: 1px solid #e0e0e0;
-            font-size: 1.2rem;
-        }
-
-        .visualization {
-            width: 50%;
-            height: 100%;
-            background: #fdfdfd;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-left: 1px solid #e0e0e0;
-            position: relative;
-        }
-
-        .slide > .visualization:only-child {
-            width: 100%;
-            border-left: none;
-        }
-
-        .visualization.full-width {
-            width: 100%;
-            border-left: none;
-            background: #ffffff;
-        }
-
-        .visualization.fullscreen {
-            width: 100%;
-            height: 100%;
-            border-left: none;
-            background: #ffffff;
-        }
-
-        .visualization.white-bg {
-            background: #ffffff;
-        }
-
-        .visualization.full-width.white-bg {
-            background: #ffffff;
-        }
-
-        .visualization canvas {
-            max-width: 90%;
-            max-height: 90%;
-        }
-
-        .visualization svg {
-            max-width: 95%;
-            max-height: 95%;
-        }
-
-        .visualization .math-formula {
-            background: transparent;
-            border: none;
-        }
-
-        .slide-container {
-            width: 100%;
-            height: 100%;
-            display: flex;
-        }
-
-        .slide-container .left-content {
-            width: 50%;
-        }
-
-        .slide-container .right-visual {
-            width: 50%;
-        }
-
-        .slide-container .left-content mjx-container {
-            max-width: 100%;
-        }
-
-        .slide-container .left-content mjx-container[display="true"] {
+        .step-item.active {
             display: block;
-            text-align: center !important;
+            background: rgba(79,70,229,0.12);
+            border-color: #4f46e5;
         }
 
-        .chalkboard p, .chalkboard li {
-            font-size: 17px;
-            line-height: 1.9;
-            margin-bottom: 12px;
-        }
-
-        .chalkboard ol {
-            padding-left: 24px;
-        }
-
-        .chalkboard ul {
-            list-style-type: disc;
-            padding-left: 24px;
-        }
-
-        .math-formula {
-            font-size: 1.2rem;
-            color: #2c3e50;
-            background: #f8f9fa;
-            padding: 20px;
+        .step-btn {
+            margin-top: 8px;
+            padding: 6px 10px;
             border-radius: 8px;
-            text-align: center;
-            margin: 20px 0;
-            line-height: 1.6;
-            border: 1px solid #e0e0e0;
-        }
-
-        .highlight {
-            color: #d35400;
-            font-weight: bold;
-        }
-
-        .visualization {
-            padding: 30px;
-            overflow: hidden;
-        }
-
-        .visualization.full-width {
+            border: 1px solid #e5e7eb;
             background: #ffffff;
+            cursor: pointer;
         }
 
-        .visualization.fullscreen {
-            background: #ffffff;
+        table {
             width: 100%;
-            height: 100%;
-            position: relative;
+            border-collapse: collapse;
+            margin: 20px 0;
         }
 
-        .visualization.white-bg {
-            background: #ffffff;
+        th {
+            background: #3498db;
+            color: #ffffff;
+            padding: 12px;
+            text-align: left;
         }
 
+        td {
+            padding: 10px;
+            border: 1px solid #ddd;
+        }
 
-        /* 底部导航容器（参照第二章样式） */
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
         .nav-container {
             position: fixed;
-            bottom: 24px;
-            right: 24px;
+            bottom: 15px;
+            right: 15px;
+            z-index: 1000;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 6px 10px;
+            border-radius: 15px;
             display: flex;
             align-items: center;
-            gap: 12px;
-            padding: 10px 18px;
-            background: rgba(255, 255, 255, 0.9);
-            border: 1px solid #dbe4ff;
-            border-radius: 999px;
-            box-shadow: 0 18px 45px rgba(15, 23, 42, 0.15);
-            backdrop-filter: blur(10px);
-            z-index: 1100;
+            gap: 8px;
+            backdrop-filter: blur(5px);
+            opacity: 0.6;
+            transition: opacity 0.3s ease;
+            font-size: 12px;
         }
 
-        .nav-container .nav-btn {
-            border: none;
-            background: #4a90e2;
+        .nav-container:hover {
+            opacity: 1;
+        }
+
+        .nav-btn {
+            padding: 4px 8px;
+            background: rgba(255, 255, 255, 0.2);
             color: #ffffff;
-            padding: 8px 16px;
-            border-radius: 999px;
-            font-size: 0.9rem;
-            font-weight: 600;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
             cursor: pointer;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-            box-shadow: 0 8px 16px rgba(74, 144, 226, 0.25);
+            font-size: 10px;
+            transition: all 0.3s ease;
         }
 
-        .nav-container .nav-btn:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 12px 24px rgba(74, 144, 226, 0.35);
+        .nav-btn:hover {
+            background: rgba(255, 255, 255, 0.4);
+            transform: scale(1.05);
         }
 
-        .nav-container .nav-btn:disabled {
-            background: #e5edf8;
-            color: #94a3b8;
-            box-shadow: none;
+        .nav-btn:disabled {
             cursor: not-allowed;
+            opacity: 0.5;
         }
 
         #page-indicator {
-            font-size: 0.9rem;
-            color: #1f2937;
-            min-width: 80px;
-            text-align: center;
-            font-weight: 600;
+            color: #ffffff;
+            font-size: 10px;
+            padding: 0 6px;
+            font-weight: normal;
         }
 
+        @media (max-width: 768px) {
+            .slide {
+                flex-direction: column;
+            }
 
+            .chalkboard,
+            .visualization {
+                width: 100%;
+                height: 50vh;
+                border-right: none;
+                border-left: none;
+            }
 
+            .chalkboard {
+                padding: 20px;
+                font-size: 14px;
+                line-height: 1.6;
+            }
+
+            .nav-container {
+                bottom: 10px;
+                right: 10px;
+                padding: 4px 8px;
+                font-size: 10px;
+            }
+
+            .nav-btn {
+                padding: 3px 6px;
+                font-size: 9px;
+            }
+        }
+
+        @media print {
+            .nav-container {
+                display: none;
+            }
+
+            .slide {
+                page-break-after: always;
+            }
+        }
     </style>
 </head>
 <body>
