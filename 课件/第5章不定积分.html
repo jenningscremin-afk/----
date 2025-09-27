@@ -408,66 +408,21 @@
             color: white;
             transform: translateX(5px);
         }
-    </style>
+    
+        </style>
+    <link rel="stylesheet" href="../common-assets/css/chapter-light-theme.css">
 
-    <style>
-        .return-home-panel {
-            position: fixed;
-            top: 16px;
-            left: 16px;
-            display: flex;
-            gap: 10px;
-            z-index: 9999;
-            flex-wrap: wrap;
-        }
-        .return-home-panel .return-link {
-            padding: 8px 14px;
-            border-radius: 999px;
-            background: rgba(15, 23, 42, 0.8);
-            color: #f8fafc;
-            font-size: 14px;
-            text-decoration: none;
-            box-shadow: 0 6px 20px rgba(15, 23, 42, 0.25);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-        .return-home-panel .return-link:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 12px 24px rgba(15, 23, 42, 0.35);
-        }
-        .return-home-panel .return-link.return-main {
-            background: rgba(79, 70, 229, 0.85);
-        }
-        @media (max-width: 640px) {
-            .return-home-panel {
-                top: 12px;
-                left: 12px;
-                right: 12px;
-                justify-content: center;
-            }
-            .return-home-panel .return-link {
-                width: 100%;
-                text-align: center;
-            }
-        }
-    </style>
 </head>
 <body>
-    <div class="return-home-panel">
-        <a class="return-link return-sub" href="index.html">← 返回目录</a>
-        <a class="return-link return-main" href="../index.html">⌂ 返回主站</a>
-    </div>
-
 <div id="presentation-container">
     <!-- 第1页：标题页 -->
     <div class="slide active">
         <div class="chalkboard" style="flex: 1; text-align: center; border: none;">
             <h2 style="font-size: 4rem; border: none;">第五章</h2>
-            <p style="font-size: 2.5rem; color: white;">不定积分</p>
-            <p style="font-size: 1.8rem; color: #bdc3c7; margin-top: 40px;">导数的逆运算</p>
+            <p style="font-size: 2.5rem; color: #1a1a2e;">不定积分</p>
+            <p style="font-size: 1.8rem; color: #5f6c80; margin-top: 40px;">导数的逆运算</p>
             <div style="margin-top: 60px;">
-                <p style="font-size: 1.2rem; color: #ecf0f1;">高职数学 · 互动教学课件</p>
+                <p style="font-size: 1.2rem; color: #4a5568;">高职数学 · 互动教学课件</p>
             </div>
         </div>
     </div>
@@ -485,7 +440,7 @@
             </ul>
             <p>那么，<span class="highlight">导数有逆运算吗？</span></p>
             <p>答案是：<strong style="color: #2ecc71; font-size: 1.4rem;">有！那就是积分。</strong></p>
-            <p style="margin-top: 20px; font-size: 1.1rem; color: #95a5a6;">积分让我们从"变化率"找回"原函数"</p>
+            <p style="margin-top: 20px; font-size: 1.1rem; color: #4b5563;">积分让我们从"变化率"找回"原函数"</p>
         </div>
         <div class="visualization" id="vis-reverse-operations"></div>
     </div>
@@ -505,7 +460,7 @@
             
             <div style="background: rgba(231, 76, 60, 0.1); padding: 15px; border-radius: 8px; margin-top: 20px;">
                 <p style="color: #e74c3c;">但是，$x^2 + 1$、$x^2 + 5$、$x^2 - 10$ 求导后也都是 $2x$！</p>
-                <p style="color: #ecf0f1;">所以原函数<span class="highlight">不唯一</span></p>
+                <p style="color: #4a5568;">所以原函数<span class="highlight">不唯一</span></p>
             </div>
         </div>
         <div class="visualization" id="vis-antiderivative"></div>
@@ -601,7 +556,7 @@
             </table>
             <div style="background: rgba(52, 152, 219, 0.1); padding: 15px; border-radius: 8px; margin-top: 20px;">
                 <p>记忆技巧：<span class="highlight">sin积分变负cos，cos积分变sin</span></p>
-                <p style="font-size: 1rem; color: #95a5a6;">想象正弦波和余弦波的相互转换</p>
+                <p style="font-size: 1rem; color: #4b5563;">想象正弦波和余弦波的相互转换</p>
             </div>
         </div>
         <div class="visualization" id="vis-trig-integral"></div>
@@ -706,7 +661,7 @@
                     输入 $\cos x$ → 积分机器 → 输出 $\sin x + C$
                 </p>
             </div>
-            <p style="color: #95a5a6; font-size: 1rem;">💡 积分机器总是要加上常数C，因为原函数有无穷多个</p>
+            <p style="color: #4b5563; font-size: 1rem;">💡 积分机器总是要加上常数C，因为原函数有无穷多个</p>
         </div>
         <div class="visualization" id="vis-integral-machine"></div>
     </div>
@@ -773,52 +728,27 @@
             </div>
             <div style="margin-top: 40px;">
                 <p style="font-size: 2rem; color: #f39c12;">继续加油！</p>
-                <p style="font-size: 1.2rem; color: #95a5a6; margin-top: 20px;">下一章：定积分与应用</p>
+                <p style="font-size: 1.2rem; color: #4b5563; margin-top: 20px;">下一章：定积分与应用</p>
             </div>
         </div>
     </div>
-
-    <div class="page-indicator" id="page-indicator">1 / 15</div>
     
     <!-- 翻页按钮 -->
-    <div class="nav-buttons">
-        <button class="nav-btn" id="prev-btn" onclick="previousSlide()" title="上一页 (←)">‹</button>
-        <button class="nav-btn" id="next-btn" onclick="nextSlide()" title="下一页 (→)">›</button>
-    </div>
 
     <!-- 全局动画控制面板 -->
+    
+    <div class="nav-container">
+        <button class="nav-btn" id="prev-btn" onclick="previousSlide()" title="上一页 (←)">上一页</button>
+        <span id="page-indicator">1 / 14</span>
+        <button class="nav-btn" id="next-btn" onclick="nextSlide()" title="下一页 (→)">下一页</button>
+    </div>
     <div class="global-animation-controls" id="globalAnimationControls">
         <button class="global-control-btn" id="globalPlayPauseBtn">暂停</button>
         <button class="global-control-btn" id="globalSpeedBtn">1.0x</button>
     </div>
 </div>
 
-<!-- 浮动菜单 -->
-<div id="floating-menu">
-    <div id="menu-toggle" class="menu-toggle">
-        <span class="menu-icon">☰</span>
-    </div>
-    <div id="menu-content" class="menu-content">
-        <a href="#" class="menu-item">
-            <span class="menu-icon">LAB</span>
-            <span class="menu-text">积分计算实验室</span>
-        </a>
-        <a href="#" class="menu-item">
-            <span class="menu-icon">LAB</span>
-            <span class="menu-text">图形面积计算</span>
-        </a>
-        <a href="#" class="menu-item">
-            <span class="menu-icon">GAME</span>
-            <span class="menu-text">积分闯关游戏</span>
-        </a>
-        <a href="#" class="menu-item">
-            <span class="menu-icon">EXER</span>
-            <span class="menu-text">习题练习</span>
-        </a>
-    </div>
-</div>
-
-<script>
+<script><script>
     let slides, totalSlides, currentSlide = 0;
     let globalAnimationPlaying = true;
     let globalAnimationSpeed = 1.0;

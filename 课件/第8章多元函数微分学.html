@@ -406,69 +406,24 @@
             color: #4caf50;
             margin: 0 0 10px 0;
         }
-    </style>
+    
+        </style>
+    <link rel="stylesheet" href="../common-assets/css/chapter-light-theme.css">
 
-    <style>
-        .return-home-panel {
-            position: fixed;
-            top: 16px;
-            left: 16px;
-            display: flex;
-            gap: 10px;
-            z-index: 9999;
-            flex-wrap: wrap;
-        }
-        .return-home-panel .return-link {
-            padding: 8px 14px;
-            border-radius: 999px;
-            background: rgba(15, 23, 42, 0.8);
-            color: #f8fafc;
-            font-size: 14px;
-            text-decoration: none;
-            box-shadow: 0 6px 20px rgba(15, 23, 42, 0.25);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-        .return-home-panel .return-link:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 12px 24px rgba(15, 23, 42, 0.35);
-        }
-        .return-home-panel .return-link.return-main {
-            background: rgba(79, 70, 229, 0.85);
-        }
-        @media (max-width: 640px) {
-            .return-home-panel {
-                top: 12px;
-                left: 12px;
-                right: 12px;
-                justify-content: center;
-            }
-            .return-home-panel .return-link {
-                width: 100%;
-                text-align: center;
-            }
-        }
-    </style>
 </head>
 <body>
-    <div class="return-home-panel">
-        <a class="return-link return-sub" href="index.html">← 返回目录</a>
-        <a class="return-link return-main" href="../index.html">⌂ 返回主站</a>
-    </div>
-
 <div id="presentation-container">
     
     <!-- 第1页：封面 -->
     <div class="slide active">
         <div class="chalkboard" style="flex: 1; text-align: center; border: none;">
             <h2 style="font-size: 4rem; border: none;">第八章</h2>
-            <p style="font-size: 2.5rem; color: white;">多元函数微分学</p>
-            <p style="font-size: 1.5rem; color: #95a5a6; margin-top: 40px;">
+            <p style="font-size: 2.5rem; color: #1a1a2e;">多元函数微分学</p>
+            <p style="font-size: 1.5rem; color: #4b5563; margin-top: 40px;">
                 从平面走向空间的数学之旅
             </p>
             <div style="margin-top: 60px;">
-                <p style="font-size: 1.2rem; color: #ecf0f1;">
+                <p style="font-size: 1.2rem; color: #4a5568;">
                     🎯 学习目标：理解二元函数、掌握偏导数、学会求极值
                 </p>
             </div>
@@ -700,12 +655,6 @@
     <!-- 继续后续页面... -->
     
     <!-- 导航按钮 -->
-    <div class="nav-buttons">
-        <button class="nav-btn" id="prev-btn" onclick="previousSlide()" title="上一页 (←)">‹</button>
-        <button class="nav-btn" id="next-btn" onclick="nextSlide()" title="下一页 (→)">›</button>
-    </div>
-
-    <div class="page-indicator" id="page-indicator">1 / 10</div>
 
 </div>
 
@@ -1280,7 +1229,13 @@
         infoPanel.className = 'info-panel';
         infoPanel.innerHTML = `
             <h4>抛物面</h4>
-            <div class="formula-display">z = x² + y²</div>
+            <div class="formula-display">z = x² + y²
+    <div class="nav-container">
+        <button class="nav-btn" id="prev-btn" onclick="previousSlide()" title="上一页 (←)">上一页</button>
+        <span id="page-indicator">1 / 9</span>
+        <button class="nav-btn" id="next-btn" onclick="nextSlide()" title="下一页 (→)">下一页</button>
+    </div>
+</div>
             <p>拖动鼠标旋转查看</p>
         `;
         container.appendChild(infoPanel);

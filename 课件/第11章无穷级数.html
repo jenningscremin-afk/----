@@ -472,65 +472,20 @@
                 font-size: 1.5rem;
             }
         }
-    </style>
+    
+        </style>
+    <link rel="stylesheet" href="../common-assets/css/chapter-light-theme.css">
 
-    <style>
-        .return-home-panel {
-            position: fixed;
-            top: 16px;
-            left: 16px;
-            display: flex;
-            gap: 10px;
-            z-index: 9999;
-            flex-wrap: wrap;
-        }
-        .return-home-panel .return-link {
-            padding: 8px 14px;
-            border-radius: 999px;
-            background: rgba(15, 23, 42, 0.8);
-            color: #f8fafc;
-            font-size: 14px;
-            text-decoration: none;
-            box-shadow: 0 6px 20px rgba(15, 23, 42, 0.25);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-        .return-home-panel .return-link:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 12px 24px rgba(15, 23, 42, 0.35);
-        }
-        .return-home-panel .return-link.return-main {
-            background: rgba(79, 70, 229, 0.85);
-        }
-        @media (max-width: 640px) {
-            .return-home-panel {
-                top: 12px;
-                left: 12px;
-                right: 12px;
-                justify-content: center;
-            }
-            .return-home-panel .return-link {
-                width: 100%;
-                text-align: center;
-            }
-        }
-    </style>
 </head>
 <body>
-    <div class="return-home-panel">
-        <a class="return-link return-sub" href="index.html">← 返回目录</a>
-        <a class="return-link return-main" href="../index.html">⌂ 返回主站</a>
-    </div>
-
 <div id="presentation-container">
 
     <!-- 第1页：标题页 -->
     <div class="slide active">
         <div class="chalkboard" style="flex: 1; text-align: center; border: none;">
             <h2 style="font-size: 4rem; border: none;">无穷级数</h2>
-            <p style="font-size: 2rem; color: white; margin-top: 40px;">无限个数的和</p>
-            <p style="font-size: 1.5rem; color: #bdc3c7; margin-top: 30px;">探索无穷的奥秘</p>
+            <p style="font-size: 2rem; color: #1a1a2e; margin-top: 40px;">无限个数的和</p>
+            <p style="font-size: 1.5rem; color: #5f6c80; margin-top: 30px;">探索无穷的奥秘</p>
         </div>
     </div>
 
@@ -925,7 +880,7 @@
             <p><span class="highlight">记住</span>：级数是连接有限与无限的桥梁！</p>
         </div>
         <div class="visualization series-bg" style="align-items: center; justify-content: center;">
-            <div style="text-align: center; color: white;">
+            <div style="text-align: center; color: #1a1a2e;">
                 <h1 style="font-size: 3rem; margin-bottom: 2rem;">∞</h1>
                 <p style="font-size: 1.5rem;">无穷级数的世界</p>
                 <p style="font-size: 1.2rem; opacity: 0.8; margin-top: 1rem;">从有限走向无限</p>
@@ -934,13 +889,8 @@
     </div>
 
     <!-- 导航按钮 -->
-    <div class="nav-buttons">
-        <button class="nav-btn" id="prev-btn" onclick="previousSlide()" title="上一页 (←)">‹</button>
-        <button class="nav-btn" id="next-btn" onclick="nextSlide()" title="下一页 (→)">›</button>
-    </div>
 
     <!-- 页面指示器 -->
-    <div class="page-indicator" id="page-indicator">1 / 16</div>
 
 </div>
 
@@ -2172,22 +2122,22 @@
                 <h2 style="margin-bottom: 30px; color: #2c3e50;">级数的实际应用</h2>
                 
                 <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; max-width: 800px; margin: 0 auto;">
-                    <div style="background: #3498db; color: white; padding: 20px; border-radius: 10px;">
+                    <div style="background: #3498db; color: #1a1a2e; padding: 20px; border-radius: 10px;">
                         <h3>计算 π</h3>
                         <p>π/4 = 1 - 1/3 + 1/5 - 1/7 + ...</p>
                     </div>
                     
-                    <div style="background: #2ecc71; color: white; padding: 20px; border-radius: 10px;">
+                    <div style="background: #2ecc71; color: #1a1a2e; padding: 20px; border-radius: 10px;">
                         <h3>计算 e</h3>
                         <p>e = 1 + 1/1! + 1/2! + 1/3! + ...</p>
                     </div>
                     
-                    <div style="background: #e74c3c; color: white; padding: 20px; border-radius: 10px;">
+                    <div style="background: #e74c3c; color: #1a1a2e; padding: 20px; border-radius: 10px;">
                         <h3>信号处理</h3>
                         <p>傅里叶级数分解信号</p>
                     </div>
                     
-                    <div style="background: #f39c12; color: white; padding: 20px; border-radius: 10px;">
+                    <div style="background: #f39c12; color: #1a1a2e; padding: 20px; border-radius: 10px;">
                         <h3>数值计算</h3>
                         <p>用级数逼近复杂函数</p>
                     </div>
@@ -2196,7 +2146,13 @@
                 <div style="margin-top: 30px; font-size: 1.2rem; color: #7f8c8d;">
                     级数让我们能够用简单的加法运算处理复杂的数学问题！
                 </div>
-            </div>
+            
+    <div class="nav-container">
+        <button class="nav-btn" id="prev-btn" onclick="previousSlide()" title="上一页 (←)">上一页</button>
+        <span id="page-indicator">1 / 15</span>
+        <button class="nav-btn" id="next-btn" onclick="nextSlide()" title="下一页 (→)">下一页</button>
+    </div>
+</div>
         `);
     }
 

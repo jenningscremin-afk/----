@@ -490,64 +490,19 @@
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(52, 152, 219, 0.5);
         }
-    </style>
+    
+        </style>
+    <link rel="stylesheet" href="../common-assets/css/chapter-light-theme.css">
 
-    <style>
-        .return-home-panel {
-            position: fixed;
-            top: 16px;
-            left: 16px;
-            display: flex;
-            gap: 10px;
-            z-index: 9999;
-            flex-wrap: wrap;
-        }
-        .return-home-panel .return-link {
-            padding: 8px 14px;
-            border-radius: 999px;
-            background: rgba(15, 23, 42, 0.8);
-            color: #f8fafc;
-            font-size: 14px;
-            text-decoration: none;
-            box-shadow: 0 6px 20px rgba(15, 23, 42, 0.25);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-        .return-home-panel .return-link:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 12px 24px rgba(15, 23, 42, 0.35);
-        }
-        .return-home-panel .return-link.return-main {
-            background: rgba(79, 70, 229, 0.85);
-        }
-        @media (max-width: 640px) {
-            .return-home-panel {
-                top: 12px;
-                left: 12px;
-                right: 12px;
-                justify-content: center;
-            }
-            .return-home-panel .return-link {
-                width: 100%;
-                text-align: center;
-            }
-        }
-    </style>
 </head>
 <body>
-    <div class="return-home-panel">
-        <a class="return-link return-sub" href="index.html">← 返回目录</a>
-        <a class="return-link return-main" href="../index.html">⌂ 返回主站</a>
-    </div>
-
 <div id="presentation-container">
 
     <!-- 第1页：标题页 -->
     <div class="slide active">
         <div class="chalkboard" style="flex: 1; text-align: center; border: none;">
             <h2 style="font-size: 4rem; border: none;">第十章</h2>
-            <p style="font-size: 2.5rem; color: white;">线性代数基础</p>
+            <p style="font-size: 2.5rem; color: #1a1a2e;">线性代数基础</p>
             <div style="margin-top: 50px; font-size: 1.2rem;">
                 <p style="color: var(--warning-color);">适合高职学生的实用教程</p>
                 <ul style="text-align: left; margin: 30px auto; max-width: 400px;">
@@ -557,7 +512,7 @@
                     <li>线性方程组：多元一次方程</li>
                     <li>特征值：矩阵的"基因"</li>
                 </ul>
-                <p style="margin-top: 30px; font-size: 1rem; color: rgba(255,255,255,0.7);">
+                <p style="margin-top: 30px; font-size: 1rem; color: #1a1a2e;">
                     💡 提示：本章内容循序渐进，从生活实例开始
                 </p>
             </div>
@@ -883,15 +838,16 @@
     </div>
 
     <!-- 导航按钮 -->
-    <div class="nav-buttons">
-        <button class="nav-btn" id="prev-btn" onclick="previousSlide()" title="上一页 (←)">‹</button>
-        <button class="nav-btn" id="next-btn" onclick="nextSlide()" title="下一页 (→)">›</button>
-    </div>
 
     <!-- 页面指示器 -->
-    <div class="page-indicator" id="page-indicator">1 / 11</div>
 
     <!-- 全局动画控制面板 -->
+    
+    <div class="nav-container">
+        <button class="nav-btn" id="prev-btn" onclick="previousSlide()" title="上一页 (←)">上一页</button>
+        <span id="page-indicator">1 / 10</span>
+        <button class="nav-btn" id="next-btn" onclick="nextSlide()" title="下一页 (→)">下一页</button>
+    </div>
     <div class="global-animation-controls" id="globalAnimationControls">
         <button class="global-control-btn" id="globalPlayPauseBtn">暂停</button>
         <button class="global-control-btn" id="globalSpeedBtn">1.0x</button>
@@ -1098,7 +1054,7 @@
         
         container.innerHTML = `
             <div class="vis-container">
-                <h3 style="color: white; margin-bottom: 30px;">班级成绩矩阵 - 动态演示</h3>
+                <h3 style="color: #1a1a2e; margin-bottom: 30px;">班级成绩矩阵 - 动态演示</h3>
                 <div class="matrix-container">
                     <div class="matrix-wrapper">
                         <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px;">
@@ -1121,7 +1077,7 @@
                         </div>
                     </div>
                 </div>
-                <div style="margin-top: 30px; color: white;">
+                <div style="margin-top: 30px; color: #1a1a2e;">
                     <p id="matrix-info" style="font-size: 1.2rem; text-align: center;">
                         点击任意成绩查看详情
                     </p>
@@ -1170,7 +1126,7 @@
         
         container.innerHTML = `
             <div class="vis-container">
-                <h3 style="color: white; margin-bottom: 30px;">矩阵加法动画演示</h3>
+                <h3 style="color: #1a1a2e; margin-bottom: 30px;">矩阵加法动画演示</h3>
                 <div class="matrix-container">
                     <div class="matrix-wrapper">
                         <div class="matrix-grid" style="grid-template-columns: repeat(2, 1fr);">
@@ -1180,7 +1136,7 @@
                             <div class="matrix-cell">4</div>
                         </div>
                     </div>
-                    <div style="font-size: 2rem; color: white;">+</div>
+                    <div style="font-size: 2rem; color: #1a1a2e;">+</div>
                     <div class="matrix-wrapper">
                         <div class="matrix-grid" style="grid-template-columns: repeat(2, 1fr);">
                             <div class="matrix-cell">5</div>
@@ -1189,7 +1145,7 @@
                             <div class="matrix-cell">3</div>
                         </div>
                     </div>
-                    <div style="font-size: 2rem; color: white;">=</div>
+                    <div style="font-size: 2rem; color: #1a1a2e;">=</div>
                     <div class="matrix-wrapper">
                         <div class="matrix-grid" style="grid-template-columns: repeat(2, 1fr);" id="result-add">
                             <div class="matrix-cell" style="opacity: 0;">7</div>
@@ -1200,7 +1156,7 @@
                     </div>
                 </div>
                 <div style="margin-top: 30px;">
-                    <button onclick="animateAddition()" style="background: var(--primary-color); color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer;">
+                    <button onclick="animateAddition()" style="background: var(--primary-color); color: #1a1a2e; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer;">
                         重新演示
                     </button>
                 </div>
@@ -1766,8 +1722,8 @@
         
         container.innerHTML = `
             <div class="vis-container">
-                <h3 style="color: white; margin-bottom: 20px;">克拉默法则计算演示</h3>
-                <div style="color: white; text-align: center;">
+                <h3 style="color: #1a1a2e; margin-bottom: 20px;">克拉默法则计算演示</h3>
+                <div style="color: #1a1a2e; text-align: center;">
                     <p style="font-size: 1.2rem;">方程组：2x + y = 5, x - y = 1</p>
                     
                     <div style="display: flex; justify-content: center; gap: 30px; margin: 30px 0;">
@@ -1938,17 +1894,17 @@
         
         container.innerHTML = `
             <div class="vis-container">
-                <h3 style="color: white; margin-bottom: 30px;">线性代数实际应用</h3>
+                <h3 style="color: #1a1a2e; margin-bottom: 30px;">线性代数实际应用</h3>
                 <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 30px; max-width: 800px;">
                     
                     <div class="matrix-wrapper" style="text-align: center;">
                         <h4 style="color: var(--primary-color); margin-bottom: 15px;">图像处理</h4>
                         <div style="display: flex; align-items: center; justify-content: center; gap: 20px;">
                             <div style="width: 60px; height: 60px; background: linear-gradient(45deg, #333, #666); border-radius: 5px;"></div>
-                            <span style="color: white;">→</span>
+                            <span style="color: #1a1a2e;">→</span>
                             <div style="width: 60px; height: 60px; background: linear-gradient(45deg, #666, #999); border-radius: 5px; filter: blur(2px);"></div>
                         </div>
-                        <p style="color: rgba(255,255,255,0.8); margin-top: 10px; font-size: 0.9rem;">
+                        <p style="color: #1a1a2e; margin-top: 10px; font-size: 0.9rem;">
                             滤镜 = 矩阵卷积
                         </p>
                     </div>
@@ -1962,7 +1918,7 @@
                                 ).join('')}
                             </div>
                         </div>
-                        <p style="color: rgba(255,255,255,0.8); margin-top: 10px; font-size: 0.9rem;">
+                        <p style="color: #1a1a2e; margin-top: 10px; font-size: 0.9rem;">
                             数据矩阵分析
                         </p>
                     </div>
@@ -1972,7 +1928,7 @@
                         <div class="rotate-3d" style="width: 60px; height: 60px; margin: 0 auto;">
                             <div style="width: 60px; height: 60px; border: 2px solid var(--warning-color); transform: rotateX(45deg) rotateY(45deg);"></div>
                         </div>
-                        <p style="color: rgba(255,255,255,0.8); margin-top: 10px; font-size: 0.9rem;">
+                        <p style="color: #1a1a2e; margin-top: 10px; font-size: 0.9rem;">
                             3D变换矩阵
                         </p>
                     </div>
@@ -1985,7 +1941,7 @@
                             <div style="width: 8px; height: 30px; background: var(--danger-color);"></div>
                             <div style="width: 8px; height: 50px; background: var(--danger-color);"></div>
                         </div>
-                        <p style="color: rgba(255,255,255,0.8); margin-top: 10px; font-size: 0.9rem;">
+                        <p style="color: #1a1a2e; margin-top: 10px; font-size: 0.9rem;">
                             神经网络权重矩阵
                         </p>
                     </div>

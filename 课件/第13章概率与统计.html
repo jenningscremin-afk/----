@@ -503,80 +503,35 @@
                 font-size: 24px;
             }
         }
-    </style>
+    
+        </style>
+    <link rel="stylesheet" href="../common-assets/css/chapter-light-theme.css">
 
-    <style>
-        .return-home-panel {
-            position: fixed;
-            top: 16px;
-            left: 16px;
-            display: flex;
-            gap: 10px;
-            z-index: 9999;
-            flex-wrap: wrap;
-        }
-        .return-home-panel .return-link {
-            padding: 8px 14px;
-            border-radius: 999px;
-            background: rgba(15, 23, 42, 0.8);
-            color: #f8fafc;
-            font-size: 14px;
-            text-decoration: none;
-            box-shadow: 0 6px 20px rgba(15, 23, 42, 0.25);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-        .return-home-panel .return-link:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 12px 24px rgba(15, 23, 42, 0.35);
-        }
-        .return-home-panel .return-link.return-main {
-            background: rgba(79, 70, 229, 0.85);
-        }
-        @media (max-width: 640px) {
-            .return-home-panel {
-                top: 12px;
-                left: 12px;
-                right: 12px;
-                justify-content: center;
-            }
-            .return-home-panel .return-link {
-                width: 100%;
-                text-align: center;
-            }
-        }
-    </style>
 </head>
 <body>
-    <div class="return-home-panel">
-        <a class="return-link return-sub" href="index.html">← 返回目录</a>
-        <a class="return-link return-main" href="../index.html">⌂ 返回主站</a>
-    </div>
-
 <div id="presentation-container">
 
     <!-- 第1页：标题页 -->
     <div class="slide active">
         <div class="chalkboard" style="flex: 1; text-align: center;">
             <h2 style="font-size: 4rem; border: none;">第十三章</h2>
-            <p style="font-size: 2.5rem; color: white;">概率与统计</p>
+            <p style="font-size: 2.5rem; color: #1a1a2e;">概率与统计</p>
             
-            <!-- 导航按钮组 -->
+            
             <div class="home-nav-buttons" style="display: flex; justify-content: center; gap: 20px; margin-top: 40px; flex-wrap: wrap;">
-                <a href="../index.html" class="nav-btn home-btn" style="display: flex; flex-direction: column; align-items: center; padding: 15px 20px; background: rgba(255, 255, 255, 0.1); border: 2px solid rgba(255, 255, 255, 0.3); border-radius: 15px; text-decoration: none; color: white; transition: all 0.3s ease; backdrop-filter: blur(10px); min-width: 120px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);">
+                <a href="../index.html" class="nav-btn home-btn" style="display: flex; flex-direction: column; align-items: center; padding: 15px 20px; background: rgba(255, 255, 255, 0.1); border: 2px solid rgba(255, 255, 255, 0.3); border-radius: 15px; text-decoration: none; color: #1a1a2e; transition: all 0.3s ease; backdrop-filter: blur(10px); min-width: 120px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);">
                     <span class="btn-icon" style="font-size: 1.2rem; margin-bottom: 8px; font-weight: bold; letter-spacing: 1px;">HOME</span>
                     <span class="btn-text" style="font-size: 1.1rem; font-weight: 500;">主页</span>
                 </a>
-                <a href="../故事书/index.html" class="nav-btn story-btn" style="display: flex; flex-direction: column; align-items: center; padding: 15px 20px; background: rgba(255, 255, 255, 0.1); border: 2px solid rgba(255, 255, 255, 0.3); border-radius: 15px; text-decoration: none; color: white; transition: all 0.3s ease; backdrop-filter: blur(10px); min-width: 120px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);">
+                <a href="../故事书/index.html" class="nav-btn story-btn" style="display: flex; flex-direction: column; align-items: center; padding: 15px 20px; background: rgba(255, 255, 255, 0.1); border: 2px solid rgba(255, 255, 255, 0.3); border-radius: 15px; text-decoration: none; color: #1a1a2e; transition: all 0.3s ease; backdrop-filter: blur(10px); min-width: 120px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);">
                     <span class="btn-icon" style="font-size: 1.2rem; margin-bottom: 8px; font-weight: bold; letter-spacing: 1px;">STORY</span>
                     <span class="btn-text" style="font-size: 1.1rem; font-weight: 500;">故事书</span>
                 </a>
-                <a href="../习题/index.html" class="nav-btn exercise-btn" style="display: flex; flex-direction: column; align-items: center; padding: 15px 20px; background: rgba(255, 255, 255, 0.1); border: 2px solid rgba(255, 255, 255, 0.3); border-radius: 15px; text-decoration: none; color: white; transition: all 0.3s ease; backdrop-filter: blur(10px); min-width: 120px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);">
+                <a href="../习题/index.html" class="nav-btn exercise-btn" style="display: flex; flex-direction: column; align-items: center; padding: 15px 20px; background: rgba(255, 255, 255, 0.1); border: 2px solid rgba(255, 255, 255, 0.3); border-radius: 15px; text-decoration: none; color: #1a1a2e; transition: all 0.3s ease; backdrop-filter: blur(10px); min-width: 120px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);">
                     <span class="btn-icon" style="font-size: 1.2rem; margin-bottom: 8px; font-weight: bold; letter-spacing: 1px;">EXERCISE</span>
                     <span class="btn-text" style="font-size: 1.1rem; font-weight: 500;">习题</span>
                 </a>
-                <a href="../网页资源/index.html" class="nav-btn resource-btn" style="display: flex; flex-direction: column; align-items: center; padding: 15px 20px; background: rgba(255, 255, 255, 0.1); border: 2px solid rgba(255, 255, 255, 0.3); border-radius: 15px; text-decoration: none; color: white; transition: all 0.3s ease; backdrop-filter: blur(10px); min-width: 120px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);">
+                <a href="../网页资源/index.html" class="nav-btn resource-btn" style="display: flex; flex-direction: column; align-items: center; padding: 15px 20px; background: rgba(255, 255, 255, 0.1); border: 2px solid rgba(255, 255, 255, 0.3); border-radius: 15px; text-decoration: none; color: #1a1a2e; transition: all 0.3s ease; backdrop-filter: blur(10px); min-width: 120px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);">
                     <span class="btn-icon" style="font-size: 1.2rem; margin-bottom: 8px; font-weight: bold; letter-spacing: 1px;">RESOURCE</span>
                     <span class="btn-text" style="font-size: 1.1rem; font-weight: 500;">网页资源</span>
                 </a>
@@ -904,12 +859,6 @@
     </div>
 
     <!-- 翻页按钮 -->
-    <div class="nav-buttons">
-        <button class="nav-btn" id="prev-btn" onclick="previousSlide()" title="上一页 (←)">‹</button>
-        <button class="nav-btn" id="next-btn" onclick="nextSlide()" title="下一页 (→)">›</button>
-    </div>
-
-    <div class="page-indicator" id="page-indicator">1 / 15</div>
 
 </div>
 
@@ -1879,7 +1828,13 @@
                 <div style="text-align: center; padding: 50px;">
                     <p style="font-size: 20px; color: #2c3e50;">从随机试验到数值的映射</p>
                 </div>
-            </div>
+            
+    <div class="nav-container">
+        <button class="nav-btn" id="prev-btn" onclick="previousSlide()" title="上一页 (←)">上一页</button>
+        <span id="page-indicator">1 / 14</span>
+        <button class="nav-btn" id="next-btn" onclick="nextSlide()" title="下一页 (→)">下一页</button>
+    </div>
+</div>
         `;
     }
 

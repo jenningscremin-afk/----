@@ -416,64 +416,19 @@
             animation: glow 2s ease-in-out infinite alternate;
             margin-bottom: 20px;
         }
-    </style>
+    
+        </style>
+    <link rel="stylesheet" href="../common-assets/css/chapter-light-theme.css">
 
-    <style>
-        .return-home-panel {
-            position: fixed;
-            top: 16px;
-            left: 16px;
-            display: flex;
-            gap: 10px;
-            z-index: 9999;
-            flex-wrap: wrap;
-        }
-        .return-home-panel .return-link {
-            padding: 8px 14px;
-            border-radius: 999px;
-            background: rgba(15, 23, 42, 0.8);
-            color: #f8fafc;
-            font-size: 14px;
-            text-decoration: none;
-            box-shadow: 0 6px 20px rgba(15, 23, 42, 0.25);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-        .return-home-panel .return-link:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 12px 24px rgba(15, 23, 42, 0.35);
-        }
-        .return-home-panel .return-link.return-main {
-            background: rgba(79, 70, 229, 0.85);
-        }
-        @media (max-width: 640px) {
-            .return-home-panel {
-                top: 12px;
-                left: 12px;
-                right: 12px;
-                justify-content: center;
-            }
-            .return-home-panel .return-link {
-                width: 100%;
-                text-align: center;
-            }
-        }
-    </style>
 </head>
 <body>
-    <div class="return-home-panel">
-        <a class="return-link return-sub" href="index.html">← 返回目录</a>
-        <a class="return-link return-main" href="../index.html">⌂ 返回主站</a>
-    </div>
-
 <div id="presentation-container">
     
     <!-- 第1页：标题页 -->
     <div class="slide active title-slide">
         <div style="text-align: center;">
             <h1>向量代数与空间几何</h1>
-            <p style="font-size: 1.8rem; color: rgba(255, 255, 255, 0.8); margin-top: 20px;">
+            <p style="font-size: 1.8rem; color: #1a1a2e; margin-top: 20px;">
                 第12章：探索三维世界的数学语言
             </p>
             <p style="font-size: 1.2rem; margin-top: 40px; color: #3498db;">
@@ -482,15 +437,15 @@
             <div style="margin-top: 50px;">
                 <div style="display: inline-block; margin: 0 20px;">
                     <span style="font-size: 3rem;">🚀</span>
-                    <p style="color: #fff; margin-top: 10px;">航天轨道</p>
+                    <p style="color: #1a1a2e; margin-top: 10px;">航天轨道</p>
                 </div>
                 <div style="display: inline-block; margin: 0 20px;">
                     <span style="font-size: 3rem;">🎮</span>
-                    <p style="color: #fff; margin-top: 10px;">游戏开发</p>
+                    <p style="color: #1a1a2e; margin-top: 10px;">游戏开发</p>
                 </div>
                 <div style="display: inline-block; margin: 0 20px;">
                     <span style="font-size: 3rem;">🏗️</span>
-                    <p style="color: #fff; margin-top: 10px;">工程设计</p>
+                    <p style="color: #1a1a2e; margin-top: 10px;">工程设计</p>
                 </div>
             </div>
         </div>
@@ -767,46 +722,22 @@
 </div>
 
 <!-- 页码指示器 -->
-<div class="page-indicator" id="page-indicator">1 / 10</div>
 
 <!-- 翻页按钮 -->
-<div class="nav-buttons">
-    <button class="nav-btn" id="prev-btn" onclick="previousSlide()" title="上一页 (←)">‹</button>
-    <button class="nav-btn" id="next-btn" onclick="nextSlide()" title="下一页 (→)">›</button>
-</div>
 
 <!-- 全局动画控制面板 -->
-<div class="global-animation-controls" id="globalAnimationControls">
+
+    <div class="nav-container">
+        <button class="nav-btn" id="prev-btn" onclick="previousSlide()" title="上一页 (←)">上一页</button>
+        <span id="page-indicator">1 / 9</span>
+        <button class="nav-btn" id="next-btn" onclick="nextSlide()" title="下一页 (→)">下一页</button>
+    </div>
+    <div class="global-animation-controls" id="globalAnimationControls">
     <button class="global-control-btn" id="globalPlayPauseBtn">暂停</button>
     <button class="global-control-btn" id="globalSpeedBtn">1.0x</button>
 </div>
 
-<!-- 浮动菜单 -->
-<div id="floating-menu">
-    <div id="menu-toggle" class="menu-toggle">
-        <span class="menu-icon">☰</span>
-    </div>
-    <div id="menu-content" class="menu-content">
-        <a href="#" class="menu-item">
-            <span class="menu-icon">LAB</span>
-            <span class="menu-text">向量计算实验室</span>
-        </a>
-        <a href="#" class="menu-item">
-            <span class="menu-icon">LAB</span>
-            <span class="menu-text">3D空间探索</span>
-        </a>
-        <a href="#" class="menu-item">
-            <span class="menu-icon">GAME</span>
-            <span class="menu-text">向量游戏</span>
-        </a>
-        <a href="#" class="menu-item">
-            <span class="menu-icon">EXER</span>
-            <span class="menu-text">习题练习</span>
-        </a>
-    </div>
-</div>
-
-<script>
+<script><script>
     // 全局变量
     let currentSlide = 0;
     let slides = null;

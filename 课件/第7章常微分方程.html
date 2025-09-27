@@ -425,86 +425,22 @@
             0%, 100% { transform: translateY(0px); }
             50% { transform: translateY(-20px); }
         }
-    </style>
+    
+        </style>
+    <link rel="stylesheet" href="../common-assets/css/chapter-light-theme.css">
 
-    <style>
-        .return-home-panel {
-            position: fixed;
-            top: 16px;
-            left: 16px;
-            display: flex;
-            gap: 10px;
-            z-index: 9999;
-            flex-wrap: wrap;
-        }
-        .return-home-panel .return-link {
-            padding: 8px 14px;
-            border-radius: 999px;
-            background: rgba(15, 23, 42, 0.8);
-            color: #f8fafc;
-            font-size: 14px;
-            text-decoration: none;
-            box-shadow: 0 6px 20px rgba(15, 23, 42, 0.25);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-        .return-home-panel .return-link:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 12px 24px rgba(15, 23, 42, 0.35);
-        }
-        .return-home-panel .return-link.return-main {
-            background: rgba(79, 70, 229, 0.85);
-        }
-        @media (max-width: 640px) {
-            .return-home-panel {
-                top: 12px;
-                left: 12px;
-                right: 12px;
-                justify-content: center;
-            }
-            .return-home-panel .return-link {
-                width: 100%;
-                text-align: center;
-            }
-        }
-    </style>
 </head>
 <body>
-    <div class="return-home-panel">
-        <a class="return-link return-sub" href="index.html">← 返回目录</a>
-        <a class="return-link return-main" href="../index.html">⌂ 返回主站</a>
-    </div>
-
 <div id="presentation-container">
 
     <!-- 第1页：封面 -->
     <div class="slide active">
         <div class="chalkboard" style="flex: 1; text-align: center; border: none;">
             <h2 style="font-size: 4rem; border: none;" class="animated-title">第七章</h2>
-            <p style="font-size: 2.5rem; color: white;">常微分方程</p>
+            <p style="font-size: 2.5rem; color: #1a1a2e;">常微分方程</p>
             <p style="font-size: 1.8rem; color: #e74c3c; margin-top: 30px;">变化的数学语言</p>
             
-            <div class="home-nav-buttons">
-                <a href="../index.html" class="nav-card">
-                    <span style="font-size: 1.2rem; margin-bottom: 5px;">🏠</span>
-                    <span>主页</span>
-                </a>
-                <a href="#" class="nav-card">
-                    <span style="font-size: 1.2rem; margin-bottom: 5px;">📚</span>
-                    <span>故事书</span>
-                </a>
-                <a href="#" class="nav-card">
-                    <span style="font-size: 1.2rem; margin-bottom: 5px;">✏️</span>
-                    <span>习题</span>
-                </a>
-                <a href="#" class="nav-card">
-                    <span style="font-size: 1.2rem; margin-bottom: 5px;">🌐</span>
-                    <span>资源</span>
-                </a>
-            </div>
-            
-            <p style="font-size: 1.2rem; color: rgba(255,255,255,0.8); margin-top: 40px;">
+            <p style="font-size: 1.2rem; color: #1a1a2e; margin-top: 40px;">
                 探索生活中的动态变化规律
             </p>
         </div>
@@ -961,14 +897,14 @@
     </div>
 
     <!-- 导航按钮 -->
-    <div class="nav-buttons">
-        <button class="nav-btn" id="prev-btn" onclick="previousSlide()">‹</button>
-        <button class="nav-btn" id="next-btn" onclick="nextSlide()">›</button>
-    </div>
-
-    <div class="page-indicator" id="page-indicator">1 / 16</div>
 
     <!-- 全局动画控制 -->
+    
+    <div class="nav-container">
+        <button class="nav-btn" id="prev-btn" onclick="previousSlide()" title="上一页 (←)">上一页</button>
+        <span id="page-indicator">1 / 15</span>
+        <button class="nav-btn" id="next-btn" onclick="nextSlide()" title="下一页 (→)">下一页</button>
+    </div>
     <div class="global-animation-controls">
         <button class="global-control-btn" id="globalPlayPauseBtn" onclick="toggleGlobalAnimation()">暂停</button>
         <button class="global-control-btn" id="globalSpeedBtn" onclick="changeGlobalSpeed()">1.0x</button>
