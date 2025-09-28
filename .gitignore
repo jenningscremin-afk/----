@@ -1,0 +1,4 @@
+﻿tools/MinGit/
+tools/*.zip
+tools/PortableGit*
+tools/git_latest.json
